@@ -26,6 +26,9 @@
         <activity 
             android:name="de.chritte.testmvc.Aview.activity.BoatActivity">
         </activity>
+        <activity 
+            android:name="de.chritte.testmvc.Aview.activity.TripActivity">
+        </activity>
     </application>
 
 </manifest>
