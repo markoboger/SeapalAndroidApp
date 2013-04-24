@@ -1,10 +1,12 @@
 package de.chritte.testmvc.model.impl;
 
+import java.util.UUID;
+
 import de.chritte.testmvc.model.IBoat;
 
 public class Boat implements IBoat {
 
-	private String id;
+	private UUID id;
 	private String boatName;
 	
 	@Override
@@ -13,12 +15,12 @@ public class Boat implements IBoat {
 	}
 
 	@Override
-	public String getId() {
+	public UUID getId() {
 		return id;
 	}
 
 	@Override
-	public void setId(String id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
 

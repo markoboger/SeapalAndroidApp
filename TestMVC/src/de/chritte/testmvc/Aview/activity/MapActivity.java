@@ -41,7 +41,7 @@ public class MapActivity extends Activity {
 	}
 
 	private void processInputLine() {
-		if (in.getText().toString().equals("b")) {
+		if (in.getText().toString().equals("l")) {
 
 			Intent intent = new Intent(this, BoatActivity.class);
 			startActivity(intent);
@@ -49,10 +49,10 @@ public class MapActivity extends Activity {
 	}
 
 	private void printTUI() {
-		out.setText("b  -  Boat\n" + 
-					"t  -  Trip\n" + 
-					"w  -  Waypoint\n" +
-					"d  -  Dashboard\n");
+		out.setText("l  -  logbuch\n" +
+					"d  -  Dashboard\n" + 
+					"m  -  marks\n" +
+					"r  -  routes");
 	}
 
 	private OnKeyListener listener() {

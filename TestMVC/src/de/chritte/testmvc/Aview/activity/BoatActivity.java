@@ -1,9 +1,12 @@
 package de.chritte.testmvc.Aview.activity;
 
+import java.util.UUID;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Message;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
@@ -22,6 +25,7 @@ public class BoatActivity extends Activity implements IObserver {
 	private EditText in;
 	private TextView out;
 	private OnKeyListener onKeyListener;
+	private UUID uuid;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,19 +55,25 @@ public class BoatActivity extends Activity implements IObserver {
 
 		if (in.getText().toString().equals("l")) {
 			in.setText("");
-			out.setText(controller.getBoatName(""));
+			out.setText(controller.getBoatName(uuid));
 
 		} else if (in.getText().toString().equals("s")) {
 			in.setText("");
-			userInput("Set new Boatname for " + "'"
-					+ controller.getBoatName("") + "'");
+			String userInput = userInput("Set new Boatname for " + "'"
+					+ controller.getBoatName(uuid) + "'");
+			if (userInput != null) {
+				controller.setBoatName(uuid, userInput);
+			}
+			
+		} else if (in.getText().toString().equals("q")) {
+			printTUI();
 		}
 
 	}
 
-	private void userInput(String message) {
+	private String userInput(String message) {
+		final String[] userInput = new String[1];
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
-
 		alert.setTitle("Your Input");
 		alert.setMessage(message);
 
@@ -72,19 +82,20 @@ public class BoatActivity extends Activity implements IObserver {
 
 		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
-				controller.setBoatName("", input.getText().toString());
+				controller.setBoatName(uuid, input.getText().toString());
+				userInput[0] = input.getText().toString();
 			}
 		});
 
 		alert.setNegativeButton("Cancel",
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
-						
+
 					}
 				});
 
 		alert.show();
-
+		return userInput[0];
 	}
 
 	@Override
@@ -93,7 +104,7 @@ public class BoatActivity extends Activity implements IObserver {
 	}
 
 	private void printTUI() {
-		out.setText("l - List Boats\n" + "s - Set Boatname");
+		out.setText("l - List Boats\n" + "s - Set Boatname\n" + "q - quit");
 	}
 
 	private OnKeyListener listener() {
