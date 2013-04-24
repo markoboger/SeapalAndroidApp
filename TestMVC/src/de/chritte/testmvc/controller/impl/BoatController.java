@@ -5,8 +5,6 @@ import java.util.UUID;
 import de.chritte.testmvc.controller.IBoatController;
 import de.chritte.testmvc.model.IBoat;
 import de.chritte.testmvc.model.impl.Boat;
-import de.chritte.testmvc.observer.Event;
-import de.chritte.testmvc.observer.IObserver;
 import de.chritte.testmvc.observer.Observable;
 
 public class BoatController extends Observable implements IBoatController {
@@ -15,7 +13,6 @@ public class BoatController extends Observable implements IBoatController {
 	
 	public BoatController() {
 		boat = new Boat();
-		boat.setId(UUID.randomUUID());
 		boat.setBoatName("Black Pearl");
 	}
 	
