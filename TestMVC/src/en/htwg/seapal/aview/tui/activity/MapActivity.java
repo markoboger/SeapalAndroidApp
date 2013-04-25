@@ -1,6 +1,6 @@
 package en.htwg.seapal.aview.tui.activity;
 
-import de.chritte.testmvc.R;
+import de.htwg.seapal.R;
 import en.htwg.seapal.aview.tui.states.map.StartState;
 
 public class MapActivity extends AActivity {

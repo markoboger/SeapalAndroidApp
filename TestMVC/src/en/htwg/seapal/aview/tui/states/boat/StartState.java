@@ -21,7 +21,7 @@ public class StartState implements TuiState {
 		boats = controller.getBoats();
 		StringBuilder sb = new StringBuilder();
 		sb.append("n \t- New Boat\n");
-		sb.append("[<X> \t- Show Boat\n");
+		sb.append("<X> \t- Show Boat\n");
 		sb.append("---------------------------------------\n");
 		int i = 1;
 		for (UUID uuid : boats) {
@@ -41,10 +41,8 @@ public class StartState implements TuiState {
 				context.setState(new NewState());
 			return false;
 		}
-		UUID boat = boats.get(number - 1);
-		Intent intent = new Intent((Context) context, TripActivity.class);
-		intent.putExtra("Boat", boat.toString());
-		((Context) context).startActivity(intent);
+		context.setState(new ShowState(boats.get(number - 1)));
+		
 		return false;
 	}
 

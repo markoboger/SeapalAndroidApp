@@ -343,24 +343,24 @@ public class BoatController extends Observable implements IBoatController {
 
 	@Override
 	public String getString(UUID id) {
-		return "BoatName = " + getBoatName(id) + ", ID = " + id + ", RegisterNr = "
-				+ getRegisterNr(id) + ", SailSign = " + getSailSign(id)
-				+ ", HomePort = " + getHomePort(id) + ", Yachtclub = "
-				+ getYachtclub(id) + ", Owner = " + getOwner(id)
-				+ ", Insurance = " + getInsurance(id) + ", CallSign = "
-				+ getCallSign(id) + ", Type = " + getType(id)
-				+ ", Constructor = " + getConstructor(id) + ", Length = "
-				+ getLength(id) + ", Width = " + getWidth(id)
-				+ ", Draft = " + getDraft(id) + ", MastHeight = "
-				+ getMastHeight(id) + ", Displacement = " + getDisplacement(id)
-				+ ", Rigging = " + getRigging(id) + ", YearOfConstruction = "
-				+ getYearOfConstruction(id) + ", Motor = " + getMotor(id)
-				+ ", TankSize = " + getTankSize(id)
-				+ ", WasteWaterTankSize = " + getWasteWaterTankSize(id)
-				+ ", FreshWaterTankSize = " + getFreshWaterTankSize(id)
-				+ ", MainSailSize = " + getMainSailSize(id)
-				+ ", GenuaSize = " + getGenuaSize(id) + ", SpiSize = "
-				+ getSpiSize(id);
+		return "ID = " + id + " \n" + "BoatName = " + getBoatName(id) + "\n"
+				+ "RegisterNr = " + getRegisterNr(id) + "\n" + "SailSign = "
+				+ getSailSign(id) + "\n" + "HomePort = " + getHomePort(id)
+				+ "\n" + "Yachtclub = " + getYachtclub(id) + "\n" + "Owner = "
+				+ getOwner(id) + "\n" + "Insurance = " + getInsurance(id)
+				+ "\n" + "CallSign = " + getCallSign(id) + "\n" + "Type = "
+				+ getType(id) + "\n" + "Constructor = " + getConstructor(id)
+				+ "\n" + "Length = " + getLength(id) + "\n" + "Width = "
+				+ getWidth(id) + "\n" + "Draft = " + getDraft(id) + "\n"
+				+ "MastHeight = " + getMastHeight(id) + "Displacement = "
+				+ getDisplacement(id) + "\n" + "Rigging = " + getRigging(id)
+				+ "\n" + "YearOfConstruction = " + getYearOfConstruction(id)
+				+ "\n" + "Motor = " + getMotor(id) + "\n" + "TankSize = "
+				+ getTankSize(id) + "\n" + "WasteWaterTankSize = "
+				+ getWasteWaterTankSize(id) + "\n" + "FreshWaterTankSize = "
+				+ getFreshWaterTankSize(id) + "\n" + "MainSailSize = "
+				+ getMainSailSize(id) + "\n" + "GenuaSize = "
+				+ getGenuaSize(id) + "\n" + "SpiSize = " + getSpiSize(id);
 	}
 
 	@Override

@@ -10,19 +10,19 @@ public class NewState implements TuiState {
 
 	@Override
 	public String buildString(StateContext context) {
-		String boatname = ((BoatActivity) context).userInput("Enter BoatName:");
-		if (boatname == null)
-			((StateContext) context).setState(new StartState());
-		else
-			((StateContext) context).setState(new ShowState());
-		UUID boat = ((BoatActivity) context).getController().newBoat();
-		((BoatActivity) context).getController().setBoatName(boat, boatname);
-		return "";
+		return "q - quit \n\n Enter BoatName";
 	}
 
 	@Override
 	public boolean process(StateContext context, String input) {
-		return false;
+		if (input.equals("q")) {
+			context.setState(new StartState());
+			return false;
+		}
+		UUID boat = ((BoatActivity) context).getController().newBoat();
+		((BoatActivity) context).getController().setBoatName(boat, input);
+		context.setState(new ShowState(boat));
+		return true;
 	}
 
 }

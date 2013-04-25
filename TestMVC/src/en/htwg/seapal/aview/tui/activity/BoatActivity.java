@@ -1,6 +1,6 @@
 package en.htwg.seapal.aview.tui.activity;
 
-import de.chritte.testmvc.R;
+import de.htwg.seapal.R;
 import en.htwg.seapal.aview.tui.states.boat.StartState;
 import en.htwg.seapal.controller.IBoatController;
 import en.htwg.seapal.controller.impl.BoatController;
@@ -16,6 +16,7 @@ public class BoatActivity extends AActivity implements IObserver {
 		setContentView(R.layout.boat);
 		setController(new BoatController(new ListBoatDatabase()));
 		currenState = new StartState();
+		controller.addObserver(this);
 	}
 
 	public IBoatController getController() {

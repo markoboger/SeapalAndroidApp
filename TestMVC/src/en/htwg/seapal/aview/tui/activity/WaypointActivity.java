@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.View.OnKeyListener;
 import android.widget.EditText;
 import android.widget.TextView;
-import de.chritte.testmvc.R;
+import de.htwg.seapal.R;
 import en.htwg.seapal.controller.ITripController;
 import en.htwg.seapal.controller.IWaypointController;
 import en.htwg.seapal.controller.impl.TripController;

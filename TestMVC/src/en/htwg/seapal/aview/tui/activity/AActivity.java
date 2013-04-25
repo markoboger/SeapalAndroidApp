@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.View.OnKeyListener;
 import android.widget.EditText;
 import android.widget.TextView;
-import de.chritte.testmvc.R;
+import de.htwg.seapal.R;
 import en.htwg.seapal.aview.tui.StateContext;
 import en.htwg.seapal.aview.tui.TuiState;
 import en.htwg.seapal.observer.Event;
@@ -28,6 +28,7 @@ public abstract class AActivity extends Activity implements IObserver, StateCont
 		super.onCreate(savedInstanceState);
 		
 		setup();
+		
 		
 		in = (EditText) findViewById(R.id.input);
 		out = (TextView) findViewById(R.id.output);
