@@ -26,9 +26,9 @@ public interface IBoat {
 
     void setYachtclub(String yachtclub);
 
-    String getOwner();
+    UUID getOwner(); // Person
 
-    void setOwner(String owner);
+    void setOwner(UUID owner); // Person
 
     String getInsurance();
 
