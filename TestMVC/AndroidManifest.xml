@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="de.chritte.testmvc"
+    package="de.htwg.seapal"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="en.htwg.seapal.aview.tui.activity.MapActivity"
+            android:name="de.htwg.seapal.aview.tui.activity.MapActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,10 +24,10 @@
         </activity>
         
         <activity 
-            android:name="en.htwg.seapal.aview.tui.activity.BoatActivity">
+            android:name="de.htwg.seapal.aview.tui.activity.BoatActivity">
         </activity>
         <activity 
-            android:name="en.htwg.seapal.aview.tui.activity.TripActivity">
+            android:name="de.htwg.seapal.aview.tui.activity.TripActivity">
         </activity>
     </application>
 
