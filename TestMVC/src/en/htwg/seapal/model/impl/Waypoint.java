@@ -65,7 +65,7 @@ public class Waypoint implements IWaypoint {
 	}
 
 	@Override
-	public UUID getMark() {
+	public UUID getHeadedFor() {
 		return headedFor;
 	}
 
@@ -125,7 +125,7 @@ public class Waypoint implements IWaypoint {
 	}
 
 	@Override
-	public void setMark(final UUID headedFor) {
+	public void setHeadedFor(final UUID headedFor) {
 		this.headedFor = headedFor;
 	}
 
@@ -149,7 +149,7 @@ public class Waypoint implements IWaypoint {
 				.append(getCOG()).append("; sog=").append(getSOG())
 				.append("; man=").append(getManeuver()).append("; fsail=")
 				.append(getForesail()).append("; msail=").append(getMainsail())
-				.append("; mark=").append(getMark()).append("}");
+				.append("; mark=").append(getHeadedFor()).append("}");
 		return sb.toString();
 	}
 

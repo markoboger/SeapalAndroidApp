@@ -14,17 +14,11 @@ public class BoatActivity extends AActivity implements IObserver {
 	@Override
 	public void setup() {
 		setContentView(R.layout.boat);
-		setController(new BoatController(new HashMapBoatDatabase()));
+		this.controller = new BoatController(new HashMapBoatDatabase());
 		currenState = new StartState();
 	}
 
 	public IBoatController getController() {
 		return controller;
 	}
-
-	public void setController(IBoatController controller) {
-		this.controller = controller;
-	}
-	
-	
 }

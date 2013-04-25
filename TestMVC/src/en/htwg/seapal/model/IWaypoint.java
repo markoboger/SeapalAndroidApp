@@ -2,7 +2,7 @@ package en.htwg.seapal.model;
 
 import java.util.UUID;
 
-public interface IWaypoint extends Cloneable {
+public interface IWaypoint {
 
 	public enum Maneuver {
 		NONE, TACK, JIBE, LAYTO, SET_SAILS, CHANGE_SAILS, SAILS_DOWN, REFF, ANKER_UP, ANKER_DOWN
@@ -30,7 +30,7 @@ public interface IWaypoint extends Cloneable {
 
 	int getSOG();
 
-	UUID getMark();
+	UUID getHeadedFor();
 
 	Maneuver getManeuver();
 
@@ -54,7 +54,7 @@ public interface IWaypoint extends Cloneable {
 
 	void setSOG(int sog);
 
-	void setMark(UUID mark);
+	void setHeadedFor(UUID mark);
 
 	void setManeuver(Maneuver maneuver);
 

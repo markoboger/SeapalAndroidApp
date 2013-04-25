@@ -18,23 +18,18 @@ public class BoatController extends Observable implements IBoatController {
 	}
 
 	@Override
-	public List<UUID> getBoats() {
-		List<IBoat> query = db.getBoats();
-		List<UUID> list = new ArrayList<UUID>();
-		for (IBoat boat : query) {
-			list.add(boat.getId());
-		}
-		return list;
-	}
-
-	@Override
 	public String getBoatName(final UUID id) {
+		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return null;
 		return db.getBoat(id).getBoatName();
 	}
 
 	@Override
 	public void setBoatName(UUID id, String BoatName) {
 		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return;
 		boat.setBoatName(BoatName);
 		db.saveBoat(boat);
 		notifyObservers();
@@ -42,12 +37,17 @@ public class BoatController extends Observable implements IBoatController {
 
 	@Override
 	public String getRegisterNr(UUID id) {
-		return db.getBoat(id).getRegisterNr();
+		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return null;
+		return boat.getRegisterNr();
 	}
 
 	@Override
 	public void setRegisterNr(UUID id, String registerNr) {
 		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return;
 		boat.setRegisterNr(registerNr);
 		db.saveBoat(boat);
 		notifyObservers();
@@ -55,12 +55,17 @@ public class BoatController extends Observable implements IBoatController {
 
 	@Override
 	public String getSailSign(UUID id) {
-		return db.getBoat(id).getSailSign();
+		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return null;
+		return boat.getSailSign();
 	}
 
 	@Override
 	public void setSailSign(UUID id, String SailSign) {
 		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return;
 		boat.setSailSign(SailSign);
 		db.saveBoat(boat);
 		notifyObservers();
@@ -68,12 +73,17 @@ public class BoatController extends Observable implements IBoatController {
 
 	@Override
 	public String getHomePort(UUID id) {
-		return db.getBoat(id).getHomePort();
+		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return null;
+		return boat.getHomePort();
 	}
 
 	@Override
 	public void setHomePort(UUID id, String HomePort) {
 		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return;
 		boat.setHomePort(HomePort);
 		db.saveBoat(boat);
 		notifyObservers();
@@ -81,12 +91,17 @@ public class BoatController extends Observable implements IBoatController {
 
 	@Override
 	public String getYachtclub(UUID id) {
-		return db.getBoat(id).getYachtclub();
+		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return null;
+		return boat.getYachtclub();
 	}
 
 	@Override
 	public void setYachtclub(UUID id, String yachtclub) {
 		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return;
 		boat.setYachtclub(yachtclub);
 		db.saveBoat(boat);
 		notifyObservers();
@@ -94,12 +109,17 @@ public class BoatController extends Observable implements IBoatController {
 
 	@Override
 	public UUID getOwner(UUID id) {
-		return db.getBoat(id).getOwner();
+		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return null;
+		return boat.getOwner();
 	}
 
 	@Override
 	public void setOwner(UUID id, UUID Owner) {
 		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return;
 		boat.setOwner(Owner);
 		db.saveBoat(boat);
 		notifyObservers();
@@ -107,12 +127,17 @@ public class BoatController extends Observable implements IBoatController {
 
 	@Override
 	public String getInsurance(UUID id) {
-		return db.getBoat(id).getInsurance();
+		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return null;
+		return boat.getInsurance();
 	}
 
 	@Override
 	public void setInsurance(UUID id, String Insurance) {
 		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return;
 		boat.setInsurance(Insurance);
 		db.saveBoat(boat);
 		notifyObservers();
@@ -120,12 +145,17 @@ public class BoatController extends Observable implements IBoatController {
 
 	@Override
 	public String getCallSign(UUID id) {
-		return db.getBoat(id).getCallSign();
+		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return null;
+		return boat.getCallSign();
 	}
 
 	@Override
 	public void setCallSign(UUID id, String CallSign) {
 		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return;
 		boat.setCallSign(CallSign);
 		db.saveBoat(boat);
 		notifyObservers();
@@ -133,12 +163,17 @@ public class BoatController extends Observable implements IBoatController {
 
 	@Override
 	public String getType(UUID id) {
-		return db.getBoat(id).getType();
+		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return null;
+		return boat.getType();
 	}
 
 	@Override
 	public void setType(UUID id, String Type) {
 		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return;
 		boat.setType(Type);
 		db.saveBoat(boat);
 		notifyObservers();
@@ -146,12 +181,17 @@ public class BoatController extends Observable implements IBoatController {
 
 	@Override
 	public String getConstructor(UUID id) {
-		return db.getBoat(id).getConstructor();
+		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return null;
+		return boat.getConstructor();
 	}
 
 	@Override
 	public void setConstructor(UUID id, String Constructor) {
 		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return;
 		boat.setConstructor(Constructor);
 		db.saveBoat(boat);
 		notifyObservers();
@@ -159,12 +199,17 @@ public class BoatController extends Observable implements IBoatController {
 
 	@Override
 	public double getLength(UUID id) {
-		return db.getBoat(id).getLength();
+		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return -1;
+		return boat.getLength();
 	}
 
 	@Override
 	public void setLength(UUID id, double Length) {
 		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return;
 		boat.setLength(Length);
 		db.saveBoat(boat);
 		notifyObservers();
@@ -172,12 +217,17 @@ public class BoatController extends Observable implements IBoatController {
 
 	@Override
 	public double getWidth(UUID id) {
-		return db.getBoat(id).getWidth();
+		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return -1;
+		return boat.getWidth();
 	}
 
 	@Override
 	public void setWidth(UUID id, double width) {
 		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return;
 		boat.setWidth(width);
 		db.saveBoat(boat);
 		notifyObservers();
@@ -185,12 +235,17 @@ public class BoatController extends Observable implements IBoatController {
 
 	@Override
 	public double getDraft(UUID id) {
-		return db.getBoat(id).getDraft();
+		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return -1;
+		return boat.getDraft();
 	}
 
 	@Override
 	public void setDraft(UUID id, double draft) {
 		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return;
 		boat.setDraft(draft);
 		db.saveBoat(boat);
 		notifyObservers();
@@ -198,12 +253,17 @@ public class BoatController extends Observable implements IBoatController {
 
 	@Override
 	public double getMastHeight(UUID id) {
-		return db.getBoat(id).getMastHeight();
+		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return -1;
+		return boat.getMastHeight();
 	}
 
 	@Override
 	public void setMastHeight(UUID id, double mastHeight) {
 		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return;
 		boat.setMastHeight(mastHeight);
 		db.saveBoat(boat);
 		notifyObservers();
@@ -211,12 +271,17 @@ public class BoatController extends Observable implements IBoatController {
 
 	@Override
 	public double getDisplacement(UUID id) {
-		return db.getBoat(id).getDisplacement();
+		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return -1;
+		return boat.getDisplacement();
 	}
 
 	@Override
 	public void setDisplacement(UUID id, double displacement) {
 		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return;
 		boat.setDisplacement(displacement);
 		db.saveBoat(boat);
 		notifyObservers();
@@ -224,12 +289,17 @@ public class BoatController extends Observable implements IBoatController {
 
 	@Override
 	public String getRigging(UUID id) {
-		return db.getBoat(id).getRigging();
+		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return null;
+		return boat.getRigging();
 	}
 
 	@Override
 	public void setRigging(UUID id, String rigging) {
 		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return;
 		boat.setRigging(rigging);
 		db.saveBoat(boat);
 		notifyObservers();
@@ -237,12 +307,17 @@ public class BoatController extends Observable implements IBoatController {
 
 	@Override
 	public int getYearOfConstruction(UUID id) {
-		return db.getBoat(id).getYearOfConstruction();
+		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return -1;
+		return boat.getYearOfConstruction();
 	}
 
 	@Override
 	public void setYearOfConstruction(UUID id, int yearOfConstruction) {
 		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return;
 		boat.setYearOfConstruction(yearOfConstruction);
 		db.saveBoat(boat);
 		notifyObservers();
@@ -250,12 +325,17 @@ public class BoatController extends Observable implements IBoatController {
 
 	@Override
 	public String getMotor(UUID id) {
-		return db.getBoat(id).getMotor();
+		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return null;
+		return boat.getMotor();
 	}
 
 	@Override
 	public void setMotor(UUID id, String motor) {
 		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return;
 		boat.setMotor(motor);
 		db.saveBoat(boat);
 		notifyObservers();
@@ -263,12 +343,17 @@ public class BoatController extends Observable implements IBoatController {
 
 	@Override
 	public double getTankSize(UUID id) {
-		return db.getBoat(id).getTankSize();
+		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return -1;
+		return boat.getTankSize();
 	}
 
 	@Override
 	public void setTankSize(UUID id, double tankSize) {
 		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return;
 		boat.setTankSize(tankSize);
 		db.saveBoat(boat);
 		notifyObservers();
@@ -276,12 +361,17 @@ public class BoatController extends Observable implements IBoatController {
 
 	@Override
 	public double getWasteWaterTankSize(UUID id) {
-		return db.getBoat(id).getWasteWaterTankSize();
+		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return -1;
+		return boat.getWasteWaterTankSize();
 	}
 
 	@Override
 	public void setWasteWaterTankSize(UUID id, double wasteWaterTankSize) {
 		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return;
 		boat.setWasteWaterTankSize(wasteWaterTankSize);
 		db.saveBoat(boat);
 		notifyObservers();
@@ -289,12 +379,17 @@ public class BoatController extends Observable implements IBoatController {
 
 	@Override
 	public double getFreshWaterTankSize(UUID id) {
-		return db.getBoat(id).getFreshWaterTankSize();
+		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return -1;
+		return boat.getFreshWaterTankSize();
 	}
 
 	@Override
 	public void setFreshWaterTankSize(UUID id, double freshWaterTankSize) {
 		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return;
 		boat.setFreshWaterTankSize(freshWaterTankSize);
 		db.saveBoat(boat);
 		notifyObservers();
@@ -302,12 +397,17 @@ public class BoatController extends Observable implements IBoatController {
 
 	@Override
 	public double getMainSailSize(UUID id) {
-		return db.getBoat(id).getMainSailSize();
+		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return -1;
+		return boat.getMainSailSize();
 	}
 
 	@Override
 	public void setMainSailSize(UUID id, double mainSailSize) {
 		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return;
 		boat.setMainSailSize(mainSailSize);
 		db.saveBoat(boat);
 		notifyObservers();
@@ -315,12 +415,17 @@ public class BoatController extends Observable implements IBoatController {
 
 	@Override
 	public double getGenuaSize(UUID id) {
-		return db.getBoat(id).getGenuaSize();
+		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return -1;
+		return boat.getGenuaSize();
 	}
 
 	@Override
 	public void setGenuaSize(UUID id, double genuaSize) {
 		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return;
 		boat.setGenuaSize(genuaSize);
 		db.saveBoat(boat);
 		notifyObservers();
@@ -328,12 +433,17 @@ public class BoatController extends Observable implements IBoatController {
 
 	@Override
 	public double getSpiSize(UUID id) {
-		return db.getBoat(id).getSpiSize();
+		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return -1;
+		return boat.getSpiSize();
 	}
 
 	@Override
 	public void setSpiSize(UUID id, double spiSize) {
 		IBoat boat = db.getBoat(id);
+		if (boat == null)
+			return;
 		boat.setSpiSize(spiSize);
 		db.saveBoat(boat);
 		notifyObservers();
@@ -362,7 +472,9 @@ public class BoatController extends Observable implements IBoatController {
 
 	@Override
 	public UUID newBoat() {
-		return db.newBoat();
+		UUID newBoat = db.newBoat();
+		notifyObservers(); // ??
+		return newBoat;
 	}
 
 	public void closeDB() {
@@ -373,5 +485,15 @@ public class BoatController extends Observable implements IBoatController {
 	public void deleteBoat(UUID id) {
 		db.deleteBoat(id);
 		notifyObservers();
+	}
+
+	@Override
+	public List<UUID> getBoats() {
+		List<IBoat> query = db.getBoats();
+		List<UUID> list = new ArrayList<UUID>();
+		for (IBoat boat : query) {
+			list.add(boat.getId());
+		}
+		return list;
 	}
 }
