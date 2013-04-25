@@ -4,7 +4,7 @@ import de.chritte.testmvc.R;
 import en.htwg.seapal.aview.tui.states.boat.StartState;
 import en.htwg.seapal.controller.IBoatController;
 import en.htwg.seapal.controller.impl.BoatController;
-import en.htwg.seapal.database.impl.ListBoatDatabase;
+import en.htwg.seapal.database.impl.HashMapBoatDatabase;
 import en.htwg.seapal.observer.IObserver;
 
 public class BoatActivity extends AActivity implements IObserver {
@@ -14,7 +14,7 @@ public class BoatActivity extends AActivity implements IObserver {
 	@Override
 	public void setup() {
 		setContentView(R.layout.boat);
-		setController(new BoatController(new ListBoatDatabase()));
+		setController(new BoatController(new HashMapBoatDatabase()));
 		currenState = new StartState();
 	}
 

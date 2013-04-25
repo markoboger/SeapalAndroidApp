@@ -17,7 +17,7 @@ public class Boat implements IBoat {
 	private String sailSign;
 	private String homePort;
 	private String yachtclub;
-	private String owner;
+	private UUID owner; // Person
 	private String insurance;
 	private String callSign;
 	private String type;
@@ -41,8 +41,8 @@ public class Boat implements IBoat {
 	public UUID getId() {
 		return id;
 	}
-	
-	public void setId(UUID id)	{
+
+	public void setId(UUID id) {
 		this.id = id;
 	}
 
@@ -97,12 +97,12 @@ public class Boat implements IBoat {
 	}
 
 	@Override
-	public String getOwner() {
+	public UUID getOwner() { // Person
 		return owner;
 	}
 
 	@Override
-	public void setOwner(String owner) {
+	public void setOwner(UUID owner) { // Person
 		this.owner = owner;
 	}
 
@@ -132,7 +132,7 @@ public class Boat implements IBoat {
 	}
 
 	@Override
-    public void setType(String type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 

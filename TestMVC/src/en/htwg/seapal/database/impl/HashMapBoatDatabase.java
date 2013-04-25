@@ -11,7 +11,7 @@ import en.htwg.seapal.database.IBoatDatabase;
 import en.htwg.seapal.model.IBoat;
 import en.htwg.seapal.model.impl.Boat;
 
-public class ListBoatDatabase implements IBoatDatabase {
+public class HashMapBoatDatabase implements IBoatDatabase {
 	
 	Map<UUID, IBoat> db = new HashMap<UUID, IBoat>();
 

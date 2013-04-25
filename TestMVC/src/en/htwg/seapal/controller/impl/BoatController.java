@@ -1,9 +1,7 @@
 package en.htwg.seapal.controller.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import en.htwg.seapal.controller.IBoatController;
@@ -95,12 +93,12 @@ public class BoatController extends Observable implements IBoatController {
 	}
 
 	@Override
-	public String getOwner(UUID id) {
+	public UUID getOwner(UUID id) {
 		return db.getBoat(id).getOwner();
 	}
 
 	@Override
-	public void setOwner(UUID id, String Owner) {
+	public void setOwner(UUID id, UUID Owner) {
 		IBoat boat = db.getBoat(id);
 		boat.setOwner(Owner);
 		db.saveBoat(boat);
@@ -343,24 +341,23 @@ public class BoatController extends Observable implements IBoatController {
 
 	@Override
 	public String getString(UUID id) {
-		return "BoatName = " + getBoatName(id) + ", ID = " + id + ", RegisterNr = "
-				+ getRegisterNr(id) + ", SailSign = " + getSailSign(id)
-				+ ", HomePort = " + getHomePort(id) + ", Yachtclub = "
-				+ getYachtclub(id) + ", Owner = " + getOwner(id)
-				+ ", Insurance = " + getInsurance(id) + ", CallSign = "
-				+ getCallSign(id) + ", Type = " + getType(id)
+		return "BoatName = " + getBoatName(id) + ", ID = " + id
+				+ ", RegisterNr = " + getRegisterNr(id) + ", SailSign = "
+				+ getSailSign(id) + ", HomePort = " + getHomePort(id)
+				+ ", Yachtclub = " + getYachtclub(id) + ", Owner = "
+				+ getOwner(id) + ", Insurance = " + getInsurance(id)
+				+ ", CallSign = " + getCallSign(id) + ", Type = " + getType(id)
 				+ ", Constructor = " + getConstructor(id) + ", Length = "
-				+ getLength(id) + ", Width = " + getWidth(id)
-				+ ", Draft = " + getDraft(id) + ", MastHeight = "
-				+ getMastHeight(id) + ", Displacement = " + getDisplacement(id)
-				+ ", Rigging = " + getRigging(id) + ", YearOfConstruction = "
+				+ getLength(id) + ", Width = " + getWidth(id) + ", Draft = "
+				+ getDraft(id) + ", MastHeight = " + getMastHeight(id)
+				+ ", Displacement = " + getDisplacement(id) + ", Rigging = "
+				+ getRigging(id) + ", YearOfConstruction = "
 				+ getYearOfConstruction(id) + ", Motor = " + getMotor(id)
-				+ ", TankSize = " + getTankSize(id)
-				+ ", WasteWaterTankSize = " + getWasteWaterTankSize(id)
-				+ ", FreshWaterTankSize = " + getFreshWaterTankSize(id)
-				+ ", MainSailSize = " + getMainSailSize(id)
-				+ ", GenuaSize = " + getGenuaSize(id) + ", SpiSize = "
-				+ getSpiSize(id);
+				+ ", TankSize = " + getTankSize(id) + ", WasteWaterTankSize = "
+				+ getWasteWaterTankSize(id) + ", FreshWaterTankSize = "
+				+ getFreshWaterTankSize(id) + ", MainSailSize = "
+				+ getMainSailSize(id) + ", GenuaSize = " + getGenuaSize(id)
+				+ ", SpiSize = " + getSpiSize(id);
 	}
 
 	@Override
