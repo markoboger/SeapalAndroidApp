@@ -451,7 +451,6 @@ public class BoatController extends Observable implements IBoatController {
 
 	@Override
 	public String getString(UUID id) {
-<<<<<<< HEAD
 		return "ID = " + id + " \n" + "BoatName = " + getBoatName(id) + "\n"
 				+ "RegisterNr = " + getRegisterNr(id) + "\n" + "SailSign = "
 				+ getSailSign(id) + "\n" + "HomePort = " + getHomePort(id)
@@ -470,25 +469,6 @@ public class BoatController extends Observable implements IBoatController {
 				+ getFreshWaterTankSize(id) + "\n" + "MainSailSize = "
 				+ getMainSailSize(id) + "\n" + "GenuaSize = "
 				+ getGenuaSize(id) + "\n" + "SpiSize = " + getSpiSize(id);
-=======
-		return "BoatName = " + getBoatName(id) + ", ID = " + id
-				+ ", RegisterNr = " + getRegisterNr(id) + ", SailSign = "
-				+ getSailSign(id) + ", HomePort = " + getHomePort(id)
-				+ ", Yachtclub = " + getYachtclub(id) + ", Owner = "
-				+ getOwner(id) + ", Insurance = " + getInsurance(id)
-				+ ", CallSign = " + getCallSign(id) + ", Type = " + getType(id)
-				+ ", Constructor = " + getConstructor(id) + ", Length = "
-				+ getLength(id) + ", Width = " + getWidth(id) + ", Draft = "
-				+ getDraft(id) + ", MastHeight = " + getMastHeight(id)
-				+ ", Displacement = " + getDisplacement(id) + ", Rigging = "
-				+ getRigging(id) + ", YearOfConstruction = "
-				+ getYearOfConstruction(id) + ", Motor = " + getMotor(id)
-				+ ", TankSize = " + getTankSize(id) + ", WasteWaterTankSize = "
-				+ getWasteWaterTankSize(id) + ", FreshWaterTankSize = "
-				+ getFreshWaterTankSize(id) + ", MainSailSize = "
-				+ getMainSailSize(id) + ", GenuaSize = " + getGenuaSize(id)
-				+ ", SpiSize = " + getSpiSize(id);
->>>>>>> refs/remotes/origin/master
 	}
 
 	@Override
