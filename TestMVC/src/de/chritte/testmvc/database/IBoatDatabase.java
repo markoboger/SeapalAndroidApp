@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import de.chritte.testmvc.model.IBoat;
 
-public interface IDatabase {
+public interface IBoatDatabase {
 
 	UUID newBoat();
 

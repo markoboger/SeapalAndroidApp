@@ -1,6 +1,4 @@
-package de.chritte.testmvc.Aview.activity;
-
-import java.util.UUID;
+package de.chritte.testmvc.aview.tui.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -13,52 +11,54 @@ import android.view.View.OnKeyListener;
 import android.widget.EditText;
 import android.widget.TextView;
 import de.chritte.testmvc.R;
-import de.chritte.testmvc.controller.IBoatController;
-import de.chritte.testmvc.controller.ITripController;
-import de.chritte.testmvc.controller.impl.BoatController;
-import de.chritte.testmvc.controller.impl.TripController;
+import de.chritte.testmvc.aview.tui.StateContext;
+import de.chritte.testmvc.aview.tui.TuiState;
 import de.chritte.testmvc.observer.Event;
 import de.chritte.testmvc.observer.IObserver;
 
-public class TripActivity extends Activity implements IObserver {
+public abstract class AActivity extends Activity implements IObserver, StateContext {
 
-	private ITripController controller;
-	private EditText in;
-	private TextView out;
-	private OnKeyListener onKeyListener;
-	private UUID uuid;
-
+	protected EditText in;
+	protected TextView out;
+	protected OnKeyListener onKeyListener;
+	protected TuiState currenState;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.trip);
-
-		controller = new TripController();
-		controller.addObserver(this);
-
+		
+		setup();
+		
 		in = (EditText) findViewById(R.id.input);
 		out = (TextView) findViewById(R.id.output);
 		printTUI();
-
+		
 		onKeyListener = listener();
 		in.setOnKeyListener(onKeyListener);
-
 	}
 
+	protected abstract void setup();
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-
-	private void processInputLine() {
-
-		
-
+	
+	@Override
+	public void setState(TuiState newState) {
+		currenState = newState;
 	}
 
-	private String userInput(String message) {
+	protected void processInputLine() {
+		String input = in.getText().toString();
+		in.setText("");
+		currenState.process(this, input);
+		printTUI();
+	}
+
+	public String userInput(String message) {
 		final String[] userInput = new String[1];
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		alert.setTitle("Your Input");
@@ -89,11 +89,11 @@ public class TripActivity extends Activity implements IObserver {
 		printTUI();
 	}
 
-	private void printTUI() {
-		out.setText("l - List Trips\n" + "s - Set TripName\n" + "q - quit");
+	protected void printTUI() {
+		out.setText(currenState.buildString(this));
 	}
 
-	private OnKeyListener listener() {
+	protected OnKeyListener listener() {
 		return new OnKeyListener() {
 			@Override
 			public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -108,5 +108,4 @@ public class TripActivity extends Activity implements IObserver {
 			}
 		};
 	}
-
 }

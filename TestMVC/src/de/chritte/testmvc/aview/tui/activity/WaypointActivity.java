@@ -1,4 +1,4 @@
-package de.chritte.testmvc.Aview.activity;
+package de.chritte.testmvc.aview.tui.activity;
 
 import java.util.UUID;
 

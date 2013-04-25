@@ -1,15 +1,17 @@
 package de.chritte.testmvc.database.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import de.chritte.testmvc.database.IDatabase;
+import de.chritte.testmvc.database.IBoatDatabase;
 import de.chritte.testmvc.model.IBoat;
 import de.chritte.testmvc.model.impl.Boat;
 
-public class ListDatabase implements IDatabase {
+public class ListBoatDatabase implements IBoatDatabase {
 	
 	Map<UUID, IBoat> db = new HashMap<UUID, IBoat>();
 
@@ -38,7 +40,8 @@ public class ListDatabase implements IDatabase {
 
 	@Override
 	public List<IBoat> getBoats() {
-		List<IBoat> values = (List<IBoat>) db.values();
+		Collection<IBoat> collection = db.values();
+		List<IBoat> values =  new ArrayList<IBoat>(collection);
 		return values;
 	}
 

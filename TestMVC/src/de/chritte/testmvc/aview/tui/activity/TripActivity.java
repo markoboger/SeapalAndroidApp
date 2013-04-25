@@ -1,4 +1,4 @@
-package de.chritte.testmvc.Aview.activity;
+package de.chritte.testmvc.aview.tui.activity;
 
 import java.util.UUID;
 
@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Message;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
@@ -15,13 +14,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import de.chritte.testmvc.R;
 import de.chritte.testmvc.controller.IBoatController;
+import de.chritte.testmvc.controller.ITripController;
 import de.chritte.testmvc.controller.impl.BoatController;
+import de.chritte.testmvc.controller.impl.TripController;
 import de.chritte.testmvc.observer.Event;
 import de.chritte.testmvc.observer.IObserver;
 
-public class BoatActivity extends Activity implements IObserver {
+public class TripActivity extends Activity implements IObserver {
 
-	private IBoatController controller;
+	private ITripController controller;
 	private EditText in;
 	private TextView out;
 	private OnKeyListener onKeyListener;
@@ -30,9 +31,9 @@ public class BoatActivity extends Activity implements IObserver {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.boat);
+		setContentView(R.layout.trip);
 
-		controller = new BoatController();
+		controller = new TripController();
 		controller.addObserver(this);
 
 		in = (EditText) findViewById(R.id.input);
@@ -53,21 +54,7 @@ public class BoatActivity extends Activity implements IObserver {
 
 	private void processInputLine() {
 
-		if (in.getText().toString().equals("l")) {
-			in.setText("");
-			out.setText(controller.getBoatName(uuid));
-
-		} else if (in.getText().toString().equals("s")) {
-			in.setText("");
-			String userInput = userInput("Set new Boatname for " + "'"
-					+ controller.getBoatName(uuid) + "'");
-			if (userInput != null) {
-				controller.setBoatName(uuid, userInput);
-			}
-			
-		} else if (in.getText().toString().equals("q")) {
-			printTUI();
-		}
+		
 
 	}
 
@@ -103,7 +90,7 @@ public class BoatActivity extends Activity implements IObserver {
 	}
 
 	private void printTUI() {
-		out.setText("l - List Boats\n" + "s - Set Boatname\n" + "q - quit");
+		out.setText("l - List Trips\n" + "s - Set TripName\n" + "q - quit");
 	}
 
 	private OnKeyListener listener() {
@@ -121,4 +108,5 @@ public class BoatActivity extends Activity implements IObserver {
 			}
 		};
 	}
+
 }
