@@ -7,6 +7,7 @@ import de.htwg.seapal.R;
 import de.htwg.seapal.aview.tui.states.trip.StartState;
 import de.htwg.seapal.controller.ITripController;
 import de.htwg.seapal.controller.impl.TripController;
+import de.htwg.seapal.database.impl.HashMapTripDatabase;
 import de.htwg.seapal.observer.IObserver;
 
 public class TripActivity extends AActivity implements IObserver {
@@ -19,9 +20,9 @@ public class TripActivity extends AActivity implements IObserver {
 		setContentView(R.layout.trip);
 		Bundle bundle = getIntent().getExtras();
 		setBoat(UUID.fromString(bundle.getString("boat").toString()));
-//		setController(new TripController(new ListTripDatabase()));
+		setController(new TripController(new HashMapTripDatabase()));
 		currenState = new StartState();
-//		controller.addObserver(this);
+		controller.addObserver(this);
 	}
 
 	public ITripController getController() {
