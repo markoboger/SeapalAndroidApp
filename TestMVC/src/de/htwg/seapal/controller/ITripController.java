@@ -55,11 +55,13 @@ public interface ITripController extends IObservable {
 
 	String getString(UUID id);
 
-	UUID newTrip();
-
 	void deleteTrip(UUID id);
 
 	void closeDB();
 
 	List<UUID> getTrips();
+
+	UUID newTrip(UUID boat);
+
+	List<UUID> getTrips(UUID boat);
 }

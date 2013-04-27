@@ -10,7 +10,6 @@ import de.htwg.seapal.database.ITripDatabase;
 import de.htwg.seapal.model.ITrip;
 import de.htwg.seapal.observer.Observable;
 
-
 public class TripController extends Observable implements ITripController {
 
 	private ITripDatabase db;
@@ -230,8 +229,10 @@ public class TripController extends Observable implements ITripController {
 	}
 
 	@Override
-	public UUID newTrip() {
+	public UUID newTrip(UUID boat) {
 		UUID newTrip = db.newTrip();
+		ITrip trip = db.getTrip(newTrip);
+		trip.setBoat(boat);
 		notifyObservers(); // ??
 		return newTrip;
 	}
@@ -253,6 +254,17 @@ public class TripController extends Observable implements ITripController {
 		List<UUID> list = new ArrayList<UUID>();
 		for (ITrip boat : query) {
 			list.add(boat.getId());
+		}
+		return list;
+	}
+
+	@Override
+	public List<UUID> getTrips(UUID boat) {
+		List<ITrip> query = db.getTrips();
+		List<UUID> list = new ArrayList<UUID>();
+		for (ITrip trip : query) {
+			if (trip.getBoat().equals(boat))
+				list.add(trip.getId());
 		}
 		return list;
 	}

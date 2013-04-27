@@ -51,4 +51,8 @@ public interface ITrip {
 	void setNotes(String text);
 
 	UUID getId();
+
+	UUID getBoat();
+
+	void setBoat(UUID boat);
 }

@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import de.htwg.seapal.model.ITrip;
 
-
 public class Trip implements ITrip {
 
 	private UUID id;
@@ -23,6 +22,7 @@ public class Trip implements ITrip {
 	private int motor;
 	private double fuel;
 	private String notes;
+	private UUID boat;
 
 	public Trip() {
 		this.id = UUID.randomUUID();
@@ -140,5 +140,15 @@ public class Trip implements ITrip {
 	@Override
 	public UUID getId() {
 		return id;
+	}
+
+	@Override
+	public UUID getBoat() {
+		return boat;
+	}
+
+	@Override
+	public void setBoat(UUID boat) {
+		this.boat = boat;
 	}
 }
