@@ -6,11 +6,7 @@ import java.util.UUID;
 import de.htwg.seapal.aview.tui.StateContext;
 import de.htwg.seapal.aview.tui.TuiState;
 import de.htwg.seapal.aview.tui.activity.BoatActivity;
-import de.htwg.seapal.aview.tui.activity.TripActivity;
 import de.htwg.seapal.controller.IBoatController;
-
-import android.content.Context;
-import android.content.Intent;
 
 public class StartState implements TuiState {
 
@@ -36,14 +32,14 @@ public class StartState implements TuiState {
 	public boolean process(StateContext context, String input) {
 		Integer number;
 		try {
-			number = Integer.valueOf(input);
+			number = Integer.valueOf(input) - 1;
 		} catch (NumberFormatException e) {
 			if (input.equals("n"))
 				context.setState(new NewState());
 			return false;
 		}
-		context.setState(new ShowState(boats.get(number - 1)));
-		
+		if (number < boats.size() && number >= 0)
+			context.setState(new ShowState(boats.get(number)));
 		return false;
 	}
 

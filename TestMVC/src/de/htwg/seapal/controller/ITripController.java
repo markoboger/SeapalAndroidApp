@@ -27,7 +27,7 @@ public interface ITripController extends IObservable {
 
 	List<UUID> getCrewMembers(UUID id);
 
-	void addCrewMembers(UUID id, List<UUID> crewMembers);
+	void addCrewMember(UUID id, UUID crewMember);
 
 	Date getStartTime(UUID id);
 
@@ -64,4 +64,6 @@ public interface ITripController extends IObservable {
 	UUID newTrip(UUID boat);
 
 	List<UUID> getTrips(UUID boat);
+
+	UUID getBoat(UUID id);
 }

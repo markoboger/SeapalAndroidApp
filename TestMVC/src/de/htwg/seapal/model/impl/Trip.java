@@ -68,8 +68,8 @@ public class Trip implements ITrip {
 	}
 
 	@Override
-	public void addCrewMembers(List<UUID> crewMembers) {
-		this.crew = crewMembers;
+	public void addCrewMember(UUID crewMember) {
+		this.crew.add(crewMember);
 	}
 
 	@Override
@@ -150,5 +150,15 @@ public class Trip implements ITrip {
 	@Override
 	public void setBoat(UUID boat) {
 		this.boat = boat;
+	}
+
+	@Override
+	public String toString() {
+		return "Trip [id=" + id + ", name=" + name + ", startLocation="
+				+ startLocation + ", endLocation=" + endLocation + ", skipper="
+				+ skipper + ", crew=" + crew + ", startTime=" + startTime
+				+ ", endTime=" + endTime + ", duration=" + duration
+				+ ", motor=" + motor + ", fuel=" + fuel + ", notes=" + notes
+				+ ", boat=" + boat + "]";
 	}
 }

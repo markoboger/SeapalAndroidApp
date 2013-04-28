@@ -8,11 +8,11 @@ import de.htwg.seapal.aview.tui.TuiState;
 import de.htwg.seapal.aview.tui.activity.TripActivity;
 import de.htwg.seapal.controller.ITripController;
 
-
 public class StartState implements TuiState {
 
 	private UUID boat;
-	
+	private List<UUID> trips;
+
 	@Override
 	public String buildString(StateContext context) {
 		ITripController controller = ((TripActivity) context).getController();
@@ -21,7 +21,7 @@ public class StartState implements TuiState {
 		sb.append("n \t- New Trip\n");
 		sb.append("<X> \t- Show Trip\n");
 		sb.append("---------------------------------------\n");
-		List<UUID> trips = controller.getTrips(boat);
+		trips = controller.getTrips(boat);
 		int i = 1;
 		for (UUID uuid : trips) {
 			sb.append(i++).append(")\t").append(controller.getName(uuid))
@@ -32,7 +32,16 @@ public class StartState implements TuiState {
 
 	@Override
 	public boolean process(StateContext context, String input) {
-		// TODO Auto-generated method stub
+		Integer number;
+		try {
+			number = Integer.valueOf(input) - 1;
+		} catch (NumberFormatException e) {
+			if (input.equals("n"))
+				context.setState(new NewState());
+			return false;
+		}
+		if (number < trips.size() && number >= 0)
+			context.setState(new ShowState(trips.get(number)));
 		return false;
 	}
 

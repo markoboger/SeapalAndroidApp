@@ -1,4 +1,4 @@
-package de.htwg.seapal.aview.tui.states.boat;
+package de.htwg.seapal.aview.tui.states.trip;
 
 import java.util.UUID;
 
@@ -7,16 +7,12 @@ import de.htwg.seapal.aview.tui.TuiState;
 
 public class EditSelectState implements TuiState {
 
-	private UUID boat;
-	private static String[] editBoat = new String[] { "BoatName", "RegisterNr",
-			"SailSign", "HomePort", "Yachtclub", "Owner", "Insurance",
-			"CallSign", "Type", "Constructor", "Length", "Width", "Draft",
-			"MastHeight", "Rigging", "YearOfConstruction", "Motor", "TankSize",
-			"WasteWaterTankSize", "FreshWaterTankSize", "MainSailSize",
-			"GenuaSize", "SpiSize" };
+	private UUID trip;
+	private static String[] editTrip = new String[] { "Name", "Start Location",
+			"End Location", "Skipper", "Crew", "Motor (min)", "Fuel", "Notes" };
 
-	public EditSelectState(UUID boat) {
-		this.boat = boat;
+	public EditSelectState(UUID trip) {
+		this.trip = trip;
 	}
 
 	@Override
@@ -26,7 +22,7 @@ public class EditSelectState implements TuiState {
 		sb.append("<x> - edit Attribute\n");
 		sb.append("------------------------------------------------\n");
 		int i = 1;
-		for (String element : editBoat) {
+		for (String element : editTrip) {
 			sb.append(i + ") " + element + "\n");
 			++i;
 		}
@@ -40,16 +36,16 @@ public class EditSelectState implements TuiState {
 			number = Integer.valueOf(input);
 		} catch (NumberFormatException e) {
 			if (input.equals("q"))
-				context.setState(new ShowState(boat));
+				context.setState(new ShowState(trip));
 			return false;
 		}
-		context.setState(new EditState(number - 1, boat));
+		context.setState(new EditState(number - 1, trip));
 
 		return true;
 	}
 
-	public static String getEditBoatElement(int position) {
-		return editBoat[position];
+	public static String getEditTripElement(int position) {
+		return editTrip[position];
 	}
 
 }

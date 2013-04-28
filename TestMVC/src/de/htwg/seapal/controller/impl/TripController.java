@@ -97,11 +97,11 @@ public class TripController extends Observable implements ITripController {
 	}
 
 	@Override
-	public void addCrewMembers(UUID id, List<UUID> crewMembers) {
+	public void addCrewMember(UUID id, UUID crewMember) {
 		ITrip trip = db.getTrip(id);
 		if (trip == null)
 			return;
-		trip.addCrewMembers(crewMembers);
+		trip.addCrewMember(crewMember);
 		db.saveTrip(trip);
 		notifyObservers();
 	}
@@ -224,8 +224,15 @@ public class TripController extends Observable implements ITripController {
 
 	@Override
 	public String getString(UUID id) {
-		// TODO Auto-generated method stub
-		return null;
+		return " ID = \t" + id + "\n Name = \t" + getName(id)
+				+ "\n startLocation = \t" + getStartLocation(id)
+				+ "\n endLocation = \t" + getEndLocation(id)
+				+ "\n skipper = \t" + getSkipper(id) + "\n crew = \t"
+				+ getCrewMembers(id) + "\n startTime = \t" + getStartTime(id)
+				+ "\n endTime = \t" + getEndTime(id) + "\n duration = \t"
+				+ getDuration(id) + "\n motor = \t" + getMotor(id)
+				+ "\n fuel = \t" + getFuel(id) + "\n notes = \t" + getNotes(id)
+				+ "\n boat = \t" + getBoat(id) + "\n";
 	}
 
 	@Override
@@ -267,6 +274,14 @@ public class TripController extends Observable implements ITripController {
 				list.add(trip.getId());
 		}
 		return list;
+	}
+
+	@Override
+	public UUID getBoat(UUID id) {
+		ITrip trip = db.getTrip(id);
+		if (trip == null)
+			return null;
+		return trip.getBoat();
 	}
 
 }

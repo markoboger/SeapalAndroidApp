@@ -38,6 +38,34 @@ public class Boat implements IBoat {
 	private double genuaSize;
 	private double spiSize;
 
+	public Boat(IBoat boat) {
+		this.id = boat.getId();
+		this.boatName = boat.getBoatName();
+		this.registerNr = boat.getRegisterNr();
+		this.sailSign = boat.getSailSign();
+		this.homePort = boat.getHomePort();
+		this.yachtclub = boat.getYachtclub();
+		this.owner = boat.getOwner();
+		this.insurance = boat.getInsurance();
+		this.callSign = boat.getCallSign();
+		this.type = boat.getType();
+		this.constructor = boat.getConstructor();
+		this.length = boat.getLength();
+		this.width = boat.getLength();
+		this.draft = boat.getDraft();
+		this.mastHeight = boat.getMastHeight();
+		this.displacement = boat.getDisplacement();
+		this.rigging = boat.getRigging();
+		this.yearOfConstruction = boat.getYearOfConstruction();
+		this.motor = boat.getMotor();
+		this.tankSize = boat.getFreshWaterTankSize();
+		this.wasteWaterTankSize = boat.getFreshWaterTankSize();
+		this.freshWaterTankSize = boat.getFreshWaterTankSize();
+		this.mainSailSize = boat.getMainSailSize();
+		this.genuaSize = boat.getGenuaSize();
+		this.spiSize = boat.getGenuaSize();
+	}
+	
 	@Override
 	public UUID getId() {
 		return id;

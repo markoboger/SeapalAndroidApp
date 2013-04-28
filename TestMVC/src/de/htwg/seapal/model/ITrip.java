@@ -24,7 +24,7 @@ public interface ITrip {
 
 	List<UUID> getCrewMembers(); // Person
 
-	void addCrewMembers(List<UUID> crewMembers); // Person
+	void addCrewMember(UUID crewMember); // Person
 
 	Date getStartTime();
 
