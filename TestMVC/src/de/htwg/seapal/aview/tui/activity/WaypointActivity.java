@@ -21,7 +21,7 @@ public class WaypointActivity extends AActivity {
 		header.setText("Waypoint");
 		Bundle bundle = getIntent().getExtras();
 		trip = UUID.fromString(bundle.getString("trip").toString());
-		controller = new WaypointController(new HashMapWaypointDatabase());
+		controller = new WaypointController(HashMapWaypointDatabase.getInstance());
 		currenState = new StartState();
 		controller.addObserver(this);
 	}

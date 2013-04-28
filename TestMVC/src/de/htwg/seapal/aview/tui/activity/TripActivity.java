@@ -20,7 +20,7 @@ public class TripActivity extends AActivity implements IObserver {
 		setContentView(R.layout.tui);
 		Bundle bundle = getIntent().getExtras();
 		boat = UUID.fromString(bundle.getString("boat").toString());
-		controller = new TripController(new HashMapTripDatabase());
+		controller = new TripController(HashMapTripDatabase.getInstance());
 		currenState = new StartState();
 		controller.addObserver(this);
 	}

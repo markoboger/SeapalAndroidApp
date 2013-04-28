@@ -11,10 +11,20 @@ import de.htwg.seapal.database.IWaypointDatabase;
 import de.htwg.seapal.model.IWaypoint;
 import de.htwg.seapal.model.impl.Waypoint;
 
-
 public class HashMapWaypointDatabase implements IWaypointDatabase {
 
-	Map<UUID, IWaypoint> db = new HashMap<UUID, IWaypoint>();
+	Map<UUID, IWaypoint> db;
+	private static HashMapWaypointDatabase hashMapWaypointDatabase;
+
+	private HashMapWaypointDatabase() {
+		db = new HashMap<UUID, IWaypoint>();
+	}
+
+	public static HashMapWaypointDatabase getInstance() {
+		if (hashMapWaypointDatabase == null)
+			hashMapWaypointDatabase = new HashMapWaypointDatabase();
+		return hashMapWaypointDatabase;
+	}
 
 	@Override
 	public UUID newWaypoint() {

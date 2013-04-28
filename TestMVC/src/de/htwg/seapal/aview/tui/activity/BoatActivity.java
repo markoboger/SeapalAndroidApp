@@ -16,7 +16,7 @@ public class BoatActivity extends AActivity implements IObserver {
 	public void setup() {
 		TextView header = (TextView) this.findViewById(R.id.header);
 		header.setText("Boat");
-		this.controller = new BoatController(new HashMapBoatDatabase());
+		this.controller = new BoatController(HashMapBoatDatabase.getInstance());
 		currenState = new StartState();
 		controller.addObserver(this);
 	}

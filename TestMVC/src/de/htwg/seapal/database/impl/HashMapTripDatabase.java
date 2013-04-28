@@ -11,10 +11,20 @@ import de.htwg.seapal.database.ITripDatabase;
 import de.htwg.seapal.model.ITrip;
 import de.htwg.seapal.model.impl.Trip;
 
-
 public class HashMapTripDatabase implements ITripDatabase {
 
-	Map<UUID, ITrip> db = new HashMap<UUID, ITrip>();
+	private Map<UUID, ITrip> db;;
+	private static HashMapTripDatabase hashMapTripDatabase;
+
+	private HashMapTripDatabase() {
+		db = new HashMap<UUID, ITrip>();
+	}
+
+	public static HashMapTripDatabase getInstance() {
+		if (hashMapTripDatabase == null)
+			hashMapTripDatabase = new HashMapTripDatabase();
+		return hashMapTripDatabase;
+	}
 
 	@Override
 	public UUID newTrip() {

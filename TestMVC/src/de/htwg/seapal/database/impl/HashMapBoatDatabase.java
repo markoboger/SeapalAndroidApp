@@ -11,11 +11,21 @@ import de.htwg.seapal.database.IBoatDatabase;
 import de.htwg.seapal.model.IBoat;
 import de.htwg.seapal.model.impl.Boat;
 
-
 public class HashMapBoatDatabase implements IBoatDatabase {
-	
-	Map<UUID, IBoat> db = new HashMap<UUID, IBoat>();
 
+	private Map<UUID, IBoat> db ;
+	private static HashMapBoatDatabase hashMapBoatDatabase;
+
+	private HashMapBoatDatabase() {
+		db = new HashMap<UUID, IBoat>();
+	}
+
+	public static HashMapBoatDatabase getInstance()	{
+		if (hashMapBoatDatabase == null)
+			hashMapBoatDatabase = new HashMapBoatDatabase();
+		return hashMapBoatDatabase;
+	}
+	
 	@Override
 	public UUID newBoat() {
 		IBoat boat = new Boat();
@@ -42,7 +52,7 @@ public class HashMapBoatDatabase implements IBoatDatabase {
 	@Override
 	public List<IBoat> getBoats() {
 		Collection<IBoat> collection = db.values();
-		List<IBoat> values =  new ArrayList<IBoat>(collection);
+		List<IBoat> values = new ArrayList<IBoat>(collection);
 		return values;
 	}
 
