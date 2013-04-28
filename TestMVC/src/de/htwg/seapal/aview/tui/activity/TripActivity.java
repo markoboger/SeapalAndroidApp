@@ -17,7 +17,7 @@ public class TripActivity extends AActivity implements IObserver {
 
 	@Override
 	public void setup() {
-		setContentView(R.layout.trip);
+		setContentView(R.layout.tui);
 		Bundle bundle = getIntent().getExtras();
 		boat = UUID.fromString(bundle.getString("boat").toString());
 		controller = new TripController(new HashMapTripDatabase());

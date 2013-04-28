@@ -3,6 +3,7 @@ package de.htwg.seapal.aview.tui.activity;
 import java.util.UUID;
 
 import android.os.Bundle;
+import android.widget.TextView;
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.tui.states.waypoint.StartState;
 import de.htwg.seapal.controller.IWaypointController;
@@ -16,7 +17,8 @@ public class WaypointActivity extends AActivity {
 
 	@Override
 	protected void setup() {
-		setContentView(R.layout.waypoint);
+		TextView header = (TextView) this.findViewById(R.id.header);
+		header.setText("Waypoint");
 		Bundle bundle = getIntent().getExtras();
 		trip = UUID.fromString(bundle.getString("trip").toString());
 		controller = new WaypointController(new HashMapWaypointDatabase());

@@ -1,5 +1,6 @@
 package de.htwg.seapal.aview.tui.activity;
 
+import android.widget.TextView;
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.tui.states.boat.StartState;
 import de.htwg.seapal.controller.IBoatController;
@@ -13,7 +14,8 @@ public class BoatActivity extends AActivity implements IObserver {
 
 	@Override
 	public void setup() {
-		setContentView(R.layout.boat);
+		TextView header = (TextView) this.findViewById(R.id.header);
+		header.setText("Boat");
 		this.controller = new BoatController(new HashMapBoatDatabase());
 		currenState = new StartState();
 		controller.addObserver(this);

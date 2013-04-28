@@ -26,9 +26,9 @@ public abstract class AActivity extends Activity implements IObserver, StateCont
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.tui);
 		
 		setup();
-		
 		
 		in = (EditText) findViewById(R.id.input);
 		out = (TextView) findViewById(R.id.output);
