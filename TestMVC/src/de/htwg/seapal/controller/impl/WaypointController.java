@@ -33,16 +33,27 @@ public class WaypointController extends Observable implements
 		IWaypoint waypoint = db.getWaypoint(id);
 		if (waypoint == null)
 			return null;
-		return db.getWaypoint(id).getName();
+		return waypoint.getName();
 	}
 
 	@Override
-	public final String getPosition(UUID id) {
+	public int getLatitude(UUID id) {
 		IWaypoint waypoint = db.getWaypoint(id);
 		if (waypoint == null)
-			return null;
-		return waypoint.getPosition();
+			return -1;
+		return waypoint.getLatitude();
 	}
+
+
+	@Override
+	public int getLongitude(UUID id) {
+		IWaypoint waypoint = db.getWaypoint(id);
+		if (waypoint == null)
+			return -1;
+		return waypoint.getLongitude();
+	}
+
+
 
 	@Override
 	public final String getNote(UUID id) {
@@ -138,11 +149,20 @@ public class WaypointController extends Observable implements
 	}
 
 	@Override
-	public final void setPosition(UUID id, final String position) {
+	public void setLatitude(UUID id, int latitude) {
 		IWaypoint waypoint = db.getWaypoint(id);
 		if (waypoint == null)
 			return;
-		waypoint.setPosition(position);
+		waypoint.setLatitude(latitude);
+		db.saveWaypoint(waypoint);
+		notifyObservers();
+	}
+	@Override
+	public void setLongitude(UUID id, int longitude) {
+		IWaypoint waypoint = db.getWaypoint(id);
+		if (waypoint == null)
+			return;
+		waypoint.setLongitude(longitude);
 		db.saveWaypoint(waypoint);
 		notifyObservers();
 	}

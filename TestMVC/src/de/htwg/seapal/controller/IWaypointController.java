@@ -20,13 +20,6 @@ public interface IWaypointController extends IObservable {
 	String getName(UUID id);
 
 	/**
-	 * Returns the position as string of the waypoint.
-	 * 
-	 * @return the position.
-	 */
-	String getPosition(UUID id);
-
-	/**
 	 * Returns the Note of the waypoint.
 	 * 
 	 * @return the note or an empty String.
@@ -96,14 +89,6 @@ public interface IWaypointController extends IObservable {
 	 *            the name
 	 */
 	void setName(UUID id, String name);
-
-	/**
-	 * Sets the position.
-	 * 
-	 * @param position
-	 *            the position
-	 */
-	void setPosition(UUID id, String position);
 
 	/**
 	 * Sets the note.
@@ -216,6 +201,14 @@ public interface IWaypointController extends IObservable {
 	 * Closes database connection and other open resources.
 	 */
 	void closeDB();
+
+	void setLongitude(UUID id, int longitude);
+
+	void setLatitude(UUID id, int latitude);
+
+	int getLongitude(UUID id);
+
+	int getLatitude(UUID id);
 
 
 }

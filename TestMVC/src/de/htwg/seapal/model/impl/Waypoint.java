@@ -1,21 +1,23 @@
 package de.htwg.seapal.model.impl;
 
+import java.util.Date;
 import java.util.UUID;
 
 import de.htwg.seapal.model.IWaypoint;
-
 
 public class Waypoint implements IWaypoint {
 
 	private UUID id;
 	private String name;
-	private String position;
+	private int latitude;
+	private int longitude;
+	private Date date;
 	private String note;
 	private int btm;
 	private int dtm;
 	private int cog;
 	private int sog;
-	private UUID headedFor;	// mark
+	private UUID headedFor; // mark
 	private Maneuver maneuver;
 	private ForeSail foreSail;
 	private MainSail mainSail;
@@ -23,9 +25,6 @@ public class Waypoint implements IWaypoint {
 
 	public Waypoint() {
 		id = UUID.randomUUID();
-		name = "";
-		position = "0°E 0°N";
-		note = "";
 		maneuver = Maneuver.NONE;
 		foreSail = ForeSail.NONE;
 		mainSail = MainSail.NONE;
@@ -34,11 +33,6 @@ public class Waypoint implements IWaypoint {
 	@Override
 	public String getName() {
 		return name;
-	}
-
-	@Override
-	public String getPosition() {
-		return position;
 	}
 
 	@Override
@@ -97,11 +91,6 @@ public class Waypoint implements IWaypoint {
 	}
 
 	@Override
-	public void setPosition(final String position) {
-		this.position = position;
-	}
-
-	@Override
 	public void setNote(final String note) {
 		this.note = note;
 	}
@@ -143,16 +132,12 @@ public class Waypoint implements IWaypoint {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder("{");
-		sb.append("id=").append(getId()).append("; name=").append(getName())
-				.append("; pos=").append(getPosition()).append("; note=")
-				.append(getNote()).append("; btm=").append(getBTM())
-				.append("; dtm=").append(getDTM()).append("; cog=")
-				.append(getCOG()).append("; sog=").append(getSOG())
-				.append("; man=").append(getManeuver()).append("; fsail=")
-				.append(getForesail()).append("; msail=").append(getMainsail())
-				.append("; mark=").append(getHeadedFor()).append("}");
-		return sb.toString();
+		return "Waypoint [id=" + id + ", name=" + name + ", latitude="
+				+ latitude + ", longitude=" + longitude + ", date=" + date
+				+ ", note=" + note + ", btm=" + btm + ", dtm=" + dtm + ", cog="
+				+ cog + ", sog=" + sog + ", headedFor=" + headedFor
+				+ ", maneuver=" + maneuver + ", foreSail=" + foreSail
+				+ ", mainSail=" + mainSail + ", trip=" + trip + "]";
 	}
 
 	@Override
@@ -168,6 +153,36 @@ public class Waypoint implements IWaypoint {
 	@Override
 	public void setTrip(UUID trip) {
 		this.trip = trip;
+	}
+
+	@Override
+	public Date getDate() {
+		return date;
+	}
+
+	@Override
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	@Override
+	public int getLatitude() {
+		return latitude;
+	}
+
+	@Override
+	public void setLatitude(int latitude) {
+		this.latitude = latitude;
+	}
+
+	@Override
+	public int getLongitude() {
+		return longitude;
+	}
+
+	@Override
+	public void setLongitude(int longitude) {
+		this.longitude = longitude;
 	}
 
 }
