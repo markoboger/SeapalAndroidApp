@@ -12,7 +12,6 @@ import de.htwg.seapal.model.IWaypoint.MainSail;
 import de.htwg.seapal.model.IWaypoint.Maneuver;
 import de.htwg.seapal.observer.Observable;
 
-
 public class WaypointController extends Observable implements
 		IWaypointController {
 
@@ -237,8 +236,11 @@ public class WaypointController extends Observable implements
 	}
 
 	@Override
-	public final UUID newWaypoint() {
+	public final UUID newWaypoint(UUID trip) {
 		UUID newWaypoint = db.newWaypoint();
+		IWaypoint waypoint = db.getWaypoint(newWaypoint);
+		waypoint.setTrip(trip);
+		db.saveWaypoint(waypoint);
 		notifyObservers();
 		return newWaypoint;
 	}
@@ -260,6 +262,17 @@ public class WaypointController extends Observable implements
 		List<UUID> waypointIDs = new ArrayList<UUID>();
 		for (IWaypoint waypoint : waypoints) {
 			waypointIDs.add(waypoint.getId());
+		}
+		return waypointIDs;
+	}
+
+	@Override
+	public List<UUID> getWaypoints(UUID trip) {
+		List<IWaypoint> waypoints = db.getWaypoints();
+		List<UUID> waypointIDs = new ArrayList<UUID>();
+		for (IWaypoint waypoint : waypoints) {
+			if (waypoint.getTrip().equals(trip))
+				waypointIDs.add(waypoint.getId());
 		}
 		return waypointIDs;
 	}

@@ -22,12 +22,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
-        <activity 
-            android:name="de.htwg.seapal.aview.tui.activity.BoatActivity">
+        <activity android:name="de.htwg.seapal.aview.tui.activity.BoatActivity" >
         </activity>
-        <activity 
-            android:name="de.htwg.seapal.aview.tui.activity.TripActivity">
+        <activity android:name="de.htwg.seapal.aview.tui.activity.TripActivity" >
+        </activity>
+        <activity android:name="de.htwg.seapal.aview.tui.activity.WaypointActivity" >
         </activity>
     </application>
 

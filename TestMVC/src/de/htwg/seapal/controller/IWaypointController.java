@@ -198,7 +198,7 @@ public interface IWaypointController extends IObservable {
 	/**
 	 * Creates a new WaypointElement.
 	 */
-	UUID newWaypoint();
+	UUID newWaypoint(UUID trip);
 
 	/**
 	 * Delete the currently selected waypoint.
@@ -210,8 +210,12 @@ public interface IWaypointController extends IObservable {
 	 */
 	List<UUID> getWaypoints();
 
+	List<UUID> getWaypoints(UUID trip);
+
 	/**
 	 * Closes database connection and other open resources.
 	 */
 	void closeDB();
+
+
 }

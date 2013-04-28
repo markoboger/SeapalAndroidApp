@@ -19,6 +19,7 @@ public class Waypoint implements IWaypoint {
 	private Maneuver maneuver;
 	private ForeSail foreSail;
 	private MainSail mainSail;
+	private UUID trip;
 
 	public Waypoint() {
 		id = UUID.randomUUID();
@@ -157,6 +158,16 @@ public class Waypoint implements IWaypoint {
 	@Override
 	public UUID getId() {
 		return id;
+	}
+
+	@Override
+	public UUID getTrip() {
+		return trip;
+	}
+
+	@Override
+	public void setTrip(UUID trip) {
+		this.trip = trip;
 	}
 
 }

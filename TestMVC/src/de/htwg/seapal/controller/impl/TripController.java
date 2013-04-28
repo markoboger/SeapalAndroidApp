@@ -240,6 +240,7 @@ public class TripController extends Observable implements ITripController {
 		UUID newTrip = db.newTrip();
 		ITrip trip = db.getTrip(newTrip);
 		trip.setBoat(boat);
+		db.saveTrip(trip);
 		notifyObservers(); // ??
 		return newTrip;
 	}

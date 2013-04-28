@@ -61,4 +61,8 @@ public interface IWaypoint {
 	void setMainsail(MainSail mainSail);
 
 	UUID getId();
+
+	UUID getTrip();
+
+	void setTrip(UUID trip);
 }

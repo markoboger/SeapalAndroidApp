@@ -33,14 +33,14 @@ public class EditSelectState implements TuiState {
 	public boolean process(StateContext context, String input) {
 		Integer number;
 		try {
-			number = Integer.valueOf(input);
+			number = Integer.valueOf(input) - 1;
 		} catch (NumberFormatException e) {
 			if (input.equals("q"))
 				context.setState(new ShowState(trip));
 			return false;
 		}
-		context.setState(new EditState(number - 1, trip));
-
+		if (number >= 0 && number < editTrip.length)
+			context.setState(new EditState(number, trip));
 		return true;
 	}
 
