@@ -1,6 +1,6 @@
 package de.htwg.seapal.model.impl;
 
-import java.util.Date;
+import java.util.Calendar;
 import java.util.UUID;
 
 import de.htwg.seapal.model.IWaypoint;
@@ -9,9 +9,9 @@ public class Waypoint implements IWaypoint {
 
 	private UUID id;
 	private String name;
-	private int latitude;
-	private int longitude;
-	private Date date;
+	private double latitude;
+	private double longitude;
+	private Calendar date;
 	private String note;
 	private int btm;
 	private int dtm;
@@ -156,32 +156,32 @@ public class Waypoint implements IWaypoint {
 	}
 
 	@Override
-	public Date getDate() {
+	public Calendar getDate() {
 		return date;
 	}
 
 	@Override
-	public void setDate(Date date) {
+	public void setDate(Calendar date) {
 		this.date = date;
 	}
 
 	@Override
-	public int getLatitude() {
+	public double getLatitude() {
 		return latitude;
 	}
 
 	@Override
-	public void setLatitude(int latitude) {
+	public void setLatitude(double latitude) {
 		this.latitude = latitude;
 	}
 
 	@Override
-	public int getLongitude() {
+	public double getLongitude() {
 		return longitude;
 	}
 
 	@Override
-	public void setLongitude(int longitude) {
+	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
 

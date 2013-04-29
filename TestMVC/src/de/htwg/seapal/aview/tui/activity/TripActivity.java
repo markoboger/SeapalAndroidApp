@@ -3,6 +3,7 @@ package de.htwg.seapal.aview.tui.activity;
 import java.util.UUID;
 
 import android.os.Bundle;
+import android.widget.TextView;
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.tui.states.trip.StartState;
 import de.htwg.seapal.controller.ITripController;
@@ -17,7 +18,8 @@ public class TripActivity extends AActivity implements IObserver {
 
 	@Override
 	public void setup() {
-		setContentView(R.layout.tui);
+		TextView header = (TextView) this.findViewById(R.id.header);
+		header.setText("Trip");
 		Bundle bundle = getIntent().getExtras();
 		boat = UUID.fromString(bundle.getString("boat").toString());
 		controller = new TripController(HashMapTripDatabase.getInstance());

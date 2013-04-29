@@ -1,8 +1,11 @@
 package de.htwg.seapal.controller;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
+
+import android.location.Location;
 
 import de.htwg.seapal.model.IWaypoint.ForeSail;
 import de.htwg.seapal.model.IWaypoint.MainSail;
@@ -202,13 +205,15 @@ public interface IWaypointController extends IObservable {
 	 */
 	void closeDB();
 
-	void setLongitude(UUID id, int longitude);
+	void setLongitude(UUID id, double longitude);
 
-	void setLatitude(UUID id, int latitude);
+	void setLatitude(UUID id, double latitude);
 
-	int getLongitude(UUID id);
+	double getLongitude(UUID id);
 
-	int getLatitude(UUID id);
+	double getLatitude(UUID id);
+
+	UUID newWaypoint(UUID trip, Location location, Calendar date);
 
 
 }

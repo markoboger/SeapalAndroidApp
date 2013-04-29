@@ -7,6 +7,7 @@ import android.content.Intent;
 import de.htwg.seapal.aview.tui.StateContext;
 import de.htwg.seapal.aview.tui.TuiState;
 import de.htwg.seapal.aview.tui.activity.TripActivity;
+import de.htwg.seapal.aview.tui.activity.TripRecordActivity;
 import de.htwg.seapal.aview.tui.activity.WaypointActivity;
 
 public class ShowState implements TuiState {
@@ -18,8 +19,10 @@ public class ShowState implements TuiState {
 
 	@Override
 	public String buildString(StateContext context) {
+
 		StringBuilder sb = new StringBuilder();
 		sb.append("q - quit\n");
+		sb.append("r - record trip\n");
 		sb.append("d - delete trip\n");
 		sb.append("e - edit trip\n");
 		sb.append("w - show waypoints\n");
@@ -35,6 +38,12 @@ public class ShowState implements TuiState {
 		case 'q':
 			context.setState(new StartState());
 			break;
+		case 'r':
+			Intent intentR = new Intent((Context) context,
+					TripRecordActivity.class);
+			intentR.putExtra("trip", trip.toString());
+			((Context) context).startActivity(intentR);
+			break;
 		case 'd':
 			context.setState(new StartState());
 			((TripActivity) context).getController().deleteTrip(trip);
@@ -43,10 +52,10 @@ public class ShowState implements TuiState {
 			context.setState(new EditSelectState(trip));
 			break;
 		case 'w':
-			Intent intent = new Intent((Context) context,
+			Intent intentW = new Intent((Context) context,
 					WaypointActivity.class);
-			intent.putExtra("trip", trip.toString());
-			((Context) context).startActivity(intent);
+			intentW.putExtra("trip", trip.toString());
+			((Context) context).startActivity(intentW);
 			break;
 		default:
 			return false;

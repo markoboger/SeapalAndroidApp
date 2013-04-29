@@ -1,9 +1,12 @@
 package de.htwg.seapal.controller.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
+import android.location.Location;
 import de.htwg.seapal.controller.IWaypointController;
 import de.htwg.seapal.database.IWaypointDatabase;
 import de.htwg.seapal.model.IWaypoint;
@@ -37,23 +40,20 @@ public class WaypointController extends Observable implements
 	}
 
 	@Override
-	public int getLatitude(UUID id) {
+	public double getLatitude(UUID id) {
 		IWaypoint waypoint = db.getWaypoint(id);
 		if (waypoint == null)
 			return -1;
 		return waypoint.getLatitude();
 	}
 
-
 	@Override
-	public int getLongitude(UUID id) {
+	public double getLongitude(UUID id) {
 		IWaypoint waypoint = db.getWaypoint(id);
 		if (waypoint == null)
 			return -1;
 		return waypoint.getLongitude();
 	}
-
-
 
 	@Override
 	public final String getNote(UUID id) {
@@ -149,7 +149,7 @@ public class WaypointController extends Observable implements
 	}
 
 	@Override
-	public void setLatitude(UUID id, int latitude) {
+	public void setLatitude(UUID id, double latitude) {
 		IWaypoint waypoint = db.getWaypoint(id);
 		if (waypoint == null)
 			return;
@@ -157,8 +157,9 @@ public class WaypointController extends Observable implements
 		db.saveWaypoint(waypoint);
 		notifyObservers();
 	}
+
 	@Override
-	public void setLongitude(UUID id, int longitude) {
+	public void setLongitude(UUID id, double longitude) {
 		IWaypoint waypoint = db.getWaypoint(id);
 		if (waypoint == null)
 			return;
@@ -260,6 +261,21 @@ public class WaypointController extends Observable implements
 		UUID newWaypoint = db.newWaypoint();
 		IWaypoint waypoint = db.getWaypoint(newWaypoint);
 		waypoint.setTrip(trip);
+		db.saveWaypoint(waypoint);
+		notifyObservers();
+		return newWaypoint;
+	}
+
+	@Override
+	public final UUID newWaypoint(UUID trip, Location location, Calendar date) {
+		UUID newWaypoint = db.newWaypoint();
+		IWaypoint waypoint = db.getWaypoint(newWaypoint);
+		waypoint.setTrip(trip);
+		waypoint.setLatitude(location.getLatitude());
+		waypoint.setLongitude(location.getLongitude());
+		waypoint.setDate(date);
+		SimpleDateFormat format = new SimpleDateFormat();
+		waypoint.setName(format.format(date.getTime()));
 		db.saveWaypoint(waypoint);
 		notifyObservers();
 		return newWaypoint;

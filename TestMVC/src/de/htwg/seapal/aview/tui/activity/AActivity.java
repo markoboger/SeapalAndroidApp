@@ -59,31 +59,6 @@ public abstract class AActivity extends Activity implements IObserver, StateCont
 		printTUI();
 	}
 
-	public String userInput(String message) {
-		final String[] userInput = new String[1];
-		AlertDialog.Builder alert = new AlertDialog.Builder(this);
-		alert.setTitle("Your Input");
-		alert.setMessage(message);
-
-		final EditText input = new EditText(this);
-		alert.setView(input);
-
-		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
-				userInput[0] = input.getText().toString();
-			}
-		});
-
-		alert.setNegativeButton("Cancel",
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int whichButton) {
-
-					}
-				});
-
-		alert.show();
-		return userInput[0];
-	}
 
 	@Override
 	public void update(Event e) {
@@ -92,6 +67,7 @@ public abstract class AActivity extends Activity implements IObserver, StateCont
 
 	protected void printTUI() {
 		out.setText(currenState.buildString(this));
+//		in.requestFocus();
 	}
 
 	protected OnKeyListener listener() {

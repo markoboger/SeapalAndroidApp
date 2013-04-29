@@ -8,6 +8,8 @@
         android:minSdkVersion="14"
         android:targetSdkVersion="15" />
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -27,6 +29,8 @@
         <activity android:name="de.htwg.seapal.aview.tui.activity.TripActivity" >
         </activity>
         <activity android:name="de.htwg.seapal.aview.tui.activity.WaypointActivity" >
+        </activity>
+        <activity android:name="de.htwg.seapal.aview.tui.activity.TripRecordActivity" >
         </activity>
     </application>
 
