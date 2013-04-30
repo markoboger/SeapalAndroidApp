@@ -1,9 +1,8 @@
 package de.htwg.seapal.aview.tui.activity;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
@@ -16,37 +15,39 @@ import de.htwg.seapal.aview.tui.TuiState;
 import de.htwg.seapal.observer.Event;
 import de.htwg.seapal.observer.IObserver;
 
-public abstract class AActivity extends Activity implements IObserver, StateContext {
+public abstract class AActivity extends Activity implements IObserver,
+		StateContext {
 
 	protected EditText in;
 	protected TextView out;
 	protected OnKeyListener onKeyListener;
 	protected TuiState currenState;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tui);
-		
+
 		setup();
-		
+
 		in = (EditText) findViewById(R.id.input);
 		out = (TextView) findViewById(R.id.output);
 		printTUI();
-		
+		out.setMovementMethod(ScrollingMovementMethod.getInstance());
+		out.setFocusable(false);
 		onKeyListener = listener();
 		in.setOnKeyListener(onKeyListener);
 	}
 
 	protected abstract void setup();
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-	
+
 	@Override
 	public void setState(TuiState newState) {
 		currenState = newState;
@@ -59,7 +60,6 @@ public abstract class AActivity extends Activity implements IObserver, StateCont
 		printTUI();
 	}
 
-
 	@Override
 	public void update(Event e) {
 		printTUI();
@@ -67,7 +67,7 @@ public abstract class AActivity extends Activity implements IObserver, StateCont
 
 	protected void printTUI() {
 		out.setText(currenState.buildString(this));
-//		in.requestFocus();
+		// in.requestFocus();
 	}
 
 	protected OnKeyListener listener() {
