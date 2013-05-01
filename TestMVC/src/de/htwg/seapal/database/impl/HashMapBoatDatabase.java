@@ -29,14 +29,14 @@ public class HashMapBoatDatabase implements IBoatDatabase {
 	@Override
 	public UUID newBoat() {
 		IBoat boat = new Boat();
-		UUID id = boat.getId();
+		UUID id = boat.getUUId();
 		db.put(id, boat);
 		return id;
 	}
 
 	@Override
 	public void saveBoat(IBoat boat) {
-		db.put(boat.getId(), boat);
+		db.put(boat.getUUId(), boat);
 	}
 
 	@Override

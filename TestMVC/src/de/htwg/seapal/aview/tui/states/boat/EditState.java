@@ -50,7 +50,7 @@ public class EditState implements TuiState {
 				controller.setYachtclub(boat, input);
 				break;
 			case 6:
-				controller.setOwner(boat, UUID.fromString(input));
+//				controller.setOwner(boat, UUID.fromString(input));
 				break;
 			case 7:
 				controller.setInsurance(boat, input);

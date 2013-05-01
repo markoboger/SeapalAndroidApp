@@ -1,5 +1,7 @@
 package de.htwg.seapal.aview.tui.activity;
 
+import com.couchbase.touchdb.router.TDURLStreamHandlerFactory;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -22,6 +24,10 @@ public abstract class AActivity extends Activity implements IObserver,
 	protected TextView out;
 	protected OnKeyListener onKeyListener;
 	protected TuiState currenState;
+	
+	{
+		TDURLStreamHandlerFactory.registerSelfIgnoreError();
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

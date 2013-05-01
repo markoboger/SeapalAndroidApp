@@ -4,8 +4,10 @@ import java.util.UUID;
 
 public interface IBoat {
 
-    UUID getId();
+    UUID getUUId();
 
+    String getId();
+    
     String getBoatName();
 
     void setBoatName(String boatName);
@@ -26,9 +28,9 @@ public interface IBoat {
 
     void setYachtclub(String yachtclub);
 
-    UUID getOwner(); // Person
-
-    void setOwner(UUID owner); // Person
+//    UUID getOwner(); // Person
+//
+//    void setOwner(UUID owner); // Person
 
     String getInsurance();
 

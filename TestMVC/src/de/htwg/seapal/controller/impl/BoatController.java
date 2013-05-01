@@ -108,23 +108,23 @@ public class BoatController extends Observable implements IBoatController {
 		notifyObservers();
 	}
 
-	@Override
-	public UUID getOwner(UUID id) {
-		IBoat boat = db.getBoat(id);
-		if (boat == null)
-			return null;
-		return boat.getOwner();
-	}
-
-	@Override
-	public void setOwner(UUID id, UUID Owner) {
-		IBoat boat = db.getBoat(id);
-		if (boat == null)
-			return;
-		boat.setOwner(Owner);
-		db.saveBoat(boat);
-		notifyObservers();
-	}
+//	@Override
+//	public UUID getOwner(UUID id) {
+//		IBoat boat = db.getBoat(id);
+//		if (boat == null)
+//			return null;
+//		return boat.getOwner();
+//	}
+//
+//	@Override
+//	public void setOwner(UUID id, UUID Owner) {
+//		IBoat boat = db.getBoat(id);
+//		if (boat == null)
+//			return;
+//		boat.setOwner(Owner);
+//		db.saveBoat(boat);
+//		notifyObservers();
+//	}
 
 	@Override
 	public String getInsurance(UUID id) {
@@ -455,8 +455,7 @@ public class BoatController extends Observable implements IBoatController {
 		return "ID = " + id + " \n" + "BoatName = " + getBoatName(id) + "\n"
 				+ "RegisterNr = " + getRegisterNr(id) + "\n" + "SailSign = "
 				+ getSailSign(id) + "\n" + "HomePort = " + getHomePort(id)
-				+ "\n" + "Yachtclub = " + getYachtclub(id) + "\n" + "Owner = "
-				+ getOwner(id) + "\n" + "Insurance = " + getInsurance(id)
+				+ "\n" + "Yachtclub = " + getYachtclub(id) + "\n" + "\n" + "Insurance = " + getInsurance(id)
 				+ "\n" + "CallSign = " + getCallSign(id) + "\n" + "Type = "
 				+ getType(id) + "\n" + "Constructor = " + getConstructor(id)
 				+ "\n" + "Length = " + getLength(id) + "\n" + "Width = "
@@ -494,7 +493,7 @@ public class BoatController extends Observable implements IBoatController {
 		List<IBoat> query = db.getBoats();
 		List<UUID> list = new ArrayList<UUID>();
 		for (IBoat boat : query) {
-			list.add(boat.getId());
+			list.add(boat.getUUId());
 		}
 		return list;
 	}

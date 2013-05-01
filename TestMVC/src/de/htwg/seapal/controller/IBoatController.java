@@ -28,9 +28,9 @@ public interface IBoatController extends IObservable {
 
 	void setYachtclub(UUID id, String yachtclub);
 
-	UUID getOwner(UUID id);
-
-	void setOwner(UUID id, UUID Owner);
+//	UUID getOwner(UUID id);
+//
+//	void setOwner(UUID id, UUID Owner);
 
 	String getInsurance(UUID id);
 
