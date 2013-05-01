@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import de.htwg.seapal.aview.tui.StateContext;
 import de.htwg.seapal.aview.tui.TuiState;
-import de.htwg.seapal.aview.tui.activity.TripActivity;
 import de.htwg.seapal.aview.tui.activity.TripRecordActivity;
 import de.htwg.seapal.controller.impl.WaypointController;
 

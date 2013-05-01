@@ -31,12 +31,12 @@ public class BoatDatabase implements IBoatDatabase {
 
 	@Override
 	public UUID newBoat() {
-		return newBoat.getId();
+		return newBoat.getUUId();
 	}
 
 	private UUID newBoatP() {
 		IBoat boat = new Boat();
-		UUID id = boat.getId();
+		UUID id = boat.getUUId();
 		db.put(id, boat);
 		return id;
 	}
