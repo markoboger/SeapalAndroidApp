@@ -8,12 +8,12 @@ import android.location.LocationListener;
 import android.os.Bundle;
 import de.htwg.seapal.controller.IWaypointController;
 
-public class MyLocationListener implements LocationListener {
+public class TrackLocationListener implements LocationListener {
 
 	private UUID trip;
 	private IWaypointController controller;
 
-	public MyLocationListener(UUID trip, IWaypointController controller) {
+	public TrackLocationListener(UUID trip, IWaypointController controller) {
 		this.trip = trip;
 		this.controller = controller;
 	}
