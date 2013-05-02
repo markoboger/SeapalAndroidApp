@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import android.content.Context;
 import android.content.Intent;
+import android.widget.Toast;
 import de.htwg.seapal.aview.tui.StateContext;
 import de.htwg.seapal.aview.tui.TuiState;
 import de.htwg.seapal.aview.tui.activity.TripActivity;
@@ -58,6 +59,8 @@ public class ShowState implements TuiState {
 			((Context) context).startActivity(intentW);
 			break;
 		default:
+			Toast.makeText((TripActivity) context, "Unkown Option",
+					Toast.LENGTH_SHORT).show();
 			return false;
 		}
 

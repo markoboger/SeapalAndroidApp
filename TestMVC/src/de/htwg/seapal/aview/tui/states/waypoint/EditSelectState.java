@@ -2,8 +2,10 @@ package de.htwg.seapal.aview.tui.states.waypoint;
 
 import java.util.UUID;
 
+import android.widget.Toast;
 import de.htwg.seapal.aview.tui.StateContext;
 import de.htwg.seapal.aview.tui.TuiState;
+import de.htwg.seapal.aview.tui.activity.WaypointActivity;
 
 public class EditSelectState implements TuiState {
 
@@ -37,11 +39,16 @@ public class EditSelectState implements TuiState {
 		} catch (NumberFormatException e) {
 			if (input.equals("q"))
 				context.setState(new ShowState(waypoint));
+			else
+				Toast.makeText((WaypointActivity) context, "Unkown Option",
+						Toast.LENGTH_SHORT).show();
 			return false;
 		}
 		if (number >= 0 && number < editWaypoint.length)
 			context.setState(new EditState(number, waypoint));
-		// TODO Fehlerbehandlung (Toast)
+		else
+			Toast.makeText((WaypointActivity) context, "Unkown Option",
+					Toast.LENGTH_SHORT).show();
 		return true;
 	}
 

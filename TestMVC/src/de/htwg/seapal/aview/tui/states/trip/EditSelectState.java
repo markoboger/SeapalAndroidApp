@@ -2,8 +2,10 @@ package de.htwg.seapal.aview.tui.states.trip;
 
 import java.util.UUID;
 
+import android.widget.Toast;
 import de.htwg.seapal.aview.tui.StateContext;
 import de.htwg.seapal.aview.tui.TuiState;
+import de.htwg.seapal.aview.tui.activity.TripActivity;
 
 public class EditSelectState implements TuiState {
 
@@ -37,10 +39,16 @@ public class EditSelectState implements TuiState {
 		} catch (NumberFormatException e) {
 			if (input.equals("q"))
 				context.setState(new ShowState(trip));
+			else
+				Toast.makeText((TripActivity) context, "Unkown Option",
+						Toast.LENGTH_SHORT).show();
 			return false;
 		}
 		if (number >= 0 && number < editTrip.length)
 			context.setState(new EditState(number, trip));
+		else
+			Toast.makeText((TripActivity) context, "Unkown Option",
+					Toast.LENGTH_SHORT).show();
 		return true;
 	}
 

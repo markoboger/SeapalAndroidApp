@@ -2,6 +2,7 @@ package de.htwg.seapal.aview.tui.states.trip;
 
 import java.util.UUID;
 
+import android.widget.Toast;
 import de.htwg.seapal.aview.tui.StateContext;
 import de.htwg.seapal.aview.tui.TuiState;
 import de.htwg.seapal.aview.tui.activity.TripActivity;
@@ -57,9 +58,13 @@ public class EditState implements TuiState {
 				controller.setNotes(trip, input);
 				break;
 			default:
+				Toast.makeText((TripActivity) context, "Unkown Option",
+						Toast.LENGTH_SHORT).show();
 				return false;
 			}
 		} catch (NumberFormatException e) {
+			Toast.makeText((TripActivity) context, "Unkown Option",
+					Toast.LENGTH_SHORT).show();
 			return false;
 		}
 		return true;

@@ -2,14 +2,12 @@ package de.htwg.seapal.aview.tui.states.boat;
 
 import java.util.UUID;
 
+import android.content.Intent;
+import android.widget.Toast;
 import de.htwg.seapal.aview.tui.StateContext;
 import de.htwg.seapal.aview.tui.TuiState;
 import de.htwg.seapal.aview.tui.activity.BoatActivity;
 import de.htwg.seapal.aview.tui.activity.TripActivity;
-
-import android.content.Context;
-import android.content.Intent;
-
 
 public class ShowState implements TuiState {
 
@@ -33,27 +31,29 @@ public class ShowState implements TuiState {
 
 	@Override
 	public boolean process(StateContext context, String input) {
-
+		BoatActivity activity = (BoatActivity) context;
 		switch (input.charAt(0)) {
 		case 'q':
 			context.setState(new StartState());
 			break;
 		case 'd':
 			context.setState(new StartState());
-			((BoatActivity)context).getController().deleteBoat(boat);
+			activity.getController().deleteBoat(boat);
 			break;
 		case 'e':
-			context.setState(new EditSelectState(boat)); 
+			context.setState(new EditSelectState(boat));
 			break;
 		case 't':
-			Intent intent = new Intent((Context) context, TripActivity.class);
+			Intent intent = new Intent(activity, TripActivity.class);
 			intent.putExtra("boat", boat.toString());
-			((Context) context).startActivity(intent);
+			activity.startActivity(intent);
 			break;
 		default:
+			Toast.makeText(activity, "Unkown Option", Toast.LENGTH_SHORT)
+					.show();
 			return false;
 		}
-		
+
 		return true;
 	}
 
