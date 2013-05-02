@@ -3,6 +3,7 @@ package de.htwg.seapal.aview.tui.states.waypoint;
 import java.util.List;
 import java.util.UUID;
 
+import android.widget.Toast;
 import de.htwg.seapal.aview.tui.StateContext;
 import de.htwg.seapal.aview.tui.TuiState;
 import de.htwg.seapal.aview.tui.activity.WaypointActivity;
@@ -19,6 +20,7 @@ public class StartState implements TuiState {
 				.getController();
 		trip = ((WaypointActivity) context).getTrip();
 		StringBuilder sb = new StringBuilder();
+		sb.append("r \t- Refresh\n");
 		sb.append("<X> \t- Show Waypoint\n");
 		sb.append("---------------------------------------\n");
 		waypoints = controller.getWaypoints(trip);
@@ -36,12 +38,17 @@ public class StartState implements TuiState {
 		try {
 			number = Integer.valueOf(input) - 1;
 		} catch (NumberFormatException e) {
-			// if (input.equals("n"))
-			// context.setState(new NewState());
+			if (input.charAt(0) == 'r')
+				return true;
+			Toast.makeText((WaypointActivity) context, "Unkown Option",
+					Toast.LENGTH_SHORT).show();
 			return false;
 		}
 		if (number < waypoints.size() && number >= 0)
 			context.setState(new ShowState(waypoints.get(number)));
+		else
+			Toast.makeText((WaypointActivity) context, "Unkown Option",
+					Toast.LENGTH_SHORT).show();
 		return false;
 	}
 }

@@ -19,6 +19,7 @@ public class StartState implements TuiState {
 		boats = controller.getBoats();
 		StringBuilder sb = new StringBuilder();
 		sb.append("q \t- Quit\n");
+		sb.append("r \t- Refresh\n");
 		sb.append("n \t- New Boat\n");
 		sb.append("<X> \t- Show Boat\n");
 		sb.append("---------------------------------------\n");
@@ -40,6 +41,8 @@ public class StartState implements TuiState {
 		case 'n':
 			context.setState(new NewState());
 			break;
+		case 'r':
+			break;
 		default:
 			Integer number;
 			try {
@@ -51,6 +54,9 @@ public class StartState implements TuiState {
 			}
 			if (number < boats.size() && number >= 0)
 				context.setState(new ShowState(boats.get(number)));
+			else
+				Toast.makeText(activity, "Unkown Option", Toast.LENGTH_SHORT)
+						.show();
 		}
 		return false;
 	}

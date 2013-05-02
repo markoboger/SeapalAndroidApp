@@ -2,6 +2,7 @@ package de.htwg.seapal.aview.tui.states.waypoint;
 
 import java.util.UUID;
 
+import android.widget.Toast;
 import de.htwg.seapal.aview.tui.StateContext;
 import de.htwg.seapal.aview.tui.TuiState;
 import de.htwg.seapal.aview.tui.activity.WaypointActivity;
@@ -31,7 +32,8 @@ public class EditState implements TuiState {
 			context.setState(new EditSelectState(waypoint));
 			return false;
 		}
-		IWaypointController controller = ((WaypointActivity) context).getController();
+		IWaypointController controller = ((WaypointActivity) context)
+				.getController();
 		context.setState(new ShowState(waypoint));
 		try {
 			switch (position + 1) {
@@ -51,9 +53,13 @@ public class EditState implements TuiState {
 				controller.setMainsail(waypoint, MainSail.NONE);
 				break;
 			default:
+				Toast.makeText((WaypointActivity) context, "Unkown Option",
+						Toast.LENGTH_SHORT).show();
 				return false;
 			}
 		} catch (NumberFormatException e) {
+			Toast.makeText((WaypointActivity) context, "Unkown Option",
+					Toast.LENGTH_SHORT).show();
 			return false;
 		}
 		return true;

@@ -2,8 +2,10 @@ package de.htwg.seapal.aview.tui.states.boat;
 
 import java.util.UUID;
 
+import android.widget.Toast;
 import de.htwg.seapal.aview.tui.StateContext;
 import de.htwg.seapal.aview.tui.TuiState;
+import de.htwg.seapal.aview.tui.activity.BoatActivity;
 
 public class EditSelectState implements TuiState {
 
@@ -41,10 +43,16 @@ public class EditSelectState implements TuiState {
 		} catch (NumberFormatException e) {
 			if (input.equals("q"))
 				context.setState(new ShowState(boat));
+			else
+				Toast.makeText((BoatActivity) context, "Unkown Option",
+						Toast.LENGTH_SHORT).show();
 			return false;
 		}
 		if (number >= 0 && number < editBoat.length)
 			context.setState(new EditState(number, boat));
+		else
+			Toast.makeText((BoatActivity) context, "Unkown Option",
+					Toast.LENGTH_SHORT).show();
 		return true;
 	}
 

@@ -2,11 +2,11 @@ package de.htwg.seapal.aview.tui.states.boat;
 
 import java.util.UUID;
 
+import android.widget.Toast;
 import de.htwg.seapal.aview.tui.StateContext;
 import de.htwg.seapal.aview.tui.TuiState;
 import de.htwg.seapal.aview.tui.activity.BoatActivity;
 import de.htwg.seapal.controller.IBoatController;
-
 
 public class EditState implements TuiState {
 
@@ -32,13 +32,13 @@ public class EditState implements TuiState {
 		}
 		IBoatController controller = ((BoatActivity) context).getController();
 		context.setState(new ShowState(boat));
-		try{
+		try {
 			switch (position + 1) {
 			case 1:
 				controller.setBoatName(boat, input);
 				break;
 			case 2:
-				controller.setRegisterNr(boat,input);
+				controller.setRegisterNr(boat, input);
 				break;
 			case 3:
 				controller.setSailSign(boat, input);
@@ -50,7 +50,7 @@ public class EditState implements TuiState {
 				controller.setYachtclub(boat, input);
 				break;
 			case 6:
-//				controller.setOwner(boat, UUID.fromString(input));
+				// controller.setOwner(boat, UUID.fromString(input));
 				break;
 			case 7:
 				controller.setInsurance(boat, input);
@@ -104,10 +104,14 @@ public class EditState implements TuiState {
 				controller.setSpiSize(boat, Integer.valueOf(input));
 				break;
 			default:
+				Toast.makeText((BoatActivity) context, "Unkown Option",
+						Toast.LENGTH_SHORT).show();
 				return false;
 			}
-		
-		} catch(NumberFormatException e) {
+
+		} catch (NumberFormatException e) {
+			Toast.makeText((BoatActivity) context, "Unkown Option",
+					Toast.LENGTH_SHORT).show();
 			return false;
 		}
 		return true;
