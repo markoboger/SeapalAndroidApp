@@ -1,7 +1,5 @@
 package de.htwg.seapal.aview.tui.activity;
 
-import com.couchbase.touchdb.router.TDURLStreamHandlerFactory;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -11,6 +9,9 @@ import android.view.View;
 import android.view.View.OnKeyListener;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.couchbase.touchdb.router.TDURLStreamHandlerFactory;
+
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.tui.StateContext;
 import de.htwg.seapal.aview.tui.TuiState;
@@ -24,7 +25,7 @@ public abstract class AActivity extends Activity implements IObserver,
 	protected TextView out;
 	protected OnKeyListener onKeyListener;
 	protected TuiState currenState;
-	
+
 	{
 		TDURLStreamHandlerFactory.registerSelfIgnoreError();
 	}
@@ -83,8 +84,9 @@ public abstract class AActivity extends Activity implements IObserver,
 				boolean handled = false;
 				if (event.getAction() == KeyEvent.ACTION_DOWN
 						&& (keyCode == KeyEvent.KEYCODE_ENTER)) {
+					if (!in.getText().toString().equals(""))
+						processInputLine();
 
-					processInputLine();
 					handled = true;
 				}
 				return handled;
