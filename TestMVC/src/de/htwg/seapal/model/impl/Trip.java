@@ -1,7 +1,6 @@
 package de.htwg.seapal.model.impl;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -9,24 +8,24 @@ import de.htwg.seapal.model.ITrip;
 
 public class Trip implements ITrip {
 
-	private UUID id;
+	private String id; // UUID
 
 	private String name;
 	private String startLocation;
 	private String endLocation;
-	private UUID skipper; // Person
-	private List<UUID> crew; // Person
-	private Date startTime;
-	private Date endTime;
-	private long duration;
+	private String skipper; // UUID Person
+	private List<String> crew; // UUID Person ?/ or just Name TODO
+	private long startTime; // unix timestamp
+	private long endTime; // unix timestamp
+	private long duration; // TODO do we need this ? could be calculated
 	private int motor;
 	private double fuel;
 	private String notes;
-	private UUID boat;
+	private String boat; // UUID Boat
 
 	public Trip() {
-		this.id = UUID.randomUUID();
-		this.crew = new ArrayList<UUID>();
+		this.id = UUID.randomUUID().toString();
+		this.crew = new ArrayList<String>();
 	}
 
 	public String getName() {
@@ -59,41 +58,55 @@ public class Trip implements ITrip {
 
 	@Override
 	public void setSkipper(UUID skipper) {
+		this.skipper = skipper.toString();
+	}
+
+	@Override
+	public void setSkipper(String skipper) {
 		this.skipper = skipper;
 	}
 
 	@Override
 	public UUID getSkipper() {
+		try {
+			return UUID.fromString(skipper);
+		} catch (NullPointerException e) {
+			return null;
+		}
+	}
+
+	@Override
+	public String getSkipperString() {
 		return skipper;
 	}
 
 	@Override
-	public void addCrewMember(UUID crewMember) {
+	public void addCrewMember(String crewMember) {
 		this.crew.add(crewMember);
 	}
 
 	@Override
-	public List<UUID> getCrewMembers() {
+	public List<String> getCrewMembers() {
 		return crew;
 	}
 
 	@Override
-	public void setStartTime(Date start) {
+	public void setStartTime(long start) {
 		this.startTime = start;
 	}
 
 	@Override
-	public Date getStartTime() {
+	public long getStartTime() {
 		return startTime;
 	}
 
 	@Override
-	public void setEndTime(Date end) {
+	public void setEndTime(long end) {
 		this.endTime = end;
 	}
 
 	@Override
-	public Date getEndTime() {
+	public long getEndTime() {
 		return endTime;
 	}
 
@@ -138,18 +151,23 @@ public class Trip implements ITrip {
 	}
 
 	@Override
-	public UUID getId() {
+	public UUID getUUId() {
+		return UUID.fromString(id);
+	}
+
+	@Override
+	public String getId() {
 		return id;
 	}
 
 	@Override
 	public UUID getBoat() {
-		return boat;
+		return UUID.fromString(boat);
 	}
 
 	@Override
 	public void setBoat(UUID boat) {
-		this.boat = boat;
+		this.boat = boat.toString();
 	}
 
 	@Override

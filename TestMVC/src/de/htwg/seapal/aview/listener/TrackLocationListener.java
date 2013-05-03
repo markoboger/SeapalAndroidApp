@@ -1,6 +1,5 @@
 package de.htwg.seapal.aview.listener;
 
-import java.util.Calendar;
 import java.util.UUID;
 
 import android.location.Location;
@@ -20,8 +19,8 @@ public class TrackLocationListener implements LocationListener {
 
 	@Override
 	public void onLocationChanged(Location location) {
-		Calendar calendar = Calendar.getInstance();
-		controller.newWaypoint(trip, location, calendar);
+		long date = System.currentTimeMillis() / 1000L;
+		controller.newWaypoint(trip, location, date);
 	}
 
 	@Override

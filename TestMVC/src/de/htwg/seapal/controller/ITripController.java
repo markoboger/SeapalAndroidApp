@@ -1,11 +1,9 @@
 package de.htwg.seapal.controller;
 
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import de.htwg.seapal.observer.IObservable;
-
 
 public interface ITripController extends IObservable {
 
@@ -25,17 +23,17 @@ public interface ITripController extends IObservable {
 
 	void setSkipper(UUID id, UUID skipper);
 
-	List<UUID> getCrewMembers(UUID id);
+	List<String> getCrewMembers(UUID id);
 
-	void addCrewMember(UUID id, UUID crewMember);
+	void addCrewMember(UUID id, String crewMember);
 
-	Date getStartTime(UUID id);
+	long getStartTime(UUID id);
 
-	void setStartTime(UUID id, Date start);
+	void setStartTime(UUID id, long start);
 
-	Date getEndTime(UUID id);
+	long getEndTime(UUID id);
 
-	void setEndTime(UUID id, Date end);
+	void setEndTime(UUID id, long end);
 
 	long getDuration(UUID id);
 

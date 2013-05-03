@@ -4,103 +4,107 @@ import java.util.UUID;
 
 public interface IBoat {
 
-    UUID getUUId();
+	UUID getUUId();
 
-    String getId();
-    
-    String getBoatName();
+	String getId();
 
-    void setBoatName(String boatName);
+	String getBoatName();
 
-    String getRegisterNr();
+	void setBoatName(String boatName);
 
-    void setRegisterNr(String registerNr);
+	String getRegisterNr();
 
-    String getSailSign();
+	void setRegisterNr(String registerNr);
 
-    void setSailSign(String sailSign);
+	String getSailSign();
 
-    String getHomePort();
+	void setSailSign(String sailSign);
 
-    void setHomePort(String homePort);
+	String getHomePort();
 
-    String getYachtclub();
+	void setHomePort(String homePort);
 
-    void setYachtclub(String yachtclub);
+	String getYachtclub();
 
-//    UUID getOwner(); // Person
-//
-//    void setOwner(UUID owner); // Person
+	void setYachtclub(String yachtclub);
 
-    String getInsurance();
+	// UUID getOwner(); // Person
+	//
+	// void setOwner(UUID owner); // Person
 
-    void setInsurance(String insurance);
+	String getInsurance();
 
-    String getCallSign();
+	void setInsurance(String insurance);
 
-    void setCallSign(String callSign);
+	String getCallSign();
 
-    String getType();
+	void setCallSign(String callSign);
 
-    void setType(String type);
+	String getType();
 
-    String getConstructor();
+	void setType(String type);
 
-    void setConstructor(String constructor);
+	String getConstructor();
 
-    double getLength();
+	void setConstructor(String constructor);
 
-    void setLength(double length);
+	double getLength();
 
-    double getWidth();
+	void setLength(double length);
 
-    void setWidth(double width);
+	double getWidth();
 
-    double getDraft();
+	void setWidth(double width);
 
-    void setDraft(double draft);
+	double getDraft();
 
-    double getMastHeight();
+	void setDraft(double draft);
 
-    void setMastHeight(double mastHeight);
+	double getMastHeight();
 
-    double getDisplacement();
+	void setMastHeight(double mastHeight);
 
-    void setDisplacement(double displacement);
+	double getDisplacement();
 
-    String getRigging();
+	void setDisplacement(double displacement);
 
-    void setRigging(String rigging);
+	String getRigging();
 
-    int getYearOfConstruction();
+	void setRigging(String rigging);
 
-    void setYearOfConstruction(int yearOfConstruction);
+	int getYearOfConstruction();
 
-    String getMotor();
+	void setYearOfConstruction(int yearOfConstruction);
 
-    void setMotor(String motor);
+	String getMotor();
 
-    double getTankSize();
+	void setMotor(String motor);
 
-    void setTankSize(double tankSize);
+	double getTankSize();
 
-    double getWasteWaterTankSize();
+	void setTankSize(double tankSize);
 
-    void setWasteWaterTankSize(double wasteWaterTankSize);
+	double getWasteWaterTankSize();
 
-    double getFreshWaterTankSize();
+	void setWasteWaterTankSize(double wasteWaterTankSize);
 
-    void setFreshWaterTankSize(double freshWaterTankSize);
+	double getFreshWaterTankSize();
 
-    double getMainSailSize();
+	void setFreshWaterTankSize(double freshWaterTankSize);
 
-    void setMainSailSize(double mainSailSize);
+	double getMainSailSize();
 
-    double getGenuaSize();
+	void setMainSailSize(double mainSailSize);
 
-    void setGenuaSize(double genuaSize);
+	double getGenuaSize();
 
-    double getSpiSize();
+	void setGenuaSize(double genuaSize);
 
-    void setSpiSize(double spiSize);
+	double getSpiSize();
+
+	void setSpiSize(double spiSize);
+
+	void setUserId(String userId);
+
+	String getUserId();
 }

@@ -1,7 +1,6 @@
 package de.htwg.seapal.controller.impl;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -97,7 +96,7 @@ public class TripController extends Observable implements ITripController {
 	}
 
 	@Override
-	public void addCrewMember(UUID id, UUID crewMember) {
+	public void addCrewMember(UUID id, String crewMember) {
 		ITrip trip = db.getTrip(id);
 		if (trip == null)
 			return;
@@ -107,7 +106,7 @@ public class TripController extends Observable implements ITripController {
 	}
 
 	@Override
-	public List<UUID> getCrewMembers(UUID id) {
+	public List<String> getCrewMembers(UUID id) {
 		ITrip trip = db.getTrip(id);
 		if (trip == null)
 			return null;
@@ -115,7 +114,7 @@ public class TripController extends Observable implements ITripController {
 	}
 
 	@Override
-	public void setStartTime(UUID id, Date start) {
+	public void setStartTime(UUID id, long start) {
 		ITrip trip = db.getTrip(id);
 		if (trip == null)
 			return;
@@ -125,15 +124,15 @@ public class TripController extends Observable implements ITripController {
 	}
 
 	@Override
-	public Date getStartTime(UUID id) {
+	public long getStartTime(UUID id) {
 		ITrip trip = db.getTrip(id);
 		if (trip == null)
-			return null;
+			return -1;
 		return trip.getStartTime();
 	}
 
 	@Override
-	public void setEndTime(UUID id, Date end) {
+	public void setEndTime(UUID id, long end) {
 		ITrip trip = db.getTrip(id);
 		if (trip == null)
 			return;
@@ -143,10 +142,10 @@ public class TripController extends Observable implements ITripController {
 	}
 
 	@Override
-	public Date getEndTime(UUID id) {
+	public long getEndTime(UUID id) {
 		ITrip trip = db.getTrip(id);
 		if (trip == null)
-			return null;
+			return -1;
 		return trip.getEndTime();
 	}
 
@@ -258,10 +257,10 @@ public class TripController extends Observable implements ITripController {
 
 	@Override
 	public List<UUID> getTrips() {
-		List<ITrip> query = db.getTrips();
+		List<ITrip> trips = db.getTrips();
 		List<UUID> list = new ArrayList<UUID>();
-		for (ITrip boat : query) {
-			list.add(boat.getId());
+		for (ITrip trip : trips) {
+			list.add(trip.getUUId());
 		}
 		return list;
 	}
@@ -272,7 +271,7 @@ public class TripController extends Observable implements ITripController {
 		List<UUID> list = new ArrayList<UUID>();
 		for (ITrip trip : query) {
 			if (trip.getBoat().equals(boat))
-				list.add(trip.getId());
+				list.add(trip.getUUId());
 		}
 		return list;
 	}
