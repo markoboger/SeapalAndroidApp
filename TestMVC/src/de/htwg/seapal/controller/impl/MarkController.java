@@ -230,11 +230,11 @@ public class MarkController extends Observable implements IMarkController {
 
 	@Override
 	public String getString(UUID id) {
-		return "ID = \t" + id + "\n Name = \t" + getName(id)
-				+ "\n Latitude = \t" + getLatitude(id) + "\n Longitude = \t"
-				+ getLongitude(id) + "\n COG = \t" + getCOG(id) + "\n SOG = \t"
-				+ getSOG(id) + "\n BTM = \t" + getBTM(id) + "\n DTM = \t"
-				+ getDTM(id) + "\n Date = \t" + getDate(id) + "\n Notes = \t"
+		return "ID = \t" + id + "\nName = \t" + getName(id)
+				+ "\nLatitude = \t" + getLatitude(id) + "\nLongitude = \t"
+				+ getLongitude(id) + "\nCOG = \t" + getCOG(id) + "\nSOG = \t"
+				+ getSOG(id) + "\nBTM = \t" + getBTM(id) + "\nDTM = \t"
+				+ getDTM(id) + "\nDate = \t" + getDate(id) + "\nNotes = \t"
 				+ getNote(id);
 	}
 }

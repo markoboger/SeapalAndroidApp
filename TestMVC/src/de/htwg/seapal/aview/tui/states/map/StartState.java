@@ -6,6 +6,7 @@ import android.widget.Toast;
 import de.htwg.seapal.aview.tui.StateContext;
 import de.htwg.seapal.aview.tui.TuiState;
 import de.htwg.seapal.aview.tui.activity.BoatActivity;
+import de.htwg.seapal.aview.tui.activity.MarkActivity;
 
 public class StartState implements TuiState {
 
@@ -21,6 +22,10 @@ public class StartState implements TuiState {
 		switch (input.charAt(0)) {
 		case 'l':
 			intent = new Intent((Context) context, BoatActivity.class);
+			((Context) context).startActivity(intent);
+			break;
+		case 'm':
+			intent = new Intent((Context) context, MarkActivity.class);
 			((Context) context).startActivity(intent);
 			break;
 		default:
