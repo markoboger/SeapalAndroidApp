@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+import android.text.format.DateFormat;
 import de.htwg.seapal.controller.IMarkController;
 import de.htwg.seapal.database.IMarkDatabase;
 import de.htwg.seapal.model.IMark;
@@ -162,15 +163,22 @@ public class MarkController extends Observable implements IMarkController {
 	}
 
 	@Override
-	public long getDate(UUID id) {
-		// TODO Auto-generated method stub
-		return 0;
+	public String getDate(UUID id) {
+		IMark mark = db.getMark(id);
+		if (mark == null)
+			return null;
+		long currentMillis = mark.getDate();
+		return DateFormat.format("yyyy/MM/dd hh:mm", currentMillis).toString();
 	}
 
 	@Override
 	public void setDate(UUID id, long date) {
-		// TODO Auto-generated method stub
-
+		IMark mark = db.getMark(id);
+		if (mark == null)
+			return;
+		mark.setDate(date);
+		db.saveMark(mark);
+		notifyObservers();
 	}
 
 	@Override
@@ -224,17 +232,27 @@ public class MarkController extends Observable implements IMarkController {
 	@Override
 	public UUID newMark() {
 		UUID newMark = db.newMark();
+		setDate(newMark, System.currentTimeMillis());
+		setIsRouteMark(newMark, false);
+		notifyObservers();
+		return newMark;
+	}
+
+	@Override
+	public UUID newRouteMark() {
+		UUID newMark = db.newMark();
+		setDate(newMark, System.currentTimeMillis());
+		setIsRouteMark(newMark, true);
 		notifyObservers();
 		return newMark;
 	}
 
 	@Override
 	public String getString(UUID id) {
-		return "ID = \t" + id + "\nName = \t" + getName(id)
-				+ "\nLatitude = \t" + getLatitude(id) + "\nLongitude = \t"
-				+ getLongitude(id) + "\nCOG = \t" + getCOG(id) + "\nSOG = \t"
-				+ getSOG(id) + "\nBTM = \t" + getBTM(id) + "\nDTM = \t"
-				+ getDTM(id) + "\nDate = \t" + getDate(id) + "\nNotes = \t"
-				+ getNote(id);
+		return "ID = \t" + id + "\nName = \t" + getName(id) + "\nLatitude = \t"
+				+ getLatitude(id) + "\nLongitude = \t" + getLongitude(id)
+				+ "\nCOG = \t" + getCOG(id) + "\nSOG = \t" + getSOG(id)
+				+ "\nBTM = \t" + getBTM(id) + "\nDTM = \t" + getDTM(id)
+				+ "\nDate = \t" + getDate(id) + "\nNotes = \t" + getNote(id);
 	}
 }

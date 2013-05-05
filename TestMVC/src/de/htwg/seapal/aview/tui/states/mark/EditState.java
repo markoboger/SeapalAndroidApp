@@ -45,6 +45,7 @@ public class EditState implements TuiState {
 				break;
 			case 4:
 				controller.setNote(mark, input);
+				break;
 			default:
 				Toast.makeText((MarkActivity) context, "Unkown Option",
 						Toast.LENGTH_SHORT).show();

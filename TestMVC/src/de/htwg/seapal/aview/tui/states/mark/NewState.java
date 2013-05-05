@@ -23,7 +23,7 @@ public class NewState implements TuiState {
 		}
 		UUID mark = controller.newMark();
 		controller.setName(mark, input);
-		controller.setIsRouteMark(mark, false);
+//		controller.setIsRouteMark(mark, false);
 		context.setState(new ShowState(mark));
 		return true;
 	}

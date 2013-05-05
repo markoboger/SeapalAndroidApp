@@ -39,7 +39,7 @@ public interface IMarkController extends IObservable {
 
 	void setSOG(UUID id, int sog);
 
-	long getDate(UUID id);
+	String getDate(UUID id);
 
 	void setDate(UUID id, long date);
 
@@ -54,6 +54,8 @@ public interface IMarkController extends IObservable {
 	List<UUID> getMarks();
 
 	UUID getMark(UUID id);
+	
+	UUID newRouteMark();
 
 	UUID newMark();
 
