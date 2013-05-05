@@ -11,7 +11,7 @@ public class NewState implements TuiState {
 
 	@Override
 	public String buildString(StateContext context) {
-		return "q - quit \n\n Enter BoatName";
+		return "q - quit \n\n Enter TripName";
 	}
 
 	@Override

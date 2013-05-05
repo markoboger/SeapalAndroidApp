@@ -35,6 +35,8 @@
         </activity>
         <activity android:name="de.htwg.seapal.aview.tui.activity.TripRecordActivity" >
         </activity>
+        <activity android:name="de.htwg.seapal.aview.tui.activity.MarkActivity" >
+        </activity>
     </application>
 
 </manifest>
