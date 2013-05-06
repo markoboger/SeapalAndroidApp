@@ -104,7 +104,7 @@ public interface IBoat {
 
 	void setSpiSize(double spiSize);
 
-	void setUserId(String userId);
+	void setUser(String userId);
 
-	String getUserId();
+	String getUser();
 }

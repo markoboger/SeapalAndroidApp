@@ -6,7 +6,9 @@ import de.htwg.seapal.model.IMark;
 
 public class Mark implements IMark {
 
-	private String id;
+	private String id; // UUID
+	private String user; // UUID user
+
 	private String name;
 	private double latitude;
 	private double longitude;
@@ -130,6 +132,16 @@ public class Mark implements IMark {
 	@Override
 	public void setIsRouteMark(boolean isRouteMark) {
 		this.isRouteMark = isRouteMark;
+	}
+
+	@Override
+	public String getUser() {
+		return user;
+	}
+
+	@Override
+	public void setUser(String user) {
+		this.user = user;
 	}
 
 	// @Override

@@ -20,7 +20,7 @@ public class Boat extends CouchDbDocument implements IBoat {
 	}
 
 	private String id; // UUID
-	private String userId; // UUID User
+	private String user; // UUID User
 
 	private String boatName;
 	private String registerNr;
@@ -49,7 +49,7 @@ public class Boat extends CouchDbDocument implements IBoat {
 
 	public Boat(IBoat boat) {
 		this.id = boat.getId();
-		this.userId = boat.getUserId();
+		this.user = boat.getUser();
 		this.boatName = boat.getBoatName();
 		this.registerNr = boat.getRegisterNr();
 		this.sailSign = boat.getSailSign();
@@ -333,13 +333,13 @@ public class Boat extends CouchDbDocument implements IBoat {
 	}
 
 	@Override
-	public String getUserId() {
-		return userId;
+	public String getUser() {
+		return user;
 	}
 
 	@Override
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setUser(String userId) {
+		this.user = userId;
 	}
 
 }

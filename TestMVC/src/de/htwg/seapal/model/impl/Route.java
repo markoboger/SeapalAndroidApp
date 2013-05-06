@@ -8,7 +8,9 @@ import de.htwg.seapal.model.IRoute;
 
 public class Route implements IRoute {
 
-	private String id;
+	private String id; // UUID
+	private String user; // UUID user
+
 	private String name;
 	private long date;
 	private List<UUID> marks;
@@ -73,6 +75,16 @@ public class Route implements IRoute {
 	@Override
 	public void setDistance(double distance) {
 		this.distance = distance;
+	}
+
+	@Override
+	public String getUser() {
+		return user;
+	}
+
+	@Override
+	public void setUser(String user) {
+		this.user = user;
 	}
 
 }

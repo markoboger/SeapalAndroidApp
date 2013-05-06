@@ -27,4 +27,8 @@ public interface IRoute {
 
 	void setDistance(double distance);
 
+	String getUser();
+
+	void setUser(String user);
+
 }

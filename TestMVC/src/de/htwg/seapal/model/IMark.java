@@ -46,6 +46,10 @@ public interface IMark {
 
 	void setIsRouteMark(boolean isRouteMark);
 
+	void setUser(String user);
+
+	String getUser();
+
 	// String getMarkType();
 	//
 	// void setMarkType(String type);
