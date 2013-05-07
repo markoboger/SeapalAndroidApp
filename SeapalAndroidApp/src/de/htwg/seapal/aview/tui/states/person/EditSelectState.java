@@ -48,11 +48,11 @@ public class EditSelectState implements TuiState {
 						Toast.LENGTH_SHORT).show();
 			return false;
 		}
-		// if (number >= 0 && number < editPerson.length)
-		// context.setState(new EditState(number, person));
-		// else
-		// Toast.makeText((PersonActivity) context, "Unkown Option",
-		// Toast.LENGTH_SHORT).show();
+		if (number >= 0 && number < editPerson.length)
+			context.setState(new EditState());
+		else
+			Toast.makeText((PersonActivity) context, "Unkown Option",
+					Toast.LENGTH_SHORT).show();
 		return true;
 	}
 
