@@ -1,8 +1,8 @@
 package de.htwg.seapal.controller.impl;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
@@ -267,15 +267,15 @@ public class WaypointController extends Observable implements
 	}
 
 	@Override
-	public final UUID newWaypoint(UUID trip, Location location, Calendar date) {
+	public final UUID newWaypoint(UUID trip, Location location, long date) {
 		UUID newWaypoint = db.newWaypoint();
 		IWaypoint waypoint = db.getWaypoint(newWaypoint);
 		waypoint.setTrip(trip);
 		waypoint.setLatitude(location.getLatitude());
 		waypoint.setLongitude(location.getLongitude());
 		waypoint.setDate(date);
-		SimpleDateFormat format = new SimpleDateFormat();
-		waypoint.setName(format.format(date.getTime()));
+		DateFormat format = SimpleDateFormat.getDateTimeInstance();
+		waypoint.setName(format.format(date * 1000));
 		db.saveWaypoint(waypoint);
 		notifyObservers();
 		return newWaypoint;
@@ -297,7 +297,7 @@ public class WaypointController extends Observable implements
 		List<IWaypoint> waypoints = db.getWaypoints();
 		List<UUID> waypointIDs = new ArrayList<UUID>();
 		for (IWaypoint waypoint : waypoints) {
-			waypointIDs.add(waypoint.getId());
+			waypointIDs.add(waypoint.getUUId());
 		}
 		return waypointIDs;
 	}
@@ -308,7 +308,7 @@ public class WaypointController extends Observable implements
 		List<UUID> waypointIDs = new ArrayList<UUID>();
 		for (IWaypoint waypoint : waypoints) {
 			if (waypoint.getTrip().equals(trip))
-				waypointIDs.add(waypoint.getId());
+				waypointIDs.add(waypoint.getUUId());
 		}
 		return waypointIDs;
 	}

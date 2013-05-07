@@ -1,6 +1,5 @@
 package de.htwg.seapal.model;
 
-import java.util.Calendar;
 import java.util.UUID;
 
 public interface IWaypoint {
@@ -57,15 +56,15 @@ public interface IWaypoint {
 
 	void setMainsail(MainSail mainSail);
 
-	UUID getId();
+	String getId();
 
 	UUID getTrip();
 
 	void setTrip(UUID trip);
 
-	Calendar getDate();
+	long getDate();
 
-	void setDate(Calendar date);
+	void setDate(long date);
 
 	double getLatitude();
 
@@ -74,4 +73,8 @@ public interface IWaypoint {
 	double getLongitude();
 
 	void setLongitude(double longitude);
+
+	void setId(String id);
+
+	UUID getUUId();
 }

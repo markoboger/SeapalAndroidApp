@@ -1,30 +1,29 @@
 package de.htwg.seapal.model.impl;
 
-import java.util.Calendar;
 import java.util.UUID;
 
 import de.htwg.seapal.model.IWaypoint;
 
 public class Waypoint implements IWaypoint {
 
-	private UUID id;
+	private String id; // UUID
 	private String name;
 	private double latitude;
 	private double longitude;
-	private Calendar date;
+	private long date; // unix timestamp
 	private String note;
 	private int btm;
 	private int dtm;
 	private int cog;
 	private int sog;
-	private UUID headedFor; // mark
+	private String headedFor; // UUID Mark
 	private Maneuver maneuver;
 	private ForeSail foreSail;
 	private MainSail mainSail;
-	private UUID trip;
+	private String trip; // UUID Trip
 
 	public Waypoint() {
-		id = UUID.randomUUID();
+		id = UUID.randomUUID().toString();
 		maneuver = Maneuver.NONE;
 		foreSail = ForeSail.NONE;
 		mainSail = MainSail.NONE;
@@ -62,7 +61,7 @@ public class Waypoint implements IWaypoint {
 
 	@Override
 	public UUID getHeadedFor() {
-		return headedFor;
+		return UUID.fromString(headedFor);
 	}
 
 	@Override
@@ -117,7 +116,7 @@ public class Waypoint implements IWaypoint {
 
 	@Override
 	public void setHeadedFor(final UUID headedFor) {
-		this.headedFor = headedFor;
+		this.headedFor = headedFor.toString();
 	}
 
 	@Override
@@ -141,27 +140,37 @@ public class Waypoint implements IWaypoint {
 	}
 
 	@Override
-	public UUID getId() {
+	public UUID getUUId() {
+		return UUID.fromString(id);
+	}
+
+	@Override
+	public String getId() {
 		return id;
 	}
 
 	@Override
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	@Override
 	public UUID getTrip() {
-		return trip;
+		return UUID.fromString(trip);
 	}
 
 	@Override
 	public void setTrip(UUID trip) {
-		this.trip = trip;
+		this.trip = trip.toString();
 	}
 
 	@Override
-	public Calendar getDate() {
+	public long getDate() {
 		return date;
 	}
 
 	@Override
-	public void setDate(Calendar date) {
+	public void setDate(long date) {
 		this.date = date;
 	}
 

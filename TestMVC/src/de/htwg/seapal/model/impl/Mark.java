@@ -6,7 +6,9 @@ import de.htwg.seapal.model.IMark;
 
 public class Mark implements IMark {
 
-	private String id;
+	private String id; // UUID
+	private String user; // UUID user
+
 	private String name;
 	private double latitude;
 	private double longitude;
@@ -126,5 +128,67 @@ public class Mark implements IMark {
 	public void setIsRouteMark(boolean isRouteMark) {
 		this.isRouteMark = isRouteMark;
 	}
+<<<<<<< HEAD
+=======
+
+	@Override
+	public String getUser() {
+		return user;
+	}
+
+	@Override
+	public void setUser(String user) {
+		this.user = user;
+	}
+
+	// @Override
+	// public String getMarkType() {
+	// return this.markType;
+	// }
+	//
+	// @Override
+	// public void setMarkType(String type) {
+	// this.markType = type;
+	// }
+	//
+	// @Override
+	// public Boolean getIsDay() {
+	// return this.isDay;
+	// }
+	//
+	// @Override
+	// public void setIsDay(Boolean val) {
+	// this.isDay = val;
+	// }
+	//
+	// @Override
+	// public Boolean getIsNight() {
+	// return this.isNight;
+	// }
+	//
+	// @Override
+	// public void setIsNight(Boolean val) {
+	// this.isNight = val;
+	// }
+	//
+	// @Override
+	// public Color getColor() {
+	// return this.color;
+	// }
+	// @Override
+	// public void setColor(Color color) {
+	// this.color = color;
+	// }
+	//
+	// @Override
+	// public String getFunktion() {
+	// return this.function;
+	// }
+	//
+	// @Override
+	// public void setFunction(String function) {
+	// this.function = function;
+	// }
+>>>>>>> branch 'master' of https://github.com/bestehle/TestMVC.git
 
 }

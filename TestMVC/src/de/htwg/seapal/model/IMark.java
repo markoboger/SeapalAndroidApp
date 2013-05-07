@@ -46,4 +46,30 @@ public interface IMark {
 
 	void setIsRouteMark(boolean isRouteMark);
 
+<<<<<<< HEAD
+=======
+	void setUser(String user);
+
+	String getUser();
+
+	// String getMarkType();
+	//
+	// void setMarkType(String type);
+	//
+	// Boolean getIsDay();
+	//
+	// void setIsDay(Boolean val);
+	//
+	// Boolean getIsNight();
+	//
+	// void setIsNight(Boolean val);
+	//
+	// Color getColor();
+	//
+	// void setColor(Color color);
+	//
+	// String getFunktion();
+	//
+	// void setFunction(String function);
+>>>>>>> branch 'master' of https://github.com/bestehle/TestMVC.git
 }

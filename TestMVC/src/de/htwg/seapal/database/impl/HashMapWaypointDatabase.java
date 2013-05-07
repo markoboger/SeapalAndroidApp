@@ -29,14 +29,14 @@ public class HashMapWaypointDatabase implements IWaypointDatabase {
 	@Override
 	public UUID newWaypoint() {
 		IWaypoint waypoint = new Waypoint();
-		UUID id = waypoint.getId();
+		UUID id = waypoint.getUUId();
 		db.put(id, waypoint);
 		return id;
 	}
 
 	@Override
 	public void saveWaypoint(IWaypoint waypoint) {
-		db.put(waypoint.getId(), waypoint);
+		db.put(waypoint.getUUId(), waypoint);
 	}
 
 	@Override
