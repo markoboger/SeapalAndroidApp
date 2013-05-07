@@ -7,6 +7,7 @@ import de.htwg.seapal.aview.tui.StateContext;
 import de.htwg.seapal.aview.tui.TuiState;
 import de.htwg.seapal.aview.tui.activity.BoatActivity;
 import de.htwg.seapal.aview.tui.activity.MarkActivity;
+import de.htwg.seapal.aview.tui.activity.RouteActivity;
 
 public class StartState implements TuiState {
 
@@ -28,6 +29,9 @@ public class StartState implements TuiState {
 			intent = new Intent((Context) context, MarkActivity.class);
 			((Context) context).startActivity(intent);
 			break;
+		case 'r':
+			intent = new Intent((Context) context, RouteActivity.class);
+			((Context) context).startActivity(intent);
 		default:
 			Toast.makeText((BoatActivity) context, "Unkown Option",
 					Toast.LENGTH_SHORT).show();
