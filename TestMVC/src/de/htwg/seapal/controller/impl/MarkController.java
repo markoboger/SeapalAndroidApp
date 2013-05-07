@@ -215,18 +215,10 @@ public class MarkController extends Observable implements IMarkController {
 		List<UUID> list = new LinkedList<UUID>();
 		List<IMark> marks = db.getMarks();
 		for (IMark mark : marks) {
-			if (!mark.isRouteMark())
+			if (!mark.isRouteMark())		//only normal Marks
 				list.add(mark.getId());
 		}
 		return list;
-	}
-
-	@Override
-	public UUID getMark(UUID id) {
-		IMark mark = db.getMark(id);
-		if (mark == null)
-			return null;
-		return mark.getId();
 	}
 
 	@Override

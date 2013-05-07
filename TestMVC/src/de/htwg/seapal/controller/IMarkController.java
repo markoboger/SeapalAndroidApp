@@ -53,8 +53,6 @@ public interface IMarkController extends IObservable {
 
 	List<UUID> getMarks();
 
-	UUID getMark(UUID id);
-	
 	UUID newRouteMark();
 
 	UUID newMark();

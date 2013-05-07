@@ -17,7 +17,7 @@ public interface IRoute {
 
 	List<UUID> getMarks();
 
-	void setMark(UUID mark);
+	void addMark(UUID mark);
 
 	UUID getRouteEntryPoint();
 
