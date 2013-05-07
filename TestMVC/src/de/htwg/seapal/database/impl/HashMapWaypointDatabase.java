@@ -9,6 +9,9 @@ import java.util.UUID;
 
 import de.htwg.seapal.database.IWaypointDatabase;
 import de.htwg.seapal.model.IWaypoint;
+import de.htwg.seapal.model.IWaypoint.ForeSail;
+import de.htwg.seapal.model.IWaypoint.MainSail;
+import de.htwg.seapal.model.IWaypoint.Maneuver;
 import de.htwg.seapal.model.impl.Waypoint;
 
 public class HashMapWaypointDatabase implements IWaypointDatabase {
@@ -28,15 +31,15 @@ public class HashMapWaypointDatabase implements IWaypointDatabase {
 
 	@Override
 	public UUID newWaypoint() {
-		IWaypoint waypoint = new Waypoint();
-		UUID id = waypoint.getUUId();
+		IWaypoint waypoint = new Waypoint(Maneuver.NONE, ForeSail.NONE, MainSail.NONE);
+		UUID id = UUID.fromString(waypoint.getId());
 		db.put(id, waypoint);
 		return id;
 	}
 
 	@Override
 	public void saveWaypoint(IWaypoint waypoint) {
-		db.put(waypoint.getUUId(), waypoint);
+		db.put(UUID.fromString(waypoint.getId()), waypoint);
 	}
 
 	@Override

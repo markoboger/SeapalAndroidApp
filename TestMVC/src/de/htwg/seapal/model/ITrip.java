@@ -1,7 +1,6 @@
 package de.htwg.seapal.model;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface ITrip {
 
@@ -17,9 +16,9 @@ public interface ITrip {
 
 	void setEndLocation(String location);
 
-	UUID getSkipper(); // Person
+	String getSkipper(); // Person
 
-	void setSkipper(UUID skipper); // Person
+	void setSkipper(String skipper); // Person
 
 	List<String> getCrewMembers(); // Person
 
@@ -43,15 +42,9 @@ public interface ITrip {
 
 	String getId();
 
-	UUID getBoat();
+	String getBoat();
 
-	void setBoat(UUID boat);
-
-	void setSkipper(String skipper);
-
-	String getSkipperString();
-
-	UUID getUUId();
+	void setBoat(String boat);
 
 	void setStartTime(long start);
 

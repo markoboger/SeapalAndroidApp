@@ -53,7 +53,7 @@ public class Route implements IRoute {
 	}
 
 	@Override
-	public void setMark(UUID mark) {
+	public void addMark(UUID mark) {
 		this.marks.add(mark);
 	}
 

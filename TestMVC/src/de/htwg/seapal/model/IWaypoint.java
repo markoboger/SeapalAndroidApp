@@ -28,7 +28,7 @@ public interface IWaypoint {
 
 	int getSOG();
 
-	UUID getHeadedFor();
+	String getHeadedFor();
 
 	Maneuver getManeuver();
 
@@ -58,9 +58,9 @@ public interface IWaypoint {
 
 	String getId();
 
-	UUID getTrip();
+	String getTrip();
 
-	void setTrip(UUID trip);
+	void setTrip(String trip);
 
 	long getDate();
 
@@ -76,5 +76,5 @@ public interface IWaypoint {
 
 	void setId(String id);
 
-	UUID getUUId();
+//	UUID getUUId();
 }

@@ -15,9 +15,7 @@ public class Boat extends CouchDbDocument implements IBoat {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public Boat() {
-		this.id = UUID.randomUUID().toString();
-	}
+	
 
 	private String id; // UUID
 	private String user; // UUID User
@@ -46,6 +44,10 @@ public class Boat extends CouchDbDocument implements IBoat {
 	private double mainSailSize;
 	private double genuaSize;
 	private double spiSize;
+	
+	public Boat() {
+		this.id = UUID.randomUUID().toString();
+	}
 
 	public Boat(IBoat boat) {
 		this.id = boat.getId();

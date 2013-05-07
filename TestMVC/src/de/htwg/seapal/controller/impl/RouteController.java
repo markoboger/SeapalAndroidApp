@@ -109,11 +109,11 @@ public class RouteController extends Observable implements IRouteController {
 	}
 
 	@Override
-	public void setMark(UUID id, UUID mark) {
+	public void addMark(UUID id, UUID mark) {
 		IRoute route = db.getRoute(id);
 		if (route == null)
 			return;
-		route.setMark(mark);
+		route.addMark(mark);
 		db.saveRoute(route);
 		notifyObservers();
 	}
