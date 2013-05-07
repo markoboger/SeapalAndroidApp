@@ -18,11 +18,6 @@ public class Mark implements IMark {
 	private long date;
 	private boolean isRouteMark;
 
-	// private String markType;
-	// private Boolean isDay;
-	// private Boolean isNight;
-	// private String function;
-
 	public Mark() {
 		id = UUID.randomUUID().toString();
 	}
@@ -131,54 +126,5 @@ public class Mark implements IMark {
 	public void setIsRouteMark(boolean isRouteMark) {
 		this.isRouteMark = isRouteMark;
 	}
-
-	// @Override
-	// public String getMarkType() {
-	// return this.markType;
-	// }
-	//
-	// @Override
-	// public void setMarkType(String type) {
-	// this.markType = type;
-	// }
-	//
-	// @Override
-	// public Boolean getIsDay() {
-	// return this.isDay;
-	// }
-	//
-	// @Override
-	// public void setIsDay(Boolean val) {
-	// this.isDay = val;
-	// }
-	//
-	// @Override
-	// public Boolean getIsNight() {
-	// return this.isNight;
-	// }
-	//
-	// @Override
-	// public void setIsNight(Boolean val) {
-	// this.isNight = val;
-	// }
-	//
-	// @Override
-	// public Color getColor() {
-	// return this.color;
-	// }
-	// @Override
-	// public void setColor(Color color) {
-	// this.color = color;
-	// }
-	//
-	// @Override
-	// public String getFunktion() {
-	// return this.function;
-	// }
-	//
-	// @Override
-	// public void setFunction(String function) {
-	// this.function = function;
-	// }
 
 }

@@ -46,23 +46,4 @@ public interface IMark {
 
 	void setIsRouteMark(boolean isRouteMark);
 
-	// String getMarkType();
-	//
-	// void setMarkType(String type);
-	//
-	// Boolean getIsDay();
-	//
-	// void setIsDay(Boolean val);
-	//
-	// Boolean getIsNight();
-	//
-	// void setIsNight(Boolean val);
-	//
-	// Color getColor();
-	//
-	// void setColor(Color color);
-	//
-	// String getFunktion();
-	//
-	// void setFunction(String function);
 }
