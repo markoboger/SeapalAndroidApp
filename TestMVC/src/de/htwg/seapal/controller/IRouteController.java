@@ -19,7 +19,7 @@ public interface IRouteController extends IObservable {
 
 	List<UUID> getMarks(UUID id);
 
-	void setMark(UUID id, UUID mark);
+	void addMark(UUID id, UUID mark);
 
 	UUID getRouteEntryPoint(UUID id);
 
