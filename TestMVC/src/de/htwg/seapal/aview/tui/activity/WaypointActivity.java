@@ -9,6 +9,7 @@ import de.htwg.seapal.aview.tui.states.waypoint.StartState;
 import de.htwg.seapal.controller.IWaypointController;
 import de.htwg.seapal.controller.impl.WaypointController;
 import de.htwg.seapal.database.impl.HashMapWaypointDatabase;
+import de.htwg.seapal.database.impl.TouchDBWaypointDatabase;
 
 public class WaypointActivity extends AActivity {
 
@@ -21,7 +22,8 @@ public class WaypointActivity extends AActivity {
 		header.setText("Waypoint");
 		Bundle bundle = getIntent().getExtras();
 		trip = UUID.fromString(bundle.getString("trip").toString());
-		controller = new WaypointController(HashMapWaypointDatabase.getInstance());
+//		controller = new WaypointController(HashMapWaypointDatabase.getInstance());
+		controller = new WaypointController(TouchDBWaypointDatabase.getInstance(getApplicationContext()));
 		currenState = new StartState();
 		controller.addObserver(this);
 	}

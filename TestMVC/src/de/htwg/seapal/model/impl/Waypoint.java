@@ -2,10 +2,18 @@ package de.htwg.seapal.model.impl;
 
 import java.util.UUID;
 
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.ektorp.support.CouchDbDocument;
+
 import de.htwg.seapal.model.IWaypoint;
 
-public class Waypoint implements IWaypoint {
+public class Waypoint extends CouchDbDocument implements IWaypoint {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String id; // UUID
 	private String name;
 	private double latitude;
@@ -22,7 +30,11 @@ public class Waypoint implements IWaypoint {
 	private MainSail mainSail;
 	private String trip; // UUID Trip
 
-	public Waypoint() {
+	@JsonCreator
+	public Waypoint(@JsonProperty("maneuver") Maneuver m, 
+			@JsonProperty("foresail") ForeSail f,
+			@JsonProperty("mainsail") MainSail msail) 
+	{
 		id = UUID.randomUUID().toString();
 		maneuver = Maneuver.NONE;
 		foreSail = ForeSail.NONE;
@@ -60,8 +72,8 @@ public class Waypoint implements IWaypoint {
 	}
 
 	@Override
-	public UUID getHeadedFor() {
-		return UUID.fromString(headedFor);
+	public String getHeadedFor() {
+		return headedFor;
 	}
 
 	@Override
@@ -139,28 +151,30 @@ public class Waypoint implements IWaypoint {
 				+ ", mainSail=" + mainSail + ", trip=" + trip + "]";
 	}
 
-	@Override
-	public UUID getUUId() {
-		return UUID.fromString(id);
-	}
+//	@Override
+//	public UUID getUUId() {
+//		return UUID.fromString(id);
+//	}
 
+	@JsonProperty("_id")
 	@Override
 	public String getId() {
 		return id;
 	}
 
+	@JsonProperty("_id")
 	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
 
 	@Override
-	public UUID getTrip() {
-		return UUID.fromString(trip);
+	public String getTrip() {
+		return trip;
 	}
 
 	@Override
-	public void setTrip(UUID trip) {
+	public void setTrip(String trip) {
 		this.trip = trip.toString();
 	}
 
