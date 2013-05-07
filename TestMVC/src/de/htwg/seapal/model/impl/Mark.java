@@ -128,8 +128,6 @@ public class Mark implements IMark {
 	public void setIsRouteMark(boolean isRouteMark) {
 		this.isRouteMark = isRouteMark;
 	}
-<<<<<<< HEAD
-=======
 
 	@Override
 	public String getUser() {
@@ -141,54 +139,5 @@ public class Mark implements IMark {
 		this.user = user;
 	}
 
-	// @Override
-	// public String getMarkType() {
-	// return this.markType;
-	// }
-	//
-	// @Override
-	// public void setMarkType(String type) {
-	// this.markType = type;
-	// }
-	//
-	// @Override
-	// public Boolean getIsDay() {
-	// return this.isDay;
-	// }
-	//
-	// @Override
-	// public void setIsDay(Boolean val) {
-	// this.isDay = val;
-	// }
-	//
-	// @Override
-	// public Boolean getIsNight() {
-	// return this.isNight;
-	// }
-	//
-	// @Override
-	// public void setIsNight(Boolean val) {
-	// this.isNight = val;
-	// }
-	//
-	// @Override
-	// public Color getColor() {
-	// return this.color;
-	// }
-	// @Override
-	// public void setColor(Color color) {
-	// this.color = color;
-	// }
-	//
-	// @Override
-	// public String getFunktion() {
-	// return this.function;
-	// }
-	//
-	// @Override
-	// public void setFunction(String function) {
-	// this.function = function;
-	// }
->>>>>>> branch 'master' of https://github.com/bestehle/TestMVC.git
 
 }
