@@ -100,7 +100,7 @@ public class WaypointController extends Observable implements
 		IWaypoint waypoint = db.getWaypoint(id);
 		if (waypoint == null)
 			return null;
-		return waypoint.getHeadedFor();
+		return UUID.fromString(waypoint.getHeadedFor());
 	}
 
 	@Override
@@ -260,7 +260,7 @@ public class WaypointController extends Observable implements
 	public final UUID newWaypoint(UUID trip) {
 		UUID newWaypoint = db.newWaypoint();
 		IWaypoint waypoint = db.getWaypoint(newWaypoint);
-		waypoint.setTrip(trip);
+		waypoint.setTrip(trip.toString());
 		db.saveWaypoint(waypoint);
 		notifyObservers();
 		return newWaypoint;
@@ -270,7 +270,7 @@ public class WaypointController extends Observable implements
 	public final UUID newWaypoint(UUID trip, Location location, long date) {
 		UUID newWaypoint = db.newWaypoint();
 		IWaypoint waypoint = db.getWaypoint(newWaypoint);
-		waypoint.setTrip(trip);
+		waypoint.setTrip(trip.toString());
 		waypoint.setLatitude(location.getLatitude());
 		waypoint.setLongitude(location.getLongitude());
 		waypoint.setDate(date);
@@ -297,7 +297,7 @@ public class WaypointController extends Observable implements
 		List<IWaypoint> waypoints = db.getWaypoints();
 		List<UUID> waypointIDs = new ArrayList<UUID>();
 		for (IWaypoint waypoint : waypoints) {
-			waypointIDs.add(waypoint.getUUId());
+			waypointIDs.add(UUID.fromString(waypoint.getId()));
 		}
 		return waypointIDs;
 	}
@@ -308,7 +308,7 @@ public class WaypointController extends Observable implements
 		List<UUID> waypointIDs = new ArrayList<UUID>();
 		for (IWaypoint waypoint : waypoints) {
 			if (waypoint.getTrip().equals(trip))
-				waypointIDs.add(waypoint.getUUId());
+				waypointIDs.add(UUID.fromString(waypoint.getId()));
 		}
 		return waypointIDs;
 	}

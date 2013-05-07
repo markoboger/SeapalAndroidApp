@@ -29,14 +29,14 @@ public class HashMapTripDatabase implements ITripDatabase {
 	@Override
 	public UUID newTrip() {
 		ITrip trip = new Trip();
-		UUID id = trip.getUUId();
+		UUID id = UUID.fromString(trip.getId());
 		db.put(id, trip);
 		return id;
 	}
 
 	@Override
 	public void saveTrip(ITrip trip) {
-		db.put(trip.getUUId(), trip);
+		db.put(UUID.fromString(trip.getId()), trip);
 	}
 
 	@Override

@@ -23,6 +23,11 @@ public class PersonController extends Observable implements IPersonController {
 	}
 
 	@Override
+	public void deletePerson(UUID personId) {
+		db.deletePerson(personId);
+	}
+
+	@Override
 	public String getPersonFirstname(UUID personId) {
 		IPerson person = db.getPerson(personId);
 		if (person == null)

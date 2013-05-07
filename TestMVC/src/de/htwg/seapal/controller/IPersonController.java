@@ -65,4 +65,6 @@ public interface IPersonController extends IObservable {
 
 	String getPersonString(UUID personId);
 
+	void deletePerson(UUID personId);
+
 }

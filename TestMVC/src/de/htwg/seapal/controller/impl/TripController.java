@@ -80,7 +80,7 @@ public class TripController extends Observable implements ITripController {
 		ITrip trip = db.getTrip(id);
 		if (trip == null)
 			return;
-		trip.setSkipper(skipper);
+		trip.setSkipper(skipper.toString());
 		db.saveTrip(trip);
 		notifyObservers();
 
@@ -91,7 +91,7 @@ public class TripController extends Observable implements ITripController {
 		ITrip trip = db.getTrip(id);
 		if (trip == null)
 			return null;
-		return trip.getSkipper();
+		return UUID.fromString(trip.getSkipper());
 
 	}
 
@@ -238,7 +238,7 @@ public class TripController extends Observable implements ITripController {
 	public UUID newTrip(UUID boat) {
 		UUID newTrip = db.newTrip();
 		ITrip trip = db.getTrip(newTrip);
-		trip.setBoat(boat);
+		trip.setBoat(boat.toString());
 		db.saveTrip(trip);
 		notifyObservers(); // ??
 		return newTrip;
@@ -260,7 +260,7 @@ public class TripController extends Observable implements ITripController {
 		List<ITrip> trips = db.getTrips();
 		List<UUID> list = new ArrayList<UUID>();
 		for (ITrip trip : trips) {
-			list.add(trip.getUUId());
+			list.add(UUID.fromString(trip.getId()));
 		}
 		return list;
 	}
@@ -271,7 +271,7 @@ public class TripController extends Observable implements ITripController {
 		List<UUID> list = new ArrayList<UUID>();
 		for (ITrip trip : query) {
 			if (trip.getBoat().equals(boat))
-				list.add(trip.getUUId());
+				list.add(UUID.fromString(trip.getId()));
 		}
 		return list;
 	}
@@ -281,7 +281,7 @@ public class TripController extends Observable implements ITripController {
 		ITrip trip = db.getTrip(id);
 		if (trip == null)
 			return null;
-		return trip.getBoat();
+		return UUID.fromString(trip.getId());
 	}
 
 }

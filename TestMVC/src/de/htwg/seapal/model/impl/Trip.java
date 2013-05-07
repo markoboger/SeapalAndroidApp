@@ -4,9 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.ektorp.support.CouchDbDocument;
+
 import de.htwg.seapal.model.ITrip;
 
-public class Trip implements ITrip {
+public class Trip extends CouchDbDocument implements ITrip {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private String id; // UUID
 
@@ -26,6 +34,7 @@ public class Trip implements ITrip {
 	public Trip() {
 		this.id = UUID.randomUUID().toString();
 		this.crew = new ArrayList<String>();
+		this.skipper = UUID.randomUUID().toString();
 	}
 
 	public String getName() {
@@ -56,29 +65,18 @@ public class Trip implements ITrip {
 		return endLocation;
 	}
 
-	@Override
-	public void setSkipper(UUID skipper) {
-		this.skipper = skipper.toString();
-	}
 
 	@Override
 	public void setSkipper(String skipper) {
 		this.skipper = skipper;
 	}
 
+	
 	@Override
-	public UUID getSkipper() {
-		try {
-			return UUID.fromString(skipper);
-		} catch (NullPointerException e) {
-			return null;
-		}
-	}
-
-	@Override
-	public String getSkipperString() {
+	public String getSkipper() {
 		return skipper;
 	}
+
 
 	@Override
 	public void addCrewMember(String crewMember) {
@@ -150,24 +148,26 @@ public class Trip implements ITrip {
 		return notes;
 	}
 
-	@Override
-	public UUID getUUId() {
-		return UUID.fromString(id);
-	}
 
+	@JsonProperty("_id")
 	@Override
 	public String getId() {
 		return id;
 	}
-
-	@Override
-	public UUID getBoat() {
-		return UUID.fromString(boat);
+	
+	@JsonProperty("_id")
+	public void setId(UUID id) {
+		this.id = id.toString();
 	}
 
 	@Override
-	public void setBoat(UUID boat) {
-		this.boat = boat.toString();
+	public String getBoat() {
+		return boat;
+	}
+
+	@Override
+	public void setBoat(String boat) {
+		this.boat = boat;
 	}
 
 	@Override
