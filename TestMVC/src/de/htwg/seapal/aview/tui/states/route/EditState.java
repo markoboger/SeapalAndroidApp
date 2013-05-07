@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import de.htwg.seapal.aview.tui.StateContext;
 import de.htwg.seapal.aview.tui.TuiState;
+import de.htwg.seapal.aview.tui.activity.RouteActivity;
 
 public class EditState implements TuiState {
 	
@@ -16,14 +17,18 @@ public class EditState implements TuiState {
 
 	@Override
 	public String buildString(StateContext context) {
-		// TODO Auto-generated method stub
-		return null;
+		return "q - quit \n\n Enter new RouteName";
 	}
 
 	@Override
 	public boolean process(StateContext context, String input) {
-		// TODO Auto-generated method stub
-		return false;
+		if (input.equals("q")) {
+			context.setState(new ShowState(route));
+			return false;
+		}
+		((RouteActivity) context).getController().setName(route, input);
+		context.setState(new ShowState(route));
+		return true;
 	}
 
 }

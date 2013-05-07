@@ -21,6 +21,7 @@ public class ShowState implements TuiState {
 		sb.append("q - quit\n");
 		sb.append("d - delete route\n");
 		sb.append("e - edit routename\n");
+		sb.append("s - show marks\n");
 		sb.append("--------------------------------------------------\n");
 		sb.append(((RouteActivity) context).getController().getString(route));
 		return sb.toString();
@@ -40,6 +41,8 @@ public class ShowState implements TuiState {
 		case 'e':
 			context.setState(new EditState(route));
 			break;
+		case 's':
+			context.setState(new ShowMarksState(route));
 		default:
 			Toast.makeText(activity, "Unkown Option", Toast.LENGTH_SHORT)
 					.show();
