@@ -63,5 +63,5 @@ public interface ITripController extends IObservable {
 
 	List<UUID> getTrips(UUID boat);
 
-	UUID getBoat(UUID id);
+	UUID getTrip(UUID id);
 }

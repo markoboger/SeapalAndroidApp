@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import android.util.Log;
+
 import de.htwg.seapal.controller.ITripController;
 import de.htwg.seapal.database.ITripDatabase;
 import de.htwg.seapal.model.ITrip;
@@ -231,7 +233,7 @@ public class TripController extends Observable implements ITripController {
 				+ "\n endTime = \t" + getEndTime(id) + "\n duration = \t"
 				+ getDuration(id) + "\n motor = \t" + getMotor(id)
 				+ "\n fuel = \t" + getFuel(id) + "\n notes = \t" + getNotes(id)
-				+ "\n boat = \t" + getBoat(id) + "\n";
+				+ "\n boat = \t" + getTrip(id) + "\n";
 	}
 
 	@Override
@@ -268,16 +270,17 @@ public class TripController extends Observable implements ITripController {
 	@Override
 	public List<UUID> getTrips(UUID boat) {
 		List<ITrip> query = db.getTrips();
+		Log.e("TripController", query.toString());
 		List<UUID> list = new ArrayList<UUID>();
 		for (ITrip trip : query) {
-			if (trip.getBoat().equals(boat))
+			if (trip.getBoat().equals(boat.toString()))
 				list.add(UUID.fromString(trip.getId()));
 		}
 		return list;
 	}
 
 	@Override
-	public UUID getBoat(UUID id) {
+	public UUID getTrip(UUID id) {
 		ITrip trip = db.getTrip(id);
 		if (trip == null)
 			return null;

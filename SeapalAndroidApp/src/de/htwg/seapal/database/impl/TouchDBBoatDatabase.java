@@ -90,14 +90,16 @@ public class TouchDBBoatDatabase implements IBoatDatabase{
 	@Override
 	public List<IBoat> getBoats() {
 		List<IBoat> lst = new LinkedList<IBoat>();
+		List<String> log = new LinkedList<String>();
 		ViewQuery query = new ViewQuery().allDocs();		
 		ViewResult vr = couchDbConnector.queryView(query);
 		
 	
 		for(Row r : vr.getRows()) {
 			lst.add(getBoat(UUID.fromString(r.getId())));
+			log.add(r.getId());
 		}
-		Log.d(TAG, "All Boats: " + lst.toString());
+		Log.d(TAG, "All Boats: " + log.toString());
 		return lst;
 	}
 	@Override

@@ -29,7 +29,7 @@ public class TouchDBHelper {
 	private StdCouchDbInstance dbInstance;
 	private CouchDbConnector couchDbConnector;
 	
-//	private  String dDocId = "_design/" + dDocName;
+
 
 	public TouchDBHelper(String viewName, String dbName, String dDocName) {
 		DATABASE_NAME = dbName;

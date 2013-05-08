@@ -307,7 +307,7 @@ public class WaypointController extends Observable implements
 		List<IWaypoint> waypoints = db.getWaypoints();
 		List<UUID> waypointIDs = new ArrayList<UUID>();
 		for (IWaypoint waypoint : waypoints) {
-			if (waypoint.getTrip().equals(trip))
+			if (waypoint.getTrip().equals(trip.toString()))
 				waypointIDs.add(UUID.fromString(waypoint.getId()));
 		}
 		return waypointIDs;
