@@ -43,6 +43,7 @@ public class ShowState implements TuiState {
 			break;
 		case 's':
 			context.setState(new ShowMarksState(route));
+			break;
 		default:
 			Toast.makeText(activity, "Unkown Option", Toast.LENGTH_SHORT)
 					.show();

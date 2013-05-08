@@ -9,7 +9,7 @@ import de.htwg.seapal.database.impl.HashMapRouteDatabase;
 import de.htwg.seapal.observer.IObserver;
 
 public class RouteActivity extends AActivity implements IObserver {
-	
+
 	private IRouteController controller;
 
 	@Override
@@ -21,7 +21,7 @@ public class RouteActivity extends AActivity implements IObserver {
 		controller.addObserver(this);
 		
 	}
-	
+
 	public IRouteController getController() {
 		return controller;
 	}

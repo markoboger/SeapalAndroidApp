@@ -32,6 +32,7 @@ public class StartState implements TuiState {
 		case 'r':
 			intent = new Intent((Context) context, RouteActivity.class);
 			((Context) context).startActivity(intent);
+			break;
 		default:
 			Toast.makeText((BoatActivity) context, "Unkown Option",
 					Toast.LENGTH_SHORT).show();
