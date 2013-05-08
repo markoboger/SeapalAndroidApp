@@ -15,12 +15,10 @@ import android.content.Context;
 import android.util.Log;
 
 import de.htwg.seapal.database.IWaypointDatabase;
-import de.htwg.seapal.model.ITrip;
 import de.htwg.seapal.model.IWaypoint;
 import de.htwg.seapal.model.IWaypoint.ForeSail;
 import de.htwg.seapal.model.IWaypoint.MainSail;
 import de.htwg.seapal.model.IWaypoint.Maneuver;
-import de.htwg.seapal.model.impl.Trip;
 import de.htwg.seapal.model.impl.Waypoint;
 
 public class TouchDBWaypointDatabase implements	IWaypointDatabase {

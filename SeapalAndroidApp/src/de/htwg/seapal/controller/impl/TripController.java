@@ -231,7 +231,7 @@ public class TripController extends Observable implements ITripController {
 				+ "\n endTime = \t" + getEndTime(id) + "\n duration = \t"
 				+ getDuration(id) + "\n motor = \t" + getMotor(id)
 				+ "\n fuel = \t" + getFuel(id) + "\n notes = \t" + getNotes(id)
-				+ "\n boat = \t" + getBoat(id) + "\n";
+				+ "\n boat = \t" + getTrip(id) + "\n";
 	}
 
 	@Override
@@ -277,7 +277,7 @@ public class TripController extends Observable implements ITripController {
 	}
 
 	@Override
-	public UUID getBoat(UUID id) {
+	public UUID getTrip(UUID id) {
 		ITrip trip = db.getTrip(id);
 		if (trip == null)
 			return null;
