@@ -13,7 +13,7 @@ public class StartState implements TuiState {
 
 	@Override
 	public String buildString(StateContext context) {
-		return "l  -  logbuch\n" + "d  -  Dashboard\n" + "m  -  marks\n"
+		return "l  -  logbuch\n" + "m  -  marks\n"
 				+ "r  -  routes";
 	}
 
