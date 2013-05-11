@@ -37,11 +37,14 @@ public class ShowMarksState implements TuiState {
 			sb.append(i++).append(")\t").append(markController.getName(uuid))
 					.append("\n");
 		}
+		
 		return sb.toString();
 	}
 
 	@Override
 	public boolean process(StateContext context, String input) {
+		if(marks.size() > 0) 
+			((RouteActivity) context).getController().setRouteEntryPoint(route, marks.get(0));
 		RouteActivity activity = (RouteActivity) context;
 		switch (input.charAt(0)) {
 		case 'q':

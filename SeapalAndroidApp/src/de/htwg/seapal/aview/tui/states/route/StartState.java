@@ -21,7 +21,7 @@ public class StartState implements TuiState {
 		sb.append("q \t- Quit\n");
 		sb.append("r \t- Refresh\n");
 		sb.append("n \t- New Route\n");
-		sb.append("<X> \t- Show Route\n");
+		sb.append("<x> \t- Show Route\n");
 		sb.append("---------------------------------------\n");
 		int i = 1;
 		for (UUID uuid : routes) {
