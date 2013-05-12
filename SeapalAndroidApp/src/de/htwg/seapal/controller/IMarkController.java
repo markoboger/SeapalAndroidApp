@@ -3,6 +3,7 @@ package de.htwg.seapal.controller;
 import java.util.List;
 import java.util.UUID;
 
+import android.location.Location;
 import de.htwg.seapal.observer.IObservable;
 
 public interface IMarkController extends IObservable {
@@ -53,9 +54,9 @@ public interface IMarkController extends IObservable {
 
 	List<UUID> getMarks();
 
-	UUID newRouteMark();
+	UUID newRouteMark(Location location);
 
-	UUID newMark();
+	UUID newMark(Location location);
 
 	String getString(UUID id);
 
