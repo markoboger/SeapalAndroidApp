@@ -3,6 +3,7 @@ package de.htwg.seapal.aview.tui.states.route;
 import java.util.List;
 import java.util.UUID;
 
+import android.location.Location;
 import android.widget.Toast;
 import de.htwg.seapal.aview.tui.StateContext;
 import de.htwg.seapal.aview.tui.TuiState;
@@ -37,14 +38,20 @@ public class ShowMarksState implements TuiState {
 			sb.append(i++).append(")\t").append(markController.getName(uuid))
 					.append("\n");
 		}
-		
+
+		if (marks.size() > 1) {
+			sb.append("\nDistance of Route: " + calcDistance() + " m");
+		}
+
 		return sb.toString();
 	}
 
 	@Override
 	public boolean process(StateContext context, String input) {
-		if(marks.size() > 0) 
-			((RouteActivity) context).getController().setRouteEntryPoint(route, marks.get(0));
+		if (marks.size() > 0)
+			((RouteActivity) context).getController().setRouteEntryPoint(route,
+					marks.get(0));
+
 		RouteActivity activity = (RouteActivity) context;
 		switch (input.charAt(0)) {
 		case 'q':
@@ -63,6 +70,29 @@ public class ShowMarksState implements TuiState {
 		}
 
 		return true;
+	}
+	
+	private double calcDistance() {
+		
+		float distance = 0.0F;
+		Location location1 = new Location("");
+		Location location2 = new Location("");
+		int i = 1;
+		for (UUID id : marks) {
+			if(i < marks.size()) {
+				location1.setLatitude(markController.getLatitude(id));
+				location1.setLongitude(markController.getLongitude(id));
+				location2.setLatitude(markController.getLatitude(marks.get(i)));
+				location2.setLongitude(markController.getLongitude(marks.get(i)));
+				
+				distance += location1.distanceTo(location2);
+			}
+			
+			++i;
+		}
+		
+		
+		return distance;
 	}
 
 }
