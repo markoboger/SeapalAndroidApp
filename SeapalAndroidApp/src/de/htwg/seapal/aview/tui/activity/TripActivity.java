@@ -8,9 +8,9 @@ import de.htwg.seapal.R;
 import de.htwg.seapal.aview.tui.states.trip.StartState;
 import de.htwg.seapal.controller.ITripController;
 import de.htwg.seapal.controller.impl.TripController;
-import de.htwg.seapal.database.impl.HashMapTripDatabase;
 import de.htwg.seapal.database.impl.TouchDBTripDatabase;
-import de.htwg.seapal.observer.IObserver;
+import de.htwg.seapal.utils.Logger;
+import de.htwg.seapal.utils.observer.IObserver;
 
 public class TripActivity extends AActivity implements IObserver {
 
@@ -23,8 +23,10 @@ public class TripActivity extends AActivity implements IObserver {
 		header.setText("Trip");
 		Bundle bundle = getIntent().getExtras();
 		boat = UUID.fromString(bundle.getString("boat").toString());
-//		controller = new TripController(HashMapTripDatabase.getInstance());
-		controller = new TripController(TouchDBTripDatabase.getInstance(getApplicationContext()));
+		// controller = new TripController(HashMapTripDatabase.getInstance());
+		controller = new TripController(
+				TouchDBTripDatabase.getInstance(getApplicationContext()),
+				new Logger());
 		currenState = new StartState();
 		controller.addObserver(this);
 	}

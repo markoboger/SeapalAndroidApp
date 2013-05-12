@@ -15,8 +15,8 @@ import com.couchbase.touchdb.router.TDURLStreamHandlerFactory;
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.tui.StateContext;
 import de.htwg.seapal.aview.tui.TuiState;
-import de.htwg.seapal.observer.Event;
-import de.htwg.seapal.observer.IObserver;
+import de.htwg.seapal.utils.observer.Event;
+import de.htwg.seapal.utils.observer.IObserver;
 
 public abstract class AActivity extends Activity implements IObserver,
 		StateContext {

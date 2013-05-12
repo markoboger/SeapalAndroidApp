@@ -6,6 +6,7 @@ import de.htwg.seapal.aview.tui.states.person.StartState;
 import de.htwg.seapal.controller.IPersonController;
 import de.htwg.seapal.controller.impl.PersonController;
 import de.htwg.seapal.database.impl.HashMapPersonDatabase;
+import de.htwg.seapal.utils.Logger;
 
 public class PersonActivity extends AActivity {
 
@@ -18,7 +19,7 @@ public class PersonActivity extends AActivity {
 		// this.controller = new
 		// PersonController(HashMapPersonDatabase.getInstance());
 		this.controller = new PersonController(
-				HashMapPersonDatabase.getInstance());
+				HashMapPersonDatabase.getInstance(), new Logger());
 		currenState = new StartState();
 		controller.addObserver(this);
 	}

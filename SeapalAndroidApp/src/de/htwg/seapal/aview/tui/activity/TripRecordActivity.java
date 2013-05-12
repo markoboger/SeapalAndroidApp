@@ -11,8 +11,8 @@ import de.htwg.seapal.R;
 import de.htwg.seapal.aview.listener.TrackLocationListener;
 import de.htwg.seapal.aview.tui.states.recordTrip.StartState;
 import de.htwg.seapal.controller.impl.WaypointController;
-import de.htwg.seapal.database.impl.HashMapWaypointDatabase;
 import de.htwg.seapal.database.impl.TouchDBWaypointDatabase;
+import de.htwg.seapal.utils.Logger;
 
 public class TripRecordActivity extends AActivity {
 
@@ -29,9 +29,11 @@ public class TripRecordActivity extends AActivity {
 		Bundle bundle = getIntent().getExtras();
 		trip = UUID.fromString(bundle.getString("trip").toString());
 
-//		controller = new WaypointController(
-//				HashMapWaypointDatabase.getInstance());
-		controller = new WaypointController(TouchDBWaypointDatabase.getInstance(getApplicationContext()));
+		// controller = new WaypointController(
+		// HashMapWaypointDatabase.getInstance());
+		controller = new WaypointController(
+				TouchDBWaypointDatabase.getInstance(getApplicationContext()),
+				new Logger());
 		currenState = new StartState();
 		controller.addObserver(this);
 

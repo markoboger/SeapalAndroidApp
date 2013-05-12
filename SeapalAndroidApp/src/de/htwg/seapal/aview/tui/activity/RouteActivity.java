@@ -6,7 +6,8 @@ import de.htwg.seapal.aview.tui.states.route.StartState;
 import de.htwg.seapal.controller.IRouteController;
 import de.htwg.seapal.controller.impl.RouteController;
 import de.htwg.seapal.database.impl.HashMapRouteDatabase;
-import de.htwg.seapal.observer.IObserver;
+import de.htwg.seapal.utils.Logger;
+import de.htwg.seapal.utils.observer.IObserver;
 
 public class RouteActivity extends AActivity implements IObserver {
 
@@ -16,10 +17,11 @@ public class RouteActivity extends AActivity implements IObserver {
 	protected void setup() {
 		TextView header = (TextView) this.findViewById(R.id.header);
 		header.setText("Route");
-		controller = new RouteController(HashMapRouteDatabase.getInstance());
+		controller = new RouteController(HashMapRouteDatabase.getInstance(),
+				new Logger());
 		currenState = new StartState();
 		controller.addObserver(this);
-		
+
 	}
 
 	public IRouteController getController() {
