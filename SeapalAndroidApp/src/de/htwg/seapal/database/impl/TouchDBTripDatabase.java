@@ -23,7 +23,7 @@ public class TouchDBTripDatabase implements ITripDatabase {
 	private static final String DDOCNAME = "seapal-trips";
 	private static final String VIEWNAME = "trips";
 	private static final String DATABASE_NAME = "seapal_trips_db";
-	
+
 	private static TouchDBTripDatabase touchDBTripDatabase;
 	private CouchDbConnector couchDbConnector;
 	private TouchDBHelper dbHelper;
@@ -33,15 +33,17 @@ public class TouchDBTripDatabase implements ITripDatabase {
 		dbHelper.createDatabase(ctx);
 		dbHelper.pullFromDatabase();
 		couchDbConnector = dbHelper.getCouchDbConnector();
-		
+
 	}
-	public static TouchDBTripDatabase getInstance(Context ctx)	{
+
+	public static TouchDBTripDatabase getInstance(Context ctx) {
 		if (touchDBTripDatabase == null)
 			touchDBTripDatabase = new TouchDBTripDatabase(ctx);
 		return touchDBTripDatabase;
 	}
+
 	@Override
-	public UUID newTrip() {
+	public UUID create() {
 		ITrip trip = new Trip();
 		try {
 			couchDbConnector.create(trip.getId(), trip);
@@ -53,22 +55,25 @@ public class TouchDBTripDatabase implements ITripDatabase {
 		dbHelper.pushToDatabase();
 		return idx;
 	}
+
 	@Override
-	public void saveTrip(ITrip trip) {
+	public boolean save(ITrip trip) {
 		try {
 			couchDbConnector.update(trip);
 			dbHelper.pushToDatabase();
 		} catch (DocumentNotFoundException e) {
 			Log.d(TAG, "Document not Found");
 			Log.d(TAG, e.toString());
-			return;
+			return false;
 		}
 		Log.d(TAG, "Trip saved: " + trip.getId());
+		return true;
 	}
+
 	@Override
-	public void deleteTrip(UUID id) {
+	public void delete(UUID id) {
 		try {
-			couchDbConnector.delete(getTrip(id));
+			couchDbConnector.delete(get(id));
 			dbHelper.pushToDatabase();
 		} catch (Exception e) {
 			Log.e(TAG, e.toString());
@@ -76,8 +81,9 @@ public class TouchDBTripDatabase implements ITripDatabase {
 		}
 		Log.d(TAG, "Trip deleted");
 	}
+
 	@Override
-	public ITrip getTrip(UUID id) {
+	public ITrip get(UUID id) {
 		ITrip trip;
 		try {
 			trip = couchDbConnector.get(Trip.class, id.toString());
@@ -87,25 +93,31 @@ public class TouchDBTripDatabase implements ITripDatabase {
 		}
 		return trip;
 	}
+
 	@Override
-	public List<ITrip> getTrips() {
+	public List<ITrip> loadAll() {
 		List<ITrip> lst = new LinkedList<ITrip>();
 		List<String> log = new LinkedList<String>();
-		ViewQuery query = new ViewQuery().allDocs();		
+		ViewQuery query = new ViewQuery().allDocs();
 		ViewResult vr = couchDbConnector.queryView(query);
-		
-		
-		for(Row r : vr.getRows()) {
-			lst.add(getTrip(UUID.fromString(r.getId())));
+
+		for (Row r : vr.getRows()) {
+			lst.add(get(UUID.fromString(r.getId())));
 			log.add(r.getId());
 		}
 		Log.d(TAG, "All Trips: " + log.toString());
 		return lst;
 	}
+
 	@Override
-	public boolean closeDB() {
+	public boolean close() {
 		return false;
 	}
-	
+
+	@Override
+	public boolean open() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 }

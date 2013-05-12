@@ -13,7 +13,6 @@ import org.ektorp.ViewResult.Row;
 
 import android.content.Context;
 import android.util.Log;
-
 import de.htwg.seapal.database.IWaypointDatabase;
 import de.htwg.seapal.model.IWaypoint;
 import de.htwg.seapal.model.IWaypoint.ForeSail;
@@ -21,13 +20,13 @@ import de.htwg.seapal.model.IWaypoint.MainSail;
 import de.htwg.seapal.model.IWaypoint.Maneuver;
 import de.htwg.seapal.model.impl.Waypoint;
 
-public class TouchDBWaypointDatabase implements	IWaypointDatabase {
-	
+public class TouchDBWaypointDatabase implements IWaypointDatabase {
+
 	private static final String TAG = "Waypoint-TouchDB";
 	private static final String DDOCNAME = "seapal-waypoint";
 	private static final String VIEWNAME = "waypoint";
 	private static final String DATABASE_NAME = "seapal_waypoint_db";
-	
+
 	private static TouchDBWaypointDatabase touchDBWaypointDatabase;
 	private CouchDbConnector couchDbConnector;
 	private TouchDBHelper dbHelper;
@@ -37,17 +36,19 @@ public class TouchDBWaypointDatabase implements	IWaypointDatabase {
 		dbHelper.createDatabase(ctx);
 		dbHelper.pullFromDatabase();
 		couchDbConnector = dbHelper.getCouchDbConnector();
-		
+
 	}
-	public static TouchDBWaypointDatabase getInstance(Context ctx)	{
+
+	public static TouchDBWaypointDatabase getInstance(Context ctx) {
 		if (touchDBWaypointDatabase == null)
 			touchDBWaypointDatabase = new TouchDBWaypointDatabase(ctx);
 		return touchDBWaypointDatabase;
 	}
 
 	@Override
-	public UUID newWaypoint() {
-		IWaypoint waypoint = new Waypoint(Maneuver.NONE, ForeSail.NONE, MainSail.NONE);
+	public UUID create() {
+		IWaypoint waypoint = new Waypoint(Maneuver.NONE, ForeSail.NONE,
+				MainSail.NONE);
 		try {
 			couchDbConnector.create(waypoint.getId(), waypoint);
 		} catch (UpdateConflictException e) {
@@ -60,22 +61,23 @@ public class TouchDBWaypointDatabase implements	IWaypointDatabase {
 	}
 
 	@Override
-	public void saveWaypoint(IWaypoint waypoint) {
+	public boolean save(IWaypoint waypoint) {
 		try {
 			couchDbConnector.update(waypoint);
 			dbHelper.pushToDatabase();
 		} catch (DocumentNotFoundException e) {
 			Log.d(TAG, "Document not Found");
 			Log.d(TAG, e.toString());
-			return;
+			return false;
 		}
-		Log.d(TAG, "Waypoint saved: " + waypoint.getId());		
+		Log.d(TAG, "Waypoint saved: " + waypoint.getId());
+		return true;
 	}
 
 	@Override
-	public void deleteWaypoint(UUID id) {
+	public void delete(UUID id) {
 		try {
-			couchDbConnector.delete(getWaypoint(id));
+			couchDbConnector.delete(get(id));
 			dbHelper.pushToDatabase();
 		} catch (Exception e) {
 			Log.e(TAG, e.toString());
@@ -85,7 +87,7 @@ public class TouchDBWaypointDatabase implements	IWaypointDatabase {
 	}
 
 	@Override
-	public IWaypoint getWaypoint(UUID id) {
+	public IWaypoint get(UUID id) {
 		IWaypoint waypoint;
 		try {
 			waypoint = couchDbConnector.get(Waypoint.class, id.toString());
@@ -97,15 +99,14 @@ public class TouchDBWaypointDatabase implements	IWaypointDatabase {
 	}
 
 	@Override
-	public List<IWaypoint> getWaypoints() {
+	public List<IWaypoint> loadAll() {
 		List<IWaypoint> lst = new LinkedList<IWaypoint>();
 		List<String> log = new LinkedList<String>();
-		ViewQuery query = new ViewQuery().allDocs();		
+		ViewQuery query = new ViewQuery().allDocs();
 		ViewResult vr = couchDbConnector.queryView(query);
-		
-		
-		for(Row r : vr.getRows()) {
-			lst.add(getWaypoint(UUID.fromString(r.getId())));
+
+		for (Row r : vr.getRows()) {
+			lst.add(get(UUID.fromString(r.getId())));
 			log.add(r.getId());
 		}
 		Log.d(TAG, "All Waypoints: " + log.toString());
@@ -113,7 +114,13 @@ public class TouchDBWaypointDatabase implements	IWaypointDatabase {
 	}
 
 	@Override
-	public boolean closeDB() {
+	public boolean close() {
+		return false;
+	}
+
+	@Override
+	public boolean open() {
+		// TODO Auto-generated method stub
 		return false;
 	}
 
