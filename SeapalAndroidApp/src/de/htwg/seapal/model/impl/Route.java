@@ -58,6 +58,11 @@ public class Route implements IRoute {
 	}
 
 	@Override
+	public void deleteMark(UUID mark) {
+		this.marks.remove(mark);
+	}
+	
+	@Override
 	public UUID getRouteEntryPoint() {
 		return routeEntryPoint;
 	}
@@ -76,7 +81,7 @@ public class Route implements IRoute {
 	public void setDistance(double distance) {
 		this.distance = distance;
 	}
-
+	
 	@Override
 	public String getUser() {
 		return user;

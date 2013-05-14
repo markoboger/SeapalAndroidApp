@@ -42,15 +42,15 @@ public class DeleteMarkState implements TuiState {
 			number = Integer.valueOf(input) - 1;
 		} catch (NumberFormatException e) {
 			if (input.equals("q"))
-				context.setState(new ShowState(route));
+				context.setState(new ShowMarksState(route));
 			else
 				Toast.makeText((RouteActivity) context, "Unkown Option",
 						Toast.LENGTH_SHORT).show();
 			return false;
 		}
 		if (number >= 0 && number < marks.size()) {
-			markController.deleteMark(marks.get(number));
-			context.setState(new ShowState(route));			
+			((RouteActivity) context).getController().deleteMark(route, marks.get(number));
+			context.setState(new ShowMarksState(route));			
 		}
 		else
 			Toast.makeText((RouteActivity) context, "Unkown Option",

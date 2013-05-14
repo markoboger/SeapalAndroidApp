@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+import android.location.Location;
 import android.text.format.DateFormat;
 import de.htwg.seapal.controller.IMarkController;
 import de.htwg.seapal.database.IMarkDatabase;
@@ -222,19 +223,23 @@ public class MarkController extends Observable implements IMarkController {
 	}
 
 	@Override
-	public UUID newMark() {
+	public UUID newMark(Location location) {
 		UUID newMark = db.newMark();
 		setDate(newMark, System.currentTimeMillis());
 		setIsRouteMark(newMark, false);
+		setLatitude(newMark, location.getLatitude());
+		setLongitude(newMark, location.getLongitude());
 		notifyObservers();
 		return newMark;
 	}
 
 	@Override
-	public UUID newRouteMark() {
+	public UUID newRouteMark(Location location) {
 		UUID newMark = db.newMark();
 		setDate(newMark, System.currentTimeMillis());
 		setIsRouteMark(newMark, true);
+		setLatitude(newMark, location.getLatitude());
+		setLongitude(newMark, location.getLongitude());
 		notifyObservers();
 		return newMark;
 	}
