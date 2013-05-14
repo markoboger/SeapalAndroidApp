@@ -16,7 +16,6 @@ public class Route implements IRoute {
 	private List<UUID> marks;
 	private UUID routeEntryPoint;
 	private double distance;
-	private int countRoutePoint;
 
 	public Route() {
 		id = UUID.randomUUID().toString();
@@ -61,7 +60,6 @@ public class Route implements IRoute {
 	@Override
 	public void deleteMark(UUID mark) {
 		this.marks.remove(mark);
-		
 	}
 	
 	@Override
