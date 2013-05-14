@@ -124,4 +124,10 @@ public class TouchDBWaypointDatabase implements IWaypointDatabase {
 		return false;
 	}
 
+	@Override
+	public List<IWaypoint> loadAllByTripId(UUID arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
