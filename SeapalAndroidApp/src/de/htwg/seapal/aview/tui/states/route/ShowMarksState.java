@@ -12,7 +12,7 @@ import de.htwg.seapal.controller.IMarkController;
 import de.htwg.seapal.controller.IRouteController;
 import de.htwg.seapal.controller.impl.MarkController;
 import de.htwg.seapal.database.mock.MarkDatabase;
-import de.htwg.seapal.utils.Logger;
+import de.htwg.seapal.utils.logging.Logger;
 
 public class ShowMarksState implements TuiState {
 
@@ -72,27 +72,27 @@ public class ShowMarksState implements TuiState {
 
 		return true;
 	}
-	
+
 	private double calcDistance() {
-		
+
 		float distance = 0.0F;
 		Location location1 = new Location("");
 		Location location2 = new Location("");
 		int i = 1;
 		for (UUID id : marks) {
-			if(i < marks.size()) {
+			if (i < marks.size()) {
 				location1.setLatitude(markController.getLatitude(id));
 				location1.setLongitude(markController.getLongitude(id));
 				location2.setLatitude(markController.getLatitude(marks.get(i)));
-				location2.setLongitude(markController.getLongitude(marks.get(i)));
-				
+				location2
+						.setLongitude(markController.getLongitude(marks.get(i)));
+
 				distance += location1.distanceTo(location2);
 			}
-			
+
 			++i;
 		}
-		
-		
+
 		return distance;
 	}
 

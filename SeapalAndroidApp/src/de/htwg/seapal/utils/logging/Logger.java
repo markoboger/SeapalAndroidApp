@@ -1,7 +1,6 @@
-package de.htwg.seapal.utils;
+package de.htwg.seapal.utils.logging;
 
 import android.util.Log;
-import de.htwg.seapal.utils.logging.ILogger;
 
 public class Logger implements ILogger {
 

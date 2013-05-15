@@ -3,17 +3,15 @@ package de.htwg.seapal.model;
 import java.util.List;
 import java.util.UUID;
 
-public interface IRoute {
-
-	UUID getId();
+public interface IRoute extends IModel {
 
 	String getName();
 
 	void setName(String name);
 
-	long getDate();
+	Long getDate();
 
-	void setDate(long date);
+	void setDate(Long date);
 
 	List<UUID> getMarks();
 
@@ -25,9 +23,9 @@ public interface IRoute {
 
 	void setRouteEntryPoint(UUID mark);
 
-	double getDistance();
+	Double getDistance();
 
-	void setDistance(double distance);
+	void setDistance(Double distance);
 
 	String getUser();
 

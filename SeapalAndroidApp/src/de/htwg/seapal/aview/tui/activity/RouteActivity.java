@@ -6,7 +6,7 @@ import de.htwg.seapal.aview.tui.states.route.StartState;
 import de.htwg.seapal.controller.IRouteController;
 import de.htwg.seapal.controller.impl.RouteController;
 import de.htwg.seapal.database.mock.RouteDatabase;
-import de.htwg.seapal.utils.Logger;
+import de.htwg.seapal.utils.logging.Logger;
 import de.htwg.seapal.utils.observer.IObserver;
 
 public class RouteActivity extends AActivity implements IObserver {

@@ -4,31 +4,28 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-import android.text.format.DateFormat;
+import com.google.inject.Inject;
+
 import de.htwg.seapal.controller.IRouteController;
 import de.htwg.seapal.database.IRouteDatabase;
 import de.htwg.seapal.model.IRoute;
-import de.htwg.seapal.observer.Observable;
+import de.htwg.seapal.utils.logging.ILogger;
+import de.htwg.seapal.utils.observer.Observable;
 
 public class RouteController extends Observable implements IRouteController {
 
 	private IRouteDatabase db;
+	private final ILogger logger;
 
-	public RouteController(IRouteDatabase db) {
+	@Inject
+	public RouteController(IRouteDatabase db, ILogger logger) {
 		this.db = db;
-	}
-
-	@Override
-	public UUID getId(UUID id) {
-		IRoute route = db.getRoute(id);
-		if (route == null)
-			return null;
-		return route.getId();
+		this.logger = logger;
 	}
 
 	@Override
 	public String getName(UUID id) {
-		IRoute route = db.getRoute(id);
+		IRoute route = db.get(id);
 		if (route == null)
 			return null;
 		return route.getName();
@@ -36,36 +33,35 @@ public class RouteController extends Observable implements IRouteController {
 
 	@Override
 	public void setName(UUID id, String name) {
-		IRoute route = db.getRoute(id);
+		IRoute route = db.get(id);
 		if (route == null)
 			return;
 		route.setName(name);
-		db.saveRoute(route);
+		db.save(route);
 		notifyObservers();
 	}
 
 	@Override
-	public String getDate(UUID id) {
-		IRoute route = db.getRoute(id);
+	public long getDate(UUID id) {
+		IRoute route = db.get(id);
 		if (route == null)
-			return null;
-		long currentMillis = route.getDate();
-		return DateFormat.format("yyyy/MM/dd hh:mm", currentMillis).toString();
+			return -1;
+		return route.getDate();
 	}
 
 	@Override
 	public void setDate(UUID id, long date) {
-		IRoute route = db.getRoute(id);
+		IRoute route = db.get(id);
 		if (route == null)
 			return;
 		route.setDate(date);
-		db.saveRoute(route);
+		db.save(route);
 		notifyObservers();
 	}
 
 	@Override
 	public UUID getRouteEntryPoint(UUID id) {
-		IRoute route = db.getRoute(id);
+		IRoute route = db.get(id);
 		if (route == null)
 			return null;
 		return route.getRouteEntryPoint();
@@ -73,17 +69,17 @@ public class RouteController extends Observable implements IRouteController {
 
 	@Override
 	public void setRouteEntryPoint(UUID id, UUID mark) {
-		IRoute route = db.getRoute(id);
+		IRoute route = db.get(id);
 		if (route == null)
 			return;
 		route.setRouteEntryPoint(mark);
-		db.saveRoute(route);
+		db.save(route);
 		notifyObservers();
 	}
 
 	@Override
 	public double getDistance(UUID id) {
-		IRoute route = db.getRoute(id);
+		IRoute route = db.get(id);
 		if (route == null)
 			return -1;
 		return route.getDistance();
@@ -91,18 +87,18 @@ public class RouteController extends Observable implements IRouteController {
 
 	@Override
 	public void setDistance(UUID id, double distance) {
-		IRoute route = db.getRoute(id);
+		IRoute route = db.get(id);
 		if (route == null)
 			return;
 		route.setDistance(distance);
-		db.saveRoute(route);
+		db.save(route);
 		notifyObservers();
 
 	}
 
 	@Override
 	public List<UUID> getMarks(UUID id) {
-		IRoute route = db.getRoute(id);
+		IRoute route = db.get(id);
 		if (route == null)
 			return null;
 		return route.getMarks();
@@ -110,49 +106,49 @@ public class RouteController extends Observable implements IRouteController {
 
 	@Override
 	public void addMark(UUID id, UUID mark) {
-		IRoute route = db.getRoute(id);
+		IRoute route = db.get(id);
 		if (route == null)
 			return;
 		route.addMark(mark);
-		db.saveRoute(route);
+		db.save(route);
 		notifyObservers();
 	}
 	
 	@Override
 	public void deleteMark(UUID id, UUID mark) {
-		IRoute route = db.getRoute(id);
+		IRoute route = db.get(id);
 		if (route == null)
 			return;
 		route.deleteMark(mark);
-		db.saveRoute(route);
+		db.save(route);
 		notifyObservers();
 	}
 
 	@Override
 	public void deleteRoute(UUID id) {
-		db.deleteRoute(id);
+		db.delete(id);
 		notifyObservers();
 	}
 
 	@Override
-	public void closeDB() {
-		db.closeDB();
-
+	public final void closeDB() {
+		db.close();
+		logger.info("RouteController", "Database closed");
 	}
 
 	@Override
 	public List<UUID> getRoutes() {
 		List<UUID> list = new LinkedList<UUID>();
-		List<IRoute> routes = db.getRoutes();
+		List<IRoute> routes = db.loadAll();
 		for (IRoute entry : routes) {
-			list.add(entry.getId());
+			list.add(entry.getUUID());
 		}
 		return list;
 	}
 
 	@Override
 	public UUID newRoute() {
-		UUID newRoute = db.newRoute();
+		UUID newRoute = db.create();
 		setDate(newRoute, System.currentTimeMillis());
 		notifyObservers();
 		return newRoute;
@@ -165,4 +161,18 @@ public class RouteController extends Observable implements IRouteController {
 				+ "\nRouteEntryPoint = \t" + getRouteEntryPoint(id);
 	}
 
+	@Override
+	public List<IRoute> getAllRoutes() {
+		return db.loadAll();
+	}
+
+	@Override
+	public boolean saveRoute(IRoute route) {
+		return db.save(route);
+	}
+
+	@Override
+	public IRoute getRoute(UUID routeId) {
+		return db.get(routeId);
+	}
 }

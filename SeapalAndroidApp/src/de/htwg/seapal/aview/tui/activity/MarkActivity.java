@@ -6,7 +6,7 @@ import de.htwg.seapal.aview.tui.states.mark.StartState;
 import de.htwg.seapal.controller.IMarkController;
 import de.htwg.seapal.controller.impl.MarkController;
 import de.htwg.seapal.database.mock.MarkDatabase;
-import de.htwg.seapal.utils.Logger;
+import de.htwg.seapal.utils.logging.Logger;
 import de.htwg.seapal.utils.observer.IObserver;
 
 public class MarkActivity extends AActivity implements IObserver {

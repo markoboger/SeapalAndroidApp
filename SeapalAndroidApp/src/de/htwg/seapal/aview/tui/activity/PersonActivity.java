@@ -6,7 +6,7 @@ import de.htwg.seapal.aview.tui.states.person.StartState;
 import de.htwg.seapal.controller.IPersonController;
 import de.htwg.seapal.controller.impl.PersonController;
 import de.htwg.seapal.database.mock.PersonDatabase;
-import de.htwg.seapal.utils.Logger;
+import de.htwg.seapal.utils.logging.Logger;
 
 public class PersonActivity extends AActivity {
 

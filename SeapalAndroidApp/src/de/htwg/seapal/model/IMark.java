@@ -1,46 +1,42 @@
 package de.htwg.seapal.model;
 
-import java.util.UUID;
-
-public interface IMark {
-
-	UUID getId();
+public interface IMark extends IModel {
 
 	String getName();
 
 	void setName(String name);
 
-	double getLatitude();
+	Double getLatitude();
 
-	void setLatitude(double latitute);
+	void setLatitude(Double latitute);
 
-	double getLongitude();
+	Double getLongitude();
 
-	void setLongitude(double longitude);
+	void setLongitude(Double Longitude);
 
 	String getNote();
 
 	void setNote(String note);
 
-	int getBTM();
+	Integer getBTM();
 
-	void setBTM(int btm);
+	void setBTM(Integer btm);
 
-	int getDTM();
+	Integer getDTM();
 
-	void setDTM(int dtm);
+	void setDTM(Integer dtm);
 
-	int getCOG();
+	Integer getCOG();
 
-	void setCOG(int cog);
+	void setCOG(Integer cog);
 
-	int getSOG();
+	Integer getSOG();
 
-	void setSOG(int sog);
+	void setSOG(Integer sog);
 
-	long getDate();
+	Long getDate();
 
-	void setDate(long date);
+	void setDate(Long date);
 
 	boolean isRouteMark();
 

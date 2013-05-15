@@ -4,37 +4,55 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.ektorp.support.CouchDbDocument;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import de.htwg.seapal.model.ITrip;
+import de.htwg.seapal.model.ModelDocument;
 
-public class Trip extends CouchDbDocument implements ITrip {
+public class Trip extends ModelDocument implements ITrip {
 
 	/**
-	 * 
+	 * Serial version UID for serialization.
 	 */
 	private static final long serialVersionUID = 1L;
-
-	private String id; // UUID
 
 	private String name;
 	private String startLocation;
 	private String endLocation;
 	private String skipper; // UUID Person
 	private List<String> crew; // UUID Person ?/ or just Name TODO
-	private long startTime; // unix timestamp
-	private long endTime; // unix timestamp
-	private long duration; // TODO do we need this ? could be calculated
-	private int motor;
-	private double fuel;
+	private Long startTime; // unix timestamp
+	private Long endTime; // unix timestamp
+	private Long duration; // TODO do we need this ? could be calculated
+	private Integer motor;
+	private Double fuel;
 	private String notes;
 	private String boat; // UUID Boat
 
 	public Trip() {
-		this.id = UUID.randomUUID().toString();
+		setId(UUID.randomUUID().toString());
 		this.crew = new ArrayList<String>();
 		this.skipper = UUID.randomUUID().toString();
+	}
+
+	public Trip(ITrip t) {
+		setId(t.getId());
+		this.crew = new ArrayList<String>();
+
+		this.name = t.getName();
+		this.startLocation = t.getStartLocation();
+		this.endLocation = t.getEndLocation();
+		this.skipper = t.getSkipper();
+		this.crew = t.getCrewMembers();
+		this.startTime = t.getStartTime();
+		this.endTime = t.getEndTime();
+		this.duration = t.getDuration();
+		this.motor = t.getMotor();
+		this.fuel = t.getFuel();
+		this.notes = t.getNotes();
+		this.boat = t.getBoat();
 	}
 
 	public String getName() {
@@ -65,18 +83,15 @@ public class Trip extends CouchDbDocument implements ITrip {
 		return endLocation;
 	}
 
-
 	@Override
 	public void setSkipper(String skipper) {
 		this.skipper = skipper;
 	}
 
-	
 	@Override
 	public String getSkipper() {
 		return skipper;
 	}
-
 
 	@Override
 	public void addCrewMember(String crewMember) {
@@ -89,52 +104,52 @@ public class Trip extends CouchDbDocument implements ITrip {
 	}
 
 	@Override
-	public void setStartTime(long start) {
+	public void setStartTime(Long start) {
 		this.startTime = start;
 	}
 
 	@Override
-	public long getStartTime() {
+	public Long getStartTime() {
 		return startTime;
 	}
 
 	@Override
-	public void setEndTime(long end) {
+	public void setEndTime(Long end) {
 		this.endTime = end;
 	}
 
 	@Override
-	public long getEndTime() {
+	public Long getEndTime() {
 		return endTime;
 	}
 
 	@Override
-	public void setDuration(long timeInSeconds) {
+	public void setDuration(Long timeInSeconds) {
 		this.duration = timeInSeconds;
 	}
 
 	@Override
-	public long getDuration() {
+	public Long getDuration() {
 		return duration;
 	}
 
 	@Override
-	public void setMotor(int motor) {
+	public void setMotor(Integer motor) {
 		this.motor = motor;
 	}
 
 	@Override
-	public int getMotor() {
+	public Integer getMotor() {
 		return motor;
 	}
 
 	@Override
-	public void setFuel(double percent) {
+	public void setFuel(Double percent) {
 		this.fuel = percent;
 	}
 
 	@Override
-	public double getFuel() {
+	public Double getFuel() {
 		return fuel;
 	}
 
@@ -146,18 +161,6 @@ public class Trip extends CouchDbDocument implements ITrip {
 	@Override
 	public String getNotes() {
 		return notes;
-	}
-
-
-	@JsonProperty("_id")
-	@Override
-	public String getId() {
-		return id;
-	}
-	
-	@JsonProperty("_id")
-	public void setId(UUID id) {
-		this.id = id.toString();
 	}
 
 	@Override
@@ -172,11 +175,16 @@ public class Trip extends CouchDbDocument implements ITrip {
 
 	@Override
 	public String toString() {
-		return "Trip [id=" + id + ", name=" + name + ", startLocation="
-				+ startLocation + ", endLocation=" + endLocation + ", skipper="
-				+ skipper + ", crew=" + crew + ", startTime=" + startTime
-				+ ", endTime=" + endTime + ", duration=" + duration
-				+ ", motor=" + motor + ", fuel=" + fuel + ", notes=" + notes
-				+ ", boat=" + boat + "]";
+		return ReflectionToStringBuilder.toString(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return EqualsBuilder.reflectionEquals(this, obj);
+	}
+	
+	@Override
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
 	}
 }

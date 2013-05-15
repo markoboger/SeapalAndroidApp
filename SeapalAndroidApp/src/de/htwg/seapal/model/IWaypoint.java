@@ -2,7 +2,7 @@ package de.htwg.seapal.model;
 
 import java.util.UUID;
 
-public interface IWaypoint {
+public interface IWaypoint extends IModel {
 
 	public enum Maneuver {
 		NONE, TACK, JIBE, LAYTO, SET_SAILS, CHANGE_SAILS, SAILS_DOWN, REFF, ANKER_UP, ANKER_DOWN
@@ -20,13 +20,13 @@ public interface IWaypoint {
 
 	String getNote();
 
-	int getBTM();
+	Integer getBTM();
 
-	int getDTM();
+	Integer getDTM();
 
-	int getCOG();
+	Integer getCOG();
 
-	int getSOG();
+	Integer getSOG();
 
 	String getHeadedFor();
 
@@ -42,13 +42,13 @@ public interface IWaypoint {
 
 	void setNote(String note);
 
-	void setBTM(int btm);
+	void setBTM(Integer btm);
 
-	void setDTM(int dtm);
+	void setDTM(Integer dtm);
 
-	void setCOG(int cog);
+	void setCOG(Integer cog);
 
-	void setSOG(int sog);
+	void setSOG(Integer sog);
 
 	void setHeadedFor(UUID mark);
 
@@ -56,25 +56,19 @@ public interface IWaypoint {
 
 	void setMainsail(MainSail mainSail);
 
-	String getId();
-
 	String getTrip();
 
 	void setTrip(String trip);
 
-	long getDate();
+	Long getDate();
 
-	void setDate(long date);
+	void setDate(Long date);
 
-	double getLatitude();
+	Double getLatitude();
 
-	void setLatitude(double latitude);
+	void setLatitude(Double latitude);
 
-	double getLongitude();
+	Double getLongitude();
 
-	void setLongitude(double longitude);
-
-	void setId(String id);
-
-//	UUID getUUId();
+	void setLongitude(Double Longitude);
 }

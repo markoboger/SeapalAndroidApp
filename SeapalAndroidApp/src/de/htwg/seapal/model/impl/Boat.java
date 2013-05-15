@@ -2,62 +2,56 @@ package de.htwg.seapal.model.impl;
 
 import java.util.UUID;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.ektorp.support.CouchDbDocument;
-
 import de.htwg.seapal.model.IBoat;
+import de.htwg.seapal.model.ModelDocument;
 
-public class Boat extends CouchDbDocument implements IBoat {
+public class Boat extends ModelDocument implements IBoat {
 
 	/**
-	 * 
+	 * Serial version UID for serialization.
 	 */
 	private static final long serialVersionUID = 1L;
 
-	
-
-	private String id; // UUID
-	private String user; // UUID User
+	private String user; // person UUID
 
 	private String boatName;
 	private String registerNr;
 	private String sailSign;
 	private String homePort;
 	private String yachtclub;
-	// private String owner; // Person TODO
+	private UUID owner;
 	private String insurance;
 	private String callSign;
 	private String type;
 	private String constructor;
-	private double length;
-	private double width;
-	private double draft;
-	private double mastHeight;
-	private double displacement;
+	private Double length;
+	private Double width;
+	private Double draft;
+	private Double mastHeight;
+	private Double displacement;
 	private String rigging;
-	private int yearOfConstruction;
+	private Integer yearOfConstruction;
 	private String motor;
-	private double tankSize;
-	private double wasteWaterTankSize;
-	private double freshWaterTankSize;
-	private double mainSailSize;
-	private double genuaSize;
-	private double spiSize;
+	private Double tankSize;
+	private Double wasteWaterTankSize;
+	private Double freshWaterTankSize;
+	private Double mainSailSize;
+	private Double genuaSize;
+	private Double spiSize;
 	
 	public Boat() {
-		this.id = UUID.randomUUID().toString();
+		setId(UUID.randomUUID().toString());
 	}
 
 	public Boat(IBoat boat) {
-		this.id = boat.getId();
+		setId(boat.getId());
 		this.user = boat.getUser();
 		this.boatName = boat.getBoatName();
 		this.registerNr = boat.getRegisterNr();
 		this.sailSign = boat.getSailSign();
 		this.homePort = boat.getHomePort();
 		this.yachtclub = boat.getYachtclub();
-		// this.owner = boat.getOwner().toString();
+		this.owner = boat.getOwner();
 		this.insurance = boat.getInsurance();
 		this.callSign = boat.getCallSign();
 		this.type = boat.getType();
@@ -76,22 +70,6 @@ public class Boat extends CouchDbDocument implements IBoat {
 		this.mainSailSize = boat.getMainSailSize();
 		this.genuaSize = boat.getGenuaSize();
 		this.spiSize = boat.getGenuaSize();
-	}
-
-	@JsonIgnore
-	@Override
-	public UUID getUUId() {
-		return UUID.fromString(id);
-	}
-
-	@JsonProperty("_id")
-	public String getId() {
-		return id;
-	}
-
-	@JsonProperty("_id")
-	public void setId(UUID id) {
-		this.id = id.toString();
 	}
 
 	@Override
@@ -144,15 +122,15 @@ public class Boat extends CouchDbDocument implements IBoat {
 		this.yachtclub = yachtclub;
 	}
 
-	// @Override TODO
-	// public UUID getOwner() { // Person
-	// return UUID.fromString(owner);
-	// }
-	//
-	// @Override
-	// public void setOwner(UUID owner) { // Person
-	// this.owner = owner.toString();
-	// }
+	 @Override
+	 public UUID getOwner() { // Person
+		 return owner;
+	 }
+	
+	 @Override
+	 public void setOwner(UUID owner) { // Person
+		 this.owner = owner;
+	 }
 
 	@Override
 	public String getInsurance() {
@@ -195,52 +173,52 @@ public class Boat extends CouchDbDocument implements IBoat {
 	}
 
 	@Override
-	public double getLength() {
+	public Double getLength() {
 		return length;
 	}
 
 	@Override
-	public void setLength(double length) {
+	public void setLength(Double length) {
 		this.length = length;
 	}
 
 	@Override
-	public double getWidth() {
+	public Double getWidth() {
 		return width;
 	}
 
 	@Override
-	public void setWidth(double width) {
+	public void setWidth(Double width) {
 		this.width = width;
 	}
 
 	@Override
-	public double getDraft() {
+	public Double getDraft() {
 		return draft;
 	}
 
 	@Override
-	public void setDraft(double draft) {
+	public void setDraft(Double draft) {
 		this.draft = draft;
 	}
 
 	@Override
-	public double getMastHeight() {
+	public Double getMastHeight() {
 		return mastHeight;
 	}
 
 	@Override
-	public void setMastHeight(double mastHeight) {
+	public void setMastHeight(Double mastHeight) {
 		this.mastHeight = mastHeight;
 	}
 
 	@Override
-	public double getDisplacement() {
+	public Double getDisplacement() {
 		return displacement;
 	}
 
 	@Override
-	public void setDisplacement(double displacement) {
+	public void setDisplacement(Double displacement) {
 		this.displacement = displacement;
 	}
 
@@ -255,12 +233,12 @@ public class Boat extends CouchDbDocument implements IBoat {
 	}
 
 	@Override
-	public int getYearOfConstruction() {
+	public Integer getYearOfConstruction() {
 		return yearOfConstruction;
 	}
 
 	@Override
-	public void setYearOfConstruction(int yearOfConstruction) {
+	public void setYearOfConstruction(Integer yearOfConstruction) {
 		this.yearOfConstruction = yearOfConstruction;
 	}
 
@@ -275,62 +253,62 @@ public class Boat extends CouchDbDocument implements IBoat {
 	}
 
 	@Override
-	public double getTankSize() {
+	public Double getTankSize() {
 		return tankSize;
 	}
 
 	@Override
-	public void setTankSize(double tankSize) {
+	public void setTankSize(Double tankSize) {
 		this.tankSize = tankSize;
 	}
 
 	@Override
-	public double getWasteWaterTankSize() {
+	public Double getWasteWaterTankSize() {
 		return wasteWaterTankSize;
 	}
 
 	@Override
-	public void setWasteWaterTankSize(double wasteWaterTankSize) {
+	public void setWasteWaterTankSize(Double wasteWaterTankSize) {
 		this.wasteWaterTankSize = wasteWaterTankSize;
 	}
 
 	@Override
-	public double getFreshWaterTankSize() {
+	public Double getFreshWaterTankSize() {
 		return freshWaterTankSize;
 	}
 
 	@Override
-	public void setFreshWaterTankSize(double freshWaterTankSize) {
+	public void setFreshWaterTankSize(Double freshWaterTankSize) {
 		this.freshWaterTankSize = freshWaterTankSize;
 	}
 
 	@Override
-	public double getMainSailSize() {
+	public Double getMainSailSize() {
 		return mainSailSize;
 	}
 
 	@Override
-	public void setMainSailSize(double mainSailSize) {
+	public void setMainSailSize(Double mainSailSize) {
 		this.mainSailSize = mainSailSize;
 	}
 
 	@Override
-	public double getGenuaSize() {
+	public Double getGenuaSize() {
 		return genuaSize;
 	}
 
 	@Override
-	public void setGenuaSize(double genuaSize) {
+	public void setGenuaSize(Double genuaSize) {
 		this.genuaSize = genuaSize;
 	}
 
 	@Override
-	public double getSpiSize() {
+	public Double getSpiSize() {
 		return spiSize;
 	}
 
 	@Override
-	public void setSpiSize(double spiSize) {
+	public void setSpiSize(Double spiSize) {
 		this.spiSize = spiSize;
 	}
 
@@ -343,5 +321,4 @@ public class Boat extends CouchDbDocument implements IBoat {
 	public void setUser(String userId) {
 		this.user = userId;
 	}
-
 }

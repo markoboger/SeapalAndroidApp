@@ -3,13 +3,10 @@ package de.htwg.seapal.controller;
 import java.util.List;
 import java.util.UUID;
 
-import de.htwg.seapal.observer.IObservable;
+import de.htwg.seapal.model.IPerson;
+import de.htwg.seapal.utils.observer.IObservable;
 
 public interface IPersonController extends IObservable {
-
-	List<UUID> getPersons();
-
-	UUID newPerson();
 
 	String getPersonFirstname(UUID personId);
 
@@ -64,7 +61,33 @@ public interface IPersonController extends IObservable {
 	void setPersonCountry(UUID personId, String country);
 
 	String getPersonString(UUID personId);
+	
+	void closeDB();
 
 	void deletePerson(UUID personId);
 
+	List<UUID> getPersons();
+
+	UUID newPerson();
+	
+	/**
+	 * Gets a person by the given person ID.
+	 * @param personId The person ID.
+	 * @return The person or NULL, if no person was found.
+	 */
+	IPerson getPerson(UUID personId);
+	
+	/**
+	 * Gets all persons.
+	 * @return All persons.
+	 */
+	List<IPerson> getAllPersons();
+	
+	/**
+	 * Saves the person.
+	 * @param person The person to save.
+	 * @return Returns TRUE, if the person was newly created
+	 * 	       and FALSE when the person was updated.
+	 */
+	boolean savePerson(IPerson person);
 }

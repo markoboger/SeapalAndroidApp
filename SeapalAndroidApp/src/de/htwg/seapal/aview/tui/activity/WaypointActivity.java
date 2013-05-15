@@ -9,7 +9,7 @@ import de.htwg.seapal.aview.tui.states.waypoint.StartState;
 import de.htwg.seapal.controller.IWaypointController;
 import de.htwg.seapal.controller.impl.WaypointController;
 import de.htwg.seapal.database.impl.TouchDBWaypointDatabase;
-import de.htwg.seapal.utils.Logger;
+import de.htwg.seapal.utils.logging.Logger;
 
 public class WaypointActivity extends AActivity {
 

@@ -2,11 +2,7 @@ package de.htwg.seapal.model;
 
 import java.util.UUID;
 
-public interface IBoat {
-
-	UUID getUUId();
-
-	String getId();
+public interface IBoat extends IModel {
 
 	String getBoatName();
 
@@ -28,9 +24,9 @@ public interface IBoat {
 
 	void setYachtclub(String yachtclub);
 
-	// UUID getOwner(); // Person
-	//
-	// void setOwner(UUID owner); // Person
+	UUID getOwner(); // Person
+	
+	void setOwner(UUID owner); // Person
 
 	String getInsurance();
 
@@ -48,61 +44,61 @@ public interface IBoat {
 
 	void setConstructor(String constructor);
 
-	double getLength();
+	Double getLength();
 
-	void setLength(double length);
+	void setLength(Double length);
 
-	double getWidth();
+	Double getWidth();
 
-	void setWidth(double width);
+	void setWidth(Double width);
 
-	double getDraft();
+	Double getDraft();
 
-	void setDraft(double draft);
+	void setDraft(Double draft);
 
-	double getMastHeight();
+	Double getMastHeight();
 
-	void setMastHeight(double mastHeight);
+	void setMastHeight(Double mastHeight);
 
-	double getDisplacement();
+	Double getDisplacement();
 
-	void setDisplacement(double displacement);
+	void setDisplacement(Double displacement);
 
 	String getRigging();
 
 	void setRigging(String rigging);
 
-	int getYearOfConstruction();
+	Integer getYearOfConstruction();
 
-	void setYearOfConstruction(int yearOfConstruction);
+	void setYearOfConstruction(Integer yearOfConstruction);
 
 	String getMotor();
 
 	void setMotor(String motor);
 
-	double getTankSize();
+	Double getTankSize();
 
-	void setTankSize(double tankSize);
+	void setTankSize(Double tankSize);
 
-	double getWasteWaterTankSize();
+	Double getWasteWaterTankSize();
 
-	void setWasteWaterTankSize(double wasteWaterTankSize);
+	void setWasteWaterTankSize(Double wasteWaterTankSize);
 
-	double getFreshWaterTankSize();
+	Double getFreshWaterTankSize();
 
-	void setFreshWaterTankSize(double freshWaterTankSize);
+	void setFreshWaterTankSize(Double freshWaterTankSize);
 
-	double getMainSailSize();
+	Double getMainSailSize();
 
-	void setMainSailSize(double mainSailSize);
+	void setMainSailSize(Double mainSailSize);
 
-	double getGenuaSize();
+	Double getGenuaSize();
 
-	void setGenuaSize(double genuaSize);
+	void setGenuaSize(Double genuaSize);
 
-	double getSpiSize();
+	Double getSpiSize();
 
-	void setSpiSize(double spiSize);
+	void setSpiSize(Double spiSize);
 
 	void setUser(String userId);
 

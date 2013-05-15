@@ -2,43 +2,71 @@ package de.htwg.seapal.model.impl;
 
 import java.util.UUID;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.ektorp.support.CouchDbDocument;
 
 import de.htwg.seapal.model.IWaypoint;
+import de.htwg.seapal.model.ModelDocument;
 
-public class Waypoint extends CouchDbDocument implements IWaypoint {
+public class Waypoint extends ModelDocument implements IWaypoint {
 
 	/**
-	 * 
+	 * Serial version UID for serialization.
 	 */
 	private static final long serialVersionUID = 1L;
-	private String id; // UUID
 	private String name;
-	private double latitude;
-	private double longitude;
-	private long date; // unix timestamp
+	private Double latitude;
+	private Double Longitude;
+	private Long date; // unix timestamp
 	private String note;
-	private int btm;
-	private int dtm;
-	private int cog;
-	private int sog;
+	private Integer btm;
+	private Integer dtm;
+	private Integer cog;
+	private Integer sog;
 	private String headedFor; // UUID Mark
 	private Maneuver maneuver;
 	private ForeSail foreSail;
 	private MainSail mainSail;
 	private String trip; // UUID Trip
 
+	public Waypoint() {
+		setId(UUID.randomUUID().toString());
+		maneuver = Maneuver.NONE;
+		foreSail = ForeSail.NONE;
+		mainSail = MainSail.NONE;
+	}
+	
 	@JsonCreator
 	public Waypoint(@JsonProperty("maneuver") Maneuver m, 
 			@JsonProperty("foresail") ForeSail f,
 			@JsonProperty("mainsail") MainSail msail) 
 	{
-		id = UUID.randomUUID().toString();
-		maneuver = Maneuver.NONE;
-		foreSail = ForeSail.NONE;
-		mainSail = MainSail.NONE;
+		setId(UUID.randomUUID().toString());
+		maneuver = m;
+		foreSail = f;
+		mainSail = msail;
+	}
+	
+	public Waypoint(IWaypoint w) 
+	{
+		setId(w.getId());
+		this.name = w.getName();
+		this.latitude = w.getLatitude();
+		this.Longitude = w.getLongitude();
+		this.date = w.getDate();
+		this.note = w.getNote();
+		this.btm = w.getBTM();
+		this.dtm = w.getDTM();
+		this.cog = w.getCOG();
+		this.sog = w.getSOG();
+		this.headedFor = w.getHeadedFor();
+		this.maneuver = w.getManeuver();
+		this.foreSail = w.getForesail();
+		this.mainSail = w.getMainsail();
+		this.trip = w.getTrip();
 	}
 
 	@Override
@@ -52,22 +80,22 @@ public class Waypoint extends CouchDbDocument implements IWaypoint {
 	}
 
 	@Override
-	public int getBTM() {
+	public Integer getBTM() {
 		return btm;
 	}
 
 	@Override
-	public int getDTM() {
+	public Integer getDTM() {
 		return dtm;
 	}
 
 	@Override
-	public int getCOG() {
+	public Integer getCOG() {
 		return cog;
 	}
 
 	@Override
-	public int getSOG() {
+	public Integer getSOG() {
 		return sog;
 	}
 
@@ -107,22 +135,22 @@ public class Waypoint extends CouchDbDocument implements IWaypoint {
 	}
 
 	@Override
-	public void setBTM(final int btm) {
+	public void setBTM(final Integer btm) {
 		this.btm = btm;
 	}
 
 	@Override
-	public void setDTM(final int dtm) {
+	public void setDTM(final Integer dtm) {
 		this.dtm = dtm;
 	}
 
 	@Override
-	public void setCOG(final int cog) {
+	public void setCOG(final Integer cog) {
 		this.cog = cog;
 	}
 
 	@Override
-	public void setSOG(final int sog) {
+	public void setSOG(final Integer sog) {
 		this.sog = sog;
 	}
 
@@ -142,33 +170,6 @@ public class Waypoint extends CouchDbDocument implements IWaypoint {
 	}
 
 	@Override
-	public String toString() {
-		return "Waypoint [id=" + id + ", name=" + name + ", latitude="
-				+ latitude + ", longitude=" + longitude + ", date=" + date
-				+ ", note=" + note + ", btm=" + btm + ", dtm=" + dtm + ", cog="
-				+ cog + ", sog=" + sog + ", headedFor=" + headedFor
-				+ ", maneuver=" + maneuver + ", foreSail=" + foreSail
-				+ ", mainSail=" + mainSail + ", trip=" + trip + "]";
-	}
-
-//	@Override
-//	public UUID getUUId() {
-//		return UUID.fromString(id);
-//	}
-
-	@JsonProperty("_id")
-	@Override
-	public String getId() {
-		return id;
-	}
-
-	@JsonProperty("_id")
-	@Override
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	@Override
 	public String getTrip() {
 		return trip;
 	}
@@ -179,33 +180,47 @@ public class Waypoint extends CouchDbDocument implements IWaypoint {
 	}
 
 	@Override
-	public long getDate() {
+	public Long getDate() {
 		return date;
 	}
 
 	@Override
-	public void setDate(long date) {
+	public void setDate(Long date) {
 		this.date = date;
 	}
 
 	@Override
-	public double getLatitude() {
+	public Double getLatitude() {
 		return latitude;
 	}
 
 	@Override
-	public void setLatitude(double latitude) {
+	public void setLatitude(Double latitude) {
 		this.latitude = latitude;
 	}
 
 	@Override
-	public double getLongitude() {
-		return longitude;
+	public Double getLongitude() {
+		return Longitude;
 	}
 
 	@Override
-	public void setLongitude(double longitude) {
-		this.longitude = longitude;
+	public void setLongitude(Double Longitude) {
+		this.Longitude = Longitude;
+	}
+	
+	@Override
+	public String toString() {
+		return ReflectionToStringBuilder.toString(this);
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		return EqualsBuilder.reflectionEquals(this, obj);
+	}
+	
+	@Override
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
+	}
 }

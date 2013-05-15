@@ -4,22 +4,26 @@ import java.text.SimpleDateFormat;
 import java.util.UUID;
 
 import de.htwg.seapal.model.IPerson;
+import de.htwg.seapal.model.ModelDocument;
 
-public class Person implements IPerson {
+public class Person extends ModelDocument implements IPerson {
+
+	/**
+	 * Serial version UID for serialization.
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private String user; // UUID user
-
-	private String id; // UUID
 
 	private String firstname = null;
 
 	private String lastname = null;
 
-	private long birth; // unix timestamp
+	private Long birth; // unix timestamp
 
-	private long registration; // unix timestamp
+	private Long registration; // unix timestamp
 
-	private int age = 0;
+	private Integer age = 0;
 
 	private String nationality = null;
 
@@ -31,19 +35,19 @@ public class Person implements IPerson {
 
 	private String street = null;
 
-	private int postcode = 0;
+	private Integer postcode = 0;
 
 	private String city = null;
 
 	private String country = null;
 
 	public Person() {
-
+		setId(UUID.randomUUID().toString());
 	}
 
 	public Person(IPerson person) {
 		user = person.getUser();
-		id = person.getId();
+		setId(person.getId());
 
 		firstname = person.getFirstname();
 		lastname = person.getLastname();
@@ -62,28 +66,8 @@ public class Person implements IPerson {
 		country = person.getCountry();
 	}
 
-	public Person(int id) {
-		this.id = "PERSON-" + id;
-	}
-
-	@Override
-	public String getId() {
-		return id;
-	}
-
-	@Override
-	public UUID getUUId() {
-		return UUID.fromString(id);
-	}
-
-	@Override
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	@Override
-	public void setId(UUID id) {
-		this.id = id.toString();
+	public Person(Integer id) {
+		setId("PERSON-" + id);
 	}
 
 	@Override
@@ -107,32 +91,32 @@ public class Person implements IPerson {
 	}
 
 	@Override
-	public long getBirth() {
+	public Long getBirth() {
 		return birth;
 	}
 
 	@Override
-	public void setBirth(long birth) {
+	public void setBirth(Long birth) {
 		this.birth = birth;
 	}
 
 	@Override
-	public long getRegistration() {
+	public Long getRegistration() {
 		return registration;
 	}
 
 	@Override
-	public void setRegistration(long registration) {
+	public void setRegistration(Long registration) {
 		this.registration = registration;
 	}
 
 	@Override
-	public int getAge() {
+	public Integer getAge() {
 		return age;
 	}
 
 	@Override
-	public void setAge(int age) {
+	public void setAge(Integer age) {
 		this.age = age;
 	}
 
@@ -187,12 +171,12 @@ public class Person implements IPerson {
 	}
 
 	@Override
-	public int getPostcode() {
+	public Integer getPostcode() {
 		return postcode;
 	}
 
 	@Override
-	public void setPostcode(int postcode) {
+	public void setPostcode(Integer postcode) {
 		this.postcode = postcode;
 	}
 

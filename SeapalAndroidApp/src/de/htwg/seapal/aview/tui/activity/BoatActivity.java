@@ -6,7 +6,7 @@ import de.htwg.seapal.aview.tui.states.boat.StartState;
 import de.htwg.seapal.controller.IBoatController;
 import de.htwg.seapal.controller.impl.BoatController;
 import de.htwg.seapal.database.impl.TouchDBBoatDatabase;
-import de.htwg.seapal.utils.Logger;
+import de.htwg.seapal.utils.logging.Logger;
 import de.htwg.seapal.utils.observer.IObserver;
 
 public class BoatActivity extends AActivity implements IObserver {

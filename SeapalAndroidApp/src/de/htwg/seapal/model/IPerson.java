@@ -1,10 +1,6 @@
 package de.htwg.seapal.model;
 
-import java.util.UUID;
-
-public interface IPerson {
-
-	String getId();
+public interface IPerson extends IModel {
 
 	String getFirstname();
 
@@ -14,17 +10,17 @@ public interface IPerson {
 
 	void setLastname(String lastname);
 
-	long getBirth();
+	Long getBirth();
 
-	void setBirth(long birth);
+	void setBirth(Long birth);
 
-	long getRegistration();
+	Long getRegistration();
 
-	void setRegistration(long registration);
+	void setRegistration(Long registration);
 
-	int getAge();
+	Integer getAge();
 
-	void setAge(int age);
+	void setAge(Integer age);
 
 	String getNationality();
 
@@ -46,9 +42,9 @@ public interface IPerson {
 
 	void setStreet(String street);
 
-	int getPostcode();
+	Integer getPostcode();
 
-	void setPostcode(int postcode);
+	void setPostcode(Integer postcode);
 
 	String getCity();
 
@@ -60,14 +56,7 @@ public interface IPerson {
 
 	String getString();
 
-	void setId(String id);
-
 	String getUser();
 
 	void setUser(String user);
-
-	UUID getUUId();
-
-	void setId(UUID id);
-
 }

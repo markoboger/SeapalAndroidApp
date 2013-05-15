@@ -4,24 +4,28 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-import android.location.Location;
-import android.text.format.DateFormat;
+import com.google.inject.Inject;
+
 import de.htwg.seapal.controller.IMarkController;
 import de.htwg.seapal.database.IMarkDatabase;
 import de.htwg.seapal.model.IMark;
-import de.htwg.seapal.observer.Observable;
+import de.htwg.seapal.utils.logging.ILogger;
+import de.htwg.seapal.utils.observer.Observable;
 
 public class MarkController extends Observable implements IMarkController {
 
 	private IMarkDatabase db;
+	private final ILogger logger;
 
-	public MarkController(IMarkDatabase db) {
+	@Inject
+	public MarkController(IMarkDatabase db, ILogger logger) {
 		this.db = db;
+		this.logger = logger;
 	}
 
 	@Override
 	public String getName(UUID id) {
-		IMark mark = db.getMark(id);
+		IMark mark = db.get(id);
 		if (mark == null)
 			return null;
 		return mark.getName();
@@ -29,17 +33,17 @@ public class MarkController extends Observable implements IMarkController {
 
 	@Override
 	public void setName(UUID id, String name) {
-		IMark mark = db.getMark(id);
+		IMark mark = db.get(id);
 		if (mark == null)
 			return;
 		mark.setName(name);
-		db.saveMark(mark);
+		db.save(mark);
 		notifyObservers();
 	}
 
 	@Override
 	public double getLatitude(UUID id) {
-		IMark mark = db.getMark(id);
+		IMark mark = db.get(id);
 		if (mark == null)
 			return -1;
 		return mark.getLatitude();
@@ -47,17 +51,17 @@ public class MarkController extends Observable implements IMarkController {
 
 	@Override
 	public void setLatitude(UUID id, double latitute) {
-		IMark mark = db.getMark(id);
+		IMark mark = db.get(id);
 		if (mark == null)
 			return;
 		mark.setLatitude(latitute);
-		db.saveMark(mark);
+		db.save(mark);
 		notifyObservers();
 	}
 
 	@Override
 	public double getLongitude(UUID id) {
-		IMark mark = db.getMark(id);
+		IMark mark = db.get(id);
 		if (mark == null)
 			return -1;
 		return mark.getLongitude();
@@ -65,17 +69,17 @@ public class MarkController extends Observable implements IMarkController {
 
 	@Override
 	public void setLongitude(UUID id, double longitude) {
-		IMark mark = db.getMark(id);
+		IMark mark = db.get(id);
 		if (mark == null)
 			return;
 		mark.setLongitude(longitude);
-		db.saveMark(mark);
+		db.save(mark);
 		notifyObservers();
 	}
 
 	@Override
 	public String getNote(UUID id) {
-		IMark mark = db.getMark(id);
+		IMark mark = db.get(id);
 		if (mark == null)
 			return null;
 		return mark.getNote();
@@ -83,17 +87,17 @@ public class MarkController extends Observable implements IMarkController {
 
 	@Override
 	public void setNote(UUID id, String note) {
-		IMark mark = db.getMark(id);
+		IMark mark = db.get(id);
 		if (mark == null)
 			return;
 		mark.setNote(note);
-		db.saveMark(mark);
+		db.save(mark);
 		notifyObservers();
 	}
 
 	@Override
 	public int getBTM(UUID id) {
-		IMark mark = db.getMark(id);
+		IMark mark = db.get(id);
 		if (mark == null)
 			return -1;
 		return mark.getBTM();
@@ -101,17 +105,17 @@ public class MarkController extends Observable implements IMarkController {
 
 	@Override
 	public void setBTM(UUID id, int btm) {
-		IMark mark = db.getMark(id);
+		IMark mark = db.get(id);
 		if (mark == null)
 			return;
 		mark.setBTM(btm);
-		db.saveMark(mark);
+		db.save(mark);
 		notifyObservers();
 	}
 
 	@Override
 	public int getDTM(UUID id) {
-		IMark mark = db.getMark(id);
+		IMark mark = db.get(id);
 		if (mark == null)
 			return -1;
 		return mark.getDTM();
@@ -119,17 +123,17 @@ public class MarkController extends Observable implements IMarkController {
 
 	@Override
 	public void setDTM(UUID id, int dtm) {
-		IMark mark = db.getMark(id);
+		IMark mark = db.get(id);
 		if (mark == null)
 			return;
 		mark.setDTM(dtm);
-		db.saveMark(mark);
+		db.save(mark);
 		notifyObservers();
 	}
 
 	@Override
 	public int getCOG(UUID id) {
-		IMark mark = db.getMark(id);
+		IMark mark = db.get(id);
 		if (mark == null)
 			return -1;
 		return mark.getCOG();
@@ -137,17 +141,17 @@ public class MarkController extends Observable implements IMarkController {
 
 	@Override
 	public void setCOG(UUID id, int cog) {
-		IMark mark = db.getMark(id);
+		IMark mark = db.get(id);
 		if (mark == null)
 			return;
 		mark.setCOG(cog);
-		db.saveMark(mark);
+		db.save(mark);
 		notifyObservers();
 	}
 
 	@Override
 	public int getSOG(UUID id) {
-		IMark mark = db.getMark(id);
+		IMark mark = db.get(id);
 		if (mark == null)
 			return -1;
 		return mark.getSOG();
@@ -155,36 +159,35 @@ public class MarkController extends Observable implements IMarkController {
 
 	@Override
 	public void setSOG(UUID id, int sog) {
-		IMark mark = db.getMark(id);
+		IMark mark = db.get(id);
 		if (mark == null)
 			return;
 		mark.setSOG(sog);
-		db.saveMark(mark);
+		db.save(mark);
 		notifyObservers();
 	}
 
 	@Override
-	public String getDate(UUID id) {
-		IMark mark = db.getMark(id);
+	public long getDate(UUID id) {
+		IMark mark = db.get(id);
 		if (mark == null)
-			return null;
-		long currentMillis = mark.getDate();
-		return DateFormat.format("yyyy/MM/dd hh:mm", currentMillis).toString();
+			return -1;
+		return mark.getDate();
 	}
 
 	@Override
 	public void setDate(UUID id, long date) {
-		IMark mark = db.getMark(id);
+		IMark mark = db.get(id);
 		if (mark == null)
 			return;
 		mark.setDate(date);
-		db.saveMark(mark);
+		db.save(mark);
 		notifyObservers();
 	}
 
 	@Override
 	public boolean isRouteMark(UUID id) {
-		IMark mark = db.getMark(id);
+		IMark mark = db.get(id);
 		if (mark == null)
 			return false;
 		return mark.isRouteMark();
@@ -192,54 +195,55 @@ public class MarkController extends Observable implements IMarkController {
 
 	@Override
 	public void setIsRouteMark(UUID id, boolean isRouteMark) {
-		IMark mark = db.getMark(id);
+		IMark mark = db.get(id);
 		if (mark == null)
 			return;
 		mark.setIsRouteMark(isRouteMark);
-		db.saveMark(mark);
+		db.save(mark);
 		notifyObservers();
 	}
 
 	@Override
 	public void deleteMark(UUID id) {
-		db.deleteMark(id);
+		db.delete(id);
 		notifyObservers();
 	}
 
 	@Override
-	public void closeDB() {
-		db.closeDB();
+	public final void closeDB() {
+		db.close();
+		logger.info("MarkController", "Database closed");
 	}
 
 	@Override
 	public List<UUID> getMarks() {
 		List<UUID> list = new LinkedList<UUID>();
-		List<IMark> marks = db.getMarks();
+		List<IMark> marks = db.loadAll();
 		for (IMark mark : marks) {
 			if (!mark.isRouteMark())		//only normal Marks
-				list.add(mark.getId());
+				list.add(mark.getUUID());
 		}
 		return list;
 	}
 
 	@Override
-	public UUID newMark(Location location) {
-		UUID newMark = db.newMark();
+	public UUID newMark(double longitude, double latitude) {
+		UUID newMark = db.create();
 		setDate(newMark, System.currentTimeMillis());
 		setIsRouteMark(newMark, false);
-		setLatitude(newMark, location.getLatitude());
-		setLongitude(newMark, location.getLongitude());
+		setLatitude(newMark, latitude);
+		setLongitude(newMark, longitude);
 		notifyObservers();
 		return newMark;
 	}
 
 	@Override
-	public UUID newRouteMark(Location location) {
-		UUID newMark = db.newMark();
+	public UUID newRouteMark(double longitude, double latitude) {
+		UUID newMark = db.create();
 		setDate(newMark, System.currentTimeMillis());
 		setIsRouteMark(newMark, true);
-		setLatitude(newMark, location.getLatitude());
-		setLongitude(newMark, location.getLongitude());
+		setLatitude(newMark, latitude);
+		setLongitude(newMark, longitude);
 		notifyObservers();
 		return newMark;
 	}
@@ -251,5 +255,20 @@ public class MarkController extends Observable implements IMarkController {
 				+ "\nCOG = \t" + getCOG(id) + "\nSOG = \t" + getSOG(id)
 				+ "\nBTM = \t" + getBTM(id) + "\nDTM = \t" + getDTM(id)
 				+ "\nDate = \t" + getDate(id) + "\nNotes = \t" + getNote(id);
+	}
+
+	@Override
+	public IMark getMark(UUID markId) {
+		return db.get(markId);
+	}
+	
+	@Override
+	public List<IMark> getAllMarks() {
+		return db.loadAll();
+	}
+	
+	@Override
+	public boolean saveMark(IMark mark) {
+		return db.save(mark);
 	}
 }
