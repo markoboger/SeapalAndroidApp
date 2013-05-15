@@ -20,7 +20,7 @@ public class TrackLocationListener implements LocationListener {
 	@Override
 	public void onLocationChanged(Location location) {
 		long date = System.currentTimeMillis() / 1000L;
-		controller.newWaypoint(trip, location, date);
+		controller.newWaypoint(trip, date, location.getLongitude(), location.getLatitude());
 	}
 
 	@Override
