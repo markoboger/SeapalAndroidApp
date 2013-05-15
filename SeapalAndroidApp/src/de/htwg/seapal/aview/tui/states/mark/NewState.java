@@ -22,30 +22,32 @@ public class NewState implements TuiState {
 			context.setState(new StartState());
 			return false;
 		}
-		
-		//test getRandomLocation
+
+		// test getRandomLocation
 		double minLat = -90.00;
-	    double maxLat = 90.00;      
-	    double latitude = minLat + (double)(Math.random() * ((maxLat - minLat) + 1));
-	    latitude = latitude * 10000;
-	    latitude = Math.round(latitude);
-	    latitude = latitude / 10000;
-	    
-	    double minLon = 0.00;
-	    double maxLon = 180.00;     
-	    double longitude = minLon + (double)(Math.random() * ((maxLon - minLon) + 1));
-	    longitude = longitude * 10000;
-	    longitude = Math.round(longitude);
-	    longitude = longitude / 10000;
-		
+		double maxLat = 90.00;
+		double latitude = minLat
+				+ (double) (Math.random() * ((maxLat - minLat) + 1));
+		latitude = latitude * 10000;
+		latitude = Math.round(latitude);
+		latitude = latitude / 10000;
+
+		double minLon = 0.00;
+		double maxLon = 180.00;
+		double longitude = minLon
+				+ (double) (Math.random() * ((maxLon - minLon) + 1));
+		longitude = longitude * 10000;
+		longitude = Math.round(longitude);
+		longitude = longitude / 10000;
+
 		Location loc = new Location("");
 		loc.setLatitude(latitude);
 		loc.setLongitude(longitude);
-		
-		UUID mark = controller.newMark(loc);
+
+		UUID mark = controller.newMark();
 		controller.setName(mark, input);
 		context.setState(new ShowState(mark));
 		return true;
 	}
-	
+
 }

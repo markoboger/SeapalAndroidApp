@@ -35,7 +35,7 @@ public class AddMarkState implements TuiState {
 			sb.append(i++).append(")\t").append(markController.getName(uuid))
 					.append("\n");
 		}
-		
+
 		return sb.toString();
 	}
 
@@ -48,26 +48,28 @@ public class AddMarkState implements TuiState {
 			context.setState(new ShowState(route));
 			break;
 		case 'c':
-			//test getRandomLocation
+			// test getRandomLocation
 			double minLat = -90.00;
-		    double maxLat = 90.00;      
-		    double latitude = minLat + (double)(Math.random() * ((maxLat - minLat) + 1));
-		    latitude = latitude * 10000;
-		    latitude = Math.round(latitude);
-		    latitude = latitude / 10000;
-		    
-		    double minLon = 0.00;
-		    double maxLon = 180.00;     
-		    double longitude = minLon + (double)(Math.random() * ((maxLon - minLon) + 1));
-		    longitude = longitude * 10000;
-		    longitude = Math.round(longitude);
-		    longitude = longitude / 10000;
-			
+			double maxLat = 90.00;
+			double latitude = minLat
+					+ (double) (Math.random() * ((maxLat - minLat) + 1));
+			latitude = latitude * 10000;
+			latitude = Math.round(latitude);
+			latitude = latitude / 10000;
+
+			double minLon = 0.00;
+			double maxLon = 180.00;
+			double longitude = minLon
+					+ (double) (Math.random() * ((maxLon - minLon) + 1));
+			longitude = longitude * 10000;
+			longitude = Math.round(longitude);
+			longitude = longitude / 10000;
+
 			Location loc = new Location("");
 			loc.setLatitude(latitude);
 			loc.setLongitude(longitude);
-			
-			UUID newRouteMark = markController.newRouteMark(loc);
+
+			UUID newRouteMark = markController.newRouteMark();
 			markController.setName(newRouteMark, "Point");
 			controller.addMark(route, newRouteMark);
 			context.setState(new ShowMarksState(route));
