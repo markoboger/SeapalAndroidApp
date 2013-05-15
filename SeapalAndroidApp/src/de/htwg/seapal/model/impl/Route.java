@@ -18,25 +18,31 @@ public class Route extends ModelDocument implements IRoute {
 
 	private String name;
 	private Long date;
-	private List<UUID> marks;
-	private UUID routeEntryPoInteger;
+	private List<String> marks;
+	private String routeEntryPoint;
 	private Double distance;
 
 	public Route() {
 		setId(UUID.randomUUID().toString());
-		marks = new LinkedList<UUID>();
+		marks = new LinkedList<String>();
+		this.user = "";
+		this.name = "";
+		this.date = 0L;
+		this.routeEntryPoint = "";
+		this.distance = 0D;
 	}
-	
+
 	public Route(IRoute r) {
 		setId(r.getId());
-		marks = new LinkedList<UUID>();
-		
 		this.user = r.getUser();
-
 		this.name = r.getName();
 		this.date = r.getDate();
-		this.marks = r.getMarks();
-		this.routeEntryPoInteger = r.getRouteEntryPoint();
+		List<String> list = new LinkedList<String>();
+		for (UUID id : r.getMarks()) {
+			list.add(id.toString());
+		}
+		this.marks = null;
+		this.routeEntryPoint = r.getRouteEntryPoint().toString();
 		this.distance = r.getDistance();
 	}
 
@@ -62,14 +68,18 @@ public class Route extends ModelDocument implements IRoute {
 
 	@Override
 	public List<UUID> getMarks() {
-		return marks;
+		List<UUID> list = new LinkedList<UUID>();
+		for (String id : marks) {
+			list.add(UUID.fromString(id));
+		}
+		return list;
 	}
 
 	@Override
 	public void addMark(UUID mark) {
-		this.marks.add(mark);
+		this.marks.add(mark.toString());
 	}
-	
+
 	@Override
 	public void deleteMark(UUID mark) {
 		this.marks.remove(mark);
@@ -77,12 +87,12 @@ public class Route extends ModelDocument implements IRoute {
 
 	@Override
 	public UUID getRouteEntryPoint() {
-		return routeEntryPoInteger;
+		return UUID.fromString(routeEntryPoint);
 	}
 
 	@Override
 	public void setRouteEntryPoint(UUID mark) {
-		this.routeEntryPoInteger = mark;
+		this.routeEntryPoint = mark.toString();
 	}
 
 	@Override

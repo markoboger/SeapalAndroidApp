@@ -19,7 +19,7 @@ public class Boat extends ModelDocument implements IBoat {
 	private String sailSign;
 	private String homePort;
 	private String yachtclub;
-	private UUID owner;
+	private String owner;
 	private String insurance;
 	private String callSign;
 	private String type;
@@ -38,9 +38,34 @@ public class Boat extends ModelDocument implements IBoat {
 	private Double mainSailSize;
 	private Double genuaSize;
 	private Double spiSize;
-	
+
 	public Boat() {
 		setId(UUID.randomUUID().toString());
+		this.user = "";
+		this.boatName = "";
+		this.registerNr = "";
+		this.sailSign = "";
+		this.homePort = "";
+		this.yachtclub = "";
+		this.owner = "";
+		this.insurance = "";
+		this.callSign = "";
+		this.type = "";
+		this.constructor = "";
+		this.length = 0D;
+		this.width = 0D;
+		this.draft = 0D;
+		this.mastHeight = 0D;
+		this.displacement = 0D;
+		this.rigging = "";
+		this.yearOfConstruction = 0;
+		this.motor = "";
+		this.tankSize = 0D;
+		this.wasteWaterTankSize = 0D;
+		this.freshWaterTankSize = 0D;
+		this.mainSailSize = 0D;
+		this.genuaSize = 0D;
+		this.spiSize = 0D;
 	}
 
 	public Boat(IBoat boat) {
@@ -51,7 +76,7 @@ public class Boat extends ModelDocument implements IBoat {
 		this.sailSign = boat.getSailSign();
 		this.homePort = boat.getHomePort();
 		this.yachtclub = boat.getYachtclub();
-		this.owner = boat.getOwner();
+		this.owner = boat.getOwner().toString();
 		this.insurance = boat.getInsurance();
 		this.callSign = boat.getCallSign();
 		this.type = boat.getType();
@@ -122,15 +147,15 @@ public class Boat extends ModelDocument implements IBoat {
 		this.yachtclub = yachtclub;
 	}
 
-	 @Override
-	 public UUID getOwner() { // Person
-		 return owner;
-	 }
-	
-	 @Override
-	 public void setOwner(UUID owner) { // Person
-		 this.owner = owner;
-	 }
+	@Override
+	public UUID getOwner() { // Person
+		return UUID.fromString(owner);
+	}
+
+	@Override
+	public void setOwner(UUID owner) { // Person
+		this.owner = owner.toString();
+	}
 
 	@Override
 	public String getInsurance() {

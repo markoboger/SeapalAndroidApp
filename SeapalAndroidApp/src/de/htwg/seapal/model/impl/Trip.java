@@ -35,6 +35,19 @@ public class Trip extends ModelDocument implements ITrip {
 		setId(UUID.randomUUID().toString());
 		this.crew = new ArrayList<String>();
 		this.skipper = UUID.randomUUID().toString();
+		this.crew = new ArrayList<String>();
+
+		this.name = "";
+		this.startLocation = "";
+		this.endLocation = "";
+		this.skipper = "";
+		this.startTime = 0L;
+		this.endTime = 0L;
+		this.duration = 0L;
+		this.motor = 0;
+		this.fuel = 0D;
+		this.notes = "";
+		this.boat = "";
 	}
 
 	public Trip(ITrip t) {
@@ -182,7 +195,7 @@ public class Trip extends ModelDocument implements ITrip {
 	public boolean equals(Object obj) {
 		return EqualsBuilder.reflectionEquals(this, obj);
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return HashCodeBuilder.reflectionHashCode(this);

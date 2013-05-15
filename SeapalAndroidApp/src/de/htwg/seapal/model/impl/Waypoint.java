@@ -38,20 +38,32 @@ public class Waypoint extends ModelDocument implements IWaypoint {
 		foreSail = ForeSail.NONE;
 		mainSail = MainSail.NONE;
 	}
-	
+
 	@JsonCreator
-	public Waypoint(@JsonProperty("maneuver") Maneuver m, 
+	public Waypoint(@JsonProperty("maneuver") Maneuver m,
 			@JsonProperty("foresail") ForeSail f,
-			@JsonProperty("mainsail") MainSail msail) 
-	{
+			@JsonProperty("mainsail") MainSail msail) {
 		setId(UUID.randomUUID().toString());
 		maneuver = m;
 		foreSail = f;
 		mainSail = msail;
+		this.name = "";
+		this.latitude = 0D;
+		this.Longitude = 0D;
+		this.date = 0L;
+		this.note = "";
+		this.btm = 0;
+		this.dtm = 0;
+		this.cog = 0;
+		this.sog = 0;
+		this.headedFor = "";
+		this.maneuver = Maneuver.NONE;
+		this.foreSail = ForeSail.NONE;
+		this.mainSail = MainSail.NONE;
+		this.trip = "";
 	}
-	
-	public Waypoint(IWaypoint w) 
-	{
+
+	public Waypoint(IWaypoint w) {
 		setId(w.getId());
 		this.name = w.getName();
 		this.latitude = w.getLatitude();
@@ -62,11 +74,11 @@ public class Waypoint extends ModelDocument implements IWaypoint {
 		this.dtm = w.getDTM();
 		this.cog = w.getCOG();
 		this.sog = w.getSOG();
-		this.headedFor = w.getHeadedFor();
+		this.headedFor = w.getHeadedFor().toString();
 		this.maneuver = w.getManeuver();
 		this.foreSail = w.getForesail();
 		this.mainSail = w.getMainsail();
-		this.trip = w.getTrip();
+		this.trip = w.getTrip().toString();
 	}
 
 	@Override
@@ -100,8 +112,8 @@ public class Waypoint extends ModelDocument implements IWaypoint {
 	}
 
 	@Override
-	public String getHeadedFor() {
-		return headedFor;
+	public UUID getHeadedFor() {
+		return UUID.fromString(headedFor);
 	}
 
 	@Override
@@ -170,12 +182,12 @@ public class Waypoint extends ModelDocument implements IWaypoint {
 	}
 
 	@Override
-	public String getTrip() {
-		return trip;
+	public UUID getTrip() {
+		return UUID.fromString(trip);
 	}
 
 	@Override
-	public void setTrip(String trip) {
+	public void setTrip(UUID trip) {
 		this.trip = trip.toString();
 	}
 
@@ -208,7 +220,7 @@ public class Waypoint extends ModelDocument implements IWaypoint {
 	public void setLongitude(Double Longitude) {
 		this.Longitude = Longitude;
 	}
-	
+
 	@Override
 	public String toString() {
 		return ReflectionToStringBuilder.toString(this);
@@ -218,7 +230,7 @@ public class Waypoint extends ModelDocument implements IWaypoint {
 	public boolean equals(Object obj) {
 		return EqualsBuilder.reflectionEquals(this, obj);
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return HashCodeBuilder.reflectionHashCode(this);

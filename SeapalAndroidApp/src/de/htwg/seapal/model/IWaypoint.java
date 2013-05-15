@@ -28,7 +28,7 @@ public interface IWaypoint extends IModel {
 
 	Integer getSOG();
 
-	String getHeadedFor();
+	UUID getHeadedFor();
 
 	Maneuver getManeuver();
 
@@ -56,9 +56,9 @@ public interface IWaypoint extends IModel {
 
 	void setMainsail(MainSail mainSail);
 
-	String getTrip();
+	UUID getTrip();
 
-	void setTrip(String trip);
+	void setTrip(UUID trip);
 
 	Long getDate();
 

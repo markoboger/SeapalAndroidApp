@@ -43,6 +43,23 @@ public class Person extends ModelDocument implements IPerson {
 
 	public Person() {
 		setId(UUID.randomUUID().toString());
+		user = "";
+
+		firstname = "";
+		lastname = "";
+		birth = 0L;
+		registration = 0L;
+		age = 0;
+		nationality = "";
+
+		email = "";
+		telephone = "";
+		mobile = "";
+
+		street = "";
+		postcode = 0;
+		city = "";
+		country = "";
 	}
 
 	public Person(IPerson person) {

@@ -27,13 +27,16 @@ public class Mark extends ModelDocument implements IMark {
 
 	public Mark() {
 		setId(UUID.randomUUID().toString());
+		this.user = "";
 		this.latitude = 0D;
 		this.Longitude = 0D;
 		this.btm = 0;
 		this.dtm = 0;
 		this.cog = 0;
 		this.sog = 0;
+		this.note = "";
 		this.date = 0L;
+		this.isRouteMark = false;
 	}
 
 	public Mark(IMark m) {
@@ -161,4 +164,5 @@ public class Mark extends ModelDocument implements IMark {
 	public void setUser(String user) {
 		this.user = user;
 	}
+
 }
