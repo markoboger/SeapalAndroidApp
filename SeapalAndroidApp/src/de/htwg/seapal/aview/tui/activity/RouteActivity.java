@@ -5,6 +5,7 @@ import de.htwg.seapal.R;
 import de.htwg.seapal.aview.tui.states.route.StartState;
 import de.htwg.seapal.controller.IRouteController;
 import de.htwg.seapal.controller.impl.RouteController;
+import de.htwg.seapal.database.impl.hashMap.HashMapRouteDatabase;
 import de.htwg.seapal.database.mock.RouteDatabase;
 import de.htwg.seapal.utils.logging.Logger;
 import de.htwg.seapal.utils.observer.IObserver;
@@ -17,7 +18,7 @@ public class RouteActivity extends AActivity implements IObserver {
 	protected void setup() {
 		TextView header = (TextView) this.findViewById(R.id.header);
 		header.setText("Route");
-		controller = new RouteController(new RouteDatabase(), new Logger());
+		controller = new RouteController(HashMapRouteDatabase.getInstance(), new Logger());
 		currenState = new StartState();
 		controller.addObserver(this);
 

@@ -11,7 +11,7 @@ import de.htwg.seapal.aview.tui.activity.RouteActivity;
 import de.htwg.seapal.controller.IMarkController;
 import de.htwg.seapal.controller.IRouteController;
 import de.htwg.seapal.controller.impl.MarkController;
-import de.htwg.seapal.database.mock.MarkDatabase;
+import de.htwg.seapal.database.impl.hashMap.HashMapMarkDatabase;
 import de.htwg.seapal.utils.logging.Logger;
 
 public class ShowMarksState implements TuiState {
@@ -27,7 +27,7 @@ public class ShowMarksState implements TuiState {
 	@Override
 	public String buildString(StateContext context) {
 		IRouteController controller = ((RouteActivity) context).getController();
-		markController = new MarkController(new MarkDatabase(), new Logger());
+		markController = new MarkController(HashMapMarkDatabase.getInstance(), new Logger());
 		marks = controller.getMarks(route);
 		StringBuilder sb = new StringBuilder();
 		sb.append("q - quit\n");

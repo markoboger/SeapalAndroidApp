@@ -5,7 +5,7 @@ import de.htwg.seapal.R;
 import de.htwg.seapal.aview.tui.states.mark.StartState;
 import de.htwg.seapal.controller.IMarkController;
 import de.htwg.seapal.controller.impl.MarkController;
-import de.htwg.seapal.database.mock.MarkDatabase;
+import de.htwg.seapal.database.impl.hashMap.HashMapMarkDatabase;
 import de.htwg.seapal.utils.logging.Logger;
 import de.htwg.seapal.utils.observer.IObserver;
 
@@ -17,7 +17,7 @@ public class MarkActivity extends AActivity implements IObserver {
 	protected void setup() {
 		TextView header = (TextView) this.findViewById(R.id.header);
 		header.setText("Mark");
-		controller = new MarkController(new MarkDatabase(), new Logger());
+		controller = new MarkController(HashMapMarkDatabase.getInstance(), new Logger());
 		currenState = new StartState();
 		controller.addObserver(this);
 	}
