@@ -54,12 +54,12 @@ public class MarkDatabase implements IMarkDatabase {
 
 	@Override
 	public boolean save(IMark mark) {
-		return (db.put(mark.getUUID(), mark) == null);
+		return true;
 	}
 
 	@Override
 	public void delete(UUID id) {
-		db.remove(id);
+		
 	}
 
 	@Override

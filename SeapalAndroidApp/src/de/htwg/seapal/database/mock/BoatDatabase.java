@@ -57,14 +57,11 @@ public class BoatDatabase implements IBoatDatabase {
 
 	@Override
 	public boolean save(IBoat boat) {
-		return (db.put(boat.getUUID(), boat) == null);
+		return true;
 	}
 
 	@Override
 	public void delete(UUID id) {
-		if (db.containsKey(id)) {
-			db.remove(id);
-		}
 	}
 
 	@Override

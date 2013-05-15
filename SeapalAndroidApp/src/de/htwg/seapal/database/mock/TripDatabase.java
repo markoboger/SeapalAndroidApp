@@ -55,7 +55,6 @@ public class TripDatabase implements ITripDatabase {
 
 	@Override
 	public void delete(UUID id) {
-		db.remove(id);
 	}
 
 	@Override
@@ -70,6 +69,6 @@ public class TripDatabase implements ITripDatabase {
 
 	@Override
 	public boolean save(ITrip trip) {
-		return (db.put(trip.getUUID(), trip) == null);
+		return true;
 	}
 }

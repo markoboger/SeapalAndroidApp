@@ -54,12 +54,11 @@ public class RouteDatabase implements IRouteDatabase {
 
 	@Override
 	public boolean save(IRoute route) {
-		return (db.put(route.getUUID(), route) == null);
+		return true;
 	}
 
 	@Override
 	public void delete(UUID id) {
-		db.remove(id);
 	}
 
 	@Override

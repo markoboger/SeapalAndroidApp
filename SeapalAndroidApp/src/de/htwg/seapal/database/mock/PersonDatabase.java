@@ -52,7 +52,6 @@ public class PersonDatabase implements IPersonDatabase {
 
 	@Override
 	public void delete(UUID id) {
-		db.remove(id);
 	}
 
 	@Override
@@ -72,6 +71,6 @@ public class PersonDatabase implements IPersonDatabase {
 
 	@Override
 	public boolean save(IPerson person) {
-		return (db.put(person.getUUID(), person) == null);
+		return true;
 	}
 }
