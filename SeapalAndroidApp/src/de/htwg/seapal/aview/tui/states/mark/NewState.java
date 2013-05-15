@@ -2,7 +2,6 @@ package de.htwg.seapal.aview.tui.states.mark;
 
 import java.util.UUID;
 
-import android.location.Location;
 import de.htwg.seapal.aview.tui.StateContext;
 import de.htwg.seapal.aview.tui.TuiState;
 import de.htwg.seapal.aview.tui.activity.MarkActivity;
@@ -40,11 +39,8 @@ public class NewState implements TuiState {
 		longitude = Math.round(longitude);
 		longitude = longitude / 10000;
 
-		Location loc = new Location("");
-		loc.setLatitude(latitude);
-		loc.setLongitude(longitude);
 
-		UUID mark = controller.newMark();
+		UUID mark = controller.newMark(latitude, longitude);
 		controller.setName(mark, input);
 		context.setState(new ShowState(mark));
 		return true;

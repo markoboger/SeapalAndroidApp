@@ -3,7 +3,6 @@ package de.htwg.seapal.aview.tui.states.route;
 import java.util.List;
 import java.util.UUID;
 
-import android.location.Location;
 import android.widget.Toast;
 import de.htwg.seapal.aview.tui.StateContext;
 import de.htwg.seapal.aview.tui.TuiState;
@@ -65,11 +64,8 @@ public class AddMarkState implements TuiState {
 			longitude = Math.round(longitude);
 			longitude = longitude / 10000;
 
-			Location loc = new Location("");
-			loc.setLatitude(latitude);
-			loc.setLongitude(longitude);
 
-			UUID newRouteMark = markController.newRouteMark();
+			UUID newRouteMark = markController.newRouteMark(latitude, longitude);
 			markController.setName(newRouteMark, "Point");
 			controller.addMark(route, newRouteMark);
 			context.setState(new ShowMarksState(route));
