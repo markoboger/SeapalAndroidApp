@@ -12,9 +12,41 @@
         android:paddingTop="4dp"
          android:paddingRight="20dp"
         android:text=""
-        android:textSize="30sp" >
+        android:textSize="15sp" >
     </TextView>
 
+    <TextView
+        android:id="@+id/boattype"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill_horizontal"
+        android:paddingTop="4dp"
+         android:paddingRight="20dp"
+        android:text=""
+        android:textSize="15sp" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/constructor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill_horizontal"
+        android:paddingTop="4dp"
+         android:paddingRight="20dp"
+        android:text=""
+        android:textSize="15sp" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/length"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill_horizontal"
+        android:paddingTop="4dp"
+         android:paddingRight="20dp"
+        android:text=""
+        android:textSize="15sp" >
+    </TextView>
 
     <TextView
         android:id="@+id/owner"
@@ -24,7 +56,7 @@
         android:paddingTop="4dp"
         android:paddingRight="20dp"
         android:text=""
-        android:textSize="30sp" >
+        android:textSize="15sp" >
     </TextView>
 
     <!--
