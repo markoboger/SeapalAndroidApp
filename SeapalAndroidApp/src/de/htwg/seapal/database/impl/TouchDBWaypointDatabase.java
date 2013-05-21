@@ -54,10 +54,10 @@ public class TouchDBWaypointDatabase implements IWaypointDatabase {
 		} catch (UpdateConflictException e) {
 			Log.e(TAG, e.toString());
 		}
-		UUID idx = UUID.fromString(waypoint.getId());
+		UUID id = UUID.fromString(waypoint.getId());
 		Log.d(TAG, "Waypoint created: " + waypoint.getId());
 		dbHelper.pushToDatabase();
-		return idx;
+		return id;
 	}
 
 	@Override

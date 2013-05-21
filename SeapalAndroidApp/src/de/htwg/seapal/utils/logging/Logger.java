@@ -11,12 +11,12 @@ public class Logger implements ILogger {
 
 	@Override
 	public void warn(String tag, String msg) {
-		Log.i(tag, msg);
+		Log.w(tag, msg);
 	}
 
 	@Override
 	public void error(String tag, String msg) {
-		Log.i(tag, msg);
+		Log.e(tag, msg);
 	}
 
 }

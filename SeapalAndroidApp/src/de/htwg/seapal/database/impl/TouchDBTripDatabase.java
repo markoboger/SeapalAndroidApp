@@ -50,10 +50,10 @@ public class TouchDBTripDatabase implements ITripDatabase {
 		} catch (UpdateConflictException e) {
 			Log.e(TAG, e.toString());
 		}
-		UUID idx = UUID.fromString(trip.getId());
+		UUID id = UUID.fromString(trip.getId());
 		Log.d(TAG, "Trip created: " + trip.getId());
 		dbHelper.pushToDatabase();
-		return idx;
+		return id;
 	}
 
 	@Override

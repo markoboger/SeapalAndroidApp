@@ -50,10 +50,10 @@ public class TouchDBBoatDatabase implements IBoatDatabase {
 		} catch (UpdateConflictException e) {
 			Log.e(TAG, e.toString());
 		}
-		UUID idx = UUID.fromString(boat.getId());
+		UUID id = UUID.fromString(boat.getId());
 		Log.d(TAG, "Boat created: " + boat.getId());
 		dbHelper.pushToDatabase();
-		return idx;
+		return id;
 	}
 
 	@Override

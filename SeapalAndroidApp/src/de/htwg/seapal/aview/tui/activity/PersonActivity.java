@@ -5,7 +5,7 @@ import de.htwg.seapal.R;
 import de.htwg.seapal.aview.tui.states.person.StartState;
 import de.htwg.seapal.controller.IPersonController;
 import de.htwg.seapal.controller.impl.PersonController;
-import de.htwg.seapal.database.mock.PersonDatabase;
+import de.htwg.seapal.database.TouchDBPersonDatabase;
 import de.htwg.seapal.utils.logging.Logger;
 
 public class PersonActivity extends AActivity {
@@ -18,7 +18,7 @@ public class PersonActivity extends AActivity {
 		header.setText("Person");
 		// this.controller = new
 		// PersonController(HashMapPersonDatabase.getInstance());
-		this.controller = new PersonController(new PersonDatabase(),
+		this.controller = new PersonController(new TouchDBPersonDatabase(getApplicationContext()),
 				new Logger());
 		currenState = new StartState();
 		controller.addObserver(this);
