@@ -27,5 +27,8 @@
     <string name="rigKind">Rig-Kind</string>
     <string name="spiSize">Spi Size</string>
     <string name="action_settings">Settings</string>
+    <string name="showTripsButton">Show Trips for this Boat</string>
+    <string name="boatNameHeader">Boatname</string>
+    <string name="constructorHeader">Constructor</string>
 
 </resources>

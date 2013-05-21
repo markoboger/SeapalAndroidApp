@@ -4,21 +4,21 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <ScrollView
-        android:layout_width="fill_parent"
+    <ScrollView 
+        android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1"
         android:scrollbars="none" >
 
         <TableLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:columnCount="1"
             android:rowCount="24" >
 
             <TableRow
                 android:id="@+id/row0"
-                android:layout_width="800dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
 
                 <TextView
@@ -39,7 +39,7 @@
 
             <TableRow
                 android:id="@+id/row1"
-                android:layout_width="800dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
 
                 <TextView
@@ -60,7 +60,7 @@
 
             <TableRow
                 android:id="@+id/row2"
-                android:layout_width="800dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
 
                 <TextView
@@ -81,7 +81,7 @@
 
             <TableRow
                 android:id="@+id/row3"
-                android:layout_width="800dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
 
                 <TextView
@@ -102,7 +102,7 @@
 
             <TableRow
                 android:id="@+id/row4"
-                android:layout_width="800dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
 
                 <TextView
@@ -123,7 +123,7 @@
 
             <TableRow
                 android:id="@+id/row5"
-                android:layout_width="800dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
 
                 <TextView
@@ -144,7 +144,7 @@
 
             <TableRow
                 android:id="@+id/row6"
-                android:layout_width="800dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
 
                 <TextView
@@ -165,7 +165,7 @@
 
             <TableRow
                 android:id="@+id/row7"
-                android:layout_width="800dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
 
                 <TextView
@@ -186,7 +186,7 @@
 
             <TableRow
                 android:id="@+id/row8"
-                android:layout_width="800dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
 
                 <TextView
@@ -207,7 +207,7 @@
 
             <TableRow
                 android:id="@+id/row9"
-                android:layout_width="800dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
 
                 <TextView
@@ -228,7 +228,7 @@
 
             <TableRow
                 android:id="@+id/row10"
-                android:layout_width="800dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
 
                 <TextView
@@ -249,7 +249,7 @@
 
             <TableRow
                 android:id="@+id/row11"
-                android:layout_width="800dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
 
                 <TextView
@@ -270,7 +270,7 @@
 
             <TableRow
                 android:id="@+id/row12"
-                android:layout_width="800dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
 
                 <TextView
@@ -291,7 +291,7 @@
 
             <TableRow
                 android:id="@+id/row13"
-                android:layout_width="800dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
 
                 <TextView
@@ -312,7 +312,7 @@
 
             <TableRow
                 android:id="@+id/row14"
-                android:layout_width="800dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
 
                 <TextView
@@ -333,7 +333,7 @@
 
             <TableRow
                 android:id="@+id/row15"
-                android:layout_width="800dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
 
                 <TextView
@@ -354,7 +354,7 @@
 
             <TableRow
                 android:id="@+id/row16"
-                android:layout_width="800dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
 
                 <TextView
@@ -375,7 +375,7 @@
 
             <TableRow
                 android:id="@+id/row17"
-                android:layout_width="800dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
 
                 <TextView
@@ -396,7 +396,7 @@
 
             <TableRow
                 android:id="@+id/row18"
-                android:layout_width="800dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
 
                 <TextView
@@ -417,7 +417,7 @@
 
             <TableRow
                 android:id="@+id/row19"
-                android:layout_width="800dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
 
                 <TextView
@@ -438,7 +438,7 @@
 
             <TableRow
                 android:id="@+id/row20"
-                android:layout_width="800dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
 
                 <TextView
@@ -459,7 +459,7 @@
 
             <TableRow
                 android:id="@+id/row21"
-                android:layout_width="800dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
 
                 <TextView
@@ -480,7 +480,7 @@
 
             <TableRow
                 android:id="@+id/row22"
-                android:layout_width="800dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
 
                 <TextView
@@ -501,7 +501,7 @@
 
             <TableRow
                 android:id="@+id/row23"
-                android:layout_width="800dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
 
                 <TextView
