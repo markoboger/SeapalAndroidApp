@@ -29,8 +29,6 @@ public class FragmentList extends ListFragment {
 		if(savedInstanceState == null)
 			boatList = controller.getBoats();
 		
-//		ArrayAdapter<UUID> adapter = new ArrayAdapter<UUID>(getActivity(),
-//				android.R.layout.simple_list_item_activated_1, boatList);
 		
 		BoatListAdapter adapter = new BoatListAdapter(getActivity(), R.layout.boatlist, boatList, controller);
 		

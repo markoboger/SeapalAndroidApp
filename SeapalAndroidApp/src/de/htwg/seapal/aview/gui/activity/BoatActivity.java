@@ -25,7 +25,7 @@ public class BoatActivity extends Activity implements IObserver,
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		setContentView(R.layout.layout);
+		setContentView(R.layout.boat);
 
 		controller = new BoatController(
 				TouchDBBoatDatabase.getInstance(getApplicationContext()),
