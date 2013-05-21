@@ -41,6 +41,8 @@ public class BoatListAdapter extends ArrayAdapter<UUID> {
 			TextView tt2 = (TextView) v.findViewById(R.id.constructor);
 			TextView tt3 = (TextView) v.findViewById(R.id.length);
 			TextView tt4 = (TextView) v.findViewById(R.id.owner);
+			
+			
 
 			if (tt0 != null)
 				tt0.setText(controller.getBoatName(boat));
