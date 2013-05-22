@@ -11,6 +11,7 @@ import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.ViewResult.Row;
 
+import roboguice.inject.ContextSingleton;
 import android.app.Application;
 import android.util.Log;
 
@@ -20,6 +21,7 @@ import de.htwg.seapal.database.IMarkDatabase;
 import de.htwg.seapal.model.IMark;
 import de.htwg.seapal.model.impl.Mark;
 
+@ContextSingleton
 public class TouchDBMarkDatabase implements IMarkDatabase {
 
 	private static final String TAG = "Mark-TouchDB";

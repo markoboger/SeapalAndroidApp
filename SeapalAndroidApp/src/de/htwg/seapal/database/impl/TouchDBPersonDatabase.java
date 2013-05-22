@@ -11,6 +11,7 @@ import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.ViewResult.Row;
 
+import roboguice.inject.ContextSingleton;
 import android.app.Application;
 import android.util.Log;
 
@@ -20,6 +21,7 @@ import de.htwg.seapal.database.IPersonDatabase;
 import de.htwg.seapal.model.IPerson;
 import de.htwg.seapal.model.impl.Person;
 
+@ContextSingleton
 public class TouchDBPersonDatabase implements IPersonDatabase {
 	private static final String TAG = "person-TouchDB";
 	private static final String DDOCNAME = "seapal-persons";

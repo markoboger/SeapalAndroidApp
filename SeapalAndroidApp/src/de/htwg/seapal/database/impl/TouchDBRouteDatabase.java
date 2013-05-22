@@ -11,6 +11,7 @@ import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.ViewResult.Row;
 
+import roboguice.inject.ContextSingleton;
 import android.app.Application;
 import android.util.Log;
 
@@ -20,6 +21,7 @@ import de.htwg.seapal.database.IRouteDatabase;
 import de.htwg.seapal.model.IRoute;
 import de.htwg.seapal.model.impl.Route;
 
+@ContextSingleton
 public class TouchDBRouteDatabase implements IRouteDatabase {
 
 	private static final String TAG = "Route-TouchDB";

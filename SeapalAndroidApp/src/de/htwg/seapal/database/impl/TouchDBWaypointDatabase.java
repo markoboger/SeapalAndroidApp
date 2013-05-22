@@ -11,6 +11,7 @@ import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.ViewResult.Row;
 
+import roboguice.inject.ContextSingleton;
 import android.app.Application;
 import android.util.Log;
 
@@ -23,6 +24,7 @@ import de.htwg.seapal.model.IWaypoint.MainSail;
 import de.htwg.seapal.model.IWaypoint.Maneuver;
 import de.htwg.seapal.model.impl.Waypoint;
 
+@ContextSingleton
 public class TouchDBWaypointDatabase implements IWaypointDatabase {
 
 	private static final String TAG = "Waypoint-TouchDB";

@@ -11,6 +11,7 @@ import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.ViewResult.Row;
 
+import roboguice.inject.ContextSingleton;
 import android.app.Application;
 import android.util.Log;
 
@@ -20,6 +21,7 @@ import de.htwg.seapal.database.ITripDatabase;
 import de.htwg.seapal.model.ITrip;
 import de.htwg.seapal.model.impl.Trip;
 
+@ContextSingleton
 public class TouchDBTripDatabase implements ITripDatabase {
 
 	private static final String TAG = "Trip-TouchDB";

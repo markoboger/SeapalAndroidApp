@@ -11,6 +11,7 @@ import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.ViewResult.Row;
 
+import roboguice.inject.ContextSingleton;
 import android.app.Application;
 import android.util.Log;
 
@@ -20,6 +21,7 @@ import de.htwg.seapal.database.IBoatDatabase;
 import de.htwg.seapal.model.IBoat;
 import de.htwg.seapal.model.impl.Boat;
 
+@ContextSingleton
 public class TouchDBBoatDatabase implements IBoatDatabase {
 
 	private static final String TAG = "Boat-TouchDB";
