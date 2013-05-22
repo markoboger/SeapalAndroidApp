@@ -2,22 +2,25 @@ package de.htwg.seapal.aview.tui.activity;
 
 import java.util.UUID;
 
-import android.content.Context;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.widget.TextView;
+
+import com.google.inject.Inject;
+
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.listener.TrackLocationListener;
 import de.htwg.seapal.aview.tui.states.recordTrip.StartState;
-import de.htwg.seapal.controller.impl.WaypointController;
-import de.htwg.seapal.database.impl.TouchDBWaypointDatabase;
-import de.htwg.seapal.utils.logging.Logger;
+import de.htwg.seapal.controller.IWaypointController;
 
 public class TripRecordActivity extends AActivity {
 
+	@Inject
 	private LocationManager locationMgr;
-	private WaypointController controller;
+
+	@Inject
+	private IWaypointController controller;
 	private UUID trip;
 	private LocationListener trackLocationListener;
 
@@ -29,15 +32,10 @@ public class TripRecordActivity extends AActivity {
 		Bundle bundle = getIntent().getExtras();
 		trip = UUID.fromString(bundle.getString("trip").toString());
 
-		// HashMapWaypointDatabase.getInstance());
-		controller = new WaypointController(
-				TouchDBWaypointDatabase.getInstance(getApplicationContext()),
-				new Logger());
 		currenState = new StartState();
 		controller.addObserver(this);
 
 		trackLocationListener = new TrackLocationListener(trip, controller);
-		locationMgr = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 	}
 
 	public LocationManager getLocationMgr() {
@@ -48,7 +46,7 @@ public class TripRecordActivity extends AActivity {
 		return trackLocationListener;
 	}
 
-	public WaypointController getController() {
+	public IWaypointController getController() {
 		return controller;
 	}
 

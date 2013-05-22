@@ -2,36 +2,34 @@ package de.htwg.seapal.aview.gui.activity;
 
 import java.util.UUID;
 
-import android.app.Activity;
+import roboguice.activity.RoboActivity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.View;
+
+import com.google.inject.Inject;
+
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.fragment.FragmentDetail;
 import de.htwg.seapal.aview.gui.fragment.FragmentList;
 import de.htwg.seapal.controller.impl.BoatController;
-import de.htwg.seapal.database.impl.TouchDBBoatDatabase;
-import de.htwg.seapal.utils.logging.Logger;
 import de.htwg.seapal.utils.observer.Event;
 import de.htwg.seapal.utils.observer.IObserver;
 
-public class BoatActivity extends Activity implements IObserver,
+public class BoatActivity extends RoboActivity implements IObserver,
 		FragmentList.ListSelectedCallback {
 
+	@Inject
 	private BoatController controller;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		setContentView(R.layout.boat);
 
-		controller = new BoatController(
-				TouchDBBoatDatabase.getInstance(getApplicationContext()),
-				new Logger());
-//		controller.addObserver(this);
-		
+		// controller.addObserver(this);
 
 		if (savedInstanceState == null) {
 			FragmentList fragmentListe = new FragmentList();
@@ -69,7 +67,7 @@ public class BoatActivity extends Activity implements IObserver,
 			FragmentDetail fragment = new FragmentDetail();
 			fragment.setController(controller);
 			fragment.setBoat(boat);
-			
+
 			FragmentTransaction transaction = getFragmentManager()
 					.beginTransaction();
 			transaction.replace(R.id.frame_links, fragment);
@@ -83,6 +81,5 @@ public class BoatActivity extends Activity implements IObserver,
 		// TODO Auto-generated method stub
 
 	}
-	
 
 }

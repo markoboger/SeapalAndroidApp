@@ -11,8 +11,11 @@ import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.ViewResult.Row;
 
-import android.content.Context;
+import android.app.Application;
 import android.util.Log;
+
+import com.google.inject.Inject;
+
 import de.htwg.seapal.database.IWaypointDatabase;
 import de.htwg.seapal.model.IWaypoint;
 import de.htwg.seapal.model.IWaypoint.ForeSail;
@@ -31,7 +34,8 @@ public class TouchDBWaypointDatabase implements IWaypointDatabase {
 	private CouchDbConnector couchDbConnector;
 	private TouchDBHelper dbHelper;
 
-	public TouchDBWaypointDatabase(Context ctx) {
+	@Inject
+	public TouchDBWaypointDatabase(Application ctx) {
 		dbHelper = new TouchDBHelper(VIEWNAME, DATABASE_NAME, DDOCNAME);
 		dbHelper.createDatabase(ctx);
 		dbHelper.pullFromDatabase();
@@ -39,7 +43,7 @@ public class TouchDBWaypointDatabase implements IWaypointDatabase {
 
 	}
 
-	public static TouchDBWaypointDatabase getInstance(Context ctx) {
+	public static TouchDBWaypointDatabase getInstance(Application ctx) {
 		if (touchDBWaypointDatabase == null)
 			touchDBWaypointDatabase = new TouchDBWaypointDatabase(ctx);
 		return touchDBWaypointDatabase;

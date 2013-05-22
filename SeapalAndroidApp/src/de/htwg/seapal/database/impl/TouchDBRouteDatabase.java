@@ -11,15 +11,17 @@ import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.ViewResult.Row;
 
-import android.content.Context;
+import android.app.Application;
 import android.util.Log;
+
+import com.google.inject.Inject;
 
 import de.htwg.seapal.database.IRouteDatabase;
 import de.htwg.seapal.model.IRoute;
 import de.htwg.seapal.model.impl.Route;
 
 public class TouchDBRouteDatabase implements IRouteDatabase {
-	
+
 	private static final String TAG = "Route-TouchDB";
 	private static final String DDOCNAME = "seapal-routes";
 	private static final String VIEWNAME = "routes";
@@ -29,15 +31,16 @@ public class TouchDBRouteDatabase implements IRouteDatabase {
 	private CouchDbConnector couchDbConnector;
 	private TouchDBHelper dbHelper;
 
-	public TouchDBRouteDatabase(Context ctx) {
+	@Inject
+	public TouchDBRouteDatabase(Application ctx) {
 		dbHelper = new TouchDBHelper(VIEWNAME, DATABASE_NAME, DDOCNAME);
 		dbHelper.createDatabase(ctx);
 		dbHelper.pullFromDatabase();
 		couchDbConnector = dbHelper.getCouchDbConnector();
 
 	}
-	
-	public static TouchDBRouteDatabase getInstance(Context ctx) {
+
+	public static TouchDBRouteDatabase getInstance(Application ctx) {
 		if (touchDBRouteDatabase == null)
 			touchDBRouteDatabase = new TouchDBRouteDatabase(ctx);
 		return touchDBRouteDatabase;

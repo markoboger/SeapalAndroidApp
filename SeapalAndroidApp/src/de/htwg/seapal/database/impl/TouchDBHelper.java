@@ -9,7 +9,7 @@ import org.ektorp.ReplicationCommand;
 import org.ektorp.http.HttpClient;
 import org.ektorp.impl.StdCouchDbInstance;
 
-import android.content.Context;
+import android.app.Application;
 import android.util.Log;
 
 import com.couchbase.touchdb.TDDatabase;
@@ -21,24 +21,23 @@ import com.couchbase.touchdb.TDViewReduceBlock;
 import com.couchbase.touchdb.ektorp.TouchDBHttpClient;
 
 public class TouchDBHelper {
-	
+
 	private static final String TAG = "TouchDB";
 	private String DDOCNAME;
 	private String VIEWNAME;
 	private String DATABASE_NAME;
 	private StdCouchDbInstance dbInstance;
 	private CouchDbConnector couchDbConnector;
-	
-
 
 	public TouchDBHelper(String viewName, String dbName, String dDocName) {
 		DATABASE_NAME = dbName;
 		DDOCNAME = dDocName;
-		VIEWNAME = viewName;	
+		VIEWNAME = viewName;
 	}
-	public boolean createDatabase(Context ctx) {
-		//TouchDB
-		Log.d(TAG , "Starting " + DATABASE_NAME);
+
+	public boolean createDatabase(Application ctx) {
+		// TouchDB
+		Log.d(TAG, "Starting " + DATABASE_NAME);
 		TDServer server = null;
 		String filesDir = ctx.getFilesDir().getAbsolutePath();
 		Log.d(TAG, ctx.getFilesDir().getAbsolutePath());
@@ -57,15 +56,18 @@ public class TouchDBHelper {
 
 		TDDatabase db = server.getDatabaseNamed(DATABASE_NAME);
 
-		TDView view = db.getViewNamed(String.format("%s/%s", DDOCNAME, VIEWNAME));
+		TDView view = db.getViewNamed(String
+				.format("%s/%s", DDOCNAME, VIEWNAME));
 
 		view.setMapReduceBlocks(new TDViewMapBlock() {
 
 			@Override
-			public void map(Map<String, Object> document, TDViewMapEmitBlock emitter) {
+			public void map(Map<String, Object> document,
+					TDViewMapEmitBlock emitter) {
 			}
 		}, new TDViewReduceBlock() {
-			public Object reduce(List<Object> keys, List<Object> values, boolean rereduce) {
+			public Object reduce(List<Object> keys, List<Object> values,
+					boolean rereduce) {
 				return null;
 			}
 
@@ -73,27 +75,26 @@ public class TouchDBHelper {
 		return false;
 
 	}
-	
+
 	public CouchDbConnector getCouchDbConnector() {
-		return this.couchDbConnector;	
+		return this.couchDbConnector;
 	}
+
 	public void pullFromDatabase() {
 		ReplicationCommand pullReplicationCommand = new ReplicationCommand.Builder()
-		.source("http://roroettg.iriscouch.com/" + DATABASE_NAME)
-		.target(DATABASE_NAME)
-		.continuous(true)
-		.build();
-		
+				.source("http://roroettg.iriscouch.com/" + DATABASE_NAME)
+				.target(DATABASE_NAME).continuous(true).build();
+
 		dbInstance.replicate(pullReplicationCommand);
-		
+
 	}
+
 	public void pushToDatabase() {
 		ReplicationCommand pushReplicationCommand = new ReplicationCommand.Builder()
-		.source(DATABASE_NAME)
-		.target("http://roroettg.iriscouch.com/" + DATABASE_NAME)
-		.continuous(true)
-		.build();
-		
+				.source(DATABASE_NAME)
+				.target("http://roroettg.iriscouch.com/" + DATABASE_NAME)
+				.continuous(true).build();
+
 		dbInstance.replicate(pushReplicationCommand);
 	}
 

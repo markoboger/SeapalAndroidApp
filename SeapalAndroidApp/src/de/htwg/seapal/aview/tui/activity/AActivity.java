@@ -1,6 +1,7 @@
 package de.htwg.seapal.aview.tui.activity;
 
-import android.app.Activity;
+import roboguice.activity.RoboActivity;
+import roboguice.inject.InjectView;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.KeyEvent;
@@ -18,10 +19,12 @@ import de.htwg.seapal.aview.tui.TuiState;
 import de.htwg.seapal.utils.observer.Event;
 import de.htwg.seapal.utils.observer.IObserver;
 
-public abstract class AActivity extends Activity implements IObserver,
+public abstract class AActivity extends RoboActivity implements IObserver,
 		StateContext {
 
+	@InjectView(R.id.input)
 	protected EditText in;
+	@InjectView(R.id.output)
 	protected TextView out;
 	protected OnKeyListener onKeyListener;
 	protected TuiState currenState;
@@ -37,8 +40,6 @@ public abstract class AActivity extends Activity implements IObserver,
 
 		setup();
 
-		in = (EditText) findViewById(R.id.input);
-		out = (TextView) findViewById(R.id.output);
 		printTUI();
 		out.setMovementMethod(ScrollingMovementMethod.getInstance());
 		out.setFocusable(false);

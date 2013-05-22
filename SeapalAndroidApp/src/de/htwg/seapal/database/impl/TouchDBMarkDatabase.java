@@ -11,15 +11,17 @@ import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.ViewResult.Row;
 
-import android.content.Context;
+import android.app.Application;
 import android.util.Log;
+
+import com.google.inject.Inject;
 
 import de.htwg.seapal.database.IMarkDatabase;
 import de.htwg.seapal.model.IMark;
 import de.htwg.seapal.model.impl.Mark;
 
 public class TouchDBMarkDatabase implements IMarkDatabase {
-	
+
 	private static final String TAG = "Mark-TouchDB";
 	private static final String DDOCNAME = "seapal-marks";
 	private static final String VIEWNAME = "marks";
@@ -29,14 +31,15 @@ public class TouchDBMarkDatabase implements IMarkDatabase {
 	private CouchDbConnector couchDbConnector;
 	private TouchDBHelper dbHelper;
 
-	public TouchDBMarkDatabase(Context ctx) {
+	@Inject
+	public TouchDBMarkDatabase(Application ctx) {
 		dbHelper = new TouchDBHelper(VIEWNAME, DATABASE_NAME, DDOCNAME);
 		dbHelper.createDatabase(ctx);
 		dbHelper.pullFromDatabase();
 		couchDbConnector = dbHelper.getCouchDbConnector();
 	}
-	
-	public static TouchDBMarkDatabase getInstance(Context ctx) {
+
+	public static TouchDBMarkDatabase getInstance(Application ctx) {
 		if (touchDBMarkDatabase == null)
 			touchDBMarkDatabase = new TouchDBMarkDatabase(ctx);
 		return touchDBMarkDatabase;

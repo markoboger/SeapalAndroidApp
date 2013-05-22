@@ -8,11 +8,11 @@ import android.widget.Toast;
 import de.htwg.seapal.aview.tui.StateContext;
 import de.htwg.seapal.aview.tui.TuiState;
 import de.htwg.seapal.aview.tui.activity.TripRecordActivity;
-import de.htwg.seapal.controller.impl.WaypointController;
+import de.htwg.seapal.controller.IWaypointController;
 
 public class StartState implements TuiState {
 
-	private WaypointController controller;
+	private IWaypointController controller;
 
 	@Override
 	public String buildString(StateContext context) {

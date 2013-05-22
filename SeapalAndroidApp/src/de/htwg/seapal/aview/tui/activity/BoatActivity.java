@@ -1,27 +1,25 @@
 package de.htwg.seapal.aview.tui.activity;
 
+import roboguice.inject.InjectView;
 import android.widget.TextView;
+
+import com.google.inject.Inject;
+
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.tui.states.boat.StartState;
 import de.htwg.seapal.controller.IBoatController;
-import de.htwg.seapal.controller.impl.BoatController;
-import de.htwg.seapal.database.impl.TouchDBBoatDatabase;
-import de.htwg.seapal.utils.logging.Logger;
 import de.htwg.seapal.utils.observer.IObserver;
 
 public class BoatActivity extends AActivity implements IObserver {
 
+	@Inject
 	private IBoatController controller;
+	@InjectView(R.id.header)
+	private TextView header;
 
 	@Override
 	public void setup() {
-		TextView header = (TextView) this.findViewById(R.id.header);
 		header.setText("Boat");
-		// this.controller = new
-		// BoatController(HashMapBoatDatabase.getInstance());
-		this.controller = new BoatController(
-				TouchDBBoatDatabase.getInstance(getApplicationContext()),
-				new Logger());
 		currenState = new StartState();
 		controller.addObserver(this);
 	}

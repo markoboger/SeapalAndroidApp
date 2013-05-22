@@ -11,8 +11,11 @@ import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.ViewResult.Row;
 
-import android.content.Context;
+import android.app.Application;
 import android.util.Log;
+
+import com.google.inject.Inject;
+
 import de.htwg.seapal.database.IBoatDatabase;
 import de.htwg.seapal.model.IBoat;
 import de.htwg.seapal.model.impl.Boat;
@@ -28,7 +31,8 @@ public class TouchDBBoatDatabase implements IBoatDatabase {
 	private CouchDbConnector couchDbConnector;
 	private TouchDBHelper dbHelper;
 
-	public TouchDBBoatDatabase(Context ctx) {
+	@Inject
+	public TouchDBBoatDatabase(Application ctx) {
 		dbHelper = new TouchDBHelper(VIEWNAME, DATABASE_NAME, DDOCNAME);
 		dbHelper.createDatabase(ctx);
 		dbHelper.pullFromDatabase();
@@ -36,7 +40,7 @@ public class TouchDBBoatDatabase implements IBoatDatabase {
 
 	}
 
-	public static TouchDBBoatDatabase getInstance(Context ctx) {
+	public static TouchDBBoatDatabase getInstance(Application ctx) {
 		if (touchDBBoatDatabase == null)
 			touchDBBoatDatabase = new TouchDBBoatDatabase(ctx);
 		return touchDBBoatDatabase;

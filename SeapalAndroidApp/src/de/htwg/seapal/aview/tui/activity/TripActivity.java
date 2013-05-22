@@ -4,16 +4,17 @@ import java.util.UUID;
 
 import android.os.Bundle;
 import android.widget.TextView;
+
+import com.google.inject.Inject;
+
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.tui.states.trip.StartState;
 import de.htwg.seapal.controller.ITripController;
-import de.htwg.seapal.controller.impl.TripController;
-import de.htwg.seapal.database.impl.TouchDBTripDatabase;
-import de.htwg.seapal.utils.logging.Logger;
 import de.htwg.seapal.utils.observer.IObserver;
 
 public class TripActivity extends AActivity implements IObserver {
 
+	@Inject
 	private ITripController controller;
 	private UUID boat;
 
@@ -23,10 +24,6 @@ public class TripActivity extends AActivity implements IObserver {
 		header.setText("Trip");
 		Bundle bundle = getIntent().getExtras();
 		boat = UUID.fromString(bundle.getString("boat").toString());
-		// controller = new TripController(HashMapTripDatabase.getInstance());
-		controller = new TripController(
-				TouchDBTripDatabase.getInstance(getApplicationContext()),
-				new Logger());
 		currenState = new StartState();
 		controller.addObserver(this);
 	}

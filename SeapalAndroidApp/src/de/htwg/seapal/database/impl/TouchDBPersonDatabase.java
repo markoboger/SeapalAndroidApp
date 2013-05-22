@@ -1,4 +1,4 @@
-package de.htwg.seapal.database;
+package de.htwg.seapal.database.impl;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -11,10 +11,12 @@ import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.ViewResult.Row;
 
-import android.content.Context;
+import android.app.Application;
 import android.util.Log;
 
-import de.htwg.seapal.database.impl.TouchDBHelper;
+import com.google.inject.Inject;
+
+import de.htwg.seapal.database.IPersonDatabase;
 import de.htwg.seapal.model.IPerson;
 import de.htwg.seapal.model.impl.Person;
 
@@ -28,14 +30,15 @@ public class TouchDBPersonDatabase implements IPersonDatabase {
 	private CouchDbConnector couchDbConnector;
 	private TouchDBHelper dbHelper;
 
-	public TouchDBPersonDatabase(Context ctx) {
+	@Inject
+	public TouchDBPersonDatabase(Application ctx) {
 		dbHelper = new TouchDBHelper(VIEWNAME, DATABASE_NAME, DDOCNAME);
 		dbHelper.createDatabase(ctx);
 		dbHelper.pullFromDatabase();
 		couchDbConnector = dbHelper.getCouchDbConnector();
 	}
-	
-	public static TouchDBPersonDatabase getInstance(Context ctx) {
+
+	public static TouchDBPersonDatabase getInstance(Application ctx) {
 		if (TouchDBPersonDatabase == null)
 			TouchDBPersonDatabase = new TouchDBPersonDatabase(ctx);
 		return TouchDBPersonDatabase;
