@@ -12,7 +12,7 @@ import org.ektorp.ViewResult;
 import org.ektorp.ViewResult.Row;
 
 import roboguice.inject.ContextSingleton;
-import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 
 import com.google.inject.Inject;
@@ -34,7 +34,7 @@ public class TouchDBBoatDatabase implements IBoatDatabase {
 	private TouchDBHelper dbHelper;
 
 	@Inject
-	public TouchDBBoatDatabase(Application ctx) {
+	public TouchDBBoatDatabase(Context ctx) {
 		dbHelper = new TouchDBHelper(VIEWNAME, DATABASE_NAME, DDOCNAME);
 		dbHelper.createDatabase(ctx);
 		dbHelper.pullFromDatabase();
@@ -42,7 +42,7 @@ public class TouchDBBoatDatabase implements IBoatDatabase {
 
 	}
 
-	public static TouchDBBoatDatabase getInstance(Application ctx) {
+	public static TouchDBBoatDatabase getInstance(Context ctx) {
 		if (touchDBBoatDatabase == null)
 			touchDBBoatDatabase = new TouchDBBoatDatabase(ctx);
 		return touchDBBoatDatabase;

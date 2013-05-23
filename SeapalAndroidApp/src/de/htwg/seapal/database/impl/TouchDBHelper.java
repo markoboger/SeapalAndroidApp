@@ -9,7 +9,7 @@ import org.ektorp.ReplicationCommand;
 import org.ektorp.http.HttpClient;
 import org.ektorp.impl.StdCouchDbInstance;
 
-import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 
 import com.couchbase.touchdb.TDDatabase;
@@ -35,7 +35,7 @@ public class TouchDBHelper {
 		VIEWNAME = viewName;
 	}
 
-	public boolean createDatabase(Application ctx) {
+	public boolean createDatabase(Context ctx) {
 		
 		if(couchDbConnector != null) {
 			return true;

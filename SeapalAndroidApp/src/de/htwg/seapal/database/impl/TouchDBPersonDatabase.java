@@ -12,7 +12,7 @@ import org.ektorp.ViewResult;
 import org.ektorp.ViewResult.Row;
 
 import roboguice.inject.ContextSingleton;
-import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 
 import com.google.inject.Inject;
@@ -33,14 +33,14 @@ public class TouchDBPersonDatabase implements IPersonDatabase {
 	private TouchDBHelper dbHelper;
 
 	@Inject
-	public TouchDBPersonDatabase(Application ctx) {
+	public TouchDBPersonDatabase(Context ctx) {
 		dbHelper = new TouchDBHelper(VIEWNAME, DATABASE_NAME, DDOCNAME);
 		dbHelper.createDatabase(ctx);
 		dbHelper.pullFromDatabase();
 		couchDbConnector = dbHelper.getCouchDbConnector();
 	}
 
-	public static TouchDBPersonDatabase getInstance(Application ctx) {
+	public static TouchDBPersonDatabase getInstance(Context ctx) {
 		if (TouchDBPersonDatabase == null)
 			TouchDBPersonDatabase = new TouchDBPersonDatabase(ctx);
 		return TouchDBPersonDatabase;
@@ -98,8 +98,10 @@ public class TouchDBPersonDatabase implements IPersonDatabase {
 		List<String> log = new LinkedList<String>();
 		ViewQuery query = new ViewQuery().allDocs();
 		ViewResult vr = couchDbConnector.queryView(query);
-
+		
+		
 		for (Row r : vr.getRows()) {
+			Log.d(TAG, "All Persons: " + r.getId().toString());
 			lst.add(get(UUID.fromString(r.getId())));
 			log.add(r.getId());
 		}

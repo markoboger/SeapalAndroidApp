@@ -1,7 +1,9 @@
 package de.htwg.seapal.controller.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import com.google.inject.Inject;
@@ -272,7 +274,30 @@ public class PersonController extends Observable implements IPersonController {
 		IPerson person = db.get(personId);
 		if (person == null)
 			return null;
-		return person.getString();
+		StringBuilder sb = new StringBuilder();
+
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+
+		sb.append("\n");
+		sb.append("ID: \t\t").append(person.getId()).append("\n");
+		sb.append("Firstname: \t").append(person.getFirstname()).append("\n");
+		sb.append("Lastname: \t").append(person.getLastname()).append("\n");
+		sb.append("Birth: \t\t").append(dateFormat.format(person.getBirth()))
+				.append("\n");
+		sb.append("Registration: \t")
+				.append(dateFormat.format(person.getRegistration())).append("\n");
+		sb.append("Age: \t\t").append(person.getAge()).append("\n");
+		sb.append("Nationality: \t").append(person.getNationality()).append("\n");
+		sb.append("Email: \t\t").append(person.getEmail()).append("\n");
+		sb.append("Telephone: \t").append(person.getTelephone()).append("\n");
+		sb.append("Mobile: \t").append(person.getMobile()).append("\n");
+		sb.append("Street: \t").append(person.getStreet()).append("\n");
+		sb.append("Postcode: \t").append(person.getPostcode()).append("\n");
+		sb.append("City: \t\t").append(person.getCity()).append("\n");
+		sb.append("Country: \t").append(person.getCountry()).append("\n");
+		sb.append("\n");
+
+		return sb.toString();
 	}
 
 	@Override

@@ -12,7 +12,7 @@ import org.ektorp.ViewResult;
 import org.ektorp.ViewResult.Row;
 
 import roboguice.inject.ContextSingleton;
-import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 
 import com.google.inject.Inject;
@@ -37,7 +37,7 @@ public class TouchDBWaypointDatabase implements IWaypointDatabase {
 	private TouchDBHelper dbHelper;
 
 	@Inject
-	public TouchDBWaypointDatabase(Application ctx) {
+	public TouchDBWaypointDatabase(Context ctx) {
 		dbHelper = new TouchDBHelper(VIEWNAME, DATABASE_NAME, DDOCNAME);
 		dbHelper.createDatabase(ctx);
 		dbHelper.pullFromDatabase();
@@ -45,7 +45,7 @@ public class TouchDBWaypointDatabase implements IWaypointDatabase {
 
 	}
 
-	public static TouchDBWaypointDatabase getInstance(Application ctx) {
+	public static TouchDBWaypointDatabase getInstance(Context ctx) {
 		if (touchDBWaypointDatabase == null)
 			touchDBWaypointDatabase = new TouchDBWaypointDatabase(ctx);
 		return touchDBWaypointDatabase;

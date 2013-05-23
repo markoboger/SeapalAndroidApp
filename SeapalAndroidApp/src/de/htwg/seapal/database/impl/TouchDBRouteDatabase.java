@@ -12,7 +12,7 @@ import org.ektorp.ViewResult;
 import org.ektorp.ViewResult.Row;
 
 import roboguice.inject.ContextSingleton;
-import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 
 import com.google.inject.Inject;
@@ -34,7 +34,7 @@ public class TouchDBRouteDatabase implements IRouteDatabase {
 	private TouchDBHelper dbHelper;
 
 	@Inject
-	public TouchDBRouteDatabase(Application ctx) {
+	public TouchDBRouteDatabase(Context ctx) {
 		dbHelper = new TouchDBHelper(VIEWNAME, DATABASE_NAME, DDOCNAME);
 		dbHelper.createDatabase(ctx);
 		dbHelper.pullFromDatabase();
@@ -42,7 +42,7 @@ public class TouchDBRouteDatabase implements IRouteDatabase {
 
 	}
 
-	public static TouchDBRouteDatabase getInstance(Application ctx) {
+	public static TouchDBRouteDatabase getInstance(Context ctx) {
 		if (touchDBRouteDatabase == null)
 			touchDBRouteDatabase = new TouchDBRouteDatabase(ctx);
 		return touchDBRouteDatabase;

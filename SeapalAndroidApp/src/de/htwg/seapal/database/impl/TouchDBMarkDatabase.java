@@ -12,7 +12,7 @@ import org.ektorp.ViewResult;
 import org.ektorp.ViewResult.Row;
 
 import roboguice.inject.ContextSingleton;
-import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 
 import com.google.inject.Inject;
@@ -34,14 +34,14 @@ public class TouchDBMarkDatabase implements IMarkDatabase {
 	private TouchDBHelper dbHelper;
 
 	@Inject
-	public TouchDBMarkDatabase(Application ctx) {
+	public TouchDBMarkDatabase(Context ctx) {
 		dbHelper = new TouchDBHelper(VIEWNAME, DATABASE_NAME, DDOCNAME);
 		dbHelper.createDatabase(ctx);
 		dbHelper.pullFromDatabase();
 		couchDbConnector = dbHelper.getCouchDbConnector();
 	}
 
-	public static TouchDBMarkDatabase getInstance(Application ctx) {
+	public static TouchDBMarkDatabase getInstance(Context ctx) {
 		if (touchDBMarkDatabase == null)
 			touchDBMarkDatabase = new TouchDBMarkDatabase(ctx);
 		return touchDBMarkDatabase;
