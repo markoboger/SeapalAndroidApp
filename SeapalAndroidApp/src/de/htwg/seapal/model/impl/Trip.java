@@ -14,9 +14,13 @@ import de.htwg.seapal.model.ModelDocument;
 public class Trip extends ModelDocument implements ITrip {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2927732338890052773L;
+	/**
 	 * Serial version UID for serialization.
 	 */
-	private static final long serialVersionUID = 1L;
+
 
 	private String name;
 	private String startLocation;
@@ -34,13 +38,11 @@ public class Trip extends ModelDocument implements ITrip {
 	public Trip() {
 		setId(UUID.randomUUID().toString());
 		this.crew = new ArrayList<String>();
-		this.skipper = UUID.randomUUID().toString();
-		this.crew = new ArrayList<String>();
+		this.skipper = (UUID.randomUUID().toString());
 
 		this.name = "";
 		this.startLocation = "";
 		this.endLocation = "";
-		this.skipper = "";
 		this.startTime = 0L;
 		this.endTime = 0L;
 		this.duration = 0L;

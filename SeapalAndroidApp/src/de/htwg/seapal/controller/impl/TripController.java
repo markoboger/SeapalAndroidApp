@@ -237,7 +237,7 @@ public class TripController extends Observable implements ITripController {
 				+ "\n endTime = \t" + getEndTime(id) + "\n duration = \t"
 				+ getDuration(id) + "\n motor = \t" + getMotor(id)
 				+ "\n fuel = \t" + getFuel(id) + "\n notes = \t" + getNotes(id)
-				+ "\n boat = \t" + getTrip(id) + "\n";
+				+ "\n boat = \t" + getBoat(id) + "\n";
 	}
 
 	@Override
@@ -312,5 +312,10 @@ public class TripController extends Observable implements ITripController {
 	@Override
 	public boolean saveTrip(ITrip trip) {
 		return db.save(trip);
+	}
+
+	@Override
+	public String getBoat(UUID id) {
+		return db.get(id).getBoat();
 	}
 }

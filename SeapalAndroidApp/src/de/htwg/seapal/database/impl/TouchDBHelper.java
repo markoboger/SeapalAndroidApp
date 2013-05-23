@@ -36,6 +36,10 @@ public class TouchDBHelper {
 	}
 
 	public boolean createDatabase(Application ctx) {
+		
+		if(couchDbConnector != null) {
+			return true;
+		}
 		// TouchDB
 		Log.d(TAG, "Starting " + DATABASE_NAME);
 		TDServer server = null;

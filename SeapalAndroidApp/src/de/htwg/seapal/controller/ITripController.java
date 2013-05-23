@@ -57,6 +57,8 @@ public interface ITripController extends IObservable {
 	void deleteTrip(UUID id);
 
 	void closeDB();
+	
+	String getBoat(UUID id);
 
 	List<UUID> getTrips();
 

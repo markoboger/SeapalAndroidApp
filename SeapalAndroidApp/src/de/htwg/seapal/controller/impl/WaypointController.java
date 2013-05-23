@@ -321,7 +321,7 @@ public class WaypointController extends Observable implements
 		// TODO: filtering should be moved to database layer.
 		List<UUID> waypointIDs = new ArrayList<UUID>();
 		for (IWaypoint waypoint : waypoints) {
-			if (waypoint.getTrip().equals(tripId.toString()))
+			if (waypoint.getTrip().equals(tripId))
 				waypointIDs.add(UUID.fromString(waypoint.getId()));
 		}
 		return waypointIDs;
