@@ -6,7 +6,7 @@
     <string name="logbookType">Type</string>
     <string name="productionYear">Production Year</string>
     <string name="idNumber">Corporate ID number</string>
-    <string name="draftsman">Draftsman</string>
+    <string name="draftsman">Constructor</string>
     <string name="engine">Engine</string>
     <string name="sailEmblem">Sail Emblem</string>
     <string name="length">Length</string>
@@ -22,7 +22,7 @@
     <string name="mainSailSize">Main Sail Size</string>
     <string name="insurance">Insurance</string>
     <string name="displacement">Displacement</string>
-    <string name="genoaSize">Genoa Size</string>
+    <string name="genoaSize">Genua Size</string>
     <string name="callSign">Call Sign</string>
     <string name="rigKind">Rig-Kind</string>
     <string name="spiSize">Spi Size</string>
@@ -30,5 +30,8 @@
     <string name="showTripsButton">Show Trips for this Boat</string>
     <string name="boatNameHeader">Boatname</string>
     <string name="constructorHeader">Constructor</string>
+    <string name="boatTypeHeader">Boattype</string>
+    <string name="lengthHeader">Length</string>
+    <string name="ownerHeader">Owner</string>
 
 </resources>

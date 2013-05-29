@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:background="#7A8B8B" >
+
+    <TextView
+        android:textSize="20sp"
+        android:layout_width="210dp"
+        android:layout_height="wrap_content"
+        android:text="@string/boatNameHeader" />
+    
+    <TextView
+        android:textSize="20sp"
+        android:layout_width="190dp"
+        android:layout_height="wrap_content"
+        android:text="@string/boatTypeHeader" />
+    
+    <TextView
+        android:textSize="20sp"
+        android:layout_width="190dp"
+        android:layout_height="wrap_content"
+        android:text="@string/constructorHeader" />
+    
+    <TextView
+        android:textSize="20sp"
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        android:text="@string/ownerHeader" />
+
+</LinearLayout>

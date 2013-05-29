@@ -2,20 +2,26 @@ package de.htwg.seapal.aview.gui.fragment;
 
 import java.util.UUID;
 
-import android.app.Activity;
+import roboguice.RoboGuice;
 import android.app.Fragment;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+
+import com.google.inject.Inject;
+
 import de.htwg.seapal.R;
 import de.htwg.seapal.controller.impl.BoatController;
 
-public class FragmentDetail extends Fragment {
+public class BoatDetailFragment extends Fragment {
 
 	public static String TAG = "FragmentDetail";
 	private UUID boat;
+	
+	@Inject
 	private BoatController controller;
 
 	private EditText name;
@@ -43,8 +49,8 @@ public class FragmentDetail extends Fragment {
 	private EditText rigKind;
 	private EditText spiSize;
 
-	public FragmentDetail() {
-		
+
+	public BoatDetailFragment() {
 	}
 
 	public void setBoat(UUID boat) {
@@ -52,9 +58,15 @@ public class FragmentDetail extends Fragment {
 	}
 
 	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		RoboGuice.getInjector(getActivity()).injectMembers(this);
+	}
+	
+	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		
+
 		name = (EditText) getActivity().findViewById(R.id.editBoatName);
 		typ = (EditText) getActivity().findViewById(R.id.editType);
 		productionYear = (EditText) getActivity().findViewById(
@@ -86,21 +98,29 @@ public class FragmentDetail extends Fragment {
 		callSign = (EditText) getActivity().findViewById(R.id.editCallSign);
 		rigKind = (EditText) getActivity().findViewById(R.id.editRigKind);
 		spiSize = (EditText) getActivity().findViewById(R.id.editSpiSize);
+
 		
 	}
-	
-	
+
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		
+//	    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//	    View newView = inflater.inflate(R.layout.boatdetails, null);
+//	    ViewGroup rootView = (ViewGroup) getView();
+//	    rootView.removeAllViews(); 
+//	    rootView.addView(newView);
+//	    onActivityCreated(null);
+//	    onResume();
+	}
+
 	@Override
 	public void onResume() {
 		if (boat != null) {
 			refresh(boat);
 		}
 		super.onResume();
-	}
-
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
 	}
 
 	@Override
@@ -115,7 +135,8 @@ public class FragmentDetail extends Fragment {
 
 		name.setText(controller.getBoatName(boat));
 		typ.setText(controller.getType(boat));
-		productionYear.setText(Integer.toString(controller.getYearOfConstruction(boat)));
+		productionYear.setText(Integer.toString(controller
+				.getYearOfConstruction(boat)));
 		corporateIdNumber.setText(controller.getRegisterNr(boat));
 		draftsman.setText(controller.getConstructor(boat));
 		engine.setText(controller.getMotor(boat));
@@ -130,7 +151,7 @@ public class FragmentDetail extends Fragment {
 		flotationDepth.setText(Double.toString(controller.getDraft(boat)));
 		sewageWaterTankSize.setText(Double.toString(controller
 				.getWasteWaterTankSize(boat)));
-		if(controller.getOwner(boat) != null)
+		if (controller.getOwner(boat) != null)
 			owner.setText(controller.getOwner(boat).toString());
 		mastHeight.setText(Double.toString(controller.getMastHeight(boat)));
 		mainSailSize.setText(Double.toString(controller.getMainSailSize(boat)));
@@ -142,7 +163,4 @@ public class FragmentDetail extends Fragment {
 		spiSize.setText(Double.toString(controller.getSpiSize(boat)));
 	}
 
-	public void setController(BoatController controller) {
-		this.controller = controller;
-	}
 }

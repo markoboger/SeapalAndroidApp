@@ -3,7 +3,6 @@ package de.htwg.seapal.aview.gui.activity;
 import java.util.UUID;
 
 import roboguice.activity.RoboActivity;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.View;
@@ -11,17 +10,18 @@ import android.view.View;
 import com.google.inject.Inject;
 
 import de.htwg.seapal.R;
-import de.htwg.seapal.aview.gui.fragment.FragmentDetail;
-import de.htwg.seapal.aview.gui.fragment.FragmentList;
+import de.htwg.seapal.aview.gui.fragment.BoatDetailFragment;
+import de.htwg.seapal.aview.gui.fragment.BoatListFragment;
 import de.htwg.seapal.controller.impl.BoatController;
 import de.htwg.seapal.utils.observer.Event;
 import de.htwg.seapal.utils.observer.IObserver;
 
 public class BoatActivity extends RoboActivity implements IObserver,
-		FragmentList.ListSelectedCallback {
+		BoatListFragment.ListSelectedCallback {
 
 	@Inject
 	private BoatController controller;
+	private BoatListFragment fragmentListe;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -32,25 +32,24 @@ public class BoatActivity extends RoboActivity implements IObserver,
 		// controller.addObserver(this);
 
 		if (savedInstanceState == null) {
-			FragmentList fragmentListe = new FragmentList();
-			fragmentListe.setController(controller);
-			FragmentManager fm = getFragmentManager();
-			FragmentTransaction transaction = fm.beginTransaction();
-			transaction.add(R.id.frame_links, fragmentListe, FragmentList.TAG);
+			fragmentListe = new BoatListFragment();
+			FragmentTransaction transaction = getFragmentManager()
+					.beginTransaction();
+			transaction.add(R.id.frame_links, fragmentListe, BoatListFragment.TAG);
 
 			View v = this.findViewById(R.id.linearLayout_large_land);
 
 			if (v != null) { // tablet and landscape -> FragmentDetail
-				FragmentDetail fragmentDetail = new FragmentDetail();
-				fragmentDetail.setController(controller);
+				BoatDetailFragment fragmentDetail = new BoatDetailFragment();
 				transaction.add(R.id.frame_rechts, fragmentDetail,
-						FragmentDetail.TAG);
+						BoatDetailFragment.TAG);
 			}
 			transaction.commit();
 
 		}
 
 	}
+
 
 	@Override
 	public void selected(UUID boat) {
@@ -59,15 +58,13 @@ public class BoatActivity extends RoboActivity implements IObserver,
 		View v = this.findViewById(R.id.linearLayout_large_land);
 
 		if (v != null) { // Tablet-Landscape scenario
-			FragmentDetail fragment = (FragmentDetail) getFragmentManager()
-					.findFragmentByTag(FragmentDetail.TAG);
+			BoatDetailFragment fragment = (BoatDetailFragment) getFragmentManager()
+					.findFragmentByTag(BoatDetailFragment.TAG);
 			fragment.refresh(boat);
 		} else {
 			// Smartphone
-			FragmentDetail fragment = new FragmentDetail();
-			fragment.setController(controller);
+			BoatDetailFragment fragment = new BoatDetailFragment();
 			fragment.setBoat(boat);
-
 			FragmentTransaction transaction = getFragmentManager()
 					.beginTransaction();
 			transaction.replace(R.id.frame_links, fragment);
