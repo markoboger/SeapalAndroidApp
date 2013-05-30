@@ -14,7 +14,7 @@ public class StartState implements TuiState {
 	@Override
 	public String buildString(StateContext context) {
 		return "l  -  logbuch\n" + "m  -  marks\n" + "r  -  routes\n"
-				+ "g - guiLogbuch\n x - maps";
+				+ "g - guiLogbuch\n x - maps\n d - drawer";
 	}
 
 	@Override
@@ -41,6 +41,12 @@ public class StartState implements TuiState {
 		case 'x':
 			intent = new Intent((Context) context,
 					de.htwg.seapal.aview.gui.activity.MapActivity.class);
+			((Context) context).startActivity(intent);
+			break;
+		case 'd':
+			intent = new Intent(
+					(Context) context,
+					de.htwg.seapal.aview.gui.activity.TestDrawerMapActivity.class);
 			((Context) context).startActivity(intent);
 			break;
 		default:

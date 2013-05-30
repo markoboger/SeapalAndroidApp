@@ -58,6 +58,10 @@
         </activity>
         <activity android:name="de.htwg.seapal.aview.gui.activity.MapActivity" >
         </activity>
+        <activity android:name="de.htwg.seapal.aview.gui.activity.MenuActivity" >
+        </activity>
+        <activity android:name="de.htwg.seapal.aview.gui.activity.TestDrawerMapActivity" >
+        </activity>
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
