@@ -34,4 +34,14 @@
     <string name="lengthHeader">Length</string>
     <string name="ownerHeader">Owner</string>
 
+    <string-array name="drawer_list_array">
+        <item>Logbook</item>
+        <item>GUI Logbook</item>
+        <item>Map</item>
+        <item>Marks</item>
+        <item>Routes</item>
+    </string-array>
+    <string name="drawer_open">open drawer</string>
+    <string name="drawer_close">close drawer</string>
+
 </resources>
