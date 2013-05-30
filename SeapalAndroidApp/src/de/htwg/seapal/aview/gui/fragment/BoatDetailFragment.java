@@ -66,7 +66,7 @@ public class BoatDetailFragment extends Fragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-
+		
 		name = (EditText) getActivity().findViewById(R.id.editBoatName);
 		typ = (EditText) getActivity().findViewById(R.id.editType);
 		productionYear = (EditText) getActivity().findViewById(

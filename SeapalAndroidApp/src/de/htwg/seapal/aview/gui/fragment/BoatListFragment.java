@@ -25,8 +25,9 @@ public class BoatListFragment extends ListFragment {
 	private List<UUID> boatList;
 	private BoatListAdapter adapter = null;
 	private View header;
-	private ViewGroup mainView; 
-	
+	private ViewGroup mainView;
+	private boolean tablet = false;
+
 	@Inject
 	private BoatController controller;
 
@@ -41,10 +42,11 @@ public class BoatListFragment extends ListFragment {
 			boatList = controller.getBoats();
 
 	}
+
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
-		
+
 		mainView.removeView(header);
 		this.onActivityCreated(null);
 	}
@@ -52,33 +54,53 @@ public class BoatListFragment extends ListFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		if(boatList == null)
+		if (boatList == null)
 			boatList = controller.getBoats();
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		
+
+		getListView().setChoiceMode(1);
 		setListAdapter(null);
 		if (adapter == null)
 			adapter = new BoatListAdapter(getActivity(), R.layout.boatlist,
 					boatList, controller);
-		
-		//add Header
-		LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+		// add Header
+		LayoutInflater inflater = (LayoutInflater) getActivity()
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		header = inflater.inflate(R.layout.boatlistheader, null);
-		mainView = (ViewGroup) getActivity().findViewById(R.id.linearLayout_default);
-		mainView.addView(header, 0);
-		
+		mainView = (ViewGroup) getActivity().findViewById(
+				R.id.linearLayout_default);
+		if (mainView == null) {
+			tablet = true;
+			mainView = (ViewGroup) getActivity().findViewById(
+					R.id.linearLayout_large_land);
+			mainView.addView(header, 1);
+		} else
+			mainView.addView(header, 0);
+
+		try {
+			getListView().setItemChecked(0, true);
+			getListView().setSelected(true);
+			getListView().setFocusable(false);
+		} catch (Exception e) {
+
+		}
+
 		this.setListAdapter(adapter);
 	}
 
-	
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		// inform Activity
-		mainView.removeView(header);
+		if (!tablet)
+			mainView.removeView(header);
+
+		l.setItemChecked(position, true);
+
 		UUID boat = (UUID) l.getAdapter().getItem(position);
 		ListSelectedCallback callback = (ListSelectedCallback) getActivity();
 		callback.selected(boat);

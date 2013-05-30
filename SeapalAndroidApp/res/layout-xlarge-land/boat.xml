@@ -8,49 +8,21 @@
     <FrameLayout
         android:id="@+id/frame_detail"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
         android:visibility="visible" >
     </FrameLayout>
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="2"
-        android:orientation="vertical" >
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="#7A8B8B"
-            android:orientation="horizontal"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp" >
-
-            <TextView
-                android:layout_width="230dp"
-                android:layout_height="wrap_content"
-                android:text="@string/boatNameHeader"
-                android:textSize="20sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/boatTypeHeader"
-                android:textSize="20sp" />
-        </LinearLayout>
-
-        <FrameLayout
-            android:id="@+id/frame_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="0dp"
-            android:background="@drawable/boatlistborder"
-            android:visibility="visible" >
-        </FrameLayout>
-    </LinearLayout>
+    <FrameLayout
+        android:id="@+id/frame_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="0dp"
+        android:background="@drawable/boatlistborder"
+        android:visibility="visible" >
+    </FrameLayout>
 
 </LinearLayout>
