@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#7A8B8B"
     android:orientation="horizontal"
-    android:background="#7A8B8B" >
+    android:id="@+id/boatlistheader" >
 
     <TextView
-        android:textSize="20sp"
         android:layout_width="230dp"
         android:layout_height="wrap_content"
-        android:text="@string/boatNameHeader" />
-    
+        android:text="@string/boatNameHeader"
+        android:textSize="20sp" />
+
     <TextView
-        android:textSize="20sp"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/boatTypeHeader" />
+        android:text="@string/boatTypeHeader"
+        android:textSize="20sp" />
 
 </LinearLayout>

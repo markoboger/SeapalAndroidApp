@@ -35,13 +35,13 @@ public class BoatActivity extends RoboActivity implements IObserver,
 			fragmentListe = new BoatListFragment();
 			FragmentTransaction transaction = getFragmentManager()
 					.beginTransaction();
-			transaction.add(R.id.frame_links, fragmentListe, BoatListFragment.TAG);
+			transaction.add(R.id.frame_list, fragmentListe, BoatListFragment.TAG);
 
 			View v = this.findViewById(R.id.linearLayout_large_land);
 
 			if (v != null) { // tablet and landscape -> FragmentDetail
 				BoatDetailFragment fragmentDetail = new BoatDetailFragment();
-				transaction.add(R.id.frame_rechts, fragmentDetail,
+				transaction.add(R.id.frame_detail, fragmentDetail,
 						BoatDetailFragment.TAG);
 			}
 			transaction.commit();
@@ -67,7 +67,7 @@ public class BoatActivity extends RoboActivity implements IObserver,
 			fragment.setBoat(boat);
 			FragmentTransaction transaction = getFragmentManager()
 					.beginTransaction();
-			transaction.replace(R.id.frame_links, fragment);
+			transaction.replace(R.id.frame_list, fragment);
 			transaction.addToBackStack(null);
 			transaction.commit();
 		}
@@ -79,4 +79,6 @@ public class BoatActivity extends RoboActivity implements IObserver,
 
 	}
 
+	
+	
 }

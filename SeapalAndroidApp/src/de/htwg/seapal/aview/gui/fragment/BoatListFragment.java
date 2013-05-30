@@ -5,10 +5,12 @@ import java.util.UUID;
 
 import roboguice.RoboGuice;
 import android.app.ListFragment;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.google.inject.Inject;
@@ -23,6 +25,7 @@ public class BoatListFragment extends ListFragment {
 	private List<UUID> boatList;
 	private BoatListAdapter adapter = null;
 	private View header;
+	private ViewGroup mainView; 
 	
 	@Inject
 	private BoatController controller;
@@ -41,7 +44,8 @@ public class BoatListFragment extends ListFragment {
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
-		this.getListView().removeHeaderView(header);
+		
+		mainView.removeView(header);
 		this.onActivityCreated(null);
 	}
 
@@ -61,10 +65,12 @@ public class BoatListFragment extends ListFragment {
 			adapter = new BoatListAdapter(getActivity(), R.layout.boatlist,
 					boatList, controller);
 		
-		LayoutInflater inflater = LayoutInflater.from(getActivity());
-        header = inflater.inflate(R.layout.boatlistheader, null, false);
-        
-		this.getListView().addHeaderView(header, null, false);
+		//add Header
+		LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		header = inflater.inflate(R.layout.boatlistheader, null);
+		mainView = (ViewGroup) getActivity().findViewById(R.id.linearLayout_default);
+		mainView.addView(header, 0);
+		
 		this.setListAdapter(adapter);
 	}
 
@@ -72,7 +78,7 @@ public class BoatListFragment extends ListFragment {
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		// inform Activity
-
+		mainView.removeView(header);
 		UUID boat = (UUID) l.getAdapter().getItem(position);
 		ListSelectedCallback callback = (ListSelectedCallback) getActivity();
 		callback.selected(boat);
