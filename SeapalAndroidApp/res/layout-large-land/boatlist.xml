@@ -6,44 +6,44 @@
 
     <TextView
         android:id="@+id/boatname"
-        android:layout_width="140dp"
-        android:layout_height="40dp"
+        android:layout_width="210dp"
+        android:layout_height="50dp"
         android:paddingTop="10dp"
         android:text=""
-        android:textSize="12sp" >
+        android:textSize="18sp" >
     </TextView>
 
     <TextView
         android:id="@+id/boattype"
-        android:layout_width="130dp"
-        android:layout_height="40dp"
+        android:layout_width="190dp"
+        android:layout_height="50dp"
         android:paddingTop="10dp"
         android:text=""
-        android:textSize="12sp" >
+        android:textSize="18sp" >
     </TextView>
 
     <TextView
         android:id="@+id/constructor"
-        android:layout_width="130dp"
-        android:layout_height="40dp"
+        android:layout_width="190dp"
+        android:layout_height="50dp"
         android:paddingTop="10dp"
         android:text=""
-        android:textSize="12sp" >
+        android:textSize="18sp" >
     </TextView>
 
     <TextView
         android:id="@+id/owner"
-        android:layout_width="80dp"
-        android:layout_height="40dp"
+        android:layout_width="170dp"
+        android:layout_height="50dp"
         android:paddingTop="10dp"
         android:text=""
-        android:textSize="12sp" >
+        android:textSize="18sp" >
     </TextView>
 
     <Button
         android:id="@+id/showTripsButton"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         android:background="@drawable/arrowbutton"
         android:contentDescription="@string/showTripsButton"
         android:focusable="false" >

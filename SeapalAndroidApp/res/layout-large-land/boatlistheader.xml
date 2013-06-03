@@ -6,26 +6,26 @@
     android:background="#7A8B8B" >
 
     <TextView
-        android:textSize="13sp"
-        android:layout_width="140dp"
+        android:textSize="20sp"
+        android:layout_width="210dp"
         android:layout_height="wrap_content"
         android:text="@string/boatNameHeader" />
     
     <TextView
-        android:textSize="13sp"
-        android:layout_width="130dp"
+        android:textSize="20sp"
+        android:layout_width="190dp"
         android:layout_height="wrap_content"
         android:text="@string/boatTypeHeader" />
     
     <TextView
-        android:textSize="13sp"
-        android:layout_width="130dp"
+        android:textSize="20sp"
+        android:layout_width="190dp"
         android:layout_height="wrap_content"
         android:text="@string/constructorHeader" />
     
     <TextView
-        android:textSize="13sp"
-        android:layout_width="80dp"
+        android:textSize="20sp"
+        android:layout_width="170dp"
         android:layout_height="wrap_content"
         android:text="@string/ownerHeader" />
 

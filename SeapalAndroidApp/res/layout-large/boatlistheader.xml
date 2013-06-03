@@ -7,15 +7,15 @@
     android:id="@+id/boatlistheader" >
 
     <TextView
-        android:layout_width="160dp"
+        android:layout_width="230dp"
         android:layout_height="wrap_content"
         android:text="@string/boatNameHeader"
-        android:textSize="13sp" />
+        android:textSize="20sp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/boatTypeHeader"
-        android:textSize="13sp" />
+        android:textSize="20sp" />
 
 </LinearLayout>
