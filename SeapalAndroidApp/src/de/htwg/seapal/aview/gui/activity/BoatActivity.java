@@ -5,6 +5,9 @@ import java.util.UUID;
 import roboguice.activity.RoboActivity;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.google.inject.Inject;
@@ -38,9 +41,9 @@ public class BoatActivity extends RoboActivity implements IObserver,
 			transaction.add(R.id.frame_list, fragmentListe,
 					BoatListFragment.TAG);
 
-			View v = this.findViewById(R.id.linearLayout_large_land);
+			View v = this.findViewById(R.id.linearLayout_xlarge);
 
-			if (v != null) { // tablet and landscape -> FragmentDetail
+			if (v != null) { // tablet -> FragmentDetail
 				BoatDetailFragment fragmentDetail = new BoatDetailFragment();
 				transaction.add(R.id.frame_detail, fragmentDetail,
 						BoatDetailFragment.TAG);
@@ -55,9 +58,9 @@ public class BoatActivity extends RoboActivity implements IObserver,
 	public void selected(UUID boat) {
 		// Clickes an ListItem
 
-		View v = this.findViewById(R.id.linearLayout_large_land);
+		View v = this.findViewById(R.id.linearLayout_xlarge);
 
-		if (v != null) { // Tablet-Landscape scenario
+		if (v != null) { // Tablet scenario
 			BoatDetailFragment fragment = (BoatDetailFragment) getFragmentManager()
 					.findFragmentByTag(BoatDetailFragment.TAG);
 			fragment.refresh(boat);
@@ -77,6 +80,25 @@ public class BoatActivity extends RoboActivity implements IObserver,
 	public void update(Event event) {
 		// TODO Auto-generated method stub
 
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.actionbar, menu);
+		
+		return true;
+	}
+	
+	
+	@Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		
+		
+		
+		
+		return super.onMenuItemSelected(featureId, item);
 	}
 
 }

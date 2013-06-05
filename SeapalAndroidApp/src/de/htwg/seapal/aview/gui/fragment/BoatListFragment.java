@@ -77,7 +77,7 @@ public class BoatListFragment extends ListFragment {
 		if (mainView == null) {
 			tablet = true;
 			mainView = (ViewGroup) getActivity().findViewById(
-					R.id.linearLayout_large_land);
+					R.id.linearLayout_xlarge);
 			mainView.addView(header, 1);
 		} else
 			mainView.addView(header, 0);
@@ -85,10 +85,12 @@ public class BoatListFragment extends ListFragment {
 		try {
 			getListView().setItemChecked(0, true);
 			getListView().setSelected(true);
-			getListView().setFocusable(false);
 		} catch (Exception e) {
 
 		}
+
+		// so the background color is white on older Android Versions
+		// getListView().setBackgroundColor(Color.WHITE);
 
 		this.setListAdapter(adapter);
 	}

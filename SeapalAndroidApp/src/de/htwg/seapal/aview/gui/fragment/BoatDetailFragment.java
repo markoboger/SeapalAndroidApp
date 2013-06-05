@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import roboguice.RoboGuice;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -104,14 +105,15 @@ public class BoatDetailFragment extends Fragment {
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
 
-		// LayoutInflater inflater = (LayoutInflater)
-		// getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		// View newView = inflater.inflate(R.layout.boatdetails, null);
-		// ViewGroup rootView = (ViewGroup) getView();
-		// rootView.removeAllViews();
-		// rootView.addView(newView);
-		// onActivityCreated(null);
-		// onResume();
+		LayoutInflater inflater = (LayoutInflater) getActivity()
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+		View newView = inflater.inflate(R.layout.boatdetails, null);
+		ViewGroup rootView = (ViewGroup) getView();
+		rootView.removeAllViews();
+		rootView.addView(newView);
+		onActivityCreated(null);
+		onResume();
 	}
 
 	@Override
