@@ -64,8 +64,8 @@ public class AddMarkState implements TuiState {
 			longitude = Math.round(longitude);
 			longitude = longitude / 10000;
 
-
-			UUID newRouteMark = markController.newRouteMark(latitude, longitude);
+			UUID newRouteMark = markController
+					.newRouteMark(latitude, longitude);
 			markController.setName(newRouteMark, "Point");
 			controller.addMark(route, newRouteMark);
 			context.setState(new ShowMarksState(route));

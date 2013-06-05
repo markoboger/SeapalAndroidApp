@@ -10,7 +10,7 @@ import de.htwg.seapal.aview.tui.activity.MarkActivity;
 public class EditSelectState implements TuiState {
 
 	private UUID mark;
-	private static String[] editMark = new String[] {"Name", "Latitude",
+	private static String[] editMark = new String[] { "Name", "Latitude",
 			"Longitude", "Notes" };
 
 	public EditSelectState(UUID mark) {

@@ -19,7 +19,7 @@ public class BoatDatabase implements IBoatDatabase {
 	public BoatDatabase() {
 		open();
 	}
-	
+
 	@Override
 	public boolean open() {
 		// create test data
@@ -35,7 +35,7 @@ public class BoatDatabase implements IBoatDatabase {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public boolean close() {
 		return true;

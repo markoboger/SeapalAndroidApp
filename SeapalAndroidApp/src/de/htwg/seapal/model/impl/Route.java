@@ -28,7 +28,7 @@ public class Route extends ModelDocument implements IRoute {
 		this.user = "";
 		this.name = "";
 		this.date = 0L;
-		this.routeEntryPoint = null; 
+		this.routeEntryPoint = null;
 		this.distance = 0D;
 	}
 
@@ -87,7 +87,7 @@ public class Route extends ModelDocument implements IRoute {
 
 	@Override
 	public UUID getRouteEntryPoint() {
-		if(routeEntryPoint == null) 
+		if (routeEntryPoint == null)
 			return null;
 		return UUID.fromString(routeEntryPoint);
 	}

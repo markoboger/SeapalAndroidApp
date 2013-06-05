@@ -25,7 +25,7 @@ public interface IBoat extends IModel {
 	void setYachtclub(String yachtclub);
 
 	UUID getOwner(); // Person
-	
+
 	void setOwner(UUID owner); // Person
 
 	String getInsurance();

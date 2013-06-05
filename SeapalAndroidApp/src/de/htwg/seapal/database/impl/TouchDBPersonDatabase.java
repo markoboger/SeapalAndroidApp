@@ -98,8 +98,7 @@ public class TouchDBPersonDatabase implements IPersonDatabase {
 		List<String> log = new LinkedList<String>();
 		ViewQuery query = new ViewQuery().allDocs();
 		ViewResult vr = couchDbConnector.queryView(query);
-		
-		
+
 		for (Row r : vr.getRows()) {
 			Log.d(TAG, "All Persons: " + r.getId().toString());
 			lst.add(get(UUID.fromString(r.getId())));

@@ -19,7 +19,7 @@ public class WaypointDatabase implements IWaypointDatabase {
 	public WaypointDatabase() {
 		open();
 	}
-	
+
 	@Override
 	public boolean open() {
 		// create test data
@@ -35,7 +35,7 @@ public class WaypointDatabase implements IWaypointDatabase {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public boolean close() {
 		return true;

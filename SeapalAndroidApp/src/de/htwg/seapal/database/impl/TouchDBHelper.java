@@ -36,8 +36,8 @@ public class TouchDBHelper {
 	}
 
 	public boolean createDatabase(Context ctx) {
-		
-		if(couchDbConnector != null) {
+
+		if (couchDbConnector != null) {
 			return true;
 		}
 		// TouchDB

@@ -113,7 +113,7 @@ public class Waypoint extends ModelDocument implements IWaypoint {
 
 	@Override
 	public UUID getHeadedFor() {
-		if(headedFor.equals("")) {
+		if (headedFor.equals("")) {
 			return null;
 		}
 		return UUID.fromString(headedFor);
@@ -186,7 +186,7 @@ public class Waypoint extends ModelDocument implements IWaypoint {
 
 	@Override
 	public UUID getTrip() {
-		if(trip.equals("")) {
+		if (trip.equals("")) {
 			return null;
 		}
 		return UUID.fromString(trip);

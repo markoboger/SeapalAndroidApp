@@ -149,7 +149,7 @@ public class Boat extends ModelDocument implements IBoat {
 
 	@Override
 	public UUID getOwner() { // Person
-		if(owner == null)
+		if (owner == null)
 			return null;
 		return UUID.fromString(owner);
 	}

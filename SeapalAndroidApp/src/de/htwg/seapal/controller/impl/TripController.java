@@ -302,7 +302,8 @@ public class TripController extends Observable implements ITripController {
 		// TODO: filtering should be moved to database layer.
 		for (int i = trips.size() - 1; i >= 0; --i) {
 			String currentBoatId = trips.get(i).getBoat();
-			if (currentBoatId != null && !currentBoatId.equals(boatId.toString())) {
+			if (currentBoatId != null
+					&& !currentBoatId.equals(boatId.toString())) {
 				trips.remove(i);
 			}
 		}

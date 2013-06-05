@@ -15,11 +15,11 @@ public class TripDatabase implements ITripDatabase {
 
 	Map<UUID, ITrip> db = new HashMap<UUID, ITrip>();
 	private ITrip newTrip;
-	
+
 	public TripDatabase() {
 		open();
 	}
-	
+
 	private UUID createNewTripInDatabase() {
 		ITrip trip = new Trip();
 		UUID id = trip.getUUID();
@@ -42,7 +42,7 @@ public class TripDatabase implements ITripDatabase {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public boolean close() {
 		return true;

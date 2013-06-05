@@ -7,13 +7,12 @@ import de.htwg.seapal.aview.tui.TuiState;
 import de.htwg.seapal.aview.tui.activity.RouteActivity;
 
 public class EditState implements TuiState {
-	
+
 	private UUID route;
-	
+
 	public EditState(UUID route) {
 		this.route = route;
 	}
-	
 
 	@Override
 	public String buildString(StateContext context) {

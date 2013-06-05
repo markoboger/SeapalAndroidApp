@@ -18,7 +18,7 @@ public class RouteDatabase implements IRouteDatabase {
 	public RouteDatabase() {
 		open();
 	}
-	
+
 	@Override
 	public boolean open() {
 		// create test data
@@ -34,7 +34,7 @@ public class RouteDatabase implements IRouteDatabase {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public boolean close() {
 		return true;

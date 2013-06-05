@@ -18,7 +18,7 @@ public class MarkDatabase implements IMarkDatabase {
 	public MarkDatabase() {
 		open();
 	}
-	
+
 	@Override
 	public boolean open() {
 		// create test data
@@ -34,7 +34,7 @@ public class MarkDatabase implements IMarkDatabase {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public boolean close() {
 		return true;
@@ -59,7 +59,7 @@ public class MarkDatabase implements IMarkDatabase {
 
 	@Override
 	public void delete(UUID id) {
-		
+
 	}
 
 	@Override

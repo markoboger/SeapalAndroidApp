@@ -20,7 +20,7 @@ public class BoatDetailFragment extends Fragment {
 
 	public static String TAG = "FragmentDetail";
 	private UUID boat;
-	
+
 	@Inject
 	private BoatController controller;
 
@@ -49,7 +49,6 @@ public class BoatDetailFragment extends Fragment {
 	private EditText rigKind;
 	private EditText spiSize;
 
-
 	public BoatDetailFragment() {
 	}
 
@@ -62,11 +61,11 @@ public class BoatDetailFragment extends Fragment {
 		super.onCreate(savedInstanceState);
 		RoboGuice.getInjector(getActivity()).injectMembers(this);
 	}
-	
+
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		
+
 		name = (EditText) getActivity().findViewById(R.id.editBoatName);
 		typ = (EditText) getActivity().findViewById(R.id.editType);
 		productionYear = (EditText) getActivity().findViewById(
@@ -99,20 +98,20 @@ public class BoatDetailFragment extends Fragment {
 		rigKind = (EditText) getActivity().findViewById(R.id.editRigKind);
 		spiSize = (EditText) getActivity().findViewById(R.id.editSpiSize);
 
-		
 	}
 
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
-		
-//	    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//	    View newView = inflater.inflate(R.layout.boatdetails, null);
-//	    ViewGroup rootView = (ViewGroup) getView();
-//	    rootView.removeAllViews(); 
-//	    rootView.addView(newView);
-//	    onActivityCreated(null);
-//	    onResume();
+
+		// LayoutInflater inflater = (LayoutInflater)
+		// getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		// View newView = inflater.inflate(R.layout.boatdetails, null);
+		// ViewGroup rootView = (ViewGroup) getView();
+		// rootView.removeAllViews();
+		// rootView.addView(newView);
+		// onActivityCreated(null);
+		// onResume();
 	}
 
 	@Override

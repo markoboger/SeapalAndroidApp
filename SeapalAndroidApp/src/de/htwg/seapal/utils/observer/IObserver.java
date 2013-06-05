@@ -6,7 +6,9 @@ package de.htwg.seapal.utils.observer;
 public interface IObserver {
 	/**
 	 * Updates the observer.
-	 * @param event The update event.
+	 * 
+	 * @param event
+	 *            The update event.
 	 */
 	void update(Event event);
 }

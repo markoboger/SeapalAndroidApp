@@ -8,7 +8,7 @@ import java.util.List;
  * Observer class for the observer pattern.
  */
 public class Observable implements IObservable {
-	
+
 	/**
 	 * The subsribers.
 	 */

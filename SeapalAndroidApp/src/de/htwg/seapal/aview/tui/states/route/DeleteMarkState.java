@@ -15,7 +15,8 @@ public class DeleteMarkState implements TuiState {
 	private UUID route;
 	private IMarkController markController;
 
-	public DeleteMarkState(UUID route, List<UUID> marks, IMarkController markController) {
+	public DeleteMarkState(UUID route, List<UUID> marks,
+			IMarkController markController) {
 		this.route = route;
 		this.marks = marks;
 		this.markController = markController;
@@ -49,13 +50,13 @@ public class DeleteMarkState implements TuiState {
 			return false;
 		}
 		if (number >= 0 && number < marks.size()) {
-			((RouteActivity) context).getController().deleteMark(route, marks.get(number));
-			context.setState(new ShowMarksState(route));			
-		}
-		else
+			((RouteActivity) context).getController().deleteMark(route,
+					marks.get(number));
+			context.setState(new ShowMarksState(route));
+		} else
 			Toast.makeText((RouteActivity) context, "Unkown Option",
 					Toast.LENGTH_SHORT).show();
-		
+
 		return true;
 	}
 

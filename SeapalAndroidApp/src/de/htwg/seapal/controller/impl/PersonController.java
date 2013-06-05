@@ -276,7 +276,8 @@ public class PersonController extends Observable implements IPersonController {
 			return null;
 		StringBuilder sb = new StringBuilder();
 
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy",
+				Locale.getDefault());
 
 		sb.append("\n");
 		sb.append("ID: \t\t").append(person.getId()).append("\n");
@@ -285,9 +286,11 @@ public class PersonController extends Observable implements IPersonController {
 		sb.append("Birth: \t\t").append(dateFormat.format(person.getBirth()))
 				.append("\n");
 		sb.append("Registration: \t")
-				.append(dateFormat.format(person.getRegistration())).append("\n");
+				.append(dateFormat.format(person.getRegistration()))
+				.append("\n");
 		sb.append("Age: \t\t").append(person.getAge()).append("\n");
-		sb.append("Nationality: \t").append(person.getNationality()).append("\n");
+		sb.append("Nationality: \t").append(person.getNationality())
+				.append("\n");
 		sb.append("Email: \t\t").append(person.getEmail()).append("\n");
 		sb.append("Telephone: \t").append(person.getTelephone()).append("\n");
 		sb.append("Mobile: \t").append(person.getMobile()).append("\n");
@@ -320,12 +323,12 @@ public class PersonController extends Observable implements IPersonController {
 	public IPerson getPerson(UUID personId) {
 		return db.get(personId);
 	}
-	
+
 	@Override
 	public List<IPerson> getAllPersons() {
 		return db.loadAll();
 	}
-	
+
 	@Override
 	public boolean savePerson(IPerson person) {
 		return db.save(person);

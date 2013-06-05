@@ -39,7 +39,6 @@ public class NewState implements TuiState {
 		longitude = Math.round(longitude);
 		longitude = longitude / 10000;
 
-
 		UUID mark = controller.newMark(latitude, longitude);
 		controller.setName(mark, input);
 		context.setState(new ShowState(mark));

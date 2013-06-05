@@ -27,7 +27,8 @@ public class ShowMarksState implements TuiState {
 	@Override
 	public String buildString(StateContext context) {
 		IRouteController controller = ((RouteActivity) context).getController();
-		markController = new MarkController(HashMapMarkDatabase.getInstance(), new Logger());
+		markController = new MarkController(HashMapMarkDatabase.getInstance(),
+				new Logger());
 		marks = controller.getMarks(route);
 		StringBuilder sb = new StringBuilder();
 		sb.append("q - quit\n");

@@ -8,11 +8,11 @@ import de.htwg.seapal.aview.tui.TuiState;
 import de.htwg.seapal.aview.tui.activity.RouteActivity;
 
 public class ShowState implements TuiState {
-	
+
 	private UUID route;
-	
+
 	public ShowState(UUID route) {
-		this.route = route; 
+		this.route = route;
 	}
 
 	@Override

@@ -15,18 +15,18 @@ public class PersonDatabase implements IPersonDatabase {
 
 	Map<UUID, IPerson> db = new HashMap<UUID, IPerson>();
 	private IPerson newPerson;
-	
+
 	public PersonDatabase() {
 		open();
 	}
-	
+
 	private UUID createNewPersonInDatabase() {
 		IPerson person = new Person();
 		UUID id = person.getUUID();
 		db.put(id, person);
 		return id;
 	}
-	
+
 	@Override
 	public boolean open() {
 		// create test data
@@ -44,7 +44,7 @@ public class PersonDatabase implements IPersonDatabase {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public boolean close() {
 		return true;

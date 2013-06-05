@@ -157,8 +157,8 @@ public class Mark extends ModelDocument implements IMark {
 	@Override
 	public void setIsRouteMark(boolean isRouteMark) {
 		this.isRouteMark = isRouteMark;
-//		String abc = String.valueOf(isRouteMark);
-//		Boolean b = Boolean.getBoolean(abc);
+		// String abc = String.valueOf(isRouteMark);
+		// Boolean b = Boolean.getBoolean(abc);
 	}
 
 	@Override

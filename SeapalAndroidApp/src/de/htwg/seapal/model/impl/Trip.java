@@ -21,7 +21,6 @@ public class Trip extends ModelDocument implements ITrip {
 	 * Serial version UID for serialization.
 	 */
 
-
 	private String name;
 	private String startLocation;
 	private String endLocation;

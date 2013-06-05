@@ -41,8 +41,6 @@ public class BoatListAdapter extends ArrayAdapter<UUID> {
 			TextView tt2 = (TextView) v.findViewById(R.id.constructor);
 			TextView tt3 = (TextView) v.findViewById(R.id.length);
 			TextView tt4 = (TextView) v.findViewById(R.id.owner);
-			
-			
 
 			if (tt0 != null)
 				tt0.setText(controller.getBoatName(boat));
@@ -52,14 +50,14 @@ public class BoatListAdapter extends ArrayAdapter<UUID> {
 
 			if (tt2 != null)
 				tt2.setText(controller.getConstructor(boat));
-			
-			if(tt3 != null)
+
+			if (tt3 != null)
 				tt3.setText(Double.toString(controller.getLength(boat)));
-			
+
 			if (tt4 != null) {
-				if(controller.getOwner(boat) == null)
+				if (controller.getOwner(boat) == null)
 					tt4.setText("Owner");
-				else 
+				else
 					tt4.setText(controller.getOwner(boat).toString());
 			}
 

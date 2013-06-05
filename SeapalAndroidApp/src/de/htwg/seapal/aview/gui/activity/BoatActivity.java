@@ -35,7 +35,8 @@ public class BoatActivity extends RoboActivity implements IObserver,
 			fragmentListe = new BoatListFragment();
 			FragmentTransaction transaction = getFragmentManager()
 					.beginTransaction();
-			transaction.add(R.id.frame_list, fragmentListe, BoatListFragment.TAG);
+			transaction.add(R.id.frame_list, fragmentListe,
+					BoatListFragment.TAG);
 
 			View v = this.findViewById(R.id.linearLayout_large_land);
 
@@ -49,7 +50,6 @@ public class BoatActivity extends RoboActivity implements IObserver,
 		}
 
 	}
-
 
 	@Override
 	public void selected(UUID boat) {
@@ -79,6 +79,4 @@ public class BoatActivity extends RoboActivity implements IObserver,
 
 	}
 
-	
-	
 }
