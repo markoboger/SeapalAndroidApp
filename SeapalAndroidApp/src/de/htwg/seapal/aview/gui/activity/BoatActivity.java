@@ -3,11 +3,9 @@ package de.htwg.seapal.aview.gui.activity;
 import java.util.UUID;
 
 import roboguice.activity.RoboActivity;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.google.inject.Inject;
@@ -24,7 +22,8 @@ public class BoatActivity extends RoboActivity implements IObserver,
 
 	@Inject
 	private BoatController controller;
-	private BoatListFragment fragmentListe;
+	private BoatListFragment fragmentList;
+	private BoatDetailFragment fragmentDetail;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -32,19 +31,21 @@ public class BoatActivity extends RoboActivity implements IObserver,
 
 		setContentView(R.layout.boat);
 
-		// controller.addObserver(this);
+		controller.addObserver(this);
 
 		if (savedInstanceState == null) {
-			fragmentListe = new BoatListFragment();
+			fragmentList = new BoatListFragment();
+			fragmentList.setController(controller);
 			FragmentTransaction transaction = getFragmentManager()
 					.beginTransaction();
-			transaction.add(R.id.frame_list, fragmentListe,
-					BoatListFragment.TAG);
+			transaction
+					.add(R.id.frame_list, fragmentList, BoatListFragment.TAG);
 
 			View v = this.findViewById(R.id.linearLayout_xlarge);
 
 			if (v != null) { // tablet -> FragmentDetail
-				BoatDetailFragment fragmentDetail = new BoatDetailFragment();
+				fragmentDetail = new BoatDetailFragment();
+				fragmentDetail.setController(controller);
 				transaction.add(R.id.frame_detail, fragmentDetail,
 						BoatDetailFragment.TAG);
 			}
@@ -61,16 +62,18 @@ public class BoatActivity extends RoboActivity implements IObserver,
 		View v = this.findViewById(R.id.linearLayout_xlarge);
 
 		if (v != null) { // Tablet scenario
-			BoatDetailFragment fragment = (BoatDetailFragment) getFragmentManager()
-					.findFragmentByTag(BoatDetailFragment.TAG);
-			fragment.refresh(boat);
+//			fragmentDetail = (BoatDetailFragment) getFragmentManager()
+//					.findFragmentByTag(BoatDetailFragment.TAG);
+			fragmentDetail.setController(controller);
+			fragmentDetail.refresh(boat);
 		} else {
 			// Smartphone
-			BoatDetailFragment fragment = new BoatDetailFragment();
-			fragment.setBoat(boat);
+			fragmentDetail = new BoatDetailFragment();
+			fragmentDetail.setController(controller);
+			fragmentDetail.setBoat(boat);
 			FragmentTransaction transaction = getFragmentManager()
 					.beginTransaction();
-			transaction.replace(R.id.frame_list, fragment);
+			transaction.replace(R.id.frame_list, fragmentDetail);
 			transaction.addToBackStack(null);
 			transaction.commit();
 		}
@@ -78,27 +81,37 @@ public class BoatActivity extends RoboActivity implements IObserver,
 
 	@Override
 	public void update(Event event) {
-		// TODO Auto-generated method stub
+		if (this.findViewById(R.id.boatlist) != null) {
+			if (this.findViewById(R.id.linearLayout_xlarge) != null
+					&& controller.getAllBoats().size() < fragmentList
+							.getBoatListSize()) {
+				// tablet -> delete button called -> clear FragmentDetailView
+				FragmentTransaction tr = getFragmentManager()
+						.beginTransaction();
+				fragmentDetail = new BoatDetailFragment();
+				fragmentDetail.setController(controller);
+				tr.replace(R.id.frame_detail, fragmentDetail);
+				tr.commit();
+			}
+			// new Element
+			fragmentList.onConfigurationChanged(null);
+		} else {
 
-	}
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.actionbar, menu);
-		
-		return true;
-	}
-	
-	
-	@Override
-	public boolean onMenuItemSelected(int featureId, MenuItem item) {
-		
-		
-		
-		
-		return super.onMenuItemSelected(featureId, item);
+			if (controller.getAllBoats().size() != fragmentList
+					.getBoatListSize()) {
+
+				FragmentTransaction transaction = getFragmentManager()
+						.beginTransaction();
+				transaction.remove(fragmentDetail);
+				transaction.remove(fragmentList);
+				transaction.commit();
+
+				FragmentManager manager = getFragmentManager();
+				manager.popBackStack();
+			}
+
+		}
+
 	}
 
 }

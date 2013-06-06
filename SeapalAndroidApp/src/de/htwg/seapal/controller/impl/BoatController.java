@@ -9,8 +9,8 @@ import com.google.inject.Inject;
 import de.htwg.seapal.controller.IBoatController;
 import de.htwg.seapal.database.IBoatDatabase;
 import de.htwg.seapal.model.IBoat;
-import de.htwg.seapal.utils.observer.Observable;
 import de.htwg.seapal.utils.logging.ILogger;
+import de.htwg.seapal.utils.observer.Observable;
 
 public class BoatController extends Observable implements IBoatController {
 
@@ -480,7 +480,6 @@ public class BoatController extends Observable implements IBoatController {
 	@Override
 	public UUID newBoat() {
 		UUID newBoat = db.create();
-		notifyObservers(); // ??
 		return newBoat;
 	}
 
