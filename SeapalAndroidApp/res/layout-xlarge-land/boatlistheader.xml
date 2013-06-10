@@ -10,7 +10,8 @@
         android:layout_marginRight="20dp"
         android:paddingLeft="7dp"
         android:background="#7A8B8B"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:id="@+id/boatlistheader" >
 
         <TextView
             android:layout_width="300dp"

@@ -81,7 +81,7 @@ public class BoatActivity extends RoboActivity implements IObserver,
 
 	@Override
 	public void update(Event event) {
-		if (this.findViewById(R.id.boatlist) != null) {
+		if (this.findViewById(R.id.boatlistheader) != null) {
 			if (this.findViewById(R.id.linearLayout_xlarge) != null
 					&& controller.getAllBoats().size() < fragmentList
 							.getBoatListSize()) {

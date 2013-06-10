@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/boatlistheader"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:background="#7A8B8B" >
+    android:background="#7A8B8B"
+    android:orientation="horizontal" >
 
     <TextView
-        android:textSize="13sp"
         android:layout_width="140dp"
         android:layout_height="wrap_content"
-        android:text="@string/boatNameHeader" />
-    
+        android:text="@string/boatNameHeader"
+        android:textSize="13sp" />
+
     <TextView
-        android:textSize="13sp"
         android:layout_width="130dp"
         android:layout_height="wrap_content"
-        android:text="@string/boatTypeHeader" />
-    
+        android:text="@string/boatTypeHeader"
+        android:textSize="13sp" />
+
     <TextView
-        android:textSize="13sp"
         android:layout_width="130dp"
         android:layout_height="wrap_content"
-        android:text="@string/constructorHeader" />
-    
+        android:text="@string/constructorHeader"
+        android:textSize="13sp" />
+
     <TextView
-        android:textSize="13sp"
         android:layout_width="80dp"
         android:layout_height="wrap_content"
-        android:text="@string/ownerHeader" />
+        android:text="@string/ownerHeader"
+        android:textSize="13sp" />
 
 </LinearLayout>
