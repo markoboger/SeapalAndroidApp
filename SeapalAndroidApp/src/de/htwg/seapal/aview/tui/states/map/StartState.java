@@ -44,9 +44,8 @@ public class StartState implements TuiState {
 			((Context) context).startActivity(intent);
 			break;
 		case 'd':
-			intent = new Intent(
-					(Context) context,
-					de.htwg.seapal.aview.gui.activity.TestDrawerMapActivity.class);
+			intent = new Intent((Context) context,
+					de.htwg.seapal.aview.gui.activity.MapActivity.class);
 			((Context) context).startActivity(intent);
 			break;
 		default:

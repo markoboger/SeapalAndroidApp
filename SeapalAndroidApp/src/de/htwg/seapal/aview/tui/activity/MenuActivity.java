@@ -4,7 +4,7 @@ import android.widget.TextView;
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.tui.states.map.StartState;
 
-public class MapActivity extends AActivity {
+public class MenuActivity extends AActivity {
 
 	@Override
 	protected void setup() {

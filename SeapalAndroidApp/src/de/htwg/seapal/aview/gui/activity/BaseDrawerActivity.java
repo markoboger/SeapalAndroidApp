@@ -19,7 +19,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 import de.htwg.seapal.R;
 
-public class MenuActivity extends RoboActivity {
+public class BaseDrawerActivity extends RoboActivity {
 
 	@InjectView(R.id.drawer_menu_drawer_list)
 	private ListView drawerListView;
@@ -27,7 +27,6 @@ public class MenuActivity extends RoboActivity {
 	@InjectResource(R.array.drawer_list_array)
 	private String[] drawerStrings;
 
-	// @InjectView(R.id.drawer_menu_drawer_layout)
 	private DrawerLayout drawerLayout;
 
 	@InjectView(R.id.drawer_menu_content_frame)
@@ -38,14 +37,6 @@ public class MenuActivity extends RoboActivity {
 	private int changeActivity;
 
 	// -------------------------------------------- CREATION ------------
-
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		super.onCreate(savedInstanceState);
-		// setContentView(R.layout.drawer_menu);
-
-	}
 
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
@@ -68,10 +59,15 @@ public class MenuActivity extends RoboActivity {
 				R.layout.drawer_menu, null);
 		frameLayout = (FrameLayout) drawerLayout
 				.findViewById(R.id.drawer_menu_content_frame);
+
 		// Setting the content of layout your provided to the act_content frame
 		getLayoutInflater().inflate(layoutResID, frameLayout, true);
 		super.setContentView(drawerLayout);
-		// initialize drawer
+
+		initializeDrawer();
+	}
+
+	protected void initializeDrawer() {
 		drawerListView.setAdapter(new ArrayAdapter<String>(this,
 				R.layout.drawer_list_item, drawerStrings));
 
@@ -126,6 +122,10 @@ public class MenuActivity extends RoboActivity {
 			// create intent to perform web search for this planet
 			Toast.makeText(this, "SAVE !!!!!", Toast.LENGTH_SHORT).show();
 			return true;
+		case R.id.menu_new:
+			startActivity(new Intent(this,
+					de.htwg.seapal.aview.gui.activity.BoatActivity.class));
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -148,7 +148,7 @@ public class MenuActivity extends RoboActivity {
 		Toast.makeText(this, drawerStrings[position] + " !!!!!",
 				Toast.LENGTH_SHORT).show();
 		// Highlight the selected item, update the title, and close the drawer
-		drawerListView.setItemChecked(position, true);
+		// drawerListView.setItemChecked(position, true);
 		// setTitle(drawerStrings[position]);
 		drawerLayout.closeDrawer(drawerListView);
 	}
@@ -160,7 +160,7 @@ public class MenuActivity extends RoboActivity {
 			clazz = de.htwg.seapal.aview.gui.activity.BoatActivity.class;
 			break;
 		case 2:
-			clazz = de.htwg.seapal.aview.gui.activity.TestDrawerMapActivity.class;
+			clazz = de.htwg.seapal.aview.gui.activity.MapActivity.class;
 			break;
 		default:
 			changeActivity = -1;

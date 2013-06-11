@@ -32,7 +32,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="de.htwg.seapal.aview.tui.activity.MapActivity"
+            android:name="de.htwg.seapal.aview.tui.activity.MenuActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -54,11 +54,17 @@
         </activity>
         <activity
             android:name="de.htwg.seapal.aview.gui.activity.BoatActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden" >
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:parentActivityName="com.example.myfirstapp.MainActivity" >
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.myfirstapp.MainActivity" />
         </activity>
         <activity android:name="de.htwg.seapal.aview.gui.activity.MapActivity" >
         </activity>
-        <activity android:name="de.htwg.seapal.aview.gui.activity.MenuActivity" >
+        <activity android:name="de.htwg.seapal.aview.gui.activity.BaseDrawerActivity" >
         </activity>
         <activity android:name="de.htwg.seapal.aview.gui.activity.TestDrawerMapActivity" >
         </activity>
