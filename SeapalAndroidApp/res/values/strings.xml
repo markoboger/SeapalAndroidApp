@@ -43,5 +43,11 @@
     </string-array>
     <string name="drawer_open">open drawer</string>
     <string name="drawer_close">close drawer</string>
+    <string name="tripNameHeader">Trip Title</string>
+    <string name="tripDestinationHeader">To</string>
+    <string name="tripStartTimeHeader">Start</string>
+    <string name="tripFromHeader">From</string>
+    <string name="tripEndTimeHeader">End</string>
+    <string name="tripSkipperHeader">Skipper</string>
 
 </resources>

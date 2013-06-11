@@ -28,7 +28,6 @@ public class Trip extends ModelDocument implements ITrip {
 	private List<String> crew; // UUID Person ?/ or just Name TODO
 	private Long startTime; // unix timestamp
 	private Long endTime; // unix timestamp
-	private Long duration; // TODO do we need this ? could be calculated
 	private Integer motor;
 	private Double fuel;
 	private String notes;
@@ -37,14 +36,12 @@ public class Trip extends ModelDocument implements ITrip {
 	public Trip() {
 		setId(UUID.randomUUID().toString());
 		this.crew = new ArrayList<String>();
-		this.skipper = (UUID.randomUUID().toString());
-
+		this.skipper = "";
 		this.name = "";
 		this.startLocation = "";
 		this.endLocation = "";
 		this.startTime = 0L;
 		this.endTime = 0L;
-		this.duration = 0L;
 		this.motor = 0;
 		this.fuel = 0D;
 		this.notes = "";
@@ -62,7 +59,6 @@ public class Trip extends ModelDocument implements ITrip {
 		this.crew = t.getCrewMembers();
 		this.startTime = t.getStartTime();
 		this.endTime = t.getEndTime();
-		this.duration = t.getDuration();
 		this.motor = t.getMotor();
 		this.fuel = t.getFuel();
 		this.notes = t.getNotes();
@@ -135,16 +131,6 @@ public class Trip extends ModelDocument implements ITrip {
 	@Override
 	public Long getEndTime() {
 		return endTime;
-	}
-
-	@Override
-	public void setDuration(Long timeInSeconds) {
-		this.duration = timeInSeconds;
-	}
-
-	@Override
-	public Long getDuration() {
-		return duration;
 	}
 
 	@Override

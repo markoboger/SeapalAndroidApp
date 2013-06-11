@@ -47,7 +47,7 @@ public class Boat extends ModelDocument implements IBoat {
 		this.sailSign = "";
 		this.homePort = "";
 		this.yachtclub = "";
-		this.owner = null;
+		this.owner = "";
 		this.insurance = "";
 		this.callSign = "";
 		this.type = "";
@@ -76,7 +76,7 @@ public class Boat extends ModelDocument implements IBoat {
 		this.sailSign = boat.getSailSign();
 		this.homePort = boat.getHomePort();
 		this.yachtclub = boat.getYachtclub();
-		this.owner = boat.getOwner().toString();
+		this.owner = boat.getOwner();
 		this.insurance = boat.getInsurance();
 		this.callSign = boat.getCallSign();
 		this.type = boat.getType();
@@ -148,14 +148,14 @@ public class Boat extends ModelDocument implements IBoat {
 	}
 
 	@Override
-	public UUID getOwner() { // Person
+	public String getOwner() { // Person
 		if (owner == null)
 			return null;
-		return UUID.fromString(owner);
+		return owner;
 	}
 
 	@Override
-	public void setOwner(UUID owner) { // Person
+	public void setOwner(String owner) { // Person
 		this.owner = owner.toString();
 	}
 

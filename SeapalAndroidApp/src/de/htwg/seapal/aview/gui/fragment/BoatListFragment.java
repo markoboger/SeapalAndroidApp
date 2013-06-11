@@ -31,7 +31,6 @@ public class BoatListFragment extends ListFragment {
 	private ViewGroup mainView;
 	private boolean tablet = false;
 
-	// @Inject
 	private BoatController controller;
 	
 
@@ -42,7 +41,6 @@ public class BoatListFragment extends ListFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true);
-		// RoboGuice.getInjector(getActivity()).injectMembers(this);
 		if (savedInstanceState == null) {
 			boatList = controller.getBoats();
 		}
@@ -70,7 +68,7 @@ public class BoatListFragment extends ListFragment {
 		super.onActivityCreated(savedInstanceState);
 		
 		boatList = controller.getBoats();
-		getListView().setChoiceMode(1);
+		getListView().setChoiceMode(1);		
 		setListAdapter(null);
 		adapter = new BoatListAdapter(getActivity(), R.layout.boatlist,
 				boatList, controller);
@@ -89,16 +87,18 @@ public class BoatListFragment extends ListFragment {
 		} else
 			mainView.addView(header, 0);
 
-		try {
-			getListView().setItemChecked(0, true);
-			getListView().setSelected(true);
-		} catch (Exception e) {
-
-		}
+//		try {
+//			getListView().setItemChecked(0, true);
+//			getListView().setSelected(true);
+//		} catch (Exception e) {
+//
+//		}
 
 		// so the background color is white on older Android Versions
 		// getListView().setBackgroundColor(Color.WHITE);
 
+		
+		
 		this.setListAdapter(adapter);
 	}
 
@@ -115,6 +115,9 @@ public class BoatListFragment extends ListFragment {
 		callback.selected(boat);
 
 	}
+	
+	
+	
 
 	// Callback for Container Activity
 	public interface ListSelectedCallback {
