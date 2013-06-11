@@ -32,7 +32,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="de.htwg.seapal.aview.tui.activity.MapActivity"
+            android:name="de.htwg.seapal.aview.tui.activity.MenuActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
