@@ -97,15 +97,17 @@ public class BaseDrawerActivity extends RoboActivity {
 		return true;
 	}
 
-	/* Called whenever we call invalidateOptionsMenu() */
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		// If the nav drawer is open, hide action items related to the view
-		boolean drawerOpen = drawerLayout.isDrawerOpen(drawerListView);
-		for (int i = 0; i < menu.size(); i++)
-			menu.getItem(i).setVisible(!drawerOpen);
-		return super.onPrepareOptionsMenu(menu);
-	}
+	// doesn't work because menuitems are set unvisible in fragments so they
+	// would be visible after this operation
+	// /* Called whenever we call invalidateOptionsMenu() */
+	// @Override
+	// public boolean onPrepareOptionsMenu(Menu menu) {
+	// // If the nav drawer is open, hide action items related to the view
+	// boolean drawerOpen = drawerLayout.isDrawerOpen(drawerListView);
+	// for (int i = 0; i < menu.size(); i++)
+	// menu.getItem(i).setVisible(!drawerOpen);
+	// return super.onPrepareOptionsMenu(menu);
+	// }
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
