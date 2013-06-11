@@ -1,5 +1,6 @@
 package de.htwg.seapal.aview.gui.activity;
 
+import com.couchbase.touchdb.router.TDURLStreamHandlerFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
@@ -29,6 +30,11 @@ import de.htwg.seapal.controller.IWaypointController;
 
 public class MapActivity extends BaseDrawerActivity implements OnMapLongClickListener, OnMapClickListener, OnMarkerClickListener {
 
+	// TODO here or in BaseDrawerActivity ????
+	{
+		TDURLStreamHandlerFactory.registerSelfIgnoreError();
+	}
+	
 	@Inject
 	private IMarkController controller;
 	@Inject

@@ -41,12 +41,12 @@ public class BaseDrawerActivity extends RoboActivity {
 
 	private static List<Class<? extends Activity>> classes;
 
-	// Add here all Activities in the drawerList
+	// Add here all Activities in the drawerList (same order)
 	static {
 		classes = new ArrayList<Class<? extends Activity>>();
-		classes.add(de.htwg.seapal.aview.tui.activity.MenuActivity.class);
-		classes.add(de.htwg.seapal.aview.gui.activity.BoatActivity.class);
 		classes.add(de.htwg.seapal.aview.gui.activity.MapActivity.class);
+		classes.add(de.htwg.seapal.aview.gui.activity.BoatActivity.class);
+		classes.add(de.htwg.seapal.aview.tui.activity.MenuActivity.class);
 	}
 
 	// -------------------------------------------- CREATION ------------
@@ -146,7 +146,8 @@ public class BaseDrawerActivity extends RoboActivity {
 
 			public void onDrawerClosed(View view) {
 				invalidateOptionsMenu();
-				switchActivity(); // select an item and set changeActivity
+				switchActivity(); // switch the activity after closing the
+									// Drawer, to avoid lacking
 			}
 		};
 		drawerLayout.setDrawerListener(drawerToggle);
