@@ -27,7 +27,7 @@ import de.htwg.seapal.R;
 import de.htwg.seapal.controller.IMarkController;
 import de.htwg.seapal.controller.IWaypointController;
 
-public class MapActivity extends RoboActivity implements OnMapLongClickListener, OnMapClickListener, OnMarkerClickListener {
+public class MapActivity extends BaseDrawerActivity implements OnMapLongClickListener, OnMapClickListener, OnMarkerClickListener {
 
 	@Inject
 	private IMarkController controller;

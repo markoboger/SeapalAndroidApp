@@ -2,7 +2,6 @@ package de.htwg.seapal.aview.gui.activity;
 
 import java.util.UUID;
 
-import roboguice.activity.RoboActivity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
@@ -17,7 +16,7 @@ import de.htwg.seapal.controller.impl.BoatController;
 import de.htwg.seapal.utils.observer.Event;
 import de.htwg.seapal.utils.observer.IObserver;
 
-public class BoatActivity extends RoboActivity implements IObserver,
+public class BoatActivity extends BaseDrawerActivity implements IObserver,
 		BoatListFragment.ListSelectedCallback {
 
 	@Inject
@@ -62,8 +61,8 @@ public class BoatActivity extends RoboActivity implements IObserver,
 		View v = this.findViewById(R.id.linearLayout_xlarge);
 
 		if (v != null) { // Tablet scenario
-//			fragmentDetail = (BoatDetailFragment) getFragmentManager()
-//					.findFragmentByTag(BoatDetailFragment.TAG);
+		// fragmentDetail = (BoatDetailFragment) getFragmentManager()
+		// .findFragmentByTag(BoatDetailFragment.TAG);
 			fragmentDetail.setController(controller);
 			fragmentDetail.refresh(boat);
 		} else {

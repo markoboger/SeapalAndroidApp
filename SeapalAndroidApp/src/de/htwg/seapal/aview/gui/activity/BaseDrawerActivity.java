@@ -1,5 +1,8 @@
 package de.htwg.seapal.aview.gui.activity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
@@ -25,7 +28,7 @@ public class BaseDrawerActivity extends RoboActivity {
 	private ListView drawerListView;
 
 	@InjectResource(R.array.drawer_list_array)
-	private String[] drawerStrings;
+	private String[] drawerActivityList;
 
 	private DrawerLayout drawerLayout;
 
@@ -34,7 +37,17 @@ public class BaseDrawerActivity extends RoboActivity {
 
 	private ActionBarDrawerToggle drawerToggle;
 
-	private int changeActivity;
+	private int changeToActivity;
+
+	private static List<Class<? extends Activity>> classes;
+
+	// Add here all Activities in the drawerList
+	static {
+		classes = new ArrayList<Class<? extends Activity>>();
+		classes.add(de.htwg.seapal.aview.tui.activity.MenuActivity.class);
+		classes.add(de.htwg.seapal.aview.gui.activity.BoatActivity.class);
+		classes.add(de.htwg.seapal.aview.gui.activity.MapActivity.class);
+	}
 
 	// -------------------------------------------- CREATION ------------
 
@@ -67,28 +80,10 @@ public class BaseDrawerActivity extends RoboActivity {
 		initializeDrawer();
 	}
 
-	protected void initializeDrawer() {
-		drawerListView.setAdapter(new ArrayAdapter<String>(this,
-				R.layout.drawer_list_item, drawerStrings));
-
-		drawerListView.setOnItemClickListener(new DrawerItemClickListener());
-
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-		getActionBar().setHomeButtonEnabled(true);
-
-		drawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
-				R.drawable.ic_drawer, R.string.drawer_open,
-				R.string.drawer_close) {
-			public void onDrawerClosed(View view) {
-				invalidateOptionsMenu();
-				switchActivity();
-			}
-
-			public void onDrawerOpened(View drawerView) {
-				invalidateOptionsMenu();
-			}
-		};
-		drawerLayout.setDrawerListener(drawerToggle);
+	@Override
+	protected void onResume() {
+		super.onResume();
+		drawerListView.setItemChecked(classes.indexOf(this.getClass()), true);
 	}
 
 	// -------------------------------------------- ACTION - BAR ------------
@@ -132,49 +127,50 @@ public class BaseDrawerActivity extends RoboActivity {
 	}
 
 	// -------------------------------------------- DRAWER ------------------
+	private void initializeDrawer() {
+		drawerListView.setAdapter(new ArrayAdapter<String>(this,
+				R.layout.drawer_list_item, drawerActivityList));
+
+		drawerListView.setOnItemClickListener(new DrawerItemClickListener());
+
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setHomeButtonEnabled(true);
+
+		drawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
+				R.drawable.ic_drawer, R.string.drawer_open,
+				R.string.drawer_close) {
+			public void onDrawerOpened(View drawerView) {
+				invalidateOptionsMenu();
+				changeToActivity = -1; // no selection made
+			}
+
+			public void onDrawerClosed(View view) {
+				invalidateOptionsMenu();
+				switchActivity(); // select an item and set changeActivity
+			}
+		};
+		drawerLayout.setDrawerListener(drawerToggle);
+
+		drawerListView.setItemChecked(classes.indexOf(this.getClass()), true);
+		setTitle(drawerActivityList[classes.indexOf(this.getClass())]);
+	}
 
 	private class DrawerItemClickListener implements
 			ListView.OnItemClickListener {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-			selectItem(position);
+			changeToActivity = position;
+			drawerListView.setItemChecked(classes.indexOf(this.getClass()),
+					true);
+			drawerLayout.closeDrawer(drawerListView);
 		}
-	}
-
-	/** Swaps fragments in the main content view */
-	private void selectItem(int position) {
-		changeActivity = position;
-		Toast.makeText(this, drawerStrings[position] + " !!!!!",
-				Toast.LENGTH_SHORT).show();
-		// Highlight the selected item, update the title, and close the drawer
-		// drawerListView.setItemChecked(position, true);
-		// setTitle(drawerStrings[position]);
-		drawerLayout.closeDrawer(drawerListView);
 	}
 
 	public void switchActivity() {
-		Class<? extends Activity> clazz;
-		switch (changeActivity) {
-		case 1:
-			clazz = de.htwg.seapal.aview.gui.activity.BoatActivity.class;
-			break;
-		case 2:
-			clazz = de.htwg.seapal.aview.gui.activity.MapActivity.class;
-			break;
-		default:
-			changeActivity = -1;
-			return;
-		}
-		if (!this.getClass().equals(clazz))
-			startActivity(new Intent(this, clazz));
-		changeActivity = -1;
+		if (changeToActivity != -1) // no item selected
+			startActivity(new Intent(this, classes.get(changeToActivity))
+					.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(
+							Intent.FLAG_ACTIVITY_SINGLE_TOP));
 	}
-
-	@Override
-	public void setTitle(CharSequence title) {
-		// mTitle = title;
-		getActionBar().setTitle(title);
-	}
-
 }
