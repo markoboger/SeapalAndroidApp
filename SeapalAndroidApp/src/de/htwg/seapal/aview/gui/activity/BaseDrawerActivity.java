@@ -83,7 +83,10 @@ public class BaseDrawerActivity extends RoboActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		drawerListView.setItemChecked(classes.indexOf(this.getClass()), true);
+		int index = classes.indexOf(this.getClass());
+		// if the activity is in the drawer set the title
+		if (index != -1)
+			drawerListView.setItemChecked(index, true);
 	}
 
 	// -------------------------------------------- ACTION - BAR ------------
@@ -91,7 +94,7 @@ public class BaseDrawerActivity extends RoboActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		getMenuInflater().inflate(R.menu.actionbar, menu);
+		// getMenuInflater().inflate(R.menu.actionbar, menu);
 		return true;
 	}
 
@@ -111,6 +114,7 @@ public class BaseDrawerActivity extends RoboActivity {
 		if (drawerToggle.onOptionsItemSelected(item)) {
 			return true;
 		}
+
 		// Handle action buttons
 		switch (item.getItemId()) {
 		case R.id.menu_save:
@@ -152,8 +156,14 @@ public class BaseDrawerActivity extends RoboActivity {
 		};
 		drawerLayout.setDrawerListener(drawerToggle);
 
-		drawerListView.setItemChecked(classes.indexOf(this.getClass()), true);
-		setTitle(drawerActivityList[classes.indexOf(this.getClass())]);
+		int index = classes.indexOf(this.getClass());
+		// if the activity is in the drawer set the title
+		if (index != -1) {
+			drawerListView.setItemChecked(index, true);
+			setTitle(drawerActivityList[index]);
+		} else
+			setTitle("Seapal");
+
 	}
 
 	private class DrawerItemClickListener implements
