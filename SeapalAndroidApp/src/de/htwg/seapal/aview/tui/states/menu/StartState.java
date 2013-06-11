@@ -1,4 +1,4 @@
-package de.htwg.seapal.aview.tui.states.map;
+package de.htwg.seapal.aview.tui.states.menu;
 
 import android.content.Context;
 import android.content.Intent;
