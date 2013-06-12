@@ -118,15 +118,18 @@ public class BoatController extends Observable implements IBoatController {
 		IBoat boat = db.get(id);
 		if (boat == null)
 			return null;
-		return boat.getOwner();
+		if(boat.getOwner().equals(""))
+			return null;
+		else
+			return UUID.fromString(boat.getOwner());
 	}
 
 	@Override
-	public void setOwner(UUID id, UUID Owner) {
+	public void setOwner(UUID id, UUID owner) {
 		IBoat boat = db.get(id);
 		if (boat == null)
 			return;
-		boat.setOwner(Owner);
+		boat.setOwner(owner.toString());
 		db.save(boat);
 		notifyObservers();
 	}

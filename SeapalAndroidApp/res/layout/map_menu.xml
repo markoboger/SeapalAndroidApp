@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+        
+
+    
+    <ImageButton
+        android:id="@+id/setMark"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/menuButton"
+        android:scaleType="fitXY"
+        android:src="@drawable/dropdownbutton"
+        android:visibility="visible" />
+
+    
+    <ImageView 
+        android:id="@+id/markImage"
+        android:layout_width="30dp"
+    	android:layout_height="30dp"
+    	android:scaleType="fitXY"
+        android:src="@drawable/markicon"
+        android:contentDescription="@string/menuButton"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"/>
+    
+    <TextView
+        android:id="@+id/markLabel"
+        style="@style/blackLetters"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="45dp"        
+        android:text="@string/setMark"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+    
+    <ImageButton 
+        android:id="@+id/setRoute"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:src="@drawable/dropdownbutton"
+        android:contentDescription="@string/menuButton"
+        android:scaleType="fitXY"
+        android:background="@null"
+        android:layout_below="@+id/setMark"/>
+    
+    <ImageView 
+        android:id="@+id/routeImage"
+        android:layout_width="30dp"
+    	android:layout_height="30dp"
+    	android:scaleType="fitXY"
+        android:src="@drawable/routesicon"
+        android:contentDescription="@string/menuButton"
+        android:layout_marginTop="45dp"
+        android:layout_marginLeft="10dp" />
+    
+    <TextView
+        android:id="@+id/routeLabel"
+        style="@style/blackLetters"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="45dp"
+        android:layout_marginLeft="45dp"        
+        android:text="@string/setRoute"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+    
+    <ImageButton 
+        android:id="@+id/calcDistance"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:src="@drawable/dropdownbutton"
+        android:contentDescription="@string/menuButton"
+        android:scaleType="fitXY"
+        android:background="@android:color/transparent"
+        android:layout_below="@+id/setRoute"/>
+        
+    <ImageView 
+        android:id="@+id/distanceImage"
+        android:layout_width="35dp"
+    	android:layout_height="35dp"
+    	android:scaleType="fitXY"
+        android:src="@drawable/distanceiconmini"
+        android:contentDescription="@string/menuButton"
+        android:layout_marginTop="80dp"
+        android:layout_marginLeft="5dp" />
+    
+    <TextView
+        android:id="@+id/distanceLabel"
+        style="@style/blackLetters"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="85dp"
+        android:layout_marginLeft="45dp"
+        android:text="@string/calcDistance"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+    
+    <ImageButton 
+        android:id="@+id/makeFinish"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:src="@drawable/dropdownbutton"
+        android:contentDescription="@string/menuButton"
+        android:scaleType="fitXY"
+        android:background="@android:color/transparent"
+        android:layout_below="@id/calcDistance"/>
+    
+    <ImageView 
+        android:id="@+id/aimImage"
+        android:layout_width="30dp"
+    	android:layout_height="30dp"
+    	android:scaleType="fitXY"
+        android:src="@drawable/curlokaiconmini"
+        android:contentDescription="@string/menuButton"
+        android:layout_marginTop="125dp"
+        android:layout_marginLeft="5dp"
+         />
+    
+    <TextView
+        android:id="@+id/aimLabel"
+        style="@style/blackLetters"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="125dp"
+        android:layout_marginLeft="45dp"        
+        android:text="@string/aim"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+    
+    <ImageButton 
+        android:id="@+id/delete"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:src="@drawable/dropdownbutton"
+        android:contentDescription="@string/menuButton"
+        android:scaleType="fitXY"
+        android:background="@android:color/transparent"
+        android:layout_below="@id/makeFinish"/>
+    
+    <ImageView 
+        android:id="@+id/deleteImage"
+        android:layout_width="30dp"
+    	android:layout_height="30dp"
+    	android:scaleType="fitXY"
+        android:src="@drawable/discardiconmini"
+        android:contentDescription="@string/menuButton"
+        android:layout_marginTop="165dp"
+        android:layout_marginLeft="5dp" />
+    
+    <TextView
+        android:id="@+id/deleteLabel"
+        style="@style/blackLetters"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="45dp"
+        android:layout_marginTop="165dp"
+        android:text="@string/map_menu_delete"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+
+</RelativeLayout>

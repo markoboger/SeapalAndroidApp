@@ -24,10 +24,6 @@ public interface ITrip extends IModel {
 
 	void addCrewMember(String crewMember); // Person
 
-	Long getDuration();
-
-	void setDuration(Long timeInSeconds);
-
 	Integer getMotor();
 
 	void setMotor(Integer motor);

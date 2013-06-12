@@ -1,7 +1,11 @@
 package de.htwg.seapal.aview.gui.activity;
 
+<<<<<<< HEAD
 import java.util.List;
 
+=======
+import com.couchbase.touchdb.router.TDURLStreamHandlerFactory;
+>>>>>>> ceb263708f3f88be0dd7868302fd51cd5b027d64
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
@@ -13,6 +17,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.inject.Inject;
 
 import roboguice.activity.RoboActivity;
 import android.app.DialogFragment;
@@ -22,14 +27,27 @@ import android.os.Bundle;
 import android.widget.TextView;
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.fragment.MapDialogFragment;
+import de.htwg.seapal.controller.IMarkController;
+import de.htwg.seapal.controller.IWaypointController;
+
 
 public class MapActivity extends RoboActivity 
 						implements OnMapLongClickListener, OnMapClickListener, OnMarkerClickListener, 
-						MapDialogFragment.MapDialogListener {
+									MapDialogFragment.MapDialogListener {
 
 	private enum SelectedOption {
 		NONE, MARK, ROUTE, DISTANCE, GOAL
 	}
+
+	// TODO here or in BaseDrawerActivity ????
+	{
+		TDURLStreamHandlerFactory.registerSelfIgnoreError();
+	}
+
+	@Inject
+	private IMarkController controller;
+	@Inject
+	private IWaypointController wController;
 	private GoogleMap map;
 	public static Marker crosshairMarker = null;
 	private Polyline route = null;
@@ -109,13 +127,13 @@ public class MapActivity extends RoboActivity
 		option = SelectedOption.ROUTE;
 		if(route == null) {
 			route = map.addPolyline(new PolylineOptions().add(crosshairMarker.getPosition()).width(5).color(Color.BLUE));
-					
+
 		} else {
 			List<LatLng> lst = route.getPoints();
 			lst.add(crosshairMarker.getPosition());
 			route.setPoints(lst);
 		}
-		
+
 		crosshairMarker.remove();
 	}
 

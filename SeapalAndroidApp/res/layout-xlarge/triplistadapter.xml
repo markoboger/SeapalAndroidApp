@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/triplistadapter"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="bottom" >
+
+    <TextView
+        android:id="@+id/triplistadapter_tripname"
+        android:layout_width="210dp"
+        android:layout_height="40dp"
+        android:paddingTop="10dp"
+        android:text=""
+        android:textSize="18sp" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/triplistadapter_startdate"
+        android:layout_width="190dp"
+        android:layout_height="40dp"
+        android:paddingTop="10dp"
+        android:text=""
+        android:textSize="18sp" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/triplistadapter_from"
+        android:layout_width="190dp"
+        android:layout_height="40dp"
+        android:paddingTop="10dp"
+        android:text=""
+        android:textSize="18sp" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/triplistadapter_destination"
+        android:layout_width="170dp"
+        android:layout_height="40dp"
+        android:paddingTop="10dp"
+        android:text=""
+        android:textSize="18sp" >
+    </TextView>
+
+    <Button
+        android:id="@+id/triplistadapter_showtripbutton"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:background="@drawable/arrowbutton"
+        android:focusable="false" >
+    </Button>
+
+</LinearLayout>
