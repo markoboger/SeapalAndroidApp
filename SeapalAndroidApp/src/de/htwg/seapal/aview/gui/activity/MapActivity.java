@@ -1,41 +1,39 @@
 package de.htwg.seapal.aview.gui.activity;
 
+import java.util.List;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
-import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.inject.Inject;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import roboguice.activity.RoboActivity;
+import android.app.DialogFragment;
 import android.app.FragmentManager;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.Toast;
+import android.widget.TextView;
 import de.htwg.seapal.R;
-import de.htwg.seapal.controller.IMarkController;
-import de.htwg.seapal.controller.IWaypointController;
+import de.htwg.seapal.aview.gui.fragment.MapDialogFragment;
 
-public class MapActivity extends RoboActivity implements OnMapLongClickListener, OnMapClickListener, OnMarkerClickListener {
+public class MapActivity extends RoboActivity 
+						implements OnMapLongClickListener, OnMapClickListener, OnMarkerClickListener, 
+						MapDialogFragment.MapDialogListener {
 
-	@Inject
-	private IMarkController controller;
-	@Inject
-	private IWaypointController wController;
+	private enum SelectedOption {
+		NONE, MARK, ROUTE, DISTANCE, GOAL
+	}
 	private GoogleMap map;
-	private View view;
-	private Marker crosshairMarker = null;
+	public static Marker crosshairMarker = null;
+	private Polyline route = null;
+	private SelectedOption option = SelectedOption.NONE;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,75 +54,84 @@ public class MapActivity extends RoboActivity implements OnMapLongClickListener,
 
 		map.setOnMapClickListener(this);
 		map.setOnMapLongClickListener(this);
-		view = myMapFragment.getView();
-		registerForContextMenu(view);
-	}
-
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v, 
-			ContextMenuInfo menuInfo) {
-		menu.add(Menu.NONE, 1, Menu.NONE, "MARK");
-		menu.add(Menu.NONE, 2, Menu.NONE, "Remove");
-	}
-
-	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case 1:
-			Toast.makeText(getApplicationContext(), "mark", Toast.LENGTH_LONG).show();
-			return true;
-		case 2:
-			Toast.makeText(getApplicationContext(), "delete", Toast.LENGTH_LONG).show();
-			return true;
-		default:
-			return super.onContextItemSelected(item);
-		}
+		map.setOnMarkerClickListener(this);
 	}
 
 	@Override
 	public void onMapClick(LatLng arg0) {
-		if(crosshairMarker != null) {
-			crosshairMarker.remove();
+		switch (option) {
+		case MARK:
+			map.addMarker(new MarkerOptions().position(arg0));
+			break;
+		case ROUTE:
+			List<LatLng> lst = route.getPoints();
+			lst.add(arg0);
+			route.setPoints(lst);
+		default:
+			break;
 		}
-		crosshairMarker = map.addMarker(new MarkerOptions()
-				.position(arg0)
-				.icon(BitmapDescriptorFactory.fromResource(R.drawable.haircross))
-				.title(arg0.toString())
-				.snippet(arg0.toString()));
-		crosshairMarker.setDraggable(true);
-		
+
+
 	}
 
 	@Override
 	public void onMapLongClick(LatLng arg0) {
-		openContextMenu(view);
+
+		if(crosshairMarker != null) {
+			crosshairMarker.remove();
+		}
+		crosshairMarker = map.addMarker(new MarkerOptions()
+		.position(arg0)
+		.icon(BitmapDescriptorFactory.fromResource(R.drawable.haircross))
+		.snippet(arg0.toString()));
+
+		crosshairMarker.showInfoWindow();
+
+
 	}
 
 	@Override
-	public boolean onMarkerClick(Marker arg0) {
-		openContextMenu(view);
+	public boolean onMarkerClick(Marker arg0) {		
+		MapDialogFragment f = new MapDialogFragment();
+		f.show(getFragmentManager(), "dialog");
 		return false;
 	}
-}
 
-//map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
-//.getMap();
-//
-////List<IMark> lst = controller.getAllMarks();
-////for(IMark m : lst) {
-////map.addMarker(new MarkerOptions().position(new LatLng(m.getLatitude(), m.getLongitude())).title(m.getName()));
-////}
-////List<IWaypoint> lstW = wController.getAllWaypoints();
-////
-////Polyline line = map.addPolyline(new PolylineOptions()
-////.add(new LatLng(51.5, -0.1), new LatLng(40.7, -74.0))
-////.width(5)
-////.color(Color.RED));
-////
-////Polyline line2;
-////
-////for(IWaypoint w : lstW) {
-////line = map.addPolyline(new PolylineOptions().
-////	add(new LatLng(w.getLatitude(), w.getLongitude())).
-////	width(5).color(Color.RED));
-////}
+	@Override
+	public void onDialogSetMarkClick(DialogFragment dialog) {
+		option = SelectedOption.MARK;
+		map.addMarker(new MarkerOptions().position(crosshairMarker.getPosition()));
+		crosshairMarker.remove();
+	}
+
+	@Override
+	public void onDialogSetRouteClick(DialogFragment dialog) {
+		option = SelectedOption.ROUTE;
+		if(route == null) {
+			route = map.addPolyline(new PolylineOptions().add(crosshairMarker.getPosition()).width(5).color(Color.BLUE));
+					
+		} else {
+			List<LatLng> lst = route.getPoints();
+			lst.add(crosshairMarker.getPosition());
+			route.setPoints(lst);
+		}
+		
+		crosshairMarker.remove();
+	}
+
+	@Override
+	public void onDialogcalcDistanceClick(DialogFragment dialog) {
+		option = SelectedOption.DISTANCE;
+	}
+
+	@Override
+	public void onDialogSetTargetClick(DialogFragment dialog) {
+		option = SelectedOption.GOAL;
+	}
+
+	@Override
+	public void onDialogDeleteClick(DialogFragment dialog) {
+		option = SelectedOption.NONE;
+		crosshairMarker.remove();
+	}
+}

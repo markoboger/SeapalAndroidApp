@@ -43,5 +43,13 @@
     </string-array>
     <string name="drawer_open">open drawer</string>
     <string name="drawer_close">close drawer</string>
+    <string name="menuButton">Menu Button</string>
+    <string name="menuTitle">Menu Title</string>
+    <string name="menuTitleText"></string> 
+    <string name="setMark">Set Mark</string>
+    <string name="setRoute">Set Route</string>
+    <string name="calcDistance">Distance from here</string>
+    <string name="aim">Make Target</string>
+    <string name="map_menu_delete">Delete</string>
 
 </resources>
