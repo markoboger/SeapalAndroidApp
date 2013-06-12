@@ -1,6 +1,6 @@
 package de.htwg.seapal.aview.gui.fragment;
 
-import org.w3c.dom.Text;
+import java.text.DecimalFormat;
 
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.activity.MapActivity;
@@ -59,7 +59,15 @@ public class MapDialogFragment extends DialogFragment {
 
 		
 		TextView t = (TextView) titleView.findViewById(R.id.menuTitleLabel);
-		t.setText(MapActivity.crosshairMarker.getPosition().toString());
+		
+		/**
+		 * TODO Just for Testing
+		 */
+		DecimalFormat df= new DecimalFormat("#0.00");  
+		String s = "Lat: " + df.format(MapActivity.crosshairMarker.getPosition().latitude) + "\nLong: " +
+				df.format(MapActivity.crosshairMarker.getPosition().longitude);  
+		
+		t.setText(s);
 		builder.setCustomTitle(titleView).setView(dialogView);
 
 		setMark.setOnClickListener(new View.OnClickListener() {

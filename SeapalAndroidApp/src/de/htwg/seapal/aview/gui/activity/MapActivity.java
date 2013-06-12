@@ -1,11 +1,8 @@
 package de.htwg.seapal.aview.gui.activity;
 
-<<<<<<< HEAD
-import java.util.List;
 
-=======
+import java.util.List;
 import com.couchbase.touchdb.router.TDURLStreamHandlerFactory;
->>>>>>> ceb263708f3f88be0dd7868302fd51cd5b027d64
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
@@ -24,14 +21,13 @@ import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.widget.TextView;
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.fragment.MapDialogFragment;
 import de.htwg.seapal.controller.IMarkController;
 import de.htwg.seapal.controller.IWaypointController;
 
 
-public class MapActivity extends RoboActivity 
+public class MapActivity extends BaseDrawerActivity
 						implements OnMapLongClickListener, OnMapClickListener, OnMarkerClickListener, 
 									MapDialogFragment.MapDialogListener {
 
