@@ -126,9 +126,9 @@ public class BoatListFragment extends ListFragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.menu.actionbar, menu);
-		MenuItem itemDelete = menu.findItem(R.id.menu_delete);
-		MenuItem itemSave = menu.findItem(R.id.menu_save);
+		inflater.inflate(R.menu.boatmenu, menu);
+		MenuItem itemDelete = menu.findItem(R.id.boatmenu_delete);
+		MenuItem itemSave = menu.findItem(R.id.boatmenu_save);
 		itemDelete.setVisible(false);
 		itemSave.setVisible(false);
 	}
@@ -136,7 +136,7 @@ public class BoatListFragment extends ListFragment {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		
-		if(item.getItemId() == R.id.menu_new) {
+		if(item.getItemId() == R.id.boatmenu_new) {
 			
 			// new button clicked
 			final String[] in = new String[1];

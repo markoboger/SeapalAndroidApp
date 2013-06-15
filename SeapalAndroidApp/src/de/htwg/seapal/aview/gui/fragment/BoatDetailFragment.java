@@ -190,8 +190,8 @@ public class BoatDetailFragment extends Fragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.menu.actionbar, menu);
-		MenuItem itemNew = menu.findItem(R.id.menu_new);
+		inflater.inflate(R.menu.boatmenu, menu);
+		MenuItem itemNew = menu.findItem(R.id.boatmenu_new);
 		itemNew.setVisible(false);
 	}
 
@@ -199,10 +199,10 @@ public class BoatDetailFragment extends Fragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		switch (item.getItemId()) {
-		case R.id.menu_delete:
+		case R.id.boatmenu_delete:
 			deleteBoat();
 			break;
-		case R.id.menu_save:
+		case R.id.boatmenu_save:
 			saveBoat();
 			break;
 		}
