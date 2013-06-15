@@ -3,31 +3,36 @@
     android:id="@+id/tripslistheader"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#7A8B8B"
-    android:orientation="horizontal" >
+    android:background="#000000"
+    android:orientation="horizontal"
+    android:paddingLeft="5dp" >
 
     <TextView
         android:layout_width="210dp"
         android:layout_height="wrap_content"
         android:text="@string/tripNameHeader"
-        android:textSize="20sp" />
+        android:textColor="#FFFFFF"
+        android:textSize="24sp" />
 
     <TextView
         android:layout_width="190dp"
         android:layout_height="wrap_content"
         android:text="@string/tripStartTimeHeader"
-        android:textSize="20sp" />
+        android:textColor="#FFFFFF"
+        android:textSize="24sp" />
 
     <TextView
         android:layout_width="190dp"
         android:layout_height="wrap_content"
         android:text="@string/tripFromHeader"
-        android:textSize="20sp" />
+        android:textColor="#FFFFFF"
+        android:textSize="24sp" />
 
     <TextView
         android:layout_width="170dp"
         android:layout_height="wrap_content"
         android:text="@string/tripDestinationHeader"
-        android:textSize="20sp" />
+        android:textColor="#FFFFFF"
+        android:textSize="24sp" />
 
 </LinearLayout>

@@ -2,9 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="bottom"
+    android:layout_gravity="center"
     android:background="?android:attr/activatedBackgroundIndicator"
     android:paddingLeft="7dp" 
+    android:paddingRight="7dp"
     android:id="@+id/boatlist">
 
     <TextView
@@ -52,13 +53,22 @@
         android:textSize="18sp" >
     </TextView>
 
-    <Button
+      <Button
         android:id="@+id/showTripsButton"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:background="@drawable/arrowbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/listbutton"
         android:contentDescription="@string/showTripsButton"
-        android:focusable="false" >
+        android:focusable="false"
+        android:shadowColor="#000000"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="1.5"
+        android:text=">"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold" >
     </Button>
 
 </LinearLayout>

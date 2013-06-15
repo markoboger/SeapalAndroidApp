@@ -4,39 +4,42 @@
     android:layout_height="wrap_content" >
 
     <LinearLayout
+        android:id="@+id/boatlistheader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:paddingLeft="7dp"
-        android:background="#7A8B8B"
+        android:background="#000000"
         android:orientation="horizontal"
-        android:id="@+id/boatlistheader" >
+        android:paddingLeft="7dp" >
 
         <TextView
             android:layout_width="210dp"
             android:layout_height="wrap_content"
             android:text="@string/boatNameHeader"
-            android:textSize="20sp" />
+            android:textColor="#FFFFFF"
+            android:textSize="22sp" />
 
         <TextView
             android:layout_width="190dp"
             android:layout_height="wrap_content"
             android:text="@string/boatTypeHeader"
-            android:textSize="20sp" />
+            android:textColor="#FFFFFF"
+            android:textSize="22sp" />
 
         <TextView
             android:layout_width="190dp"
             android:layout_height="wrap_content"
             android:text="@string/constructorHeader"
-            android:textSize="20sp" />
+            android:textColor="#FFFFFF"
+            android:textSize="22sp" />
 
         <TextView
             android:layout_width="170dp"
             android:layout_height="wrap_content"
             android:text="@string/ownerHeader"
-            android:textSize="20sp" />
-
+            android:textColor="#FFFFFF"
+            android:textSize="22sp" />
     </LinearLayout>
 
 </LinearLayout>

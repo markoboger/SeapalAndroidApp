@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/boatlist"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="bottom" 
-    android:id="@+id/boatlist">
+    android:gravity="center"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp" >
 
     <TextView
         android:id="@+id/boatname"
         android:layout_width="140dp"
-        android:layout_height="40dp"
-        android:paddingTop="10dp"
+        android:layout_height="wrap_content"
         android:text=""
-        android:textSize="12sp" >
+        android:textSize="12sp"
+        android:textStyle="bold" >
     </TextView>
 
     <TextView
         android:id="@+id/boattype"
-        android:layout_width="130dp"
-        android:layout_height="40dp"
-        android:paddingTop="10dp"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
         android:text=""
         android:textSize="12sp" >
     </TextView>
@@ -26,8 +27,7 @@
     <TextView
         android:id="@+id/constructor"
         android:layout_width="130dp"
-        android:layout_height="40dp"
-        android:paddingTop="10dp"
+        android:layout_height="wrap_content"
         android:text=""
         android:textSize="12sp" >
     </TextView>
@@ -35,19 +35,27 @@
     <TextView
         android:id="@+id/owner"
         android:layout_width="100dp"
-        android:layout_height="40dp"
-        android:paddingTop="10dp"
+        android:layout_height="wrap_content"
         android:text=""
         android:textSize="12sp" >
     </TextView>
 
     <Button
         android:id="@+id/showTripsButton"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:background="@drawable/arrowbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/listbutton"
         android:contentDescription="@string/showTripsButton"
-        android:focusable="false" >
+        android:focusable="false"
+        android:shadowColor="#000000"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="1.5"
+        android:text=">"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold" >
     </Button>
 
 </LinearLayout>
