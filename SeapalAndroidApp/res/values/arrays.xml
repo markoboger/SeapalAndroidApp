@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="menu_options">
+        <item>@string/setMark</item>
+        <item>@string/setRoute</item>
+        <item>@string/calcDistance</item>
+        <item>@string/aim</item>
+        <item>@string/map_menu_delete</item>
+    </array>
+
+</resources>

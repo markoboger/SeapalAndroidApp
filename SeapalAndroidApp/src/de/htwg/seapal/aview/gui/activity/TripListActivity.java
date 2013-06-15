@@ -3,11 +3,12 @@ package de.htwg.seapal.aview.gui.activity;
 import java.util.List;
 import java.util.UUID;
 
-import roboguice.activity.RoboActivity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -21,13 +22,13 @@ import de.htwg.seapal.controller.impl.TripController;
 import de.htwg.seapal.utils.observer.Event;
 import de.htwg.seapal.utils.observer.IObserver;
 
-public class TripListActivity extends RoboActivity implements IObserver {
+public class TripListActivity extends BaseDrawerActivity implements IObserver {
 
 	@Inject
 	private TripController controller;
 	private List<UUID> tripList;
 	private UUID boat;
-	private ViewGroup mainView ;
+	private ViewGroup mainView;
 	private View header;
 
 	@Override
@@ -42,10 +43,9 @@ public class TripListActivity extends RoboActivity implements IObserver {
 
 		tripList = controller.getTrips(boat);
 		addListView();
-		
+
 	}
-	
-	
+
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
@@ -54,11 +54,22 @@ public class TripListActivity extends RoboActivity implements IObserver {
 	}
 
 	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		// Respond to the action bar's Up/Home button
+		case android.R.id.home:
+			NavUtils.navigateUpFromSameTask(this);
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
 	public void update(Event event) {
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	private void addListView() {
 		ListView listview = (ListView) findViewById(R.id.tripsListView);
 		TripListAdapter adapter = new TripListAdapter(this,
