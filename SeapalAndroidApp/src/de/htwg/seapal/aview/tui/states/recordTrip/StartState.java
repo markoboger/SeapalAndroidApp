@@ -44,7 +44,7 @@ public class StartState implements TuiState {
 			break;
 		case 's':
 			activity.getLocationMgr().requestLocationUpdates(
-					LocationManager.GPS_PROVIDER, 1000, 0,
+					LocationManager.GPS_PROVIDER, 5000, 0,
 					activity.getTrackLocationListener());
 			break;
 		case 'e':

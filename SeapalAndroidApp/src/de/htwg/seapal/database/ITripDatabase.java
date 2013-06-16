@@ -1,10 +1,11 @@
 package de.htwg.seapal.database;
 
+import java.util.List;
+import java.util.UUID;
+
 import de.htwg.seapal.model.ITrip;
 
-/**
- * The trip database interface.
- */
 public interface ITripDatabase extends IDatabase<ITrip> {
-
+	
+	List<UUID> loadAllById(UUID boatId);
 }

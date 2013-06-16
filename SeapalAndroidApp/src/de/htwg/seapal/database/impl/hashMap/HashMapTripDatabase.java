@@ -67,4 +67,9 @@ public class HashMapTripDatabase implements ITripDatabase {
 		return false;
 	}
 
+	@Override
+	public List<UUID> loadAllById(UUID boatId) {
+		return null;
+	}
+
 }

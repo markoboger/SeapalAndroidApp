@@ -14,12 +14,10 @@ import de.htwg.seapal.model.ModelDocument;
 public class Trip extends ModelDocument implements ITrip {
 
 	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -2927732338890052773L;
-	/**
 	 * Serial version UID for serialization.
 	 */
+	private static final long serialVersionUID = -2927732338890052773L;
+
 
 	private String name;
 	private String startLocation;
@@ -28,6 +26,7 @@ public class Trip extends ModelDocument implements ITrip {
 	private List<String> crew; // UUID Person ?/ or just Name TODO
 	private Long startTime; // unix timestamp
 	private Long endTime; // unix timestamp
+	private Long duration;
 	private Integer motor;
 	private Double fuel;
 	private String notes;
@@ -42,6 +41,7 @@ public class Trip extends ModelDocument implements ITrip {
 		this.endLocation = "";
 		this.startTime = 0L;
 		this.endTime = 0L;
+		this.duration = 0L;
 		this.motor = 0;
 		this.fuel = 0D;
 		this.notes = "";
@@ -59,6 +59,7 @@ public class Trip extends ModelDocument implements ITrip {
 		this.crew = t.getCrewMembers();
 		this.startTime = t.getStartTime();
 		this.endTime = t.getEndTime();
+		this.duration = t.getDuration();
 		this.motor = t.getMotor();
 		this.fuel = t.getFuel();
 		this.notes = t.getNotes();
@@ -186,5 +187,15 @@ public class Trip extends ModelDocument implements ITrip {
 	@Override
 	public int hashCode() {
 		return HashCodeBuilder.reflectionHashCode(this);
+	}
+
+	@Override
+	public void setDuration(Long duration) {
+		this.duration = duration;
+	}
+
+	@Override
+	public Long getDuration() {
+		return this.duration;
 	}
 }

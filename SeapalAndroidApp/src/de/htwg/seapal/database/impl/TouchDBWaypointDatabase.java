@@ -42,7 +42,7 @@ public class TouchDBWaypointDatabase implements IWaypointDatabase {
 		dbHelper.createDatabase(ctx);
 		dbHelper.pullFromDatabase();
 		couchDbConnector = dbHelper.getCouchDbConnector();
-
+		
 	}
 
 	public static TouchDBWaypointDatabase getInstance(Context ctx) {
@@ -112,10 +112,15 @@ public class TouchDBWaypointDatabase implements IWaypointDatabase {
 		ViewResult vr = couchDbConnector.queryView(query);
 
 		for (Row r : vr.getRows()) {
+			if(r.getId().contains("_design")) {
+				continue;
+			}
 			lst.add(get(UUID.fromString(r.getId())));
-			log.add(r.getId());
+			log.add(get(UUID.fromString(r.getId())).toString());
 		}
+		Log.d(TAG, "All Waypoints: " + lst.size());
 		Log.d(TAG, "All Waypoints: " + log.toString());
+		
 		return lst;
 	}
 

@@ -28,17 +28,20 @@ public class TouchDBHelper {
 	private String DATABASE_NAME;
 	private StdCouchDbInstance dbInstance;
 	private CouchDbConnector couchDbConnector;
+	private TDView view;
+	
 
 	public TouchDBHelper(String viewName, String dbName, String dDocName) {
 		DATABASE_NAME = dbName;
 		DDOCNAME = dDocName;
 		VIEWNAME = viewName;
+		
 	}
 
-	public boolean createDatabase(Context ctx) {
+	public void createDatabase(Context ctx) {
 
 		if (couchDbConnector != null) {
-			return true;
+			return;
 		}
 		// TouchDB
 		Log.d(TAG, "Starting " + DATABASE_NAME);
@@ -60,28 +63,36 @@ public class TouchDBHelper {
 
 		TDDatabase db = server.getDatabaseNamed(DATABASE_NAME);
 
-		TDView view = db.getViewNamed(String
-				.format("%s/%s", DDOCNAME, VIEWNAME));
-
-		view.setMapReduceBlocks(new TDViewMapBlock() {
-
-			@Override
-			public void map(Map<String, Object> document,
-					TDViewMapEmitBlock emitter) {
-			}
-		}, new TDViewReduceBlock() {
-			public Object reduce(List<Object> keys, List<Object> values,
-					boolean rereduce) {
-				return null;
-			}
-
-		}, "1.0");
-		return false;
+		view = db.getViewNamed(String.format("%s/%s", DDOCNAME, VIEWNAME));
+//
+//		view.setMapReduceBlocks(new TDViewMapBlock() {
+//
+//			@Override
+//			public void map(Map<String, Object> document,
+//					TDViewMapEmitBlock emitter) {
+//				
+//				Object createdAt = document.get("created_at");
+//                if(createdAt != null) {
+//                    emitter.emit(createdAt.toString(), document);
+//                }
+//			}
+//		}, new TDViewReduceBlock() {
+//			public Object reduce(List<Object> keys, List<Object> values,
+//					boolean rereduce) {
+//				return null;
+//			}
+//
+//		}, "1.0");
+//		return false;
 
 	}
 
 	public CouchDbConnector getCouchDbConnector() {
 		return this.couchDbConnector;
+	}
+	
+	public TDView getTDView() {
+		return this.view;
 	}
 
 	public void pullFromDatabase() {
