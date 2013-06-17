@@ -35,7 +35,7 @@ public class TouchDBRouteDatabase implements IRouteDatabase {
 
 	@Inject
 	public TouchDBRouteDatabase(Context ctx) {
-		dbHelper = new TouchDBHelper(VIEWNAME, DATABASE_NAME, DDOCNAME);
+		dbHelper = new TouchDBHelper(DATABASE_NAME);
 		dbHelper.createDatabase(ctx);
 		dbHelper.pullFromDatabase();
 		couchDbConnector = dbHelper.getCouchDbConnector();

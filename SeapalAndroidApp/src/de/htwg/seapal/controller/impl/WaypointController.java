@@ -316,7 +316,7 @@ public class WaypointController extends Observable implements
 
 	@Override
 	public List<UUID> getWaypoints(UUID tripId) {
-		List<IWaypoint> waypoints = db.loadAll();
+		List<IWaypoint> waypoints = db.loadAllByTripId(tripId);
 		
 		// TODO: filtering should be moved to database layer.
 		List<UUID> waypointIDs = new ArrayList<UUID>();
@@ -347,7 +347,7 @@ public class WaypointController extends Observable implements
 		 * 
 		 * Fixing needed
 		 */
-		List<IWaypoint> waypoints = db.loadAll();
+		List<IWaypoint> waypoints = db.loadAllByTripId(tripId);
 		List<IWaypoint> res = new LinkedList<IWaypoint>();
 		for(IWaypoint wp : waypoints) {
 			if(wp.getTrip().equals(tripId)) {

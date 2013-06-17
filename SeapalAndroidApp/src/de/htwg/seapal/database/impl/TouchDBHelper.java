@@ -1,9 +1,6 @@
 package de.htwg.seapal.database.impl;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ReplicationCommand;
 import org.ektorp.http.HttpClient;
@@ -14,28 +11,19 @@ import android.util.Log;
 
 import com.couchbase.touchdb.TDDatabase;
 import com.couchbase.touchdb.TDServer;
-import com.couchbase.touchdb.TDView;
-import com.couchbase.touchdb.TDViewMapBlock;
-import com.couchbase.touchdb.TDViewMapEmitBlock;
-import com.couchbase.touchdb.TDViewReduceBlock;
 import com.couchbase.touchdb.ektorp.TouchDBHttpClient;
 
 public class TouchDBHelper {
 
 	private static final String TAG = "TouchDB";
-	private String DDOCNAME;
-	private String VIEWNAME;
 	private String DATABASE_NAME;
 	private StdCouchDbInstance dbInstance;
 	private CouchDbConnector couchDbConnector;
-	private TDView view;
+	private TDDatabase tdDB;
 	
 
-	public TouchDBHelper(String viewName, String dbName, String dDocName) {
-		DATABASE_NAME = dbName;
-		DDOCNAME = dDocName;
-		VIEWNAME = viewName;
-		
+	public TouchDBHelper(String dbName) {
+		DATABASE_NAME = dbName;		
 	}
 
 	public void createDatabase(Context ctx) {
@@ -61,29 +49,7 @@ public class TouchDBHelper {
 		// create a local database
 		couchDbConnector = dbInstance.createConnector(DATABASE_NAME, true);
 
-		TDDatabase db = server.getDatabaseNamed(DATABASE_NAME);
-
-		view = db.getViewNamed(String.format("%s/%s", DDOCNAME, VIEWNAME));
-//
-//		view.setMapReduceBlocks(new TDViewMapBlock() {
-//
-//			@Override
-//			public void map(Map<String, Object> document,
-//					TDViewMapEmitBlock emitter) {
-//				
-//				Object createdAt = document.get("created_at");
-//                if(createdAt != null) {
-//                    emitter.emit(createdAt.toString(), document);
-//                }
-//			}
-//		}, new TDViewReduceBlock() {
-//			public Object reduce(List<Object> keys, List<Object> values,
-//					boolean rereduce) {
-//				return null;
-//			}
-//
-//		}, "1.0");
-//		return false;
+		tdDB = server.getDatabaseNamed(DATABASE_NAME);
 
 	}
 
@@ -91,8 +57,8 @@ public class TouchDBHelper {
 		return this.couchDbConnector;
 	}
 	
-	public TDView getTDView() {
-		return this.view;
+	public TDDatabase getTDDatabase() {
+		return this.tdDB;
 	}
 
 	public void pullFromDatabase() {

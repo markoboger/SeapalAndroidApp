@@ -16,6 +16,7 @@ import roboguice.inject.ContextSingleton;
 import android.content.Context;
 import android.util.Log;
 
+import com.couchbase.touchdb.TDDatabase;
 import com.couchbase.touchdb.TDView;
 import com.couchbase.touchdb.TDViewMapBlock;
 import com.couchbase.touchdb.TDViewMapEmitBlock;
@@ -39,12 +40,14 @@ public class TouchDBTripDatabase implements ITripDatabase {
 
 	@Inject
 	public TouchDBTripDatabase(Context ctx) {
-		dbHelper = new TouchDBHelper(VIEWNAME, DATABASE_NAME, DDOCNAME);
+		dbHelper = new TouchDBHelper(DATABASE_NAME);
 		dbHelper.createDatabase(ctx);
 		dbHelper.pullFromDatabase();
 		couchDbConnector = dbHelper.getCouchDbConnector();
 
-		TDView view = dbHelper.getTDView();
+		TDDatabase tdDB = dbHelper.getTDDatabase();
+		
+		TDView view = tdDB.getViewNamed(String.format("%s/%s", DDOCNAME, VIEWNAME));
 
 		view.setMapReduceBlocks(new TDViewMapBlock() {
 			@Override
