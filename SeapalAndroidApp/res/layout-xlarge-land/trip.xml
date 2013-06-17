@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/trip_mainRelativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TableLayout
+        android:id="@+id/trip_tripTable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/tripborder"
+        android:columnCount="4"
+        android:paddingBottom="5dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:rowCount="4"
+        android:stretchColumns="1,3,5" >
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Trip Title"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/trip_editTripname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                android:inputType="text" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="From"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/trip_editFrom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                android:inputType="text" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Start"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/trip_editStart"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                android:inputType="text" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Crew"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/trip_editCrew"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="To"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/trip_editTo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                android:inputType="text" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="End"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/trip_editEnd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                android:inputType="text" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Engine"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/trip_editEngine"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Skipper"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/trip_editSkipper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                android:inputType="text" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Duration"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/trip_editDuration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                android:inputType="text" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tank"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/trip_editTank"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                android:inputType="text" />
+        </TableRow>
+    </TableLayout>
+
+    <LinearLayout
+        android:id="@+id/trip_middle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/trip_tripTable"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:orientation="horizontal" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginRight="15dp"
+            android:layout_weight="1"
+            android:background="@drawable/tripborder" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" 
+                android:text="NOTES"
+                android:textColor="#D9D9D9"
+                android:layout_gravity="center"
+                android:layout_centerInParent="true"
+                android:textSize="28sp"/>
+
+            <EditText
+                android:id="@+id/trip_editNotes"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="top|left"
+                android:inputType="textMultiLine"
+                android:lines="7"
+                android:scrollHorizontally="false" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginRight="15dp"
+            android:layout_weight="1"
+            android:background="@drawable/tripborder" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" 
+                android:text="MAP"
+                android:textColor="#D9D9D9"
+                android:layout_gravity="center"
+                android:layout_centerInParent="true"
+                android:textSize="28sp"/>
+        </RelativeLayout>
+            
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_weight="1"
+            android:background="@drawable/tripborder" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" 
+                android:text="PHOTO"
+                android:textColor="#D9D9D9"
+                android:layout_gravity="center"
+                android:layout_centerInParent="true"
+                android:textSize="28sp"/>
+
+            
+        </RelativeLayout>
+    </LinearLayout>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/trip_middle"
+        android:id="@+id/trip_WaypointList" >
+
+    </ListView>
+
+</RelativeLayout>

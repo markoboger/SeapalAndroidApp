@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.google.inject.Inject;
@@ -19,10 +21,8 @@ import com.google.inject.Inject;
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.adapter.TripListAdapter;
 import de.htwg.seapal.controller.impl.TripController;
-import de.htwg.seapal.utils.observer.Event;
-import de.htwg.seapal.utils.observer.IObserver;
 
-public class TripListActivity extends BaseDrawerActivity implements IObserver {
+public class TripListActivity extends BaseDrawerActivity {
 
 	@Inject
 	private TripController controller;
@@ -36,16 +36,27 @@ public class TripListActivity extends BaseDrawerActivity implements IObserver {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.triplist);
-		controller.addObserver(this);
 
 		Bundle extras = getIntent().getExtras();
 		boat = UUID.fromString(extras.getString("boat"));
 
 		tripList = controller.getTrips(boat);
-		addListView();
+//		addListView();
 
 	}
 
+	@Override
+	public void onResume() {
+		addListView();
+		super.onResume();
+	}
+	
+	@Override
+	public void onStop() {
+		mainView.removeView(header);
+		super.onPause();
+	}
+	
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
@@ -64,12 +75,6 @@ public class TripListActivity extends BaseDrawerActivity implements IObserver {
 		return super.onOptionsItemSelected(item);
 	}
 
-	@Override
-	public void update(Event event) {
-		// TODO Auto-generated method stub
-
-	}
-
 	private void addListView() {
 		ListView listview = (ListView) findViewById(R.id.tripsListView);
 		TripListAdapter adapter = new TripListAdapter(this,
@@ -81,13 +86,16 @@ public class TripListActivity extends BaseDrawerActivity implements IObserver {
 		mainView.addView(header, 0);
 
 		listview.setAdapter(adapter);
-		listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+		listview.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
-				// TODO Auto-generated method stub
-				// start TripActivity
+				Intent intent = new Intent(TripListActivity.this,
+						TripActivity.class);
+				UUID trip = (UUID) arg0.getAdapter().getItem(arg2);
+				intent.putExtra("trip", trip.toString());
+				TripListActivity.this.startActivity(intent);
 			}
 
 		});
