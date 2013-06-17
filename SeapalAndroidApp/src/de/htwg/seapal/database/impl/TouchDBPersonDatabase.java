@@ -34,7 +34,7 @@ public class TouchDBPersonDatabase implements IPersonDatabase {
 
 	@Inject
 	public TouchDBPersonDatabase(Context ctx) {
-		dbHelper = new TouchDBHelper(VIEWNAME, DATABASE_NAME, DDOCNAME);
+		dbHelper = new TouchDBHelper(DATABASE_NAME);
 		dbHelper.createDatabase(ctx);
 		dbHelper.pullFromDatabase();
 		couchDbConnector = dbHelper.getCouchDbConnector();

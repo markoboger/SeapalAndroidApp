@@ -1,7 +1,9 @@
 package de.htwg.seapal.database.impl;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.ektorp.CouchDbConnector;
@@ -14,7 +16,10 @@ import org.ektorp.ViewResult.Row;
 import roboguice.inject.ContextSingleton;
 import android.content.Context;
 import android.util.Log;
-
+import com.couchbase.touchdb.TDDatabase;
+import com.couchbase.touchdb.TDView;
+import com.couchbase.touchdb.TDViewMapBlock;
+import com.couchbase.touchdb.TDViewMapEmitBlock;
 import com.google.inject.Inject;
 
 import de.htwg.seapal.database.IWaypointDatabase;
@@ -28,8 +33,8 @@ import de.htwg.seapal.model.impl.Waypoint;
 public class TouchDBWaypointDatabase implements IWaypointDatabase {
 
 	private static final String TAG = "Waypoint-TouchDB";
-	private static final String DDOCNAME = "seapal-waypoint";
-	private static final String VIEWNAME = "waypoint";
+	private static final String DDOCNAME = "Waypoint";
+	private static final String VIEWNAME = "by_trip";
 	private static final String DATABASE_NAME = "seapal_waypoint_db";
 
 	private static TouchDBWaypointDatabase touchDBWaypointDatabase;
@@ -38,10 +43,27 @@ public class TouchDBWaypointDatabase implements IWaypointDatabase {
 
 	@Inject
 	public TouchDBWaypointDatabase(Context ctx) {
-		dbHelper = new TouchDBHelper(VIEWNAME, DATABASE_NAME, DDOCNAME);
+		dbHelper = new TouchDBHelper(DATABASE_NAME);
 		dbHelper.createDatabase(ctx);
 		dbHelper.pullFromDatabase();
 		couchDbConnector = dbHelper.getCouchDbConnector();
+
+		TDDatabase tdDB = dbHelper.getTDDatabase();
+
+		TDView view = tdDB.getViewNamed(String.format("%s/%s", DDOCNAME, VIEWNAME));
+
+		view.setMapReduceBlocks(new TDViewMapBlock() {
+			@Override
+			public void map(Map<String, Object> document, TDViewMapEmitBlock emitter) {
+				Object Trip = document.get("trip");
+				Map<Object, Object> m = new HashMap<Object, Object>();
+				if(Trip != null) {
+					m.put(document.get("trip"), document.get("date"));
+					emitter.emit(m , document.get("_id"));
+				}               
+
+			}
+		}, null, "1.0");
 
 	}
 
@@ -112,10 +134,15 @@ public class TouchDBWaypointDatabase implements IWaypointDatabase {
 		ViewResult vr = couchDbConnector.queryView(query);
 
 		for (Row r : vr.getRows()) {
+			if(r.getId().contains("_design")) {
+				continue;
+			}
 			lst.add(get(UUID.fromString(r.getId())));
-			log.add(r.getId());
+			log.add(get(UUID.fromString(r.getId())).toString());
 		}
+		Log.d(TAG, "All Waypoints: " + lst.size());
 		Log.d(TAG, "All Waypoints: " + log.toString());
+
 		return lst;
 	}
 
@@ -131,9 +158,32 @@ public class TouchDBWaypointDatabase implements IWaypointDatabase {
 	}
 
 	@Override
-	public List<IWaypoint> loadAllByTripId(UUID arg0) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<IWaypoint> loadAllByTripId(UUID tripId) {
+		List<IWaypoint> lst = new LinkedList<IWaypoint>();
+		List<IWaypoint> log = new LinkedList<IWaypoint>();
+
+		ViewQuery viewQuery = new ViewQuery().designDocId("_design/" + DDOCNAME).viewName(VIEWNAME);
+
+		ViewResult vr = couchDbConnector.queryView(viewQuery);
+		for (Row r : vr.getRows()) {
+			
+			
+			
+			String[] s = r.getKey().split(":");
+			s[0] = s[0].replace("\"", "");
+			s[0] = s[0].replace("{", "");
+			
+			if(r.getKey() != null && !r.getKey().isEmpty()) {
+				if(tripId.equals(UUID.fromString(s[0]))) {
+					lst.add(get(UUID.fromString(r.getValue())));
+					log.add(get(UUID.fromString(r.getValue())));
+				}
+			}
+
+
+		}
+		Log.d(TAG, "All Trips: " + log.toString());
+		return lst;
 	}
 
 }

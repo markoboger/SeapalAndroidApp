@@ -71,4 +71,9 @@ public class TripDatabase implements ITripDatabase {
 	public boolean save(ITrip trip) {
 		return true;
 	}
+
+	@Override
+	public List<UUID> loadAllById(UUID boatId) {
+		return null;
+	}
 }

@@ -1,6 +1,7 @@
 package de.htwg.seapal.controller.impl;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -258,15 +259,10 @@ public class TripController extends Observable implements ITripController {
 
 	@Override
 	public List<UUID> getTrips(UUID boatId) {
-		List<ITrip> query = db.loadAll();
+		List<UUID> query = db.loadAllById(boatId);
 		logger.info("TripController", "All trips: " + query.toString());
-		// TODO: filtering should be moved to database layer.
-		List<UUID> list = new ArrayList<UUID>();
-		for (ITrip trip : query) {
-			if (trip.getBoat().equals(boatId.toString()))
-				list.add(UUID.fromString(trip.getId()));
-		}
-		return list;
+		
+		return query;
 	}
 
 	@Override
@@ -281,15 +277,12 @@ public class TripController extends Observable implements ITripController {
 
 	@Override
 	public List<ITrip> getAllTrips(UUID boatId) {
-		List<ITrip> trips = db.loadAll();
+		List<ITrip> trips = new LinkedList<ITrip>();
+		List<UUID> ids = db.loadAllById(boatId);
 		logger.info("TripController", "All trips: " + trips.toString());
 		// TODO: filtering should be moved to database layer.
-		for (int i = trips.size() - 1; i >= 0; --i) {
-			String currentBoatId = trips.get(i).getBoat();
-			if (currentBoatId != null
-					&& !currentBoatId.equals(boatId.toString())) {
-				trips.remove(i);
-			}
+		for(UUID id : ids) {
+			trips.add(getTrip(id));
 		}
 		return trips;
 	}

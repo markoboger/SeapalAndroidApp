@@ -2,6 +2,7 @@ package de.htwg.seapal.database.impl;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.ektorp.CouchDbConnector;
@@ -15,6 +16,10 @@ import roboguice.inject.ContextSingleton;
 import android.content.Context;
 import android.util.Log;
 
+import com.couchbase.touchdb.TDDatabase;
+import com.couchbase.touchdb.TDView;
+import com.couchbase.touchdb.TDViewMapBlock;
+import com.couchbase.touchdb.TDViewMapEmitBlock;
 import com.google.inject.Inject;
 
 import de.htwg.seapal.database.ITripDatabase;
@@ -25,8 +30,8 @@ import de.htwg.seapal.model.impl.Trip;
 public class TouchDBTripDatabase implements ITripDatabase {
 
 	private static final String TAG = "Trip-TouchDB";
-	private static final String DDOCNAME = "seapal-trips";
-	private static final String VIEWNAME = "trips";
+	private static final String DDOCNAME = "Trip";
+	private static final String VIEWNAME = "by_boat";
 	private static final String DATABASE_NAME = "seapal_trips_db";
 
 	private static TouchDBTripDatabase touchDBTripDatabase;
@@ -35,10 +40,25 @@ public class TouchDBTripDatabase implements ITripDatabase {
 
 	@Inject
 	public TouchDBTripDatabase(Context ctx) {
-		dbHelper = new TouchDBHelper(VIEWNAME, DATABASE_NAME, DDOCNAME);
+		dbHelper = new TouchDBHelper(DATABASE_NAME);
 		dbHelper.createDatabase(ctx);
 		dbHelper.pullFromDatabase();
 		couchDbConnector = dbHelper.getCouchDbConnector();
+
+		TDDatabase tdDB = dbHelper.getTDDatabase();
+		
+		TDView view = tdDB.getViewNamed(String.format("%s/%s", DDOCNAME, VIEWNAME));
+
+		view.setMapReduceBlocks(new TDViewMapBlock() {
+			@Override
+			public void map(Map<String, Object> document, TDViewMapEmitBlock emitter) {
+				Object Boat = document.get("boat");
+				if(Boat != null) {
+					emitter.emit(document.get("boat"), document.get("_id"));
+				}               
+
+			}
+		}, null, "1.0");
 
 	}
 
@@ -124,6 +144,29 @@ public class TouchDBTripDatabase implements ITripDatabase {
 	public boolean open() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public List<UUID> loadAllById(UUID boatId) {
+		List<UUID> lst = new LinkedList<UUID>();
+		List<UUID> log = new LinkedList<UUID>();
+
+		ViewQuery viewQuery = new ViewQuery().designDocId("_design/" + DDOCNAME).viewName(VIEWNAME);
+
+		ViewResult vr = couchDbConnector.queryView(viewQuery);
+		for (Row r : vr.getRows()) {
+
+			if(r.getKey() != null && !r.getKey().isEmpty()) {
+				if(boatId.equals(UUID.fromString(r.getKey()))) {
+					lst.add(UUID.fromString(r.getValue()));
+					log.add(UUID.fromString(r.getValue()));
+				}
+			}
+
+
+		}
+		Log.d(TAG, "All Trips: " + log.toString());
+		return lst;
 	}
 
 }

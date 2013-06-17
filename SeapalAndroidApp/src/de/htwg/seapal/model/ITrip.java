@@ -47,4 +47,8 @@ public interface ITrip extends IModel {
 	void setEndTime(Long end);
 
 	Long getEndTime();
+
+	void setDuration(Long duration);
+
+	Long getDuration();
 }
