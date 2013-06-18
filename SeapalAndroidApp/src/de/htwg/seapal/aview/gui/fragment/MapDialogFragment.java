@@ -62,14 +62,6 @@ public class MapDialogFragment extends DialogFragment {
 
 		TextView t = (TextView) titleView.findViewById(R.id.menuTitleLabel);
 
-		/**
-		 * TODO Just for Testing
-		 */
-//		DecimalFormat df= new DecimalFormat("#0.00");
-//		LatLng pos = MapActivity.crosshairMarker.getPosition()
-//				pos.toString();	
-//		String s = "Lat: " + df.format(MapActivity.crosshairMarker.getPosition().latitude) + "\nLong: " +
-//				df.format(MapActivity.crosshairMarker.getPosition().longitude);  
 		LatLng pos = MapActivity.crosshairMarker.getPosition();
 		String lat = formatLatitude(pos.latitude);
 		String lng = formatLongitude(pos.longitude);

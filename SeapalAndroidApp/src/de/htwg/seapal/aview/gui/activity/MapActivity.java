@@ -17,7 +17,6 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.inject.Inject;
 
-import roboguice.activity.RoboActivity;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.graphics.Color;
@@ -94,9 +93,9 @@ MapDialogFragment.MapDialogListener {
 		case DISTANCE:
 			calcDistance += calcDistance(lastPos, latlng);
 			lastPos = latlng;
-			map.addMarker(new MarkerOptions().
+			calcDistanceMarker.add(map.addMarker(new MarkerOptions().
 					position(latlng).
-					icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_distance)));
+					icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_distance))));
 			List<LatLng> calclst = calcDistanceRoute.getPoints();
 			calclst.add(latlng);
 			calcDistanceRoute.setPoints(calclst);
@@ -165,6 +164,9 @@ MapDialogFragment.MapDialogListener {
 		option = SelectedOption.DISTANCE;
 		if(calcDistanceRoute != null) {
 			calcDistanceRoute.remove();
+			for(Marker m : calcDistanceMarker) {
+				m.remove();
+			}
 			calcDistanceMarker.clear();
 		}
 		lastPos = crosshairMarker.getPosition();
