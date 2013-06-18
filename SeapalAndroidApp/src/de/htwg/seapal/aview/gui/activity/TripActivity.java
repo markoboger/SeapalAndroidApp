@@ -1,6 +1,5 @@
 package de.htwg.seapal.aview.gui.activity;
 
-import java.util.List;
 import java.util.UUID;
 
 import android.content.res.Configuration;
@@ -79,29 +78,39 @@ public class TripActivity extends BaseDrawerActivity implements IObserver {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
-		if (!controller.getName(trip).equals(triptitle.getText().toString()))
-			controller.setName(trip, triptitle.getText().toString());
-		if (!controller.getStartLocation(trip)
-				.equals(from.getText().toString()))
-			controller.setStartLocation(trip, from.getText().toString());
-		if (!controller.getEndLocation(trip).equals(to.getText().toString()))
-			controller.setEndLocation(trip, to.getText().toString());
-		if (controller.getMotor(trip) != Integer.valueOf(engine.getText()
-				.toString()))
-			controller.setMotor(trip,
-					Integer.valueOf(engine.getText().toString()));
-		if (controller.getFuel(trip) != Double.valueOf(tank.getText()
-				.toString()))
-			controller.setFuel(trip, Double.valueOf(tank.getText().toString()));
+//		if (item.getItemId() == android.R.id.home)
+//			NavUtils.navigateUpFromSameTask(this);
 
-		// skipper
+		if (item.getItemId() == R.id.tripmenu_save) {
 
-		if (!controller.getNotes(trip).equals(notes.getText().toString()))
-			controller.setNotes(trip, notes.getText().toString());
+			if (!controller.getName(trip)
+					.equals(triptitle.getText().toString()))
+				controller.setName(trip, triptitle.getText().toString());
+			if (!controller.getStartLocation(trip).equals(
+					from.getText().toString()))
+				controller.setStartLocation(trip, from.getText().toString());
+			if (!controller.getEndLocation(trip)
+					.equals(to.getText().toString()))
+				controller.setEndLocation(trip, to.getText().toString());
+			if (controller.getMotor(trip) != Integer.valueOf(engine.getText()
+					.toString()))
+				controller.setMotor(trip,
+						Integer.valueOf(engine.getText().toString()));
+			if (controller.getFuel(trip) != Double.valueOf(tank.getText()
+					.toString()))
+				controller.setFuel(trip,
+						Double.valueOf(tank.getText().toString()));
 
-		controller.addCrewMember(trip, crew.getText().toString());
+			if(!controller.getCrewMembers(trip).equals(crew.getText().toString()))
+				controller.setCrewMember(trip, crew.getText().toString());
 
-		Toast.makeText(this, "Saved Changes", Toast.LENGTH_SHORT).show();
+			if (!controller.getNotes(trip).equals(notes.getText().toString()))
+				controller.setNotes(trip, notes.getText().toString());
+
+			// skipper
+
+			Toast.makeText(this, "Saved Changes", Toast.LENGTH_SHORT).show();
+		}
 
 		return true;
 	}
@@ -128,15 +137,9 @@ public class TripActivity extends BaseDrawerActivity implements IObserver {
 
 		duration.setText(calcDuration());
 		notes.setText(controller.getNotes(trip));
+		crew.setText(controller.getCrewMembers(trip));
 		engine.setText(Integer.toString(controller.getMotor(trip)));
 		tank.setText(Double.toString(controller.getFuel(trip)));
-
-		List<String> crewMembers = controller.getCrewMembers(trip);
-		try {
-			crew.setText(crewMembers.get(0));
-		} catch (IndexOutOfBoundsException e) {
-			crew.setText("-");
-		}
 
 	}
 
@@ -158,7 +161,7 @@ public class TripActivity extends BaseDrawerActivity implements IObserver {
 		diff = diff % minuteInMillis;
 		long elapsedSeconds = diff / secondInMillis;
 
-		return elapsedDays + "d " + elapsedHours + "h " + elapsedMinutes + "m "
+		return elapsedDays + "d   " + elapsedHours + "h   " + elapsedMinutes + "m   "
 				+ elapsedSeconds + "s";
 	}
 

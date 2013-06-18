@@ -1,7 +1,5 @@
 package de.htwg.seapal.model.impl;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -23,7 +21,7 @@ public class Trip extends ModelDocument implements ITrip {
 	private String startLocation;
 	private String endLocation;
 	private String skipper; // UUID Person
-	private List<String> crew; // UUID Person ?/ or just Name TODO
+	private String crewMembers; 
 	private Long startTime; // unix timestamp
 	private Long endTime; // unix timestamp
 	private Long duration;
@@ -34,7 +32,7 @@ public class Trip extends ModelDocument implements ITrip {
 
 	public Trip() {
 		setId(UUID.randomUUID().toString());
-		this.crew = new ArrayList<String>();
+		this.crewMembers = "";
 		this.skipper = "";
 		this.name = "";
 		this.startLocation = "";
@@ -50,13 +48,12 @@ public class Trip extends ModelDocument implements ITrip {
 
 	public Trip(ITrip t) {
 		setId(t.getId());
-		this.crew = new ArrayList<String>();
 
 		this.name = t.getName();
 		this.startLocation = t.getStartLocation();
 		this.endLocation = t.getEndLocation();
 		this.skipper = t.getSkipper();
-		this.crew = t.getCrewMembers();
+		this.crewMembers = t.getCrewMembers();
 		this.startTime = t.getStartTime();
 		this.endTime = t.getEndTime();
 		this.duration = t.getDuration();
@@ -105,13 +102,13 @@ public class Trip extends ModelDocument implements ITrip {
 	}
 
 	@Override
-	public void addCrewMember(String crewMember) {
-		this.crew.add(crewMember);
+	public void setCrewMember(String crewMember) {
+		this.crewMembers = crewMember;
 	}
 
 	@Override
-	public List<String> getCrewMembers() {
-		return crew;
+	public String getCrewMembers() {
+		return crewMembers;
 	}
 
 	@Override

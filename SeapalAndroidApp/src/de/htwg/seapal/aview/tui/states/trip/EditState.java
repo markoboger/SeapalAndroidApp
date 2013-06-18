@@ -46,7 +46,7 @@ public class EditState implements TuiState {
 				controller.setSkipper(trip, UUID.fromString(input));
 				break;
 			case 5:
-				controller.addCrewMember(trip, input);
+				controller.setCrewMember(trip, input);
 				break;
 			case 6:
 				controller.setMotor(trip, Integer.valueOf(input));
