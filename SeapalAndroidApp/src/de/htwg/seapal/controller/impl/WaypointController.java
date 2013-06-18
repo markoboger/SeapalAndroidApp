@@ -363,4 +363,23 @@ public class WaypointController extends Observable implements
 	public boolean saveWaypoint(IWaypoint waypoint) {
 		return db.save(waypoint);
 	}
+
+	@Override
+	public void setDate(UUID id, long date) {
+		IWaypoint waypoint = db.get(id);
+		if (waypoint == null)
+			return;
+		waypoint.setDate(date);
+		db.save(waypoint);
+		notifyObservers();
+		
+	}
+
+	@Override
+	public long getDate(UUID id) {
+		IWaypoint waypoint = db.get(id);
+		if (waypoint == null)
+			return -1;
+		return waypoint.getDate();
+	}
 }

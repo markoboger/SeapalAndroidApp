@@ -42,7 +42,6 @@ public class TripListActivity extends BaseDrawerActivity {
 		boat = UUID.fromString(extras.getString("boat"));
 
 		tripList = controller.getTrips(boat);
-//		addListView();
 
 	}
 

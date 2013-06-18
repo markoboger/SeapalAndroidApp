@@ -106,17 +106,17 @@ public class TripController extends Observable implements ITripController {
 	}
 
 	@Override
-	public void addCrewMember(UUID id, String crewMember) {
+	public void setCrewMember(UUID id, String crewMember) {
 		ITrip trip = db.get(id);
 		if (trip == null)
 			return;
-		trip.addCrewMember(crewMember);
+		trip.setCrewMember(crewMember);
 		db.save(trip);
 		notifyObservers();
 	}
 
 	@Override
-	public List<String> getCrewMembers(UUID id) {
+	public String getCrewMembers(UUID id) {
 		ITrip trip = db.get(id);
 		if (trip == null)
 			return null;

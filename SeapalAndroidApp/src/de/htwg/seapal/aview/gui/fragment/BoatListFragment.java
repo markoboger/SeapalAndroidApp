@@ -87,17 +87,8 @@ public class BoatListFragment extends ListFragment {
 		} else
 			mainView.addView(header, 0);
 
-//		try {
-//			getListView().setItemChecked(0, true);
-//			getListView().setSelected(true);
-//		} catch (Exception e) {
-//
-//		}
-
 		// so the background color is white on older Android Versions
 		// getListView().setBackgroundColor(Color.WHITE);
-
-		
 		
 		this.setListAdapter(adapter);
 	}

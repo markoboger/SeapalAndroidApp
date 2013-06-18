@@ -345,4 +345,8 @@ public interface IWaypointController extends IObservable {
 	 *         the waypoint was updated.
 	 */
 	boolean saveWaypoint(IWaypoint waypoint);
+	
+	void setDate(UUID id, long date);
+	
+	long getDate(UUID id);
 }

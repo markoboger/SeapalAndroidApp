@@ -1,6 +1,5 @@
 package de.htwg.seapal.model;
 
-import java.util.List;
 
 public interface ITrip extends IModel {
 
@@ -20,9 +19,9 @@ public interface ITrip extends IModel {
 
 	void setSkipper(String skipper); // Person
 
-	List<String> getCrewMembers(); // Person
+	String getCrewMembers(); 
 
-	void addCrewMember(String crewMember); // Person
+	void setCrewMember(String crewMember); 
 
 	Integer getMotor();
 
