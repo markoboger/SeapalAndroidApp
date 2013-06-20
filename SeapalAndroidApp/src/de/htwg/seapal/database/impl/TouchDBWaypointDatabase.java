@@ -16,6 +16,7 @@ import org.ektorp.ViewResult.Row;
 import roboguice.inject.ContextSingleton;
 import android.content.Context;
 import android.util.Log;
+
 import com.couchbase.touchdb.TDDatabase;
 import com.couchbase.touchdb.TDView;
 import com.couchbase.touchdb.TDViewMapBlock;
@@ -50,17 +51,19 @@ public class TouchDBWaypointDatabase implements IWaypointDatabase {
 
 		TDDatabase tdDB = dbHelper.getTDDatabase();
 
-		TDView view = tdDB.getViewNamed(String.format("%s/%s", DDOCNAME, VIEWNAME));
+		TDView view = tdDB.getViewNamed(String.format("%s/%s", DDOCNAME,
+				VIEWNAME));
 
 		view.setMapReduceBlocks(new TDViewMapBlock() {
 			@Override
-			public void map(Map<String, Object> document, TDViewMapEmitBlock emitter) {
+			public void map(Map<String, Object> document,
+					TDViewMapEmitBlock emitter) {
 				Object Trip = document.get("trip");
 				Map<Object, Object> m = new HashMap<Object, Object>();
-				if(Trip != null) {
+				if (Trip != null) {
 					m.put(document.get("trip"), document.get("date"));
-					emitter.emit(m , document.get("_id"));
-				}               
+					emitter.emit(m, document.get("_id"));
+				}
 
 			}
 		}, null, "1.0");
@@ -134,7 +137,7 @@ public class TouchDBWaypointDatabase implements IWaypointDatabase {
 		ViewResult vr = couchDbConnector.queryView(query);
 
 		for (Row r : vr.getRows()) {
-			if(r.getId().contains("_design")) {
+			if (r.getId().contains("_design")) {
 				continue;
 			}
 			lst.add(get(UUID.fromString(r.getId())));
@@ -158,28 +161,26 @@ public class TouchDBWaypointDatabase implements IWaypointDatabase {
 	}
 
 	@Override
-	public List<IWaypoint> loadAllByTripId(UUID tripId) {
+	public List<IWaypoint> findByTrip(UUID tripId) {
 		List<IWaypoint> lst = new LinkedList<IWaypoint>();
 		List<IWaypoint> log = new LinkedList<IWaypoint>();
 
-		ViewQuery viewQuery = new ViewQuery().designDocId("_design/" + DDOCNAME).viewName(VIEWNAME);
+		ViewQuery viewQuery = new ViewQuery()
+				.designDocId("_design/" + DDOCNAME).viewName(VIEWNAME);
 
 		ViewResult vr = couchDbConnector.queryView(viewQuery);
 		for (Row r : vr.getRows()) {
-			
-			
-			
+
 			String[] s = r.getKey().split(":");
 			s[0] = s[0].replace("\"", "");
 			s[0] = s[0].replace("{", "");
-			
-			if(r.getKey() != null && !r.getKey().isEmpty()) {
-				if(tripId.equals(UUID.fromString(s[0]))) {
+
+			if (r.getKey() != null && !r.getKey().isEmpty()) {
+				if (tripId.equals(UUID.fromString(s[0]))) {
 					lst.add(get(UUID.fromString(r.getValue())));
 					log.add(get(UUID.fromString(r.getValue())));
 				}
 			}
-
 
 		}
 		Log.d(TAG, "All Trips: " + log.toString());

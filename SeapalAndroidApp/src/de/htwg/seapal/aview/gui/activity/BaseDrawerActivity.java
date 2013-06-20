@@ -97,38 +97,12 @@ public class BaseDrawerActivity extends RoboActivity {
 		return true;
 	}
 
-	// doesn't work because menuitems are set unvisible in fragments so they
-	// would be visible after this operation
-	// /* Called whenever we call invalidateOptionsMenu() */
-	// @Override
-	// public boolean onPrepareOptionsMenu(Menu menu) {
-	// // If the nav drawer is open, hide action items related to the view
-	// boolean drawerOpen = drawerLayout.isDrawerOpen(drawerListView);
-	// for (int i = 0; i < menu.size(); i++)
-	// menu.getItem(i).setVisible(!drawerOpen);
-	// return super.onPrepareOptionsMenu(menu);
-	// }
-
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// The action bar home/up action should open or close the drawer.
 		if (drawerToggle.onOptionsItemSelected(item)) {
 			return true;
 		}
-
-		// // Handle action buttons
-		// switch (item.getItemId()) {
-		// case R.id.menu_save:
-		// // create intent to perform web search for this planet
-		// Toast.makeText(this, "SAVE !!!!!", Toast.LENGTH_SHORT).show();
-		// return true;
-		// case R.id.menu_new:
-		// startActivity(new Intent(this,
-		// de.htwg.seapal.aview.gui.activity.BoatActivity.class));
-		// return true;
-		// default:
-		// return super.onOptionsItemSelected(item);
-		// }
 		return super.onOptionsItemSelected(item);
 	}
 

@@ -46,16 +46,18 @@ public class TouchDBTripDatabase implements ITripDatabase {
 		couchDbConnector = dbHelper.getCouchDbConnector();
 
 		TDDatabase tdDB = dbHelper.getTDDatabase();
-		
-		TDView view = tdDB.getViewNamed(String.format("%s/%s", DDOCNAME, VIEWNAME));
+
+		TDView view = tdDB.getViewNamed(String.format("%s/%s", DDOCNAME,
+				VIEWNAME));
 
 		view.setMapReduceBlocks(new TDViewMapBlock() {
 			@Override
-			public void map(Map<String, Object> document, TDViewMapEmitBlock emitter) {
+			public void map(Map<String, Object> document,
+					TDViewMapEmitBlock emitter) {
 				Object Boat = document.get("boat");
-				if(Boat != null) {
+				if (Boat != null) {
 					emitter.emit(document.get("boat"), document.get("_id"));
-				}               
+				}
 
 			}
 		}, null, "1.0");
@@ -147,22 +149,22 @@ public class TouchDBTripDatabase implements ITripDatabase {
 	}
 
 	@Override
-	public List<UUID> loadAllById(UUID boatId) {
-		List<UUID> lst = new LinkedList<UUID>();
-		List<UUID> log = new LinkedList<UUID>();
+	public List<ITrip> findByBoat(UUID boatId) {
+		List<ITrip> lst = new LinkedList<ITrip>();
+		List<ITrip> log = new LinkedList<ITrip>();
 
-		ViewQuery viewQuery = new ViewQuery().designDocId("_design/" + DDOCNAME).viewName(VIEWNAME);
+		ViewQuery viewQuery = new ViewQuery()
+				.designDocId("_design/" + DDOCNAME).viewName(VIEWNAME);
 
 		ViewResult vr = couchDbConnector.queryView(viewQuery);
 		for (Row r : vr.getRows()) {
 
-			if(r.getKey() != null && !r.getKey().isEmpty()) {
-				if(boatId.equals(UUID.fromString(r.getKey()))) {
-					lst.add(UUID.fromString(r.getValue()));
-					log.add(UUID.fromString(r.getValue()));
+			if (r.getKey() != null && !r.getKey().isEmpty()) {
+				if (boatId.equals(UUID.fromString(r.getKey()))) {
+					lst.add(get(UUID.fromString(r.getValue())));
+					log.add(get(UUID.fromString(r.getValue())));
 				}
 			}
-
 
 		}
 		Log.d(TAG, "All Trips: " + log.toString());

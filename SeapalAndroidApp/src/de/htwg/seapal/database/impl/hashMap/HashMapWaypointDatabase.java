@@ -72,7 +72,7 @@ public class HashMapWaypointDatabase implements IWaypointDatabase {
 	}
 
 	@Override
-	public List<IWaypoint> loadAllByTripId(UUID tripId) {
+	public List<IWaypoint> findByTrip(UUID tripId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
