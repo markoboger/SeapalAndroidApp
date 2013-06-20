@@ -20,7 +20,6 @@ import com.google.inject.Inject;
 
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.adapter.TripListAdapter;
-import de.htwg.seapal.aview.tui.activity.TripActivity;
 import de.htwg.seapal.controller.impl.TripController;
 
 public class TripListActivity extends BaseDrawerActivity {
