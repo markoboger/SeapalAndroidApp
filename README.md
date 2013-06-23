@@ -113,6 +113,52 @@ stored as a Unix timestamp (long) in the model. The duration of a trip is not st
 calculate this in the activity. Until now the elapsed days, hout, minutes and second are displayed.
 
 
+Mapactivity
+----------------
+
+The **Mapactivity** contains the GUI for the Map. The map has an DialogFragment which is implemented in
+**MapDialogFragment**. Both classes currently provide the known mapfunctions like setMark, setRoute, setDistance, 
+which can be selected in the dialog. Right now Marks and Routes are only created on the map and not stored in the DB.
+
+**Problems with emulating Map**
+
+Google does not deliver a working emulator at the moment. There for following additional APKs have to installed and
+google play services.(https://www.dropbox.com/sh/0t128z94941s5i2/R59PpMLOPZ)
+Furthermore every developer has to use the same debug.keystore, otherwise google will not accept the Maps API key
+when building the project. 
+
+
+
+Database
+----------------
+
+The database contains of one class for each Model where all CRUD-operations are implemented. The TouchDBHelper-Class 
+is creates Databases and contains methods for synchronisation with the CouchDB-Server.
+
+Database uses too libraries:
+-TouchDB-Android
+-TouchDB-Ektorp
+
+TouchDB will create a local CouchDB on the smartphone. Data will be stored there and synchronized with the Server.
+The DB-structure on the server and on the device must be the same. Otherwise synchronization will not work and 
+the app will crash. 
+
+DB-Access is done via Ektorp, which delivers an API to use CouchDBs REST API via java methods.
+For further Information about ektorp visit http://ektorp.org/reference_documentation.html
+
+#### CouchDB
+
+Each Model-Object has an own UUID and a Revision in the database and are stored as JSONs. Ektorp makes it possible
+to store complete objects. It will create JSONs out of it and store it in the database. To get objects out of the DB 
+we just need the ID and the object.class. It is also possible to get a certain revision of an object if needed.
+
+Synchronisation with the DB-Server is very easy and simple. Ektorp provides push and pull methods, where you only have
+to set the link to the DB-Server, the DB-name which is to be replicated and a user if needed. After calling this
+methods ektorp will do all the work. It is possible to have a continous replication in an own thread. Right now this
+is not implemented push/pulls are made on start or when changes are made. 
+
+Right now all data is stored on http://roroettg.iriscouch.com/ which is a "free" Web CouchDB. 
+
 
 
 
