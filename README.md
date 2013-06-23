@@ -27,17 +27,44 @@ The **BoatActivity** in *SeapalAndroidApp/src/de/htwg/seapal/aview/gui/activity/
 two fragments for listview and detailview (BoatListFragment, BoatDetailFragment). So you have the possibility
 to view both fragments on a tablet and only one fragment on a smartphone.
 
+---
+
 #### BoatActivity
 
-This activity: 
-				+ extends BaseDrawerActivity 
-				+ implements IObserver
-				+ implements BoatListFragment.ListSelectedCallback  
+This activity:  
 
-The BoatActivity gets an injected BoatController from *com.google.inject.Inject*. You have to add this controller
+>* extends BaseDrawerActivity 
+>* implements IObserver
+>* implements BoatListFragment.ListSelectedCallback  
+
+The BoatActivity get an injected BoatController from *com.google.inject.Inject*. You have to add this controller
 to Observer to get the notify method from Observable. 
 
 The main view of the activity is the **boat.xml**. This xml-file is in the *layout* folder for smartphones and in the 
 *layout-xlarge* for tablets. It consists of one respectively two FrameLayouts. The FrameLayout is only a place holder 
-for the Fragments. 
+for the Fragments. Each Fragment has an own layout (boatlist.xml, boatdetail.xml), which will be dynamically added to 
+the main layout. This is implemented with a FragmentTransaction in the onCreate() method. The Android Operation 
+System choose the right main layout. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
