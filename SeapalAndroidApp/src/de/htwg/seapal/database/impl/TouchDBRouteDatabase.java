@@ -25,8 +25,6 @@ import de.htwg.seapal.model.impl.Route;
 public class TouchDBRouteDatabase implements IRouteDatabase {
 
 	private static final String TAG = "Route-TouchDB";
-	private static final String DDOCNAME = "seapal-routes";
-	private static final String VIEWNAME = "routes";
 	private static final String DATABASE_NAME = "seapal_route_db";
 
 	private static TouchDBRouteDatabase touchDBRouteDatabase;

@@ -36,9 +36,10 @@ MapDialogFragment.MapDialogListener {
 		NONE, MARK, ROUTE, DISTANCE, GOAL
 	}
 
-	// TODO here or in BaseDrawerActivity ????
+	
 	{
 		TDURLStreamHandlerFactory.registerSelfIgnoreError();
+		//needed for TouchDB
 	}
 
 	@Inject

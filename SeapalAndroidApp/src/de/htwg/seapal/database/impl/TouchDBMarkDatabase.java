@@ -25,8 +25,6 @@ import de.htwg.seapal.model.impl.Mark;
 public class TouchDBMarkDatabase implements IMarkDatabase {
 
 	private static final String TAG = "Mark-TouchDB";
-	private static final String DDOCNAME = "seapal-marks";
-	private static final String VIEWNAME = "marks";
 	private static final String DATABASE_NAME = "seapal_mark_db";
 
 	private static TouchDBMarkDatabase touchDBMarkDatabase;

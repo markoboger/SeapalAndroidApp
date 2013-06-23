@@ -25,8 +25,6 @@ import de.htwg.seapal.model.impl.Boat;
 public class TouchDBBoatDatabase implements IBoatDatabase {
 
 	private static final String TAG = "Boat-TouchDB";
-	private static final String DDOCNAME = "seapal-boats";
-	private static final String VIEWNAME = "boats";
 	private static final String DATABASE_NAME = "seapal_boats_db";
 
 	private static TouchDBBoatDatabase touchDBBoatDatabase;

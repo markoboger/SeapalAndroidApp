@@ -24,8 +24,6 @@ import de.htwg.seapal.model.impl.Person;
 @ContextSingleton
 public class TouchDBPersonDatabase implements IPersonDatabase {
 	private static final String TAG = "person-TouchDB";
-	private static final String DDOCNAME = "seapal-persons";
-	private static final String VIEWNAME = "persons";
 	private static final String DATABASE_NAME = "seapal_person_db";
 
 	private static TouchDBPersonDatabase TouchDBPersonDatabase;
