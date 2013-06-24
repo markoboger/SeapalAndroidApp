@@ -44,6 +44,15 @@ If there are Problems during the buildprocess you can try the following:
 >	+ First remove and then add android library Projects again
 
 
+Activities
+==========
+
+BaseDrawerActivity
+------------------
+
+This Activity is responible for the drawer navigation menu. All other Activities should extend this Activity 
+in order to enable the drawer navigation.
+
 Logbook
 ----------------
 
@@ -159,7 +168,7 @@ when building the project.
 
 
 Database
-----------------
+==============
 
 The database contains of one class for each Model where all CRUD-operations are implemented. The TouchDBHelper-Class 
 is creates Databases and contains methods for synchronisation with the CouchDB-Server.
