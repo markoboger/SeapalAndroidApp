@@ -4,6 +4,22 @@ SeapalAndroidApp
 Tooling and Dependencies
 ------------------------
 
+1. __TouchDB and Ektorp__
+
+	+ https://github.com/couchbaselabs/TouchDB-Android
+	
+	+ TouchDB is used as Database
+	
+
+2. __Roboguice__
+
+	+ https://github.com/roboguice/roboguice
+	
+	+ Rubuguice is used as Dependency Injection Framework
+	
+
+
+
 
 
 Building Project
