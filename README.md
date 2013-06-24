@@ -35,7 +35,7 @@ Tooling and Dependencies
 Building Project
 ----------------
 
-To build the Project just import it to Eclipse, then first clean and then build it as an android Project.
+To build the Project just import the Repository to Eclipse, then first clean and then build it as an android Project.
 
 If there are Problems during the buildprocess you can try the following:
 
@@ -43,6 +43,13 @@ If there are Problems during the buildprocess you can try the following:
 >	+ Run `project --> Android Tools --> Fix Project Properties`
 >	+ First remove and then add android library Projects again
 
+
+Testing
+----------
+
+In the SeapalAndriodApp project is an android test project integrated. The project is in the `/test` folder.
+It the Repository is imported to Eclipse there will be a seperate test project. To execute the tests you just have
+to run the project as an android junit test on either an emulator or a real device.
 
 Activities
 ==========
