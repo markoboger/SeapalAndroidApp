@@ -3,7 +3,6 @@ package de.htwg.seapal.aview.gui.adapter;
 import java.util.List;
 import java.util.UUID;
 
-import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 import android.view.LayoutInflater;
@@ -18,12 +17,10 @@ public class WaypointListAdapter extends ArrayAdapter<UUID> {
 
 	private List<UUID> waypoints;
 	private WaypointController controller;
-	private Activity activity;
 
 	public WaypointListAdapter(Context context, int resource, List<UUID> items,
 			WaypointController controller) {
 		super(context, resource, items);
-		this.activity = (Activity) context;
 		this.controller = controller;
 		this.waypoints = items;
 	}
