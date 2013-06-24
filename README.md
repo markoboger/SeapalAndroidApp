@@ -4,20 +4,30 @@ SeapalAndroidApp
 Tooling and Dependencies
 ------------------------
 
-1. __TouchDB and Ektorp__
+#### 1.  TouchDB and Ektorp
 
-	+ https://github.com/couchbaselabs/TouchDB-Android
-	
-	+ TouchDB is used as Database
-	
+  + https://github.com/couchbaselabs/TouchDB-Android
+  + TouchDB is used as Database.
+  + TouchDB-Android and TouchDB-Android-Ektorp have to be included as android library projects. 
 
-2. __Roboguice__
+#### 2. Roboguice
 
-	+ https://github.com/roboguice/roboguice
+  + https://github.com/roboguice/roboguice
+  + Rubuguice is used as Dependency Injection Framework
+  + These jars are needed in the libs folder of the Project:
+	`guice-3.0-no_aop.jar, javax.inject-1.jar, roboguice-2.0.jar` 
 	
-	+ Rubuguice is used as Dependency Injection Framework
 	
+#### 3. Google Play Services Lib
+  + http://developer.android.com/google/play-services/setup.html
+  + The Google Play Services Lib has to be included as an android library project.
 
+	
+#### 4. Seapal Core Project
+  + https://github.com/bsautermeister/de.htwg.seapal.core.git
+  + This Project contains the Model and Controller Layer for Seapal. It is used both for
+  the server and the android version. See the Readme of the SeapalCore for further details.
+  + The (with java 6) compiled jar has to be in the libs folder.
 
 
 
@@ -25,10 +35,13 @@ Tooling and Dependencies
 Building Project
 ----------------
 
-Additional Apps for Emulator: https://www.dropbox.com/sh/0t128z94941s5i2/R59PpMLOPZ
+To build the Project just import it to Eclipse, then first clean and then build it as an android Project.
 
-install on Emulator: [android-sdk]\platform-tools\adb.exe -e install PATH\TO\com.android.vending-1.apk
+If there are Problems during the buildprocess you can try the following:
 
+>	+ Create missing `gen` sourcefolders
+>	+ Run `project --> Android Tools --> Fix Project Properties`
+>	+ First remove and then add android library Projects again
 
 
 Logbook
@@ -174,34 +187,4 @@ methods ektorp will do all the work. It is possible to have a continous replicat
 is not implemented push/pulls are made on start or when changes are made. 
 
 Right now all data is stored on http://roroettg.iriscouch.com/ which is a "free" Web CouchDB. 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
