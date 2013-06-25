@@ -207,7 +207,8 @@ Right now all data is stored on http://roroettg.iriscouch.com/ which is a "free"
 ##### Querying and Views
 
 In CouchDB all the querying is done in the background. You do not have to do SQL-like statements to query for Objects.
-But can improve your searchspeed and effiency by creating Views. 
+You can either get all IDs of your document or Views. This Views can improve your searchspeed and
+effiency by creating Views. 
 
 This example creates a View for Trips, which are sorted by the BoatID to which they belong:
 
