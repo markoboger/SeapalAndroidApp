@@ -215,7 +215,6 @@ This example creates a View for Trips, which are sorted by the BoatID to which t
 > private static final String VIEWNAME = "by_boat";
 > TDView view = tdDB.getViewNamed(String.format("%s/%s", DDOCNAME,
 				VIEWNAME));
-
 >		view.setMapReduceBlocks(new TDViewMapBlock() {
 >			@Override
 >			public void map(Map<String, Object> document,
