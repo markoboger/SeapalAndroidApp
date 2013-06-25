@@ -211,19 +211,19 @@ But can improve your searchspeed and effiency by creating Views.
 
 This example creates a View for Trips, which are sorted by the BoatID to which they belong:
 
-> private static final String DDOCNAME = "Trip";
-> private static final String VIEWNAME = "by_boat";
-> TDView view = tdDB.getViewNamed(String.format("%s/%s", DDOCNAME,
+	private static final String DDOCNAME = "Trip";
+ 	private static final String VIEWNAME = "by_boat";
+ 	TDView view = tdDB.getViewNamed(String.format("%s/%s", DDOCNAME,
 				VIEWNAME));
->		view.setMapReduceBlocks(new TDViewMapBlock() {
->			@Override
->			public void map(Map<String, Object> document,
->					TDViewMapEmitBlock emitter) {
->				Object Boat = document.get("boat");
->				if (Boat != null) {
->					emitter.emit(document.get("boat"), document.get("_id"));
->				}
->
->			}
->		}, null, "1.0");
+		view.setMapReduceBlocks(new TDViewMapBlock() {
+			@Override
+			public void map(Map<String, Object> document,
+					TDViewMapEmitBlock emitter) {
+				Object Boat = document.get("boat");
+				if (Boat != null) {
+					emitter.emit(document.get("boat"), document.get("_id"));
+				}
+
+			}
+		}, null, "1.0");
 
