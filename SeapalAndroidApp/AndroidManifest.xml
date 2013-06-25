@@ -28,7 +28,7 @@
     <application
         android:name="de.htwg.seapal.utils.SeapalApplication"
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/seapal_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity android:name="de.htwg.seapal.aview.tui.activity.MenuActivity" >
