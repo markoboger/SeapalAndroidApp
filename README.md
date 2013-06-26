@@ -10,6 +10,10 @@ Contents
  4. __Architecture__
 
  4. __Text User Interface__
+ 
+
+
+The `Documentation.pptx` and `Documentation.pdf` provide docuemtation for the functionality of the current version.
 
 _______________________________________
 
@@ -41,7 +45,7 @@ Tooling and Dependencies
 #### 4. Seapal Core Project
   + https://github.com/bsautermeister/de.htwg.seapal.core.git
   + This Project contains the Model and Controller Layer for Seapal. It is used both for
-  the server and the android version. See the Readme of the SeapalCore for further details.
+  the server and the android version. See the ReadMe of the SeapalCore for further details.
   + The (with java 6) compiled jar has to be in the libs folder.
 
 
@@ -63,8 +67,8 @@ Testing
 ----------
 
 In the SeapalAndriodApp project is an android test project integrated. The project is in the `/test` folder.
-It the Repository is imported to Eclipse there will be a seperate test project. To execute the tests you just have
-to run the project as an android junit test on either an emulator or a real device.
+It the Repository is imported to Eclipse there will be a separate test project. To execute the tests you just have
+to run the project as an android jUnit test on either an emulator or a real device.
 
 Activities
 ==========
@@ -72,7 +76,7 @@ Activities
 BaseDrawerActivity
 ------------------
 
-This Activity is responible for the drawer navigation menu. All other Activities should extend this Activity 
+This Activity is responsible for the drawer navigation menu. All other Activities should extend this Activity 
 in order to enable the drawer navigation.
 
 Logbook
@@ -170,7 +174,7 @@ created in the MapActivity (tracking).
 
 In TripActivity you have to format the date fields, with the Android function *DateFormat*. The date is 
 stored as a Unix timestamp (long) in the model. The duration of a trip is not stored, so you have to 
-calculate this in the activity. Until now the elapsed days, hout, minutes and second are displayed.
+calculate this in the activity. Until now the elapsed days, hours, minutes and second are displayed.
 
 
 Mapactivity
@@ -248,9 +252,18 @@ Architecture
 ============
 
 The architecture used in this project is the model view controller (MVC) architecture pattern. The most important 
-goal of this architecture is the seperation of the user interaction with the app and the business logic. Also the 
-persistent data storage of the model is seperated from the view and the controller.
+goal of this architecture is the separation of the user interaction with the app and the business logic. Also the 
+persistent data storage of the model is separated from the view and the controller.
 
-The model and the controller layer are outsorced to a seperate project, the seapal.core project. Especially the model 
+The model and the controller layer are extracted to a separate project, the seapal.core project. Especially the model 
 has to be independent from the app, because it is used together with the seapal.server project. Changes on the model 
 have to be discussed with the server team, because the common used database has to be adapted to the new model.
+
+Text User Interface
+===================
+
+This app has a text user interface (TUI). The TUI is accessible over the drawer navigation from every Activity.
+It provides all functionalities available through the controllers. It's possible to create, read, edit and delete 
+everything in the model. This is achieved through the controller in the MVC.
+
+The TUI itself is implemented with the State pattern, so its easily maintainable and extendible.
