@@ -1,3 +1,18 @@
+Contents
+========
+
+ 1. __SeapalAndroidApp__
+
+ 2. __Activities__
+
+ 3. __Database__
+ 
+ 4. __Architecture__
+
+ 4. __Text User Interface__
+
+_______________________________________
+
 SeapalAndroidApp
 ================
 
@@ -228,3 +243,14 @@ This example creates a View for Trips, which are sorted by the BoatID to which t
 			}
 		}, null, "1.0");
 
+
+Architecture
+============
+
+The architecture used in this project is the model view controller (MVC) architecture pattern. The most important 
+goal of this architecture is the seperation of the user interaction with the app and the business logic. Also the 
+persistent data storage of the model is seperated from the view and the controller.
+
+The model and the controller layer are outsorced to a seperate project, the seapal.core project. Especially the model 
+has to be independent from the app, because it is used together with the seapal.server project. Changes on the model 
+have to be discussed with the server team, because the common used database has to be adapted to the new model.
