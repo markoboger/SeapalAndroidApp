@@ -13,7 +13,7 @@ Contents
  
 
 
-The `Documentation.pptx` and `Documentation.pdf` provide documetation for the functionality of the current version.
+The `Documentation.pptx` and `Documentation.pdf` provide documentation for the functionality of the current version.
 
 _______________________________________
 
