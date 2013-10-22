@@ -26,8 +26,7 @@ public abstract class AActivity extends BaseDrawerActivity implements
     private EditText in;
 	@InjectView(R.id.output)
     private TextView out;
-	private OnKeyListener onKeyListener;
-	TuiState currenState;
+    TuiState currenState;
 
 	static {
 		TDURLStreamHandlerFactory.registerSelfIgnoreError();
@@ -43,7 +42,7 @@ public abstract class AActivity extends BaseDrawerActivity implements
 		printTUI();
 		out.setMovementMethod(ScrollingMovementMethod.getInstance());
 		out.setFocusable(false);
-		onKeyListener = listener();
+        OnKeyListener onKeyListener = listener();
 		in.setOnKeyListener(onKeyListener);
 	}
 

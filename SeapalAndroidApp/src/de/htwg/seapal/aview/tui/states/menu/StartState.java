@@ -19,7 +19,7 @@ public class StartState implements TuiState {
 
 	@Override
 	public void process(StateContext context, String input) {
-		Intent intent = null;
+		Intent intent;
 		switch (input.charAt(0)) {
 		case 'l':
 			intent = new Intent((Context) context, BoatActivity.class);

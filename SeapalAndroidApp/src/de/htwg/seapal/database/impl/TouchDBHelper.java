@@ -49,9 +49,11 @@ class TouchDBHelper {
 		// create a local database
 		couchDbConnector = dbInstance.createConnector(DATABASE_NAME, true);
 
-		tdDB = server.getDatabaseNamed(DATABASE_NAME);
+        if (server != null) {
+            tdDB = server.getDatabaseNamed(DATABASE_NAME);
+        }
 
-	}
+    }
 
 	public CouchDbConnector getCouchDbConnector() {
 		return this.couchDbConnector;
