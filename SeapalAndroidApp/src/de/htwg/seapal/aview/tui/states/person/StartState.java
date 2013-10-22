@@ -34,7 +34,7 @@ public class StartState implements TuiState {
 	}
 
 	@Override
-	public boolean process(StateContext context, String input) {
+	public void process(StateContext context, String input) {
 		PersonActivity activity = (PersonActivity) context;
 		switch (input.charAt(0)) {
 		case 'q':
@@ -52,7 +52,7 @@ public class StartState implements TuiState {
 			} catch (NumberFormatException e) {
 				Toast.makeText(activity, "Unkown Option", Toast.LENGTH_SHORT)
 						.show();
-				return false;
+                return;
 			}
 			if (number < persons.size() && number >= 0)
 				context.setState(new ShowState(persons.get(number)));
@@ -60,6 +60,5 @@ public class StartState implements TuiState {
 				Toast.makeText(activity, "Unkown Option", Toast.LENGTH_SHORT)
 						.show();
 		}
-		return false;
-	}
+    }
 }

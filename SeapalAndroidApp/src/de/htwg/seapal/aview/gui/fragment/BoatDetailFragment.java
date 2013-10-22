@@ -22,7 +22,7 @@ import de.htwg.seapal.controller.impl.BoatController;
 
 public class BoatDetailFragment extends Fragment {
 
-	public static String TAG = "FragmentDetail";
+	public static final String TAG = "FragmentDetail";
 	private UUID boat;
 	private BoatController controller;
 
@@ -231,12 +231,11 @@ public class BoatDetailFragment extends Fragment {
 						})
 				.setNegativeButton("No", new DialogInterface.OnClickListener() {
 
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						return;
-
-					}
-				}).show();
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //To change body of implemented methods use File | Settings | File Templates.
+                    }
+                }).show();
 
 	}
 
@@ -327,7 +326,7 @@ public class BoatDetailFragment extends Fragment {
 					.toString()))
 				controller.setSpiSize(boat,
 						Double.valueOf(spiSize.getText().toString()));
-		} catch (NumberFormatException e) {
+		} catch (NumberFormatException ignored) {
 
 		}
 		Toast.makeText(getActivity(), "Saved Changes", Toast.LENGTH_SHORT)

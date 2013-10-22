@@ -16,7 +16,7 @@ import de.htwg.seapal.model.impl.Waypoint;
 
 public class HashMapWaypointDatabase implements IWaypointDatabase {
 
-	Map<UUID, IWaypoint> db;
+	private final Map<UUID, IWaypoint> db;
 	private static HashMapWaypointDatabase hashMapWaypointDatabase;
 
 	private HashMapWaypointDatabase() {
@@ -56,8 +56,7 @@ public class HashMapWaypointDatabase implements IWaypointDatabase {
 	@Override
 	public List<IWaypoint> loadAll() {
 		Collection<IWaypoint> collection = db.values();
-		List<IWaypoint> values = new ArrayList<IWaypoint>(collection);
-		return values;
+		return new ArrayList<IWaypoint>(collection);
 	}
 
 	@Override

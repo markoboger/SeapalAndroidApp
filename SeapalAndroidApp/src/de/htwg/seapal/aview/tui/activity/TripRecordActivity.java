@@ -30,7 +30,7 @@ public class TripRecordActivity extends AActivity {
 		header.setText("Trip Record");
 
 		Bundle bundle = getIntent().getExtras();
-		trip = UUID.fromString(bundle.getString("trip").toString());
+		trip = UUID.fromString(bundle.getString("trip"));
 
 		currenState = new StartState();
 		controller.addObserver(this);

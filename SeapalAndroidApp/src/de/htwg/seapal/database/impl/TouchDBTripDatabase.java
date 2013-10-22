@@ -35,8 +35,8 @@ public class TouchDBTripDatabase implements ITripDatabase {
 	private static final String DATABASE_NAME = "seapal_trips_db";
 
 	private static TouchDBTripDatabase touchDBTripDatabase;
-	private CouchDbConnector couchDbConnector;
-	private TouchDBHelper dbHelper;
+	private final CouchDbConnector couchDbConnector;
+	private final TouchDBHelper dbHelper;
 
 	@Inject
 	public TouchDBTripDatabase(Context ctx) {

@@ -28,8 +28,8 @@ public class TouchDBRouteDatabase implements IRouteDatabase {
 	private static final String DATABASE_NAME = "seapal_route_db";
 
 	private static TouchDBRouteDatabase touchDBRouteDatabase;
-	private CouchDbConnector couchDbConnector;
-	private TouchDBHelper dbHelper;
+	private final CouchDbConnector couchDbConnector;
+	private final TouchDBHelper dbHelper;
 
 	@Inject
 	public TouchDBRouteDatabase(Context ctx) {

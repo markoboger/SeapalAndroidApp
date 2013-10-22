@@ -37,7 +37,7 @@ MapDialogFragment.MapDialogListener {
 	}
 
 	
-	{
+	static {
 		TDURLStreamHandlerFactory.registerSelfIgnoreError();
 		//needed for TouchDB
 	}
@@ -51,12 +51,11 @@ MapDialogFragment.MapDialogListener {
 	private Polyline route = null;
 	private SelectedOption option = SelectedOption.NONE;
 	private LatLng lastPos;
-	private List<Marker> calcDistanceMarker = new LinkedList<Marker>();
+	private final List<Marker> calcDistanceMarker = new LinkedList<Marker>();
 	private Polyline calcDistanceRoute = null;
 	private double calcDistance;
-	private final String ORANGE = "#FFBB03";
 
-	@Override
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.map);
@@ -175,7 +174,8 @@ MapDialogFragment.MapDialogListener {
 		calcDistanceMarker.add(map.addMarker(new MarkerOptions().
 				position(crosshairMarker.getPosition()).
 				icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_distance))));
-		calcDistanceRoute = map.addPolyline(new PolylineOptions().add(lastPos).width(5).color(Color.parseColor(ORANGE)));
+        String ORANGE = "#FFBB03";
+        calcDistanceRoute = map.addPolyline(new PolylineOptions().add(lastPos).width(5).color(Color.parseColor(ORANGE)));
 		crosshairMarker.remove();
 	}
 
@@ -190,7 +190,7 @@ MapDialogFragment.MapDialogListener {
 		crosshairMarker.remove();
 	}
 
-	public Double calcDistance(LatLng pos1, LatLng pos2) {
+	Double calcDistance(LatLng pos1, LatLng pos2) {
 
 		int R = 6371; // km earth radius
 		double dLat = Math.toRadians(pos2.latitude - pos1.latitude);
@@ -201,8 +201,6 @@ MapDialogFragment.MapDialogListener {
 		double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
 				Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
 		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-		double d = R * c;
-
-		return d;
+		return R * c;
 	}
 }

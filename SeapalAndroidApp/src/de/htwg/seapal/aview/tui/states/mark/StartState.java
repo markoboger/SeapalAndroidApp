@@ -32,7 +32,7 @@ public class StartState implements TuiState {
 	}
 
 	@Override
-	public boolean process(StateContext context, String input) {
+	public void process(StateContext context, String input) {
 
 		MarkActivity activity = (MarkActivity) context;
 		switch (input.charAt(0)) {
@@ -51,7 +51,7 @@ public class StartState implements TuiState {
 			} catch (NumberFormatException e) {
 				Toast.makeText(activity, "Unkown Option", Toast.LENGTH_SHORT)
 						.show();
-				return false;
+                return;
 			}
 
 			if (number < marks.size() && number >= 0)
@@ -62,7 +62,6 @@ public class StartState implements TuiState {
 
 		}
 
-		return false;
-	}
+    }
 
 }

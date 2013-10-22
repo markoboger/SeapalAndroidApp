@@ -4,6 +4,6 @@ public interface TuiState {
 
 	public String buildString(StateContext context);
 
-	public boolean process(StateContext context, String input);
+	public void process(StateContext context, String input);
 
 }

@@ -22,7 +22,7 @@ public class WaypointActivity extends AActivity {
 		TextView header = (TextView) this.findViewById(R.id.header);
 		header.setText("Waypoint");
 		Bundle bundle = getIntent().getExtras();
-		trip = UUID.fromString(bundle.getString("trip").toString());
+		trip = UUID.fromString(bundle.getString("trip"));
 		currenState = new StartState();
 		controller.addObserver(this);
 	}

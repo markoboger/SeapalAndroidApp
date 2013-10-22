@@ -9,8 +9,8 @@ import de.htwg.seapal.aview.tui.activity.TripActivity;
 
 public class EditSelectState implements TuiState {
 
-	private UUID trip;
-	private static String[] editTrip = new String[] { "Name", "Start Location",
+	private final UUID trip;
+	private static final String[] editTrip = new String[] { "Name", "Start Location",
 			"End Location", "Skipper", "Crew", "Motor (min)", "Fuel", "Notes" };
 
 	public EditSelectState(UUID trip) {
@@ -25,14 +25,14 @@ public class EditSelectState implements TuiState {
 		sb.append("------------------------------------------------\n");
 		int i = 1;
 		for (String element : editTrip) {
-			sb.append(i + ") " + element + "\n");
+			sb.append(i).append(") ").append(element).append("\n");
 			++i;
 		}
 		return sb.toString();
 	}
 
 	@Override
-	public boolean process(StateContext context, String input) {
+	public void process(StateContext context, String input) {
 		Integer number;
 		try {
 			number = Integer.valueOf(input) - 1;
@@ -42,15 +42,14 @@ public class EditSelectState implements TuiState {
 			else
 				Toast.makeText((TripActivity) context, "Unkown Option",
 						Toast.LENGTH_SHORT).show();
-			return false;
+            return;
 		}
 		if (number >= 0 && number < editTrip.length)
 			context.setState(new EditState(number, trip));
 		else
 			Toast.makeText((TripActivity) context, "Unkown Option",
 					Toast.LENGTH_SHORT).show();
-		return true;
-	}
+    }
 
 	public static String getEditTripElement(int position) {
 		return editTrip[position];

@@ -9,8 +9,8 @@ import de.htwg.seapal.aview.tui.activity.PersonActivity;
 
 public class EditSelectState implements TuiState {
 
-	private UUID person;
-	private static String[] editPerson = new String[] { "First Name",
+	private final UUID person;
+	private static final String[] editPerson = new String[] { "First Name",
 			"Last Name", "Date of Birth", "Date of Registration", "Age",
 			"Owner", "Insurance", "CallSign", "Type", "Constructor", "Length",
 			"Width", "Draft", "MastHeight", "Rigging", "YearOfConstruction",
@@ -29,14 +29,14 @@ public class EditSelectState implements TuiState {
 		sb.append("------------------------------------------------\n");
 		int i = 1;
 		for (String element : editPerson) {
-			sb.append(i + ") " + element + "\n");
+			sb.append(i).append(") ").append(element).append("\n");
 			++i;
 		}
 		return sb.toString();
 	}
 
 	@Override
-	public boolean process(StateContext context, String input) {
+	public void process(StateContext context, String input) {
 		Integer number;
 		try {
 			number = Integer.valueOf(input) - 1;
@@ -46,15 +46,14 @@ public class EditSelectState implements TuiState {
 			else
 				Toast.makeText((PersonActivity) context, "Unkown Option",
 						Toast.LENGTH_SHORT).show();
-			return false;
+            return;
 		}
 		if (number >= 0 && number < editPerson.length)
 			context.setState(new EditState());
 		else
 			Toast.makeText((PersonActivity) context, "Unkown Option",
 					Toast.LENGTH_SHORT).show();
-		return true;
-	}
+    }
 
 	public static String getEditPersonElement(int position) {
 		return editPerson[position];

@@ -24,10 +24,9 @@ import de.htwg.seapal.controller.impl.BoatController;
 
 public class BoatListFragment extends ListFragment {
 
-	public static String TAG = "FragmentList";
+	public static final String TAG = "FragmentList";
 	private List<UUID> boatList;
-	private BoatListAdapter adapter = null;
-	private View header;
+    private View header;
 	private ViewGroup mainView;
 	private boolean tablet = false;
 
@@ -70,8 +69,8 @@ public class BoatListFragment extends ListFragment {
 		boatList = controller.getBoats();
 		getListView().setChoiceMode(1);		
 		setListAdapter(null);
-		adapter = new BoatListAdapter(getActivity(), R.layout.boatlist,
-				boatList, controller);
+        BoatListAdapter adapter = new BoatListAdapter(getActivity(),
+                boatList, controller);
 
 		// add Header
 		LayoutInflater inflater = (LayoutInflater) getActivity()
@@ -154,9 +153,8 @@ public class BoatListFragment extends ListFragment {
 								@Override
 								public void onClick(DialogInterface dialog,
 										int which) {
-									return;
 
-								}
+                                }
 							}).show();
 		}
 		

@@ -12,12 +12,10 @@ import de.htwg.seapal.controller.IWaypointController;
 
 public class StartState implements TuiState {
 
-	private IWaypointController controller;
-
-	@Override
+    @Override
 	public String buildString(StateContext context) {
 		TripRecordActivity activity = (TripRecordActivity) context;
-		controller = activity.getController();
+        IWaypointController controller = activity.getController();
 		UUID trip = activity.getTrip();
 		StringBuilder sb = new StringBuilder();
 		sb.append("q \t- Quit\n");
@@ -36,7 +34,7 @@ public class StartState implements TuiState {
 	}
 
 	@Override
-	public boolean process(StateContext context, String input) {
+	public void process(StateContext context, String input) {
 		TripRecordActivity activity = (TripRecordActivity) context;
 		switch (input.charAt(0)) {
 		case 'q':
@@ -55,6 +53,5 @@ public class StartState implements TuiState {
 			Toast.makeText(activity, "Unkown Option", Toast.LENGTH_SHORT)
 					.show();
 		}
-		return false;
-	}
+    }
 }

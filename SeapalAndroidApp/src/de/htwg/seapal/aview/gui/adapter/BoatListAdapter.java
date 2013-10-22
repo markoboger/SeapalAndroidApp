@@ -19,13 +19,13 @@ import de.htwg.seapal.controller.impl.BoatController;
 
 public class BoatListAdapter extends ArrayAdapter<UUID> {
 
-	private List<UUID> boats;
-	private BoatController controller;
-	private Activity activity;
+	private final List<UUID> boats;
+	private final BoatController controller;
+	private final Activity activity;
 
-	public BoatListAdapter(Context context, int resource, List<UUID> items,
-			BoatController controller) {
-		super(context, resource, items);
+	public BoatListAdapter(Context context, List<UUID> items,
+                           BoatController controller) {
+		super(context, R.layout.boatlist, items);
 		this.activity = (Activity) context;
 		this.boats = items;
 		this.controller = controller;

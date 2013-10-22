@@ -23,13 +23,13 @@ public abstract class AActivity extends BaseDrawerActivity implements
 		IObserver, StateContext {
 
 	@InjectView(R.id.input)
-	protected EditText in;
+    private EditText in;
 	@InjectView(R.id.output)
-	protected TextView out;
-	protected OnKeyListener onKeyListener;
-	protected TuiState currenState;
+    private TextView out;
+	private OnKeyListener onKeyListener;
+	TuiState currenState;
 
-	{
+	static {
 		TDURLStreamHandlerFactory.registerSelfIgnoreError();
 	}
 
@@ -61,7 +61,7 @@ public abstract class AActivity extends BaseDrawerActivity implements
 		currenState = newState;
 	}
 
-	protected void processInputLine() {
+	void processInputLine() {
 		String input = in.getText().toString();
 		in.setText("");
 		currenState.process(this, input);
@@ -73,12 +73,12 @@ public abstract class AActivity extends BaseDrawerActivity implements
 		printTUI();
 	}
 
-	protected void printTUI() {
+	void printTUI() {
 		out.setText(currenState.buildString(this));
 		// in.requestFocus();
 	}
 
-	protected OnKeyListener listener() {
+	OnKeyListener listener() {
 		return new OnKeyListener() {
 			@Override
 			public boolean onKey(View v, int keyCode, KeyEvent event) {

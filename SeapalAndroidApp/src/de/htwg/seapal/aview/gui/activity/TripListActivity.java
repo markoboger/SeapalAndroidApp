@@ -27,8 +27,7 @@ public class TripListActivity extends BaseDrawerActivity {
 	@Inject
 	private TripController controller;
 	private List<UUID> tripList;
-	private UUID boat;
-	private ViewGroup mainView;
+    private ViewGroup mainView;
 	private View header;
 
 	@Override
@@ -38,7 +37,7 @@ public class TripListActivity extends BaseDrawerActivity {
 		setContentView(R.layout.triplist);
 
 		Bundle extras = getIntent().getExtras();
-		boat = UUID.fromString(extras.getString("boat"));
+        UUID boat = UUID.fromString(extras.getString("boat"));
 
 		tripList = controller.getTrips(boat);
 
@@ -77,7 +76,7 @@ public class TripListActivity extends BaseDrawerActivity {
 	private void addListView() {
 		ListView listview = (ListView) findViewById(R.id.tripsListView);
 		TripListAdapter adapter = new TripListAdapter(this,
-				R.layout.triplistadapter, tripList, controller);
+                tripList, controller);
 
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		header = inflater.inflate(R.layout.tripslistheader, null);

@@ -13,7 +13,7 @@ import de.htwg.seapal.model.impl.Boat;
 
 public class HashMapBoatDatabase implements IBoatDatabase {
 
-	private Map<UUID, IBoat> db;
+	private final Map<UUID, IBoat> db;
 	private static HashMapBoatDatabase hashMapBoatDatabase;
 
 	private HashMapBoatDatabase() {
@@ -52,8 +52,7 @@ public class HashMapBoatDatabase implements IBoatDatabase {
 	@Override
 	public List<IBoat> loadAll() {
 		Collection<IBoat> collection = db.values();
-		List<IBoat> values = new ArrayList<IBoat>(collection);
-		return values;
+		return new ArrayList<IBoat>(collection);
 	}
 
 	@Override

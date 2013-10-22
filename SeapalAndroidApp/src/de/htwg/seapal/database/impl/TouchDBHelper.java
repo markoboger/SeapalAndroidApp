@@ -13,10 +13,10 @@ import com.couchbase.touchdb.TDDatabase;
 import com.couchbase.touchdb.TDServer;
 import com.couchbase.touchdb.ektorp.TouchDBHttpClient;
 
-public class TouchDBHelper {
+class TouchDBHelper {
 
 	private static final String TAG = "TouchDB";
-	private String DATABASE_NAME;
+	private final String DATABASE_NAME;
 	private StdCouchDbInstance dbInstance;
 	private CouchDbConnector couchDbConnector;
 	private TDDatabase tdDB;

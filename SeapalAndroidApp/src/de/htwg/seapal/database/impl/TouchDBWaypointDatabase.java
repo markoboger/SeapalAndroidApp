@@ -39,8 +39,8 @@ public class TouchDBWaypointDatabase implements IWaypointDatabase {
 	private static final String DATABASE_NAME = "seapal_waypoint_db";
 
 	private static TouchDBWaypointDatabase touchDBWaypointDatabase;
-	private CouchDbConnector couchDbConnector;
-	private TouchDBHelper dbHelper;
+	private final CouchDbConnector couchDbConnector;
+	private final TouchDBHelper dbHelper;
 
 	@Inject
 	public TouchDBWaypointDatabase(Context ctx) {

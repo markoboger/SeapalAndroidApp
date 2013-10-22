@@ -13,7 +13,7 @@ import de.htwg.seapal.model.impl.Route;
 
 public class HashMapRouteDatabase implements IRouteDatabase {
 
-	private Map<UUID, IRoute> db;
+	private final Map<UUID, IRoute> db;
 	private static HashMapRouteDatabase hashMapRouteDatabase;
 
 	private HashMapRouteDatabase() {
@@ -52,8 +52,7 @@ public class HashMapRouteDatabase implements IRouteDatabase {
 	@Override
 	public List<IRoute> loadAll() {
 		Collection<IRoute> collection = db.values();
-		List<IRoute> values = new ArrayList<IRoute>(collection);
-		return values;
+		return new ArrayList<IRoute>(collection);
 	}
 
 	@Override

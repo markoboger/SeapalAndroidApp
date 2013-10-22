@@ -15,15 +15,14 @@ public class NewState implements TuiState {
 	}
 
 	@Override
-	public boolean process(StateContext context, String input) {
+	public void process(StateContext context, String input) {
 		if (input.equals("q")) {
 			context.setState(new StartState());
-			return false;
+            return;
 		}
 		ITripController controller = ((TripActivity) context).getController();
 		UUID newTrip = controller.newTrip(((TripActivity) context).getBoat());
 		controller.setName(newTrip, input);
 		context.setState(new ShowState(newTrip));
-		return true;
-	}
+    }
 }

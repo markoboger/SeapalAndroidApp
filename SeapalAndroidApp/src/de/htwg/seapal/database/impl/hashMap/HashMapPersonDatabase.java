@@ -13,7 +13,7 @@ import de.htwg.seapal.model.impl.Person;
 
 public class HashMapPersonDatabase implements IPersonDatabase {
 
-	private Map<UUID, IPerson> db;
+	private final Map<UUID, IPerson> db;
 	private static HashMapPersonDatabase hashMapPersonDatabase;
 
 	private HashMapPersonDatabase() {
@@ -52,8 +52,7 @@ public class HashMapPersonDatabase implements IPersonDatabase {
 	@Override
 	public List<IPerson> loadAll() {
 		Collection<IPerson> collection = db.values();
-		List<IPerson> values = new ArrayList<IPerson>(collection);
-		return values;
+		return new ArrayList<IPerson>(collection);
 	}
 
 	@Override

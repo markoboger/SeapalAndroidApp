@@ -11,14 +11,13 @@ import de.htwg.seapal.controller.ITripController;
 
 public class StartState implements TuiState {
 
-	private UUID boat;
-	private List<UUID> trips;
+    private List<UUID> trips;
 
 	@Override
 	public String buildString(StateContext context) {
 		TripActivity activity = (TripActivity) context;
 		ITripController controller = activity.getController();
-		boat = activity.getBoat();
+        UUID boat = activity.getBoat();
 		StringBuilder sb = new StringBuilder();
 		sb.append("q \t- Quit\n");
 		sb.append("r \t- Refresh\n");
@@ -35,7 +34,7 @@ public class StartState implements TuiState {
 	}
 
 	@Override
-	public boolean process(StateContext context, String input) {
+	public void process(StateContext context, String input) {
 		TripActivity activity = (TripActivity) context;
 		switch (input.charAt(0)) {
 		case 'q':
@@ -53,7 +52,7 @@ public class StartState implements TuiState {
 			} catch (NumberFormatException e) {
 				Toast.makeText(activity, "Unkown Option", Toast.LENGTH_SHORT)
 						.show();
-				return false;
+                return;
 			}
 			if (number < trips.size() && number >= 0)
 				context.setState(new ShowState(trips.get(number)));
@@ -61,7 +60,6 @@ public class StartState implements TuiState {
 				Toast.makeText((TripActivity) context, "Unkown Option",
 						Toast.LENGTH_SHORT).show();
 		}
-		return false;
-	}
+    }
 
 }

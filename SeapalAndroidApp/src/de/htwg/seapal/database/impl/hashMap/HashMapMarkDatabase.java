@@ -13,7 +13,7 @@ import de.htwg.seapal.model.impl.Mark;
 
 public class HashMapMarkDatabase implements IMarkDatabase {
 
-	private Map<UUID, IMark> db;
+	private final Map<UUID, IMark> db;
 	private static HashMapMarkDatabase hashMapMarkDatabase;
 
 	private HashMapMarkDatabase() {
@@ -52,8 +52,7 @@ public class HashMapMarkDatabase implements IMarkDatabase {
 	@Override
 	public List<IMark> loadAll() {
 		Collection<IMark> collection = db.values();
-		List<IMark> values = new ArrayList<IMark>(collection);
-		return values;
+		return new ArrayList<IMark>(collection);
 	}
 
 	@Override

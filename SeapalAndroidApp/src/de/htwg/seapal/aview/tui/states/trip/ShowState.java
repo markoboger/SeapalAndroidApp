@@ -12,7 +12,7 @@ import de.htwg.seapal.aview.tui.activity.TripRecordActivity;
 import de.htwg.seapal.aview.tui.activity.WaypointActivity;
 
 public class ShowState implements TuiState {
-	private UUID trip;
+	private final UUID trip;
 
 	public ShowState(UUID trip) {
 		this.trip = trip;
@@ -33,7 +33,7 @@ public class ShowState implements TuiState {
 	}
 
 	@Override
-	public boolean process(StateContext context, String input) {
+	public void process(StateContext context, String input) {
 
 		switch (input.charAt(0)) {
 		case 'q':
@@ -61,10 +61,8 @@ public class ShowState implements TuiState {
 		default:
 			Toast.makeText((TripActivity) context, "Unkown Option",
 					Toast.LENGTH_SHORT).show();
-			return false;
-		}
+        }
 
-		return true;
-	}
+    }
 
 }
