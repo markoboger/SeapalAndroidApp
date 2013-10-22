@@ -128,7 +128,7 @@ public class MapDialogFragment extends DialogFragment {
 		String degrees = df.format(lng);
 		lng -= Double.parseDouble(degrees);
 		String minutes = df.format(Math.abs(((lng * 60) % 60)));
-		return degrees + "°" + minutes + "'" + orientation;
+		return degrees + "Â°" + minutes + "'" + orientation;
 	}
 
 	public String formatLatitude(double lat) {
@@ -141,7 +141,7 @@ public class MapDialogFragment extends DialogFragment {
 		lat = Math.abs(lat);
 		String degrees = df.format(lat);
 		String minutes = df.format(Math.abs(((lat * 60) % 60)));
-		return degrees + "°" + minutes + "'" + orientation;
+		return degrees + "Â°" + minutes + "'" + orientation;
 
 	}
 }
