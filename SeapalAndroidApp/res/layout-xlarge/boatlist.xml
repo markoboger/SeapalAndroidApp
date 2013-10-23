@@ -54,7 +54,7 @@
         android:shadowDx="1"
         android:shadowDy="1"
         android:shadowRadius="1.5"
-        android:text=">"
+        android:text="@string/arrow"
         android:textColor="#FFFFFF"
         android:textStyle="bold" >
     </Button>

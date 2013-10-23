@@ -9,9 +9,8 @@ import org.ektorp.impl.StdCouchDbInstance;
 import android.content.Context;
 import android.util.Log;
 
-import com.couchbase.touchdb.TDDatabase;
-import com.couchbase.touchdb.TDServer;
-import com.couchbase.touchdb.ektorp.TouchDBHttpClient;
+import com.couchbase.cblite.*;
+import com.couchbase.cblite.ektorp.TouchDBHcblite;
 
 class TouchDBHelper {
 
@@ -19,7 +18,7 @@ class TouchDBHelper {
 	private final String DATABASE_NAME;
 	private StdCouchDbInstance dbInstance;
 	private CouchDbConnector couchDbConnector;
-	private TDDatabase tdDB;
+	private CBLDatabase tdDB;
 	
 
 	public TouchDBHelper(String dbName) {

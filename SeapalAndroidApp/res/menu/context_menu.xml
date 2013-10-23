@@ -3,10 +3,10 @@
     
     <item android:id="@+id/addMark" 
         android:visible="true" 
-        android:title="Add Mark"></item>
+        android:title="Add Mark"/>
     <item android:id="@+id/deleteMark" 
         android:visible="false" 
-        android:title="delete Mark"></item>
+        android:title="delete Mark"/>
     
 
 </menu>
