@@ -36,7 +36,6 @@ public abstract class AActivity extends BaseDrawerActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tui);
-
 		setup();
 
 		printTUI();
@@ -61,9 +60,12 @@ public abstract class AActivity extends BaseDrawerActivity implements
 	}
 
 	void processInputLine() {
-		String input = in.getText().toString();
-		in.setText("");
-		currenState.process(this, input);
+        String input = "";
+        if (in != null && in.getText() != null) input = in.getText().toString();
+        if (in != null) {
+            in.setText("");
+        }
+        currenState.process(this, input);
 		printTUI();
 	}
 
@@ -84,7 +86,7 @@ public abstract class AActivity extends BaseDrawerActivity implements
 				boolean handled = false;
 				if (event.getAction() == KeyEvent.ACTION_DOWN
 						&& (keyCode == KeyEvent.KEYCODE_ENTER)) {
-					if (!in.getText().toString().equals(""))
+					if (in != null && in.getText() != null && !"".equals(in.getText().toString()))
 						processInputLine();
 
 					handled = true;
