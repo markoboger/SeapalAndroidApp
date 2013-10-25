@@ -42,10 +42,6 @@ MapDialogFragment.MapDialogListener {
 		//needed for TouchDB
 	}
 
-	@Inject
-	private IMarkController controller;
-	@Inject
-	private IWaypointController wController;
 	private GoogleMap map;
 	public static Marker crosshairMarker = null;
 	private Polyline route = null;
@@ -61,20 +57,23 @@ MapDialogFragment.MapDialogListener {
 		setContentView(R.layout.map);
 
 		FragmentManager myFragmentManager = getFragmentManager();
-		MapFragment myMapFragment 
-		= (MapFragment)myFragmentManager.findFragmentById(R.id.map);
+		MapFragment myMapFragment  = (MapFragment)myFragmentManager.findFragmentById(R.id.map);
 		map = myMapFragment.getMap();
 
-		map.setMyLocationEnabled(true);
+        if (map != null) {
 
-		map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-		//myMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-		//myMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-		//myMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
 
-		map.setOnMapClickListener(this);
-		map.setOnMapLongClickListener(this);
-		map.setOnMarkerClickListener(this);
+            map.setMyLocationEnabled(true);
+
+            map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+            //myMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+            //myMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+            //myMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+
+            map.setOnMapClickListener(this);
+            map.setOnMapLongClickListener(this);
+            map.setOnMarkerClickListener(this);
+        }
 	}
 
 	@Override
