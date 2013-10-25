@@ -17,10 +17,10 @@ import roboguice.inject.ContextSingleton;
 import android.content.Context;
 import android.util.Log;
 
-import com.couchbase.touchdb.TDDatabase;
-import com.couchbase.touchdb.TDView;
-import com.couchbase.touchdb.TDViewMapBlock;
-import com.couchbase.touchdb.TDViewMapEmitBlock;
+import com.couchbase.cblite.CBLDatabase;
+import com.couchbase.cblite.CBLView;
+import com.couchbase.cblite.CBLViewMapBlock;
+import com.couchbase.cblite.CBLViewMapEmitBlock;
 import com.google.inject.Inject;
 
 import de.htwg.seapal.database.IWaypointDatabase;
@@ -29,6 +29,7 @@ import de.htwg.seapal.model.IWaypoint.ForeSail;
 import de.htwg.seapal.model.IWaypoint.MainSail;
 import de.htwg.seapal.model.IWaypoint.Maneuver;
 import de.htwg.seapal.model.impl.Waypoint;
+
 
 @ContextSingleton
 public class TouchDBWaypointDatabase implements IWaypointDatabase {
@@ -49,15 +50,15 @@ public class TouchDBWaypointDatabase implements IWaypointDatabase {
 		dbHelper.pullFromDatabase();
 		couchDbConnector = dbHelper.getCouchDbConnector();
 
-		TDDatabase tdDB = dbHelper.getTDDatabase();
+		CBLDatabase tdDB = dbHelper.getTDDatabase();
 
-		TDView view = tdDB.getViewNamed(String.format("%s/%s", DDOCNAME,
+		CBLView view = tdDB.getViewNamed(String.format("%s/%s", DDOCNAME,
 				VIEWNAME));
 
-		view.setMapReduceBlocks(new TDViewMapBlock() {
+		view.setMapReduceBlocks(new CBLViewMapBlock() {
 			@Override
 			public void map(Map<String, Object> document,
-					TDViewMapEmitBlock emitter) {
+					CBLViewMapEmitBlock emitter) {
 				Object Trip = document.get("trip");
 				Map<Object, Object> m = new HashMap<Object, Object>();
 				if (Trip != null) {

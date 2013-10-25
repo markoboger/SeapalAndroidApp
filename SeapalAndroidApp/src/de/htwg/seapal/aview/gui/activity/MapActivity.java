@@ -3,7 +3,7 @@ package de.htwg.seapal.aview.gui.activity;
 
 import java.util.LinkedList;
 import java.util.List;
-import com.couchbase.touchdb.router.TDURLStreamHandlerFactory;
+import com.couchbase.cblite.router.CBLURLStreamHandlerFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
@@ -38,7 +38,7 @@ MapDialogFragment.MapDialogListener {
 
 	
 	static {
-		TDURLStreamHandlerFactory.registerSelfIgnoreError();
+		CBLURLStreamHandlerFactory.registerSelfIgnoreError();
 		//needed for TouchDB
 	}
 

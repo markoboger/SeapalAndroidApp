@@ -10,7 +10,7 @@ import android.view.View.OnKeyListener;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.couchbase.touchdb.router.TDURLStreamHandlerFactory;
+import com.couchbase.cblite.router.CBLURLStreamHandlerFactory;
 
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.activity.BaseDrawerActivity;
@@ -29,7 +29,7 @@ public abstract class AActivity extends BaseDrawerActivity implements
     TuiState currenState;
 
 	static {
-		TDURLStreamHandlerFactory.registerSelfIgnoreError();
+		CBLURLStreamHandlerFactory.registerSelfIgnoreError();
 	}
 
 	@Override

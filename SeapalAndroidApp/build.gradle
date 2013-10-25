@@ -31,17 +31,16 @@ repositories {
 }
 
 dependencies {
-    compile group: 'com.google.android', name: 'support-v4', version: 'r6'
-    compile group: 'org.roboguice', name: 'roboguice', version: '2.0'
-    compile group: 'de.htwg.seapal', name: 'core', version: '1.0-SNAPSHOT'
+    compile 'org.roboguice:roboguice:2.0'
+    compile files('libs/core-1.0-20130619.093940-28.jar')
     compile('com.google.android.gms:play-services:3.1.36').ext.git = 'https://github.com/chrulri/google-play-services_lib.git'
-    compile 'com.couchbase.cblite:CBLite:1.0.0-beta'
     compile 'com.couchbase.cblite:CBLiteEktorp:1.0.0-beta'
 }
 
 android {
     buildToolsVersion "17" 
     compileSdkVersion 17
+    compileOptions.encoding = "UTF-8"
     defaultConfig {
         versionCode 1
         versionName "1.1"

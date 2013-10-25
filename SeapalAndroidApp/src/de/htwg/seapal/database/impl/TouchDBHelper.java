@@ -10,7 +10,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.couchbase.cblite.*;
-import com.couchbase.cblite.ektorp.TouchDBHcblite;
+import com.couchbase.cblite.ektorp.*;
 
 class TouchDBHelper {
 
@@ -32,17 +32,17 @@ class TouchDBHelper {
 		}
 		// TouchDB
 		Log.d(TAG, "Starting " + DATABASE_NAME);
-		TDServer server = null;
+		CBLServer server = null;
 		String filesDir = ctx.getFilesDir().getAbsolutePath();
 		Log.d(TAG, ctx.getFilesDir().getAbsolutePath());
 		try {
-			server = new TDServer(filesDir);
+			server = new CBLServer(filesDir);
 		} catch (IOException e) {
 			Log.e(TAG, "Error starting Boat-TDServer", e);
 		}
 
 		// start TouchDB-Ektorp adapter
-		HttpClient httpClient = new TouchDBHttpClient(server);
+		HttpClient httpClient = new CBLiteHttpClient(server);
 		dbInstance = new StdCouchDbInstance(httpClient);
 
 		// create a local database
@@ -58,7 +58,7 @@ class TouchDBHelper {
 		return this.couchDbConnector;
 	}
 	
-	public TDDatabase getTDDatabase() {
+	public CBLDatabase getTDDatabase() {
 		return this.tdDB;
 	}
 
