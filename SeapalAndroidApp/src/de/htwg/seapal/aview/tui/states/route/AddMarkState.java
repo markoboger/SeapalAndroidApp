@@ -12,8 +12,8 @@ import de.htwg.seapal.controller.IRouteController;
 
 public class AddMarkState implements TuiState {
 
-	private UUID route;
-	private IMarkController markController;
+	private final UUID route;
+	private final IMarkController markController;
 	private List<UUID> marks;
 
 	public AddMarkState(UUID route, IMarkController markController) {
@@ -39,7 +39,7 @@ public class AddMarkState implements TuiState {
 	}
 
 	@Override
-	public boolean process(StateContext context, String input) {
+	public void process(StateContext context, String input) {
 		RouteActivity activity = (RouteActivity) context;
 		IRouteController controller = activity.getController();
 		switch (input.charAt(0)) {
@@ -51,7 +51,7 @@ public class AddMarkState implements TuiState {
 			double minLat = -90.00;
 			double maxLat = 90.00;
 			double latitude = minLat
-					+ (double) (Math.random() * ((maxLat - minLat) + 1));
+					+ Math.random() * ((maxLat - minLat) + 1);
 			latitude = latitude * 10000;
 			latitude = Math.round(latitude);
 			latitude = latitude / 10000;
@@ -59,7 +59,7 @@ public class AddMarkState implements TuiState {
 			double minLon = 0.00;
 			double maxLon = 180.00;
 			double longitude = minLon
-					+ (double) (Math.random() * ((maxLon - minLon) + 1));
+					+ Math.random() * ((maxLon - minLon) + 1);
 			longitude = longitude * 10000;
 			longitude = Math.round(longitude);
 			longitude = longitude / 10000;
@@ -77,7 +77,7 @@ public class AddMarkState implements TuiState {
 			} catch (NumberFormatException e) {
 				Toast.makeText(activity, "Unkown Option", Toast.LENGTH_SHORT)
 						.show();
-				return false;
+                return;
 			}
 
 			if (number < marks.size() && number >= 0)
@@ -87,7 +87,6 @@ public class AddMarkState implements TuiState {
 						.show();
 			context.setState(new ShowMarksState(route));
 		}
-		return true;
-	}
+    }
 
 }

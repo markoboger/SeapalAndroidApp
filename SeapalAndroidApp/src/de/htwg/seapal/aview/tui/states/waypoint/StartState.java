@@ -11,14 +11,13 @@ import de.htwg.seapal.controller.IWaypointController;
 
 public class StartState implements TuiState {
 
-	private UUID trip;
-	private List<UUID> waypoints;
+    private List<UUID> waypoints;
 
 	@Override
 	public String buildString(StateContext context) {
 		IWaypointController controller = ((WaypointActivity) context)
 				.getController();
-		trip = ((WaypointActivity) context).getTrip();
+        UUID trip = ((WaypointActivity) context).getTrip();
 		StringBuilder sb = new StringBuilder();
 		sb.append("r \t- Refresh\n");
 		sb.append("<X> \t- Show Waypoint\n");
@@ -33,22 +32,21 @@ public class StartState implements TuiState {
 	}
 
 	@Override
-	public boolean process(StateContext context, String input) {
+	public void process(StateContext context, String input) {
 		Integer number;
 		try {
 			number = Integer.valueOf(input) - 1;
 		} catch (NumberFormatException e) {
 			if (input.charAt(0) == 'r')
-				return true;
+                return;
 			Toast.makeText((WaypointActivity) context, "Unkown Option",
 					Toast.LENGTH_SHORT).show();
-			return false;
+            return;
 		}
 		if (number < waypoints.size() && number >= 0)
 			context.setState(new ShowState(waypoints.get(number)));
 		else
 			Toast.makeText((WaypointActivity) context, "Unkown Option",
 					Toast.LENGTH_SHORT).show();
-		return false;
-	}
+    }
 }

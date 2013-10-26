@@ -27,8 +27,8 @@ public class TouchDBPersonDatabase implements IPersonDatabase {
 	private static final String DATABASE_NAME = "seapal_person_db";
 
 	private static TouchDBPersonDatabase TouchDBPersonDatabase;
-	private CouchDbConnector couchDbConnector;
-	private TouchDBHelper dbHelper;
+	private final CouchDbConnector couchDbConnector;
+	private final TouchDBHelper dbHelper;
 
 	@Inject
 	public TouchDBPersonDatabase(Context ctx) {
@@ -98,7 +98,7 @@ public class TouchDBPersonDatabase implements IPersonDatabase {
 		ViewResult vr = couchDbConnector.queryView(query);
 
 		for (Row r : vr.getRows()) {
-			Log.d(TAG, "All Persons: " + r.getId().toString());
+			Log.d(TAG, "All Persons: " + r.getId());
 			lst.add(get(UUID.fromString(r.getId())));
 			log.add(r.getId());
 		}

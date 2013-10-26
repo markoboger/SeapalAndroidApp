@@ -9,8 +9,8 @@ import de.htwg.seapal.aview.tui.activity.TripActivity;
 import de.htwg.seapal.controller.ITripController;
 
 public class EditState implements TuiState {
-	private int position;
-	private UUID trip;
+	private final int position;
+	private final UUID trip;
 
 	public EditState(int position, UUID trip) {
 		this.position = position;
@@ -24,10 +24,10 @@ public class EditState implements TuiState {
 	}
 
 	@Override
-	public boolean process(StateContext context, String input) {
+	public void process(StateContext context, String input) {
 		if (input.equals("q")) {
 			context.setState(new EditSelectState(trip));
-			return false;
+            return;
 		}
 		ITripController controller = ((TripActivity) context).getController();
 		context.setState(new ShowState(trip));
@@ -60,13 +60,10 @@ public class EditState implements TuiState {
 			default:
 				Toast.makeText((TripActivity) context, "Unkown Option",
 						Toast.LENGTH_SHORT).show();
-				return false;
-			}
+            }
 		} catch (NumberFormatException e) {
 			Toast.makeText((TripActivity) context, "Unkown Option",
 					Toast.LENGTH_SHORT).show();
-			return false;
-		}
-		return true;
-	}
+        }
+    }
 }

@@ -52,10 +52,7 @@ public class TripActivity extends BaseDrawerActivity implements IObserver {
 
 	private List<UUID> waypointList;
 
-	private View header;
-	private ViewGroup mainView;
-
-	@Override
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -72,11 +69,6 @@ public class TripActivity extends BaseDrawerActivity implements IObserver {
 	protected void onResume() {
 		addListView();
 		super.onResume();
-	}
-
-	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig);
 	}
 
 	@Override
@@ -198,12 +190,12 @@ public class TripActivity extends BaseDrawerActivity implements IObserver {
 
 	private void addListView() {
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		header = inflater.inflate(R.layout.tripwaypointlistheader, null);
-		mainView = (ViewGroup) findViewById(R.id.trip_WaypointListLayout);
+        View header = inflater.inflate(R.layout.tripwaypointlistheader, null);
+        ViewGroup mainView = (ViewGroup) findViewById(R.id.trip_WaypointListLayout);
 		mainView.addView(header, 0);
 		ListView waypointListView = (ListView) findViewById(R.id.trip_WaypointList);
 		WaypointListAdapter adapter = new WaypointListAdapter(this,
-				R.layout.tripwaypointlistadapter, waypointList,
+                waypointList,
 				waypointController);
 
 

@@ -15,16 +15,15 @@ public class NewState implements TuiState {
 	}
 
 	@Override
-	public boolean process(StateContext context, String input) {
+	public void process(StateContext context, String input) {
 		IRouteController controller = ((RouteActivity) context).getController();
 		if (input.equals("q")) {
 			context.setState(new StartState());
-			return false;
+            return;
 		}
 		UUID route = controller.newRoute();
 		controller.setName(route, input);
 		context.setState(new ShowState(route));
-		return true;
-	}
+    }
 
 }

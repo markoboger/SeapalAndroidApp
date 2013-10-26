@@ -18,8 +18,8 @@ public class StartState implements TuiState {
 	}
 
 	@Override
-	public boolean process(StateContext context, String input) {
-		Intent intent = null;
+	public void process(StateContext context, String input) {
+		Intent intent;
 		switch (input.charAt(0)) {
 		case 'l':
 			intent = new Intent((Context) context, BoatActivity.class);
@@ -51,9 +51,7 @@ public class StartState implements TuiState {
 		default:
 			Toast.makeText((BoatActivity) context, "Unkown Option",
 					Toast.LENGTH_SHORT).show();
-			return false;
-		}
-		return true;
-	}
+        }
+    }
 
 }

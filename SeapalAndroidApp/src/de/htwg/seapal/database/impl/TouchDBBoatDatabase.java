@@ -28,8 +28,8 @@ public class TouchDBBoatDatabase implements IBoatDatabase {
 	private static final String DATABASE_NAME = "seapal_boats_db";
 
 	private static TouchDBBoatDatabase touchDBBoatDatabase;
-	private CouchDbConnector couchDbConnector;
-	private TouchDBHelper dbHelper;
+	private final CouchDbConnector couchDbConnector;
+	private final TouchDBHelper dbHelper;
 
 	@Inject
 	public TouchDBBoatDatabase(Context ctx) {

@@ -9,7 +9,7 @@ import de.htwg.seapal.aview.tui.activity.MarkActivity;
 
 public class ShowState implements TuiState {
 
-	private UUID mark;
+	private final UUID mark;
 
 	public ShowState(UUID mark) {
 		this.mark = mark;
@@ -27,7 +27,7 @@ public class ShowState implements TuiState {
 	}
 
 	@Override
-	public boolean process(StateContext context, String input) {
+	public void process(StateContext context, String input) {
 		MarkActivity activity = (MarkActivity) context;
 		switch (input.charAt(0)) {
 		case 'q':
@@ -43,10 +43,8 @@ public class ShowState implements TuiState {
 		default:
 			Toast.makeText(activity, "Unkown Option", Toast.LENGTH_SHORT)
 					.show();
-			return false;
-		}
+        }
 
-		return true;
-	}
+    }
 
 }

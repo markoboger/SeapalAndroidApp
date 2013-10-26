@@ -15,17 +15,16 @@ public class NewState implements TuiState {
 	}
 
 	@Override
-	public boolean process(StateContext context, String input) {
+	public void process(StateContext context, String input) {
 		IPersonController controller = ((PersonActivity) context)
 				.getController();
 		if (input.equals("q")) {
 			context.setState(new StartState());
-			return false;
+            return;
 		}
 		UUID person = controller.newPerson();
 		controller.setPersonLastname(person, input);
 		context.setState(new ShowState(person));
-		return true;
-	}
+    }
 
 }

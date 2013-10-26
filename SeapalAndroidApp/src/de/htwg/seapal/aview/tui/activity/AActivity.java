@@ -10,7 +10,7 @@ import android.view.View.OnKeyListener;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.couchbase.touchdb.router.TDURLStreamHandlerFactory;
+import com.couchbase.cblite.router.CBLURLStreamHandlerFactory;
 
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.activity.BaseDrawerActivity;
@@ -23,27 +23,25 @@ public abstract class AActivity extends BaseDrawerActivity implements
 		IObserver, StateContext {
 
 	@InjectView(R.id.input)
-	protected EditText in;
+    private EditText in;
 	@InjectView(R.id.output)
-	protected TextView out;
-	protected OnKeyListener onKeyListener;
-	protected TuiState currenState;
+    private TextView out;
+    TuiState currenState;
 
-	{
-		TDURLStreamHandlerFactory.registerSelfIgnoreError();
+	static {
+		CBLURLStreamHandlerFactory.registerSelfIgnoreError();
 	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tui);
-
 		setup();
 
 		printTUI();
 		out.setMovementMethod(ScrollingMovementMethod.getInstance());
 		out.setFocusable(false);
-		onKeyListener = listener();
+        OnKeyListener onKeyListener = listener();
 		in.setOnKeyListener(onKeyListener);
 	}
 
@@ -61,10 +59,13 @@ public abstract class AActivity extends BaseDrawerActivity implements
 		currenState = newState;
 	}
 
-	protected void processInputLine() {
-		String input = in.getText().toString();
-		in.setText("");
-		currenState.process(this, input);
+	void processInputLine() {
+        String input = "";
+        if (in != null && in.getText() != null) input = in.getText().toString();
+        if (in != null) {
+            in.setText("");
+        }
+        currenState.process(this, input);
 		printTUI();
 	}
 
@@ -73,19 +74,19 @@ public abstract class AActivity extends BaseDrawerActivity implements
 		printTUI();
 	}
 
-	protected void printTUI() {
+	void printTUI() {
 		out.setText(currenState.buildString(this));
 		// in.requestFocus();
 	}
 
-	protected OnKeyListener listener() {
+	OnKeyListener listener() {
 		return new OnKeyListener() {
 			@Override
 			public boolean onKey(View v, int keyCode, KeyEvent event) {
 				boolean handled = false;
 				if (event.getAction() == KeyEvent.ACTION_DOWN
 						&& (keyCode == KeyEvent.KEYCODE_ENTER)) {
-					if (!in.getText().toString().equals(""))
+					if (in != null && in.getText() != null && !"".equals(in.getText().toString()))
 						processInputLine();
 
 					handled = true;

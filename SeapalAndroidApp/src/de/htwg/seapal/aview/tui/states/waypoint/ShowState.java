@@ -8,7 +8,7 @@ import de.htwg.seapal.aview.tui.TuiState;
 import de.htwg.seapal.aview.tui.activity.WaypointActivity;
 
 public class ShowState implements TuiState {
-	private UUID waypoint;
+	private final UUID waypoint;
 
 	public ShowState(UUID waypoint) {
 		this.waypoint = waypoint;
@@ -26,7 +26,7 @@ public class ShowState implements TuiState {
 	}
 
 	@Override
-	public boolean process(StateContext context, String input) {
+	public void process(StateContext context, String input) {
 		switch (input.charAt(0)) {
 		case 'q':
 			context.setState(new StartState());
@@ -37,8 +37,6 @@ public class ShowState implements TuiState {
 		default:
 			Toast.makeText((WaypointActivity) context, "Unkown Option",
 					Toast.LENGTH_SHORT).show();
-			return false;
-		}
-		return true;
-	}
+        }
+    }
 }

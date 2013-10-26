@@ -9,8 +9,8 @@ import de.htwg.seapal.controller.IWaypointController;
 
 public class TrackLocationListener implements LocationListener {
 
-	private UUID trip;
-	private IWaypointController controller;
+	private final UUID trip;
+	private final IWaypointController controller;
 
 	public TrackLocationListener(UUID trip, IWaypointController controller) {
 		this.trip = trip;

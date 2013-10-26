@@ -1,6 +1,7 @@
 package de.htwg.seapal.database.impl;
 
 import java.util.LinkedList;
+
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -16,10 +17,10 @@ import roboguice.inject.ContextSingleton;
 import android.content.Context;
 import android.util.Log;
 
-import com.couchbase.touchdb.TDDatabase;
-import com.couchbase.touchdb.TDView;
-import com.couchbase.touchdb.TDViewMapBlock;
-import com.couchbase.touchdb.TDViewMapEmitBlock;
+import com.couchbase.cblite.CBLDatabase;
+import com.couchbase.cblite.CBLView;
+import com.couchbase.cblite.CBLViewMapBlock;
+import com.couchbase.cblite.CBLViewMapEmitBlock;
 import com.google.inject.Inject;
 
 import de.htwg.seapal.database.ITripDatabase;
@@ -35,8 +36,8 @@ public class TouchDBTripDatabase implements ITripDatabase {
 	private static final String DATABASE_NAME = "seapal_trips_db";
 
 	private static TouchDBTripDatabase touchDBTripDatabase;
-	private CouchDbConnector couchDbConnector;
-	private TouchDBHelper dbHelper;
+	private final CouchDbConnector couchDbConnector;
+	private final TouchDBHelper dbHelper;
 
 	@Inject
 	public TouchDBTripDatabase(Context ctx) {
@@ -45,15 +46,15 @@ public class TouchDBTripDatabase implements ITripDatabase {
 		dbHelper.pullFromDatabase();
 		couchDbConnector = dbHelper.getCouchDbConnector();
 
-		TDDatabase tdDB = dbHelper.getTDDatabase();
+		CBLDatabase tdDB = dbHelper.getTDDatabase();
 
-		TDView view = tdDB.getViewNamed(String.format("%s/%s", DDOCNAME,
+		CBLView view = tdDB.getViewNamed(String.format("%s/%s", DDOCNAME,
 				VIEWNAME));
 
-		view.setMapReduceBlocks(new TDViewMapBlock() {
+		view.setMapReduceBlocks(new CBLViewMapBlock() {
 			@Override
 			public void map(Map<String, Object> document,
-					TDViewMapEmitBlock emitter) {
+					CBLViewMapEmitBlock emitter) {
 				Object Boat = document.get("boat");
 				if (Boat != null) {
 					emitter.emit(document.get("boat"), document.get("_id"));

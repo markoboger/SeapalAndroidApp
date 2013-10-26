@@ -11,7 +11,7 @@ import de.htwg.seapal.aview.tui.activity.TripActivity;
 
 public class ShowState implements TuiState {
 
-	private UUID person;
+	private final UUID person;
 
 	public ShowState(UUID person) {
 		this.person = person;
@@ -31,7 +31,7 @@ public class ShowState implements TuiState {
 	}
 
 	@Override
-	public boolean process(StateContext context, String input) {
+	public void process(StateContext context, String input) {
 		PersonActivity activity = (PersonActivity) context;
 		switch (input.charAt(0)) {
 		case 'q':
@@ -52,10 +52,8 @@ public class ShowState implements TuiState {
 		default:
 			Toast.makeText(activity, "Unkown Option", Toast.LENGTH_SHORT)
 					.show();
-			return false;
-		}
+        }
 
-		return true;
-	}
+    }
 
 }

@@ -13,8 +13,8 @@ import de.htwg.seapal.model.impl.Trip;
 
 public class HashMapTripDatabase implements ITripDatabase {
 
-	private Map<UUID, ITrip> db;;
-	private static HashMapTripDatabase hashMapTripDatabase;
+	private final Map<UUID, ITrip> db;
+    private static HashMapTripDatabase hashMapTripDatabase;
 
 	private HashMapTripDatabase() {
 		db = new HashMap<UUID, ITrip>();
@@ -52,8 +52,7 @@ public class HashMapTripDatabase implements ITripDatabase {
 	@Override
 	public List<ITrip> loadAll() {
 		Collection<ITrip> collection = db.values();
-		List<ITrip> values = new ArrayList<ITrip>(collection);
-		return values;
+		return new ArrayList<ITrip>(collection);
 	}
 
 	@Override

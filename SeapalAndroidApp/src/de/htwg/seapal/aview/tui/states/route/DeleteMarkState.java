@@ -11,9 +11,9 @@ import de.htwg.seapal.controller.IMarkController;
 
 public class DeleteMarkState implements TuiState {
 
-	private List<UUID> marks;
-	private UUID route;
-	private IMarkController markController;
+	private final List<UUID> marks;
+	private final UUID route;
+	private final IMarkController markController;
 
 	public DeleteMarkState(UUID route, List<UUID> marks,
 			IMarkController markController) {
@@ -37,7 +37,7 @@ public class DeleteMarkState implements TuiState {
 	}
 
 	@Override
-	public boolean process(StateContext context, String input) {
+	public void process(StateContext context, String input) {
 		Integer number;
 		try {
 			number = Integer.valueOf(input) - 1;
@@ -47,7 +47,7 @@ public class DeleteMarkState implements TuiState {
 			else
 				Toast.makeText((RouteActivity) context, "Unkown Option",
 						Toast.LENGTH_SHORT).show();
-			return false;
+            return;
 		}
 		if (number >= 0 && number < marks.size()) {
 			((RouteActivity) context).getController().deleteMark(route,
@@ -57,7 +57,6 @@ public class DeleteMarkState implements TuiState {
 			Toast.makeText((RouteActivity) context, "Unkown Option",
 					Toast.LENGTH_SHORT).show();
 
-		return true;
-	}
+    }
 
 }

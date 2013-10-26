@@ -12,9 +12,8 @@ public class EditState implements TuiState {
 	}
 
 	@Override
-	public boolean process(StateContext context, String input) {
+	public void process(StateContext context, String input) {
 		// TODO Auto-generated method stub
-		return false;
-	}
+    }
 
 }

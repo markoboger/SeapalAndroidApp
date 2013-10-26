@@ -28,8 +28,8 @@ public class TouchDBMarkDatabase implements IMarkDatabase {
 	private static final String DATABASE_NAME = "seapal_mark_db";
 
 	private static TouchDBMarkDatabase touchDBMarkDatabase;
-	private CouchDbConnector couchDbConnector;
-	private TouchDBHelper dbHelper;
+	private final CouchDbConnector couchDbConnector;
+	private final TouchDBHelper dbHelper;
 
 	@Inject
 	public TouchDBMarkDatabase(Context ctx) {

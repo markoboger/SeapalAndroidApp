@@ -15,12 +15,12 @@ import de.htwg.seapal.controller.impl.WaypointController;
 
 public class WaypointListAdapter extends ArrayAdapter<UUID> {
 
-	private List<UUID> waypoints;
-	private WaypointController controller;
+	private final List<UUID> waypoints;
+	private final WaypointController controller;
 
-	public WaypointListAdapter(Context context, int resource, List<UUID> items,
-			WaypointController controller) {
-		super(context, resource, items);
+	public WaypointListAdapter(Context context, List<UUID> items,
+                               WaypointController controller) {
+		super(context, R.layout.tripwaypointlistadapter, items);
 		this.controller = controller;
 		this.waypoints = items;
 	}

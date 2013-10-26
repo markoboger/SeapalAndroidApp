@@ -10,8 +10,8 @@ import de.htwg.seapal.controller.IBoatController;
 
 public class EditState implements TuiState {
 
-	private int position;
-	private UUID boat;
+	private final int position;
+	private final UUID boat;
 
 	public EditState(int position, UUID boat) {
 		this.position = position;
@@ -25,10 +25,10 @@ public class EditState implements TuiState {
 	}
 
 	@Override
-	public boolean process(StateContext context, String input) {
+	public void process(StateContext context, String input) {
 		if (input.equals("q")) {
 			context.setState(new EditSelectState(boat));
-			return false;
+            return;
 		}
 		IBoatController controller = ((BoatActivity) context).getController();
 		context.setState(new ShowState(boat));
@@ -106,15 +106,12 @@ public class EditState implements TuiState {
 			default:
 				Toast.makeText((BoatActivity) context, "Unkown Option",
 						Toast.LENGTH_SHORT).show();
-				return false;
-			}
+            }
 
 		} catch (NumberFormatException e) {
 			Toast.makeText((BoatActivity) context, "Unkown Option",
 					Toast.LENGTH_SHORT).show();
-			return false;
-		}
-		return true;
-	}
+        }
+    }
 
 }

@@ -9,8 +9,8 @@ import de.htwg.seapal.aview.tui.activity.WaypointActivity;
 
 public class EditSelectState implements TuiState {
 
-	private UUID waypoint;
-	private static String[] editWaypoint = new String[] { "Name", "Headed for",
+	private final UUID waypoint;
+	private static final String[] editWaypoint = new String[] { "Name", "Headed for",
 			"Maneuver", "HeadSail", "MainSail" };
 
 	public EditSelectState(UUID waypoint) {
@@ -25,14 +25,14 @@ public class EditSelectState implements TuiState {
 		sb.append("------------------------------------------------\n");
 		int i = 1;
 		for (String element : editWaypoint) {
-			sb.append(i + ") " + element + "\n");
+			sb.append(i).append(") ").append(element).append("\n");
 			++i;
 		}
 		return sb.toString();
 	}
 
 	@Override
-	public boolean process(StateContext context, String input) {
+	public void process(StateContext context, String input) {
 		Integer number;
 		try {
 			number = Integer.valueOf(input) - 1;
@@ -42,15 +42,14 @@ public class EditSelectState implements TuiState {
 			else
 				Toast.makeText((WaypointActivity) context, "Unkown Option",
 						Toast.LENGTH_SHORT).show();
-			return false;
+            return;
 		}
 		if (number >= 0 && number < editWaypoint.length)
 			context.setState(new EditState(number, waypoint));
 		else
 			Toast.makeText((WaypointActivity) context, "Unkown Option",
 					Toast.LENGTH_SHORT).show();
-		return true;
-	}
+    }
 
 	public static String getEditWaypointElement(int position) {
 		return editWaypoint[position];

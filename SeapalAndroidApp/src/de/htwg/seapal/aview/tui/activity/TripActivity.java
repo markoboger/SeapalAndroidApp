@@ -23,7 +23,7 @@ public class TripActivity extends AActivity implements IObserver {
 		TextView header = (TextView) this.findViewById(R.id.header);
 		header.setText("Trip");
 		Bundle bundle = getIntent().getExtras();
-		boat = UUID.fromString(bundle.getString("boat").toString());
+		boat = UUID.fromString(bundle.getString("boat"));
 		currenState = new StartState();
 		controller.addObserver(this);
 	}

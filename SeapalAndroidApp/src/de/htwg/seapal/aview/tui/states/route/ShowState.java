@@ -9,7 +9,7 @@ import de.htwg.seapal.aview.tui.activity.RouteActivity;
 
 public class ShowState implements TuiState {
 
-	private UUID route;
+	private final UUID route;
 
 	public ShowState(UUID route) {
 		this.route = route;
@@ -28,7 +28,7 @@ public class ShowState implements TuiState {
 	}
 
 	@Override
-	public boolean process(StateContext context, String input) {
+	public void process(StateContext context, String input) {
 		RouteActivity activity = (RouteActivity) context;
 		switch (input.charAt(0)) {
 		case 'q':
@@ -47,10 +47,8 @@ public class ShowState implements TuiState {
 		default:
 			Toast.makeText(activity, "Unkown Option", Toast.LENGTH_SHORT)
 					.show();
-			return false;
-		}
+        }
 
-		return true;
-	}
+    }
 
 }

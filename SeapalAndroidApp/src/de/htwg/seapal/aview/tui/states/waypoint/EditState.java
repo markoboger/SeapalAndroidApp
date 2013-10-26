@@ -12,8 +12,8 @@ import de.htwg.seapal.model.IWaypoint.MainSail;
 import de.htwg.seapal.model.IWaypoint.Maneuver;
 
 public class EditState implements TuiState {
-	private int position;
-	private UUID waypoint;
+	private final int position;
+	private final UUID waypoint;
 
 	public EditState(int position, UUID waypoint) {
 		this.position = position;
@@ -27,10 +27,10 @@ public class EditState implements TuiState {
 	}
 
 	@Override
-	public boolean process(StateContext context, String input) {
+	public void process(StateContext context, String input) {
 		if (input.equals("q")) {
 			context.setState(new EditSelectState(waypoint));
-			return false;
+            return;
 		}
 		IWaypointController controller = ((WaypointActivity) context)
 				.getController();
@@ -55,13 +55,10 @@ public class EditState implements TuiState {
 			default:
 				Toast.makeText((WaypointActivity) context, "Unkown Option",
 						Toast.LENGTH_SHORT).show();
-				return false;
-			}
+            }
 		} catch (NumberFormatException e) {
 			Toast.makeText((WaypointActivity) context, "Unkown Option",
 					Toast.LENGTH_SHORT).show();
-			return false;
-		}
-		return true;
-	}
+        }
+    }
 }

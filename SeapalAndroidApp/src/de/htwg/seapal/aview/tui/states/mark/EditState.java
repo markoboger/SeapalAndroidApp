@@ -10,8 +10,8 @@ import de.htwg.seapal.controller.IMarkController;
 
 public class EditState implements TuiState {
 
-	private UUID mark;
-	private int position;
+	private final UUID mark;
+	private final int position;
 
 	public EditState(int position, UUID mark) {
 		this.mark = mark;
@@ -25,10 +25,10 @@ public class EditState implements TuiState {
 	}
 
 	@Override
-	public boolean process(StateContext context, String input) {
+	public void process(StateContext context, String input) {
 		if (input.equals("q")) {
 			context.setState(new EditSelectState(mark));
-			return false;
+            return;
 		}
 		IMarkController controller = ((MarkActivity) context).getController();
 		context.setState(new ShowState(mark));
@@ -49,15 +49,12 @@ public class EditState implements TuiState {
 			default:
 				Toast.makeText((MarkActivity) context, "Unkown Option",
 						Toast.LENGTH_SHORT).show();
-				return false;
-			}
+            }
 
 		} catch (NumberFormatException e) {
 			Toast.makeText((MarkActivity) context, "Unkown Option",
 					Toast.LENGTH_SHORT).show();
-			return false;
-		}
-		return true;
-	}
+        }
+    }
 
 }

@@ -16,7 +16,7 @@ import de.htwg.seapal.utils.logging.Logger;
 
 public class ShowMarksState implements TuiState {
 
-	private UUID route;
+	private final UUID route;
 	private List<UUID> marks;
 	private IMarkController markController;
 
@@ -42,14 +42,14 @@ public class ShowMarksState implements TuiState {
 		}
 
 		if (marks.size() > 1) {
-			sb.append("\nDistance of Route: " + calcDistance() + " m");
+			sb.append("\nDistance of Route: ").append(calcDistance()).append(" m");
 		}
 
 		return sb.toString();
 	}
 
 	@Override
-	public boolean process(StateContext context, String input) {
+	public void process(StateContext context, String input) {
 		if (marks.size() > 0)
 			((RouteActivity) context).getController().setRouteEntryPoint(route,
 					marks.get(0));
@@ -68,11 +68,9 @@ public class ShowMarksState implements TuiState {
 		default:
 			Toast.makeText(activity, "Unkown Option", Toast.LENGTH_SHORT)
 					.show();
-			return false;
-		}
+        }
 
-		return true;
-	}
+    }
 
 	private double calcDistance() {
 

@@ -77,7 +77,8 @@
             android:id="@+id/editIdNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text" />
+            android:inputType="numberDecimal|numberSigned"
+        />
 
         <TextView
             android:id="@+id/draftsmanLabel"
@@ -143,7 +144,7 @@
             android:id="@+id/editLength"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text" />
+            android:inputType="number" />
 
         <TextView
             android:id="@+id/tankSizeLabel"
@@ -158,7 +159,7 @@
             android:id="@+id/editTankSize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text" />
+            android:inputType="number" />
     </TableRow>
 
     <TableRow
@@ -194,7 +195,7 @@
             android:id="@+id/editWidth"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text" />
+            android:inputType="number" />
 
         <TextView
             android:id="@+id/waterTankSizeLabel"
@@ -209,7 +210,7 @@
             android:id="@+id/editWaterTankSize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text" />
+            android:inputType="number" />
     </TableRow>
 
     <TableRow
@@ -260,7 +261,7 @@
             android:id="@+id/editSewageWaterTankSize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text" />
+            android:inputType="number" />
     </TableRow>
 
     <TableRow
@@ -296,7 +297,7 @@
             android:id="@+id/editMastHeight"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text" />
+            android:inputType="number" />
 
         <TextView
             android:id="@+id/mainSailSizeLabel"
@@ -311,7 +312,7 @@
             android:id="@+id/editMainSailSize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text" />
+            android:inputType="number" />
     </TableRow>
 
     <TableRow
@@ -362,7 +363,7 @@
             android:id="@+id/editGenoaSize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text" />
+            android:inputType="number" />
     </TableRow>
 
     <TableRow
@@ -413,7 +414,7 @@
             android:id="@+id/editSpiSize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text" />
+            android:inputType="number" />
     </TableRow>
 
 </TableLayout>

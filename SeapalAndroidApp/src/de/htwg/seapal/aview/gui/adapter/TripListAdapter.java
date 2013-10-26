@@ -15,12 +15,12 @@ import de.htwg.seapal.controller.impl.TripController;
 
 public class TripListAdapter extends ArrayAdapter<UUID> {
 
-	private List<UUID> trips;
-	private TripController controller;
+	private final List<UUID> trips;
+	private final TripController controller;
 
-	public TripListAdapter(Context context, int resource, List<UUID> items,
-			TripController controller) {
-		super(context, resource, items);
+	public TripListAdapter(Context context, List<UUID> items,
+                           TripController controller) {
+		super(context, R.layout.triplistadapter, items);
 		this.controller = controller;
 		this.trips = items;
 	}

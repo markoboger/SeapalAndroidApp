@@ -9,8 +9,8 @@ import de.htwg.seapal.aview.tui.activity.MarkActivity;
 
 public class EditSelectState implements TuiState {
 
-	private UUID mark;
-	private static String[] editMark = new String[] { "Name", "Latitude",
+	private final UUID mark;
+	private static final String[] editMark = new String[] { "Name", "Latitude",
 			"Longitude", "Notes" };
 
 	public EditSelectState(UUID mark) {
@@ -25,14 +25,14 @@ public class EditSelectState implements TuiState {
 		sb.append("------------------------------------------------\n");
 		int i = 1;
 		for (String element : editMark) {
-			sb.append(i + ") " + element + "\n");
+			sb.append(i).append(") ").append(element).append("\n");
 			++i;
 		}
 		return sb.toString();
 	}
 
 	@Override
-	public boolean process(StateContext context, String input) {
+	public void process(StateContext context, String input) {
 		Integer number;
 		try {
 			number = Integer.valueOf(input) - 1;
@@ -42,15 +42,14 @@ public class EditSelectState implements TuiState {
 			else
 				Toast.makeText((MarkActivity) context, "Unkown Option",
 						Toast.LENGTH_SHORT).show();
-			return false;
+            return;
 		}
 		if (number >= 0 && number < editMark.length)
 			context.setState(new EditState(number, mark));
 		else
 			Toast.makeText((MarkActivity) context, "Unkown Option",
 					Toast.LENGTH_SHORT).show();
-		return true;
-	}
+    }
 
 	public static String getEditMarkElement(int position) {
 		return editMark[position];

@@ -15,18 +15,18 @@ public class NewState implements TuiState {
 	}
 
 	@Override
-	public boolean process(StateContext context, String input) {
+	public void process(StateContext context, String input) {
 		IMarkController controller = ((MarkActivity) context).getController();
 		if (input.equals("q")) {
 			context.setState(new StartState());
-			return false;
+            return;
 		}
 
 		// test getRandomLocation
 		double minLat = -90.00;
 		double maxLat = 90.00;
 		double latitude = minLat
-				+ (double) (Math.random() * ((maxLat - minLat) + 1));
+				+ Math.random() * ((maxLat - minLat) + 1);
 		latitude = latitude * 10000;
 		latitude = Math.round(latitude);
 		latitude = latitude / 10000;
@@ -34,7 +34,7 @@ public class NewState implements TuiState {
 		double minLon = 0.00;
 		double maxLon = 180.00;
 		double longitude = minLon
-				+ (double) (Math.random() * ((maxLon - minLon) + 1));
+				+ Math.random() * ((maxLon - minLon) + 1);
 		longitude = longitude * 10000;
 		longitude = Math.round(longitude);
 		longitude = longitude / 10000;
@@ -42,7 +42,6 @@ public class NewState implements TuiState {
 		UUID mark = controller.newMark(latitude, longitude);
 		controller.setName(mark, input);
 		context.setState(new ShowState(mark));
-		return true;
-	}
+    }
 
 }

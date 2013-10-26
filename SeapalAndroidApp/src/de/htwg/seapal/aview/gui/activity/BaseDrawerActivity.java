@@ -31,14 +31,11 @@ public class BaseDrawerActivity extends RoboActivity {
 
 	private DrawerLayout drawerLayout;
 
-	@InjectView(R.id.drawer_menu_content_frame)
-	private FrameLayout frameLayout;
-
-	private ActionBarDrawerToggle drawerToggle;
+    private ActionBarDrawerToggle drawerToggle;
 
 	private int changeToActivity;
 
-	private static List<Class<? extends Activity>> classes;
+	private static final List<Class<? extends Activity>> classes;
 
 	// Add here all Activities in the drawerList (same order)
 	static {
@@ -69,8 +66,8 @@ public class BaseDrawerActivity extends RoboActivity {
 		// base layout
 		drawerLayout = (DrawerLayout) getLayoutInflater().inflate(
 				R.layout.drawer_menu, null);
-		frameLayout = (FrameLayout) drawerLayout
-				.findViewById(R.id.drawer_menu_content_frame);
+        FrameLayout frameLayout = (FrameLayout) drawerLayout
+                .findViewById(R.id.drawer_menu_content_frame);
 
 		// Setting the content of layout your provided to the act_content frame
 		getLayoutInflater().inflate(layoutResID, frameLayout, true);
@@ -100,11 +97,8 @@ public class BaseDrawerActivity extends RoboActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// The action bar home/up action should open or close the drawer.
-		if (drawerToggle.onOptionsItemSelected(item)) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
+        return drawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+    }
 
 	// -------------------------------------------- DRAWER ------------------
 	private void initializeDrawer() {
@@ -154,7 +148,7 @@ public class BaseDrawerActivity extends RoboActivity {
 		}
 	}
 
-	public void switchActivity() {
+	void switchActivity() {
 		if (changeToActivity != -1) // no item selected
 			startActivity(new Intent(this, classes.get(changeToActivity))
 					.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(

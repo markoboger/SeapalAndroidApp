@@ -26,7 +26,7 @@ public class MapDialogFragment extends DialogFragment {
 		public void onDialogDeleteClick(DialogFragment dialog);
 	}
 
-	MapDialogListener mListener;
+	private MapDialogListener mListener;
 
 	// Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
 	@Override
@@ -43,9 +43,7 @@ public class MapDialogFragment extends DialogFragment {
 		}
 	}
 
-	private ImageButton setMark, setRoute, calcDistance, setTarget, delete;
-
-	@Override
+    @Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -53,11 +51,11 @@ public class MapDialogFragment extends DialogFragment {
 		View dialogView = inflater.inflate(R.layout.map_menu, null);
 		View titleView = inflater.inflate(R.layout.map_menu_title, null);
 
-		setMark = (ImageButton) dialogView.findViewById(R.id.setMark);
-		setRoute = (ImageButton)dialogView.findViewById(R.id.setRoute);
-		calcDistance = (ImageButton)dialogView.findViewById(R.id.calcDistance);
-		setTarget = (ImageButton)dialogView.findViewById(R.id.makeFinish);
-		delete = (ImageButton)dialogView.findViewById(R.id.delete);
+        ImageButton setMark = (ImageButton) dialogView.findViewById(R.id.setMark);
+        ImageButton setRoute = (ImageButton) dialogView.findViewById(R.id.setRoute);
+        ImageButton calcDistance = (ImageButton) dialogView.findViewById(R.id.calcDistance);
+        ImageButton setTarget = (ImageButton) dialogView.findViewById(R.id.makeFinish);
+        ImageButton delete = (ImageButton) dialogView.findViewById(R.id.delete);
 
 
 		TextView t = (TextView) titleView.findViewById(R.id.menuTitleLabel);
@@ -70,54 +68,54 @@ public class MapDialogFragment extends DialogFragment {
 
 		setMark.setOnClickListener(new View.OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				dismiss();
-				mListener.onDialogSetMarkClick(MapDialogFragment.this);
-			}
-		});
+            @Override
+            public void onClick(View v) {
+                dismiss();
+                mListener.onDialogSetMarkClick(MapDialogFragment.this);
+            }
+        });
 
 		setRoute.setOnClickListener(new View.OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				dismiss();
-				mListener.onDialogSetRouteClick(MapDialogFragment.this);
-			}
-		});
+            @Override
+            public void onClick(View v) {
+                dismiss();
+                mListener.onDialogSetRouteClick(MapDialogFragment.this);
+            }
+        });
 
 		calcDistance.setOnClickListener(new View.OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				dismiss();
-				mListener.onDialogcalcDistanceClick(MapDialogFragment.this);
-			}
-		});
+            @Override
+            public void onClick(View v) {
+                dismiss();
+                mListener.onDialogcalcDistanceClick(MapDialogFragment.this);
+            }
+        });
 
 		setTarget.setOnClickListener(new View.OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				dismiss();
-				mListener.onDialogSetTargetClick(MapDialogFragment.this);
-			}
-		});
+            @Override
+            public void onClick(View v) {
+                dismiss();
+                mListener.onDialogSetTargetClick(MapDialogFragment.this);
+            }
+        });
 
 		delete.setOnClickListener(new View.OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				dismiss();
-				mListener.onDialogDeleteClick(MapDialogFragment.this);
-			}
-		});
+            @Override
+            public void onClick(View v) {
+                dismiss();
+                mListener.onDialogDeleteClick(MapDialogFragment.this);
+            }
+        });
 
 
 		return builder.create();
 	}
 
-	public String formatLongitude(double lng) {
+	String formatLongitude(double lng) {
 		String orientation;
 		DecimalFormat df= new DecimalFormat("#0");
 		if (lng >= 0)
@@ -128,10 +126,10 @@ public class MapDialogFragment extends DialogFragment {
 		String degrees = df.format(lng);
 		lng -= Double.parseDouble(degrees);
 		String minutes = df.format(Math.abs(((lng * 60) % 60)));
-		return degrees + "°" + minutes + "'" + orientation;
+		return degrees + "Â°" + minutes + "'" + orientation;
 	}
 
-	public String formatLatitude(double lat) {
+	String formatLatitude(double lat) {
 		String orientation;
 		DecimalFormat df= new DecimalFormat("#0");
 		if (lat >= 0)
@@ -141,7 +139,7 @@ public class MapDialogFragment extends DialogFragment {
 		lat = Math.abs(lat);
 		String degrees = df.format(lat);
 		String minutes = df.format(Math.abs(((lat * 60) % 60)));
-		return degrees + "°" + minutes + "'" + orientation;
+		return degrees + "Â°" + minutes + "'" + orientation;
 
 	}
 }

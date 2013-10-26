@@ -1,9 +1,10 @@
 package de.htwg.seapal.aview.gui.activity;
 
 
+
 import java.util.LinkedList;
 import java.util.List;
-import com.couchbase.touchdb.router.TDURLStreamHandlerFactory;
+import com.couchbase.cblite.router.CBLURLStreamHandlerFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
@@ -37,45 +38,43 @@ MapDialogFragment.MapDialogListener {
 	}
 
 	
-	{
-		TDURLStreamHandlerFactory.registerSelfIgnoreError();
+	static {
+		CBLURLStreamHandlerFactory.registerSelfIgnoreError();
 		//needed for TouchDB
 	}
 
-	@Inject
-	private IMarkController controller;
-	@Inject
-	private IWaypointController wController;
 	private GoogleMap map;
 	public static Marker crosshairMarker = null;
 	private Polyline route = null;
 	private SelectedOption option = SelectedOption.NONE;
 	private LatLng lastPos;
-	private List<Marker> calcDistanceMarker = new LinkedList<Marker>();
+	private final List<Marker> calcDistanceMarker = new LinkedList<Marker>();
 	private Polyline calcDistanceRoute = null;
 	private double calcDistance;
-	private final String ORANGE = "#FFBB03";
 
-	@Override
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.map);
 
 		FragmentManager myFragmentManager = getFragmentManager();
-		MapFragment myMapFragment 
-		= (MapFragment)myFragmentManager.findFragmentById(R.id.map);
+		MapFragment myMapFragment  = (MapFragment)myFragmentManager.findFragmentById(R.id.map);
 		map = myMapFragment.getMap();
 
-		map.setMyLocationEnabled(true);
+        if (map != null) {
 
-		map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-		//myMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-		//myMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-		//myMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
 
-		map.setOnMapClickListener(this);
-		map.setOnMapLongClickListener(this);
-		map.setOnMarkerClickListener(this);
+            map.setMyLocationEnabled(true);
+
+            map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+            //myMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+            //myMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+            //myMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+
+            map.setOnMapClickListener(this);
+            map.setOnMapLongClickListener(this);
+            map.setOnMarkerClickListener(this);
+        }
 	}
 
 	@Override
@@ -175,7 +174,8 @@ MapDialogFragment.MapDialogListener {
 		calcDistanceMarker.add(map.addMarker(new MarkerOptions().
 				position(crosshairMarker.getPosition()).
 				icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_distance))));
-		calcDistanceRoute = map.addPolyline(new PolylineOptions().add(lastPos).width(5).color(Color.parseColor(ORANGE)));
+        String ORANGE = "#FFBB03";
+        calcDistanceRoute = map.addPolyline(new PolylineOptions().add(lastPos).width(5).color(Color.parseColor(ORANGE)));
 		crosshairMarker.remove();
 	}
 
@@ -190,7 +190,7 @@ MapDialogFragment.MapDialogListener {
 		crosshairMarker.remove();
 	}
 
-	public Double calcDistance(LatLng pos1, LatLng pos2) {
+	Double calcDistance(LatLng pos1, LatLng pos2) {
 
 		int R = 6371; // km earth radius
 		double dLat = Math.toRadians(pos2.latitude - pos1.latitude);
@@ -201,8 +201,6 @@ MapDialogFragment.MapDialogListener {
 		double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
 				Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
 		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-		double d = R * c;
-
-		return d;
+		return R * c;
 	}
 }

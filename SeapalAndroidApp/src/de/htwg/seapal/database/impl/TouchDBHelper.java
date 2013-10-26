@@ -9,17 +9,16 @@ import org.ektorp.impl.StdCouchDbInstance;
 import android.content.Context;
 import android.util.Log;
 
-import com.couchbase.touchdb.TDDatabase;
-import com.couchbase.touchdb.TDServer;
-import com.couchbase.touchdb.ektorp.TouchDBHttpClient;
+import com.couchbase.cblite.*;
+import com.couchbase.cblite.ektorp.*;
 
-public class TouchDBHelper {
+class TouchDBHelper {
 
 	private static final String TAG = "TouchDB";
-	private String DATABASE_NAME;
+	private final String DATABASE_NAME;
 	private StdCouchDbInstance dbInstance;
 	private CouchDbConnector couchDbConnector;
-	private TDDatabase tdDB;
+	private CBLDatabase tdDB;
 	
 
 	public TouchDBHelper(String dbName) {
@@ -33,31 +32,33 @@ public class TouchDBHelper {
 		}
 		// TouchDB
 		Log.d(TAG, "Starting " + DATABASE_NAME);
-		TDServer server = null;
+		CBLServer server = null;
 		String filesDir = ctx.getFilesDir().getAbsolutePath();
 		Log.d(TAG, ctx.getFilesDir().getAbsolutePath());
 		try {
-			server = new TDServer(filesDir);
+			server = new CBLServer(filesDir);
 		} catch (IOException e) {
 			Log.e(TAG, "Error starting Boat-TDServer", e);
 		}
 
 		// start TouchDB-Ektorp adapter
-		HttpClient httpClient = new TouchDBHttpClient(server);
+		HttpClient httpClient = new CBLiteHttpClient(server);
 		dbInstance = new StdCouchDbInstance(httpClient);
 
 		// create a local database
 		couchDbConnector = dbInstance.createConnector(DATABASE_NAME, true);
 
-		tdDB = server.getDatabaseNamed(DATABASE_NAME);
+        if (server != null) {
+            tdDB = server.getDatabaseNamed(DATABASE_NAME);
+        }
 
-	}
+    }
 
 	public CouchDbConnector getCouchDbConnector() {
 		return this.couchDbConnector;
 	}
 	
-	public TDDatabase getTDDatabase() {
+	public CBLDatabase getTDDatabase() {
 		return this.tdDB;
 	}
 

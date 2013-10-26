@@ -45,7 +45,7 @@
     <string name="drawer_close">close drawer</string>
     <string name="menuButton">Menu Button</string>
     <string name="menuTitle">Menu Title</string>
-    <string name="menuTitleText"></string> 
+    <string name="menuTitleText"/>
     <string name="setMark">Set Mark</string>
     <string name="setRoute">Set Route</string>
     <string name="calcDistance">Distance from here</string>
@@ -57,5 +57,10 @@
     <string name="tripFromHeader">From</string>
     <string name="tripEndTimeHeader">End</string>
     <string name="tripSkipperHeader">Skipper</string>
+
+    <string name="arrow">></string>
+    <string name="save">SAVE</string>
+    <string name="delete">DELETE</string>
+    <string name="newtext">NEW</string>
 
 </resources>
