@@ -4,7 +4,6 @@ buildscript {
     }
     dependencies {
       classpath 'com.android.tools.build:gradle:0.6.1'
-      classpath 'org.batcha.gradle.plugins:git-dependencies:0.1'
     }
 }
 
@@ -12,11 +11,6 @@ apply plugin: 'android'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 
-idea.module.iml {
-    whenMerged { module ->
-        module.dependencies*.exported = true
-    }
-}
 
 version = '1.1'
 
@@ -28,6 +22,7 @@ repositories {
 }
 
 dependencies {
+    compile 'com.google.collections:google-collections:1.0'
     compile 'org.roboguice:roboguice:2.0'
     compile files('libs/core-1.0-20130619.093940-28.jar')
     compile 'com.google.android.gms:play-services:3.1.36'
@@ -43,7 +38,7 @@ android {
     defaultConfig {
         versionCode 1
         versionName "1.1"
-        minSdkVersion 15
+        minSdkVersion 14
         targetSdkVersion 17
     }
     sourceSets {

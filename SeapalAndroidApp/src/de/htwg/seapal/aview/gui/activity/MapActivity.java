@@ -1,6 +1,7 @@
 package de.htwg.seapal.aview.gui.activity;
 
 
+
 import java.util.LinkedList;
 import java.util.List;
 import com.couchbase.cblite.router.CBLURLStreamHandlerFactory;
