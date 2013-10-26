@@ -67,6 +67,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="org.ektorp-1.2.3" level="project" />
     <orderEntry type="library" exported="" name="slf4j-jdk14-1.6.1" level="project" />
+    <orderEntry type="library" exported="" name="td_collator_so" level="project" />
     <orderEntry type="library" exported="" name="aopalliance-1.0" level="project" />
     <orderEntry type="library" exported="" name="httpclient-cache-4.1.1" level="project" />
     <orderEntry type="library" exported="" name="jackson-core-asl-1.9.2" level="project" />

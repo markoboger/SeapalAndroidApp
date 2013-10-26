@@ -22,10 +22,7 @@ version = '1.1'
 
 repositories {
     mavenCentral()
-    maven {
-      url "http://lenny2.in.htwg-konstanz.de:8081/artifactory/repo"
-    }
-     maven { 
+    maven { 
       url "http://files.couchbase.com/maven2/"
     }
 }
