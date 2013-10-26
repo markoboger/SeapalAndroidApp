@@ -25,7 +25,6 @@ dependencies {
     compile 'com.google.collections:google-collections:1.0'
     compile 'org.roboguice:roboguice:2.0'
     compile files('libs/core-1.0-20130619.093940-28.jar')
-    compile 'com.google.android.gms:play-services:3.1.36'
     compile 'com.couchbase.cblite:CBLite:1.0.0-beta'
     compile 'com.couchbase.cblite:CBLiteEktorp:1.0.0-beta'
     compile project(':libs:google-play-services_lib')
