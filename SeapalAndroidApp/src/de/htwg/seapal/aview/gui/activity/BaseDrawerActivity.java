@@ -6,9 +6,13 @@ import java.util.List;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
+
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -107,8 +111,10 @@ public class BaseDrawerActivity extends RoboActivity {
 
 		drawerListView.setOnItemClickListener(new DrawerItemClickListener());
 
+        //getActionBar().hide();
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
+        //getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#80000000")));
 
 		drawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
 				R.drawable.ic_drawer, R.string.drawer_open,
