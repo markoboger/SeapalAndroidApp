@@ -5,6 +5,7 @@ package de.htwg.seapal.aview.gui.activity;
 import java.util.LinkedList;
 import java.util.List;
 import com.couchbase.cblite.router.CBLURLStreamHandlerFactory;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
@@ -21,7 +22,15 @@ import com.google.inject.Inject;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.graphics.Color;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.TypedValue;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.fragment.MapDialogFragment;
@@ -74,6 +83,36 @@ MapDialogFragment.MapDialogListener {
             map.setOnMapClickListener(this);
             map.setOnMapLongClickListener(this);
             map.setOnMarkerClickListener(this);
+
+            //LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+            // Creating a criteria object to retrieve provider
+            //Criteria criteria = new Criteria();
+
+            // Getting the name of the best provider
+            //List<String> provider = locationManager.getAllProviders();
+
+            // Getting Current Location
+            //for(int i = 0; i < provider.size(); i++){
+
+             //   Location location = locationManager.getLastKnownLocation(provider.get(i));
+
+             //   if(location!=null)
+            //    {
+                    // Getting latitude of the current location
+            //        double latitude = location.getLatitude();
+
+                    // Getting longitude of the current location
+             //       double longitude = location.getLongitude();
+
+            //        Location loc = map.getMyLocation();
+            //        map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(loc.getLatitude(), loc.getLongitude()), 14.0f));
+            //        break;
+            //    }
+            //}
+
+
+
         }
 	}
 

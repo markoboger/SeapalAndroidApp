@@ -26,10 +26,7 @@
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
-
-
-
-
+    <!-- Main ActionBar -->
     <style name="Widget.ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
         <item name="android:background">@color/lightGray</item>
     </style>

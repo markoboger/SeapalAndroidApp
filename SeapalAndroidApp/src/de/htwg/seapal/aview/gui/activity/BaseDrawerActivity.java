@@ -94,7 +94,7 @@ public class BaseDrawerActivity extends RoboActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		// getMenuInflater().inflate(R.menu.actionbar, menu);
+		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
 
@@ -114,7 +114,6 @@ public class BaseDrawerActivity extends RoboActivity {
         //getActionBar().hide();
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
-        //getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#80000000")));
 
 		drawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
 				R.drawable.ic_drawer, R.string.drawer_open,

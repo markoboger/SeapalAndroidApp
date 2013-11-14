@@ -17,8 +17,9 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:choiceMode="singleChoice"
-        android:divider="@color/darkGray"
+        android:divider="@color/black"
         android:dividerHeight="0.5dp"
+        android:layout_marginTop="?android:attr/actionBarSize"
         android:background="@color/white"/>
 
 </android.support.v4.widget.DrawerLayout>
