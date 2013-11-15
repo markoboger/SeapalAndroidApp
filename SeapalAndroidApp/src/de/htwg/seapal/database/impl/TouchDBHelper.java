@@ -16,12 +16,13 @@ class TouchDBHelper {
 
 	private static final String TAG = "TouchDB";
 	private final String DATABASE_NAME;
-	private StdCouchDbInstance dbInstance;
+    private final String hostDB = "http://roroettg.iriscouch.com/";
+    private StdCouchDbInstance dbInstance;
 	private CouchDbConnector couchDbConnector;
 	private CBLDatabase tdDB;
-	
 
-	public TouchDBHelper(String dbName) {
+
+    public TouchDBHelper(String dbName) {
 		DATABASE_NAME = dbName;		
 	}
 
@@ -52,6 +53,8 @@ class TouchDBHelper {
             tdDB = server.getDatabaseNamed(DATABASE_NAME);
         }
 
+
+
     }
 
 	public CouchDbConnector getCouchDbConnector() {
@@ -64,8 +67,10 @@ class TouchDBHelper {
 
 	public void pullFromDatabase() {
 		ReplicationCommand pullReplicationCommand = new ReplicationCommand.Builder()
-				.source("http://roroettg.iriscouch.com/" + DATABASE_NAME)
-				.target(DATABASE_NAME).continuous(true).build();
+				.source(hostDB + DATABASE_NAME)
+				.target(DATABASE_NAME)
+                .continuous(true)
+                .build();
 
 		dbInstance.replicate(pullReplicationCommand);
 
@@ -74,8 +79,9 @@ class TouchDBHelper {
 	public void pushToDatabase() {
 		ReplicationCommand pushReplicationCommand = new ReplicationCommand.Builder()
 				.source(DATABASE_NAME)
-				.target("http://roroettg.iriscouch.com/" + DATABASE_NAME)
-				.continuous(true).build();
+				.target(hostDB + DATABASE_NAME)
+				.continuous(true)
+                .build();
 
 		dbInstance.replicate(pushReplicationCommand);
 	}
