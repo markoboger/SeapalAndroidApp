@@ -11,6 +11,7 @@ import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -73,45 +74,14 @@ MapDialogFragment.MapDialogListener {
         if (map != null) {
 
 
-            map.setMyLocationEnabled(true);
+            map.setMyLocationEnabled(false);
+            map.getUiSettings().setZoomControlsEnabled(false);
 
             map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-            //myMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-            //myMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-            //myMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
 
             map.setOnMapClickListener(this);
             map.setOnMapLongClickListener(this);
             map.setOnMarkerClickListener(this);
-
-            //LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-            // Creating a criteria object to retrieve provider
-            //Criteria criteria = new Criteria();
-
-            // Getting the name of the best provider
-            //List<String> provider = locationManager.getAllProviders();
-
-            // Getting Current Location
-            //for(int i = 0; i < provider.size(); i++){
-
-             //   Location location = locationManager.getLastKnownLocation(provider.get(i));
-
-             //   if(location!=null)
-            //    {
-                    // Getting latitude of the current location
-            //        double latitude = location.getLatitude();
-
-                    // Getting longitude of the current location
-             //       double longitude = location.getLongitude();
-
-            //        Location loc = map.getMyLocation();
-            //        map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(loc.getLatitude(), loc.getLongitude()), 14.0f));
-            //        break;
-            //    }
-            //}
-
-
 
         }
 	}

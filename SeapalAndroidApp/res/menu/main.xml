@@ -5,13 +5,19 @@
         android:orderInCategory="100"
         android:showAsAction="ifRoom"
         android:title="@string/searchForLocation"
-        android:icon="@drawable/ic_action_search" />
+        android:icon="@android:drawable/ic_menu_search" />
+    <item
+        android:id="@+id/action_goTo"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom"
+        android:title="@string/goToCurrentLocation"
+        android:icon="@android:drawable/ic_menu_mylocation" />
     <item
         android:id="@+id/action_mark"
         android:orderInCategory="100"
         android:showAsAction="ifRoom|withText"
         android:title="@string/addMarkOnMap"
-        android:icon="@drawable/tabbar_marks_selected" />
+        android:icon="@drawable/perm_group_location" />
     <item
         android:id="@+id/action_route"
         android:orderInCategory="100"
@@ -24,12 +30,6 @@
         android:showAsAction="collapseActionView"
         android:title="@string/distance"
         android:icon="@drawable/distance_measure" />
-    <item
-        android:id="@+id/action_goTo"
-        android:orderInCategory="100"
-        android:showAsAction="collapseActionView"
-        android:title="@string/goToCurrentLocation"
-        android:icon="@drawable/ann_cursor" />
     <item
         android:id="@+id/action_take_picture"
         android:orderInCategory="100"
