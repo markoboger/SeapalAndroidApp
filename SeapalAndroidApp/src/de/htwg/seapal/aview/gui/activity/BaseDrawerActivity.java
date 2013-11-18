@@ -1,18 +1,8 @@
 package de.htwg.seapal.aview.gui.activity;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import roboguice.activity.RoboActivity;
-import roboguice.inject.InjectResource;
-import roboguice.inject.InjectView;
-
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -23,7 +13,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import de.htwg.seapal.R;
+import roboguice.activity.RoboActivity;
+import roboguice.inject.InjectResource;
+import roboguice.inject.InjectView;
 
 public class BaseDrawerActivity extends RoboActivity {
 
@@ -45,7 +42,7 @@ public class BaseDrawerActivity extends RoboActivity {
 	static {
 		classes = new ArrayList<Class<? extends Activity>>();
 		classes.add(de.htwg.seapal.aview.gui.activity.MapActivity.class);
-		classes.add(de.htwg.seapal.aview.gui.activity.BoatActivity.class);
+		classes.add(LogbookActivity.class);
 		classes.add(de.htwg.seapal.aview.tui.activity.MenuActivity.class);
 	}
 
