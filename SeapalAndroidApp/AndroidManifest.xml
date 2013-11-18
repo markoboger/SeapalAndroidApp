@@ -26,26 +26,10 @@
         android:icon="@drawable/seapal_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <activity android:name="de.htwg.seapal.aview.tui.activity.MenuActivity" >
-        </activity>
-        <activity android:name="de.htwg.seapal.aview.tui.activity.BoatActivity" >
-        </activity>
-        <activity android:name="de.htwg.seapal.aview.tui.activity.TripActivity" >
-        </activity>
-        <activity android:name="de.htwg.seapal.aview.tui.activity.WaypointActivity" >
-        </activity>
-        <activity android:name="de.htwg.seapal.aview.tui.activity.TripRecordActivity" >
-        </activity>
-        <activity android:name="de.htwg.seapal.aview.tui.activity.MarkActivity" >
-        </activity>
-        <activity android:name="de.htwg.seapal.aview.tui.activity.RouteActivity" >
+        <activity android:name=".aview.gui.activity.LogbookActivity" >
         </activity>
         <activity
-            android:name="de.htwg.seapal.aview.gui.activity.BoatActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden" >
-        </activity>
-        <activity
-            android:name="de.htwg.seapal.aview.gui.activity.MapActivity"
+            android:name=".aview.gui.activity.MapActivity"
             android:theme="@style/OverlayActionBar"
             android:label="@string/app_name" >
             <intent-filter>
@@ -53,21 +37,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name="de.htwg.seapal.aview.gui.activity.TripListActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            android:parentActivityName="de.htwg.seapal.aview.gui.activity.BoatActivity" >
-
-            <!-- Parent activity meta-data to support 4.0 and lower -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.htwg.seapal.aview.gui.activity.BoatActivity" />
-        </activity>
-        <activity
-            android:name="de.htwg.seapal.aview.gui.activity.TripActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden" 
-            android:parentActivityName="de.htwg.seapal.aview.gui.activity.TripListActivity" >
         </activity>
 
         <meta-data
