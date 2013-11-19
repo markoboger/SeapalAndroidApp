@@ -1,184 +1,170 @@
 package de.htwg.seapal.aview.gui.fragment;
 
+import android.app.Activity;
+import android.app.ListFragment;
+import android.content.Context;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.inject.Inject;
+
 import java.util.List;
 import java.util.UUID;
 
-import android.app.AlertDialog;
-import android.app.ListFragment;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.res.Configuration;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.Toast;
 import de.htwg.seapal.R;
-import de.htwg.seapal.aview.gui.adapter.BoatListAdapter;
-import de.htwg.seapal.controller.impl.BoatController;
+import de.htwg.seapal.controller.IBoatController;
+import de.htwg.seapal.model.IBoat;
+import de.htwg.seapal.model.impl.Boat;
+import roboguice.RoboGuice;
 
-public class BoatListFragment extends ListFragment {
+/**
+ * Created by jakub on 11/16/13.
+ */
+public class BoatListFragment extends ListFragment  {
 
-	public static final String TAG = "FragmentList";
-	private List<UUID> boatList;
-    private View header;
-	private ViewGroup mainView;
-	private boolean tablet = false;
+    OnBoatNameSelectedListener mCallback;
+    @Inject
+    private IBoatController boatController;
 
-	private BoatController controller;
-	
+    private List<IBoat> boatList;
 
-	public BoatListFragment() {
-	}
+    private int mPosition = -1;
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setHasOptionsMenu(true);
-		if (savedInstanceState == null) {
-			boatList = controller.getBoats();
-		}
-		
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        RoboGuice.getInjector(getActivity()).injectMembersWithoutViews(this);
 
-	}
+        boatList = boatController.getAllBoats();
+        final int layout = R.layout.boat_list_view;
 
-	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig);
 
-		mainView.removeView(header);
-		this.onActivityCreated(null);
-	}
+        setListAdapter(new ArrayAdapter<IBoat>(getActivity(), layout, boatList) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View v = convertView;
+                TextView text;
+                if (v == null) {
+                    LayoutInflater l = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    v = l.inflate(layout, parent, false);
+                }
 
-	@Override
-	public void onResume() {
-		super.onResume();
-		if (boatList == null)
-			boatList = controller.getBoats();
-	}
+                TextView boatName = (TextView) v.findViewById(R.id.boat_name);
+                TextView boatType = (TextView) v.findViewById(R.id.boat_type);
+                TextView productionYear = (TextView) v.findViewById(R.id.production_year);
+                TextView constructor = (TextView) v.findViewById(R.id.constructor);
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		
-		boatList = controller.getBoats();
-		getListView().setChoiceMode(1);		
-		setListAdapter(null);
-        BoatListAdapter adapter = new BoatListAdapter(getActivity(),
-                boatList, controller);
 
-		// add Header
-		LayoutInflater inflater = (LayoutInflater) getActivity()
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		header = inflater.inflate(R.layout.boatlistheader, null);
-		mainView = (ViewGroup) getActivity().findViewById(
-				R.id.linearLayout_default);
-		if (mainView == null) {
-			tablet = true;
-			mainView = (ViewGroup) getActivity().findViewById(
-					R.id.linearLayout_xlarge);
-			mainView.addView(header, 1);
-		} else
-			mainView.addView(header, 0);
+                IBoat b = getItem(position);
+                if (boatName != null && boatType != null && productionYear != null && constructor != null)
+                    boatName.setText(b.getBoatName());
+                    boatType.setText(b.getType());
+                    if (b.getYearOfConstruction() != 0) {
+                        productionYear.setText(b.getYearOfConstruction().toString());
+                    } else {
+                        productionYear.setText("");
+                    }
+                    constructor.setText(b.getConstructor());
 
-		// so the background color is white on older Android Versions
-		// getListView().setBackgroundColor(Color.WHITE);
-		
-		this.setListAdapter(adapter);
-	}
 
-	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {
-		// inform Activity
-		if (!tablet)
-			mainView.removeView(header);
+                return v;
+            }
+        });
+    }
 
-		l.setItemChecked(position, true);
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
 
-		UUID boat = (UUID) l.getAdapter().getItem(position);
-		ListSelectedCallback callback = (ListSelectedCallback) getActivity();
-		callback.selected(boat);
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
 
-	}
-	
-	
-	
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception.
+        try {
+            mCallback = (OnBoatNameSelectedListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnBoatNameSelectedListener");
+        }
+    }
 
-	// Callback for Container Activity
-	public interface ListSelectedCallback {
-		public void selected(UUID boat);
-	}
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        // Notify the parent activity of selected item
+        IBoat boat = (IBoat) l.getAdapter().getItem(position);
+        mCallback.onBoatSelected(position, boat.getUUID());
+        mPosition = position;
+        v.setSelected(true);
+        for (View a: l.getTouchables()) {
+            a.findViewById(R.id.caret).setVisibility(View.INVISIBLE);
+        }
+        v.findViewById(R.id.caret).setVisibility(View.VISIBLE);
 
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.menu.boatmenu, menu);
-		MenuItem itemDelete = menu.findItem(R.id.boatmenu_delete);
-		MenuItem itemSave = menu.findItem(R.id.boatmenu_save);
-		itemDelete.setVisible(false);
-		itemSave.setVisible(false);
-	}
+    }
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		
-		if(item.getItemId() == R.id.boatmenu_new) {
-			
-			// new button clicked
-			final String[] in = new String[1];
+    public void onNewBoat() {
+        UUID uuid = boatController.newBoat();
+        IBoat boat = boatController.getBoat(uuid);
+        boatList.add(boat);
+        notifyListAdapter();
+        getListView().setSelection(boatList.size());
+        Toast.makeText(getActivity(), "New Boat Created",
+                Toast.LENGTH_SHORT).show();
+    }
 
-			final EditText input = new EditText(getActivity());
+    public void onDeleteBoat() {
+        if (mPosition >= 0) {
+            IBoat boat = (IBoat) getListAdapter().getItem(mPosition);
+            boatList.remove(mPosition);
+            boatController.deleteBoat(boat.getUUID());
+            notifyListAdapter();
+            getListView().setSelection(mPosition);
+            Toast.makeText(getActivity(), "Boat Deleted",
+                    Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getActivity(), "Please select a Boat",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
 
-			new AlertDialog.Builder(getActivity())
-					.setTitle("New Boat")
-					.setMessage("Please enter a new Boatname")
-					.setView(input)
-					.setPositiveButton("Create",
-							new DialogInterface.OnClickListener() {
 
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									in[0] = input.getText().toString();
-									newBoat(in[0]);
-								}
-							})
-					.setNegativeButton("Cancel",
-							new DialogInterface.OnClickListener() {
+    public void onSaveBoat() {
+        BoatViewFragment boatViewFragment =  (BoatViewFragment) getFragmentManager().findFragmentById(R.id.boat_view_fragment);
+        Boat boat = (Boat) boatViewFragment.getBoatFromCurrentView();
+        if (mPosition >= 0) {
+            boatList.set(mPosition, boat);
+            boatController.saveBoat(boat);
+            notifyListAdapter();
+            Toast.makeText(getActivity(), "Boat Saved",
+                    Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getActivity(), "Please select a Boat",
+                    Toast.LENGTH_SHORT).show();
 
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
+        }
 
-                                }
-							}).show();
-		}
-		
+    }
 
-		return super.onOptionsItemSelected(item);
-	}
+    private void notifyListAdapter() {
+        ArrayAdapter<IBoat> listAdapter = (ArrayAdapter<IBoat>) getListAdapter();
+        listAdapter.notifyDataSetChanged();
+    }
 
-	private void newBoat(String input) {
-		if (input.equals("")) {
-			Toast.makeText(getActivity(), "Please enter a Boatname",
-					Toast.LENGTH_SHORT).show();
-			return;
-		}
-		
-		UUID newBoat = controller.newBoat();
-		controller.setBoatName(newBoat, input);
+    public interface OnBoatNameSelectedListener {
 
-	}
+        public void onBoatSelected(int position, UUID uuid);
 
-	public void setController(BoatController controller) {
-		this.controller = controller;
-	}
-	
-	public int getBoatListSize() {
-		return boatList.size();
-	}
+    }
+
+
 }

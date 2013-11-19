@@ -4,6 +4,8 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:background="@drawable/boat_names_list_item_selector"
     android:gravity="center_horizontal"
+    android:id="@+id/boat_list_view"
+    android:layout_marginRight="20dp"
     android:layout_height="match_parent">
 
 

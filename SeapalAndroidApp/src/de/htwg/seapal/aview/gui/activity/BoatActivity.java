@@ -11,17 +11,17 @@ import com.google.inject.Inject;
 
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.fragment.BoatDetailFragment;
-import de.htwg.seapal.aview.gui.fragment.BoatListFragment;
+import de.htwg.seapal.aview.gui.fragment.BoatListFragmentOld;
 import de.htwg.seapal.controller.impl.BoatController;
 import de.htwg.seapal.utils.observer.Event;
 import de.htwg.seapal.utils.observer.IObserver;
 
 public class BoatActivity extends BaseDrawerActivity implements IObserver,
-		BoatListFragment.ListSelectedCallback {
+		BoatListFragmentOld.ListSelectedCallback {
 
 	@Inject
 	private BoatController controller;
-	private BoatListFragment fragmentList;
+	private BoatListFragmentOld fragmentList;
 	private BoatDetailFragment fragmentDetail;
 
 	@Override
@@ -33,12 +33,12 @@ public class BoatActivity extends BaseDrawerActivity implements IObserver,
 		controller.addObserver(this);
 
 		if (savedInstanceState == null) {
-			fragmentList = new BoatListFragment();
+			fragmentList = new BoatListFragmentOld();
 			fragmentList.setController(controller);
 			FragmentTransaction transaction = getFragmentManager()
 					.beginTransaction();
 			transaction
-					.add(R.id.frame_list, fragmentList, BoatListFragment.TAG);
+					.add(R.id.frame_list, fragmentList, BoatListFragmentOld.TAG);
 
 			View v = this.findViewById(R.id.linearLayout_xlarge);
 
