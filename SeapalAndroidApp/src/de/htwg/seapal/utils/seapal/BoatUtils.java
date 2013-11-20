@@ -6,7 +6,6 @@ import android.widget.EditText;
 
 import de.htwg.seapal.R;
 import de.htwg.seapal.model.IBoat;
-import de.htwg.seapal.model.impl.Boat;
 
 /**
  * Created by jakub on 11/18/13.
@@ -66,8 +65,7 @@ public class BoatUtils {
         spiSize.setText(Double.toString(boat.getSpiSize()));
     }
 
-    public static IBoat convertViewToBoat(View view) {
-        IBoat boat = new Boat();
+    public static IBoat convertViewToBoat(View view, IBoat boat) {
         EditText name = (EditText) view.findViewById(R.id.editBoatName);
         EditText typ = (EditText) view.findViewById(R.id.editType);
         EditText productionYear = (EditText) view.findViewById(R.id.editProductionYear);

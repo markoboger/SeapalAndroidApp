@@ -40,13 +40,7 @@ public class BoatViewFragment extends Fragment {
             mCurrentPosition = savedInstanceState.getInt(ARG_POSITION);
             mCurrentUUID = (UUID) savedInstanceState.get(ARG_UUID);
         }
-
-
-
-
         return inflater.inflate(R.layout.boat_view, container, false);
-
-
     }
 
     @Override
@@ -81,6 +75,7 @@ public class BoatViewFragment extends Fragment {
     }
 
     public IBoat getBoatFromCurrentView() {
-        return BoatUtils.convertViewToBoat(getView());
+        IBoat boat = boatController.getBoat(mCurrentUUID);
+        return BoatUtils.convertViewToBoat(getView(), boat);
     }
 }
