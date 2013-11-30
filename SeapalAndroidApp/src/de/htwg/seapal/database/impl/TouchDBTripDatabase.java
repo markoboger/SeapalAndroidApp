@@ -149,7 +149,6 @@ public class TouchDBTripDatabase implements ITripDatabase {
 		return false;
 	}
 
-	@Override
 	public List<ITrip> findByBoat(UUID boatId) {
 		List<ITrip> lst = new LinkedList<ITrip>();
 		List<ITrip> log = new LinkedList<ITrip>();
@@ -167,8 +166,10 @@ public class TouchDBTripDatabase implements ITripDatabase {
 				}
 			}
 
+
 		}
-		Log.d(TAG, "All Trips: " + log.toString());
+
+		//Log.d(TAG, "All Trips: " + log.toString());
 		return lst;
 	}
 

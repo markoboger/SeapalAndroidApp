@@ -3,6 +3,7 @@ package de.htwg.seapal.aview.gui.activity;
 
 
 import java.util.LinkedList;
+
 import java.util.List;
 import com.couchbase.cblite.router.CBLURLStreamHandlerFactory;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -11,6 +12,7 @@ import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -21,13 +23,13 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.inject.Inject;
 
 import android.app.DialogFragment;
-import android.app.FragmentManager;
 import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,8 +69,8 @@ MapDialogFragment.MapDialogListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.map);
 
-		FragmentManager myFragmentManager = getFragmentManager();
-		MapFragment myMapFragment  = (MapFragment)myFragmentManager.findFragmentById(R.id.map);
+		FragmentManager myFragmentManager = getSupportFragmentManager();
+		SupportMapFragment myMapFragment  = (SupportMapFragment) myFragmentManager.findFragmentById(R.id.map);
 		map = myMapFragment.getMap();
 
         if (map != null) {

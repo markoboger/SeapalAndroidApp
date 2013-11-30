@@ -18,11 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.htwg.seapal.R;
-import roboguice.activity.RoboActivity;
+import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
-public class BaseDrawerActivity extends RoboActivity {
+public class BaseDrawerActivity extends RoboFragmentActivity {
 
 	@InjectView(R.id.drawer_menu_drawer_list)
 	private ListView drawerListView;
@@ -43,7 +43,7 @@ public class BaseDrawerActivity extends RoboActivity {
 		classes = new ArrayList<Class<? extends Activity>>();
 		classes.add(de.htwg.seapal.aview.gui.activity.MapActivity.class);
 		classes.add(LogbookActivity.class);
-		classes.add(de.htwg.seapal.aview.tui.activity.MenuActivity.class);
+        classes.add(de.htwg.seapal.aview.tui.activity.MenuActivity.class);
 	}
 
 	// -------------------------------------------- CREATION ------------

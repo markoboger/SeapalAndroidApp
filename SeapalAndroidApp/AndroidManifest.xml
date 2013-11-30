@@ -29,13 +29,15 @@
 
         <activity android:name="de.htwg.seapal.aview.gui.activity.BoatActivity" >
         </activity>
+        <activity android:name=".aview.gui.fragment.LogbookSlideFragment" >
+        </activity>
         <activity android:name="de.htwg.seapal.aview.gui.activity.TripActivity" >
         </activity>
         <activity android:name="de.htwg.seapal.aview.gui.activity.TripListActivity" >
         </activity>
-        <activity android:name="de.htwg.seapal.aview.tui.activity.MenuActivity" >
-        </activity>
         <activity android:name="de.htwg.seapal.aview.gui.activity.LogbookActivity" >
+        </activity>
+        <activity android:name="de.htwg.seapal.aview.tui.activity.MenuActivity" >
         </activity>
         <activity android:name="de.htwg.seapal.aview.tui.activity.BoatActivity" >
         </activity>

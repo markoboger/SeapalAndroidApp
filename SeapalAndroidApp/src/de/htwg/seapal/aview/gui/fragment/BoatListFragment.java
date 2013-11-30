@@ -1,9 +1,9 @@
 package de.htwg.seapal.aview.gui.fragment;
 
 import android.app.Activity;
-import android.app.ListFragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,11 +22,12 @@ import de.htwg.seapal.controller.IBoatController;
 import de.htwg.seapal.model.IBoat;
 import de.htwg.seapal.model.impl.Boat;
 import roboguice.RoboGuice;
+import roboguice.fragment.RoboListFragment;
 
 /**
  * Created by jakub on 11/16/13.
  */
-public class BoatListFragment extends ListFragment  {
+public class BoatListFragment extends RoboListFragment {
 
     OnBoatNameSelectedListener mCallback;
     @Inject
@@ -39,7 +40,6 @@ public class BoatListFragment extends ListFragment  {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        RoboGuice.getInjector(getActivity()).injectMembersWithoutViews(this);
 
         boatList = boatController.getAllBoats();
         final int layout = R.layout.boat_list_view;
@@ -139,7 +139,7 @@ public class BoatListFragment extends ListFragment  {
 
 
     public void onSaveBoat() {
-        BoatViewFragment boatViewFragment =  (BoatViewFragment) getFragmentManager().findFragmentById(R.id.boat_view_fragment);
+        BoatViewFragment boatViewFragment =  (BoatViewFragment) getFragmentManager().findFragmentById(R.id.boat_view);
         Boat boat = (Boat) boatViewFragment.getBoatFromCurrentView();
         if (mPosition >= 0) {
             boatList.set(mPosition, boat);

@@ -15,10 +15,10 @@
         />
 
     <fragment
-        android:name="de.htwg.seapal.aview.gui.fragment.BoatViewFragment"
+        android:name="de.htwg.seapal.aview.gui.fragment.LogbookSlideFragment"
         android:layout_height="match_parent"
         android:layout_width="0dp"
         android:layout_weight="2"
-        android:id="@+id/boat_view_fragment"
+        android:id="@+id/logbook_slide_fragment"
         />
 </LinearLayout>

@@ -9,6 +9,7 @@ import java.util.UUID;
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.fragment.BoatListFragment;
 import de.htwg.seapal.aview.gui.fragment.BoatViewFragment;
+import de.htwg.seapal.aview.gui.fragment.LogbookSlideFragment;
 
 /**
  * Created by jakub on 11/16/13.
@@ -23,9 +24,9 @@ public class LogbookActivity extends BaseDrawerActivity implements BoatListFragm
 
     @Override
     public void onBoatSelected(int position, UUID uuid) {
-        BoatViewFragment boatViewFragment =  (BoatViewFragment) getFragmentManager().findFragmentById(R.id.boat_view_fragment);
-        if(boatViewFragment != null) {
-            boatViewFragment.updateBoatView(position, uuid);
+        LogbookSlideFragment logbookSlideFragment = (LogbookSlideFragment) getSupportFragmentManager().findFragmentById(R.id.logbook_slide_fragment);
+        if(logbookSlideFragment != null) {
+            logbookSlideFragment.updateBoatView(position, uuid);
         }
     }
 
@@ -38,16 +39,16 @@ public class LogbookActivity extends BaseDrawerActivity implements BoatListFragm
 
     @Override
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
-        BoatListFragment boatListFragment =  (BoatListFragment) getFragmentManager().findFragmentById(R.id.boat_list_fragment);
+        LogbookSlideFragment logbookSlideFragment =  (LogbookSlideFragment) getSupportFragmentManager().findFragmentById(R.id.logbook_slide_fragment);
         switch (item.getItemId()) {
             case R.id.boatmenu_new:
-                boatListFragment.onNewBoat();
+                logbookSlideFragment.onNewBoat();
                 break;
             case R.id.boatmenu_delete:
-                boatListFragment.onDeleteBoat();
+                logbookSlideFragment.onDeleteBoat();
                 break;
             case R.id.boatmenu_save:
-                boatListFragment.onSaveBoat();
+                logbookSlideFragment.onSaveBoat();
                 break;
         }
         return super.onMenuItemSelected(featureId, item);

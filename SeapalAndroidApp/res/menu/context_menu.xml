@@ -7,6 +7,5 @@
     <item android:id="@+id/deleteMark" 
         android:visible="false" 
         android:title="delete Mark"/>
-    
 
 </menu>
