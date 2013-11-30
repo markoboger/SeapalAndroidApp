@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 
 import com.google.inject.Inject;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.util.UUID;
 
 import de.htwg.seapal.R;
@@ -24,6 +26,8 @@ import roboguice.fragment.RoboFragment;
  */
 public class LogbookSlideFragment extends RoboFragment {
 
+    public static final int BOAT_VIEW_FRAGMENT = 1;
+    public static final int TRIP_LIST_FRAGMENT = 0;
     private ViewPager mPager;
     private PagerAdapter mPagerAdapter;
     private  TripListFragment mTripListFragment;
@@ -47,6 +51,13 @@ public class LogbookSlideFragment extends RoboFragment {
     }
 
     public void updateBoatView(int position, UUID uuid) {
+        String boatName =  boatController.getBoatName(uuid);
+        if (StringUtils.isEmpty(boatName)) {
+            mPager.setCurrentItem(BOAT_VIEW_FRAGMENT);
+        } else {
+            mPager.setCurrentItem(TRIP_LIST_FRAGMENT);
+
+        }
         if (mBoatViewFragment != null) {
             mBoatViewFragment.updateBoatView(position, uuid);
         }
@@ -95,9 +106,9 @@ public class LogbookSlideFragment extends RoboFragment {
         @Override
         public Fragment getItem(int i) {
             switch (i) {
-                case 0:
+                case TRIP_LIST_FRAGMENT:
                     return mTripListFragment;
-                case 1:
+                case BOAT_VIEW_FRAGMENT:
                     return mBoatViewFragment;
                 default:
                     return new Fragment();
