@@ -29,6 +29,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v4.app.FragmentManager;
 import android.util.TypedValue;
 import android.view.View;
@@ -76,7 +77,8 @@ MapDialogFragment.MapDialogListener {
         if (map != null) {
 
 
-            map.setMyLocationEnabled(false);
+            map.setMyLocationEnabled(true);
+            map.getUiSettings().setMyLocationButtonEnabled(false);
             map.getUiSettings().setZoomControlsEnabled(false);
 
             map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
@@ -130,7 +132,11 @@ MapDialogFragment.MapDialogListener {
 		crosshairMarker = map.addMarker(new MarkerOptions()
 		.position(arg0)
 		.icon(BitmapDescriptorFactory.fromResource(R.drawable.haircross))
-		.snippet(arg0.toString()));
+		.snippet(arg0.toString())
+        .anchor(0.5f, 0.5f));
+
+        Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        v.vibrate(100);
 
 		crosshairMarker.showInfoWindow();
 

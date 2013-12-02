@@ -42,6 +42,7 @@ public class LogbookSlideFragment extends RoboFragment {
         mPagerAdapter = new ScreenSlidePagerAdapter(getActivity().getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
 
+
         mTripListFragment = new TripListFragment();
         mBoatViewFragment = new BoatViewFragment();
 
