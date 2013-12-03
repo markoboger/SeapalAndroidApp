@@ -6,6 +6,8 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -89,11 +91,11 @@ public class BaseDrawerActivity extends RoboFragmentActivity {
 	}
 
 	// -------------------------------------------- ACTION - BAR ------------
-	//@Override
-	//public boolean onOptionsItemSelected(MenuItem item) {
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
 		// The action bar home/up action should open or close the drawer.
-    //    return drawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
-    //}
+        return drawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+    }
 
 	// -------------------------------------------- DRAWER ------------------
 	private void initializeDrawer() {
@@ -138,11 +140,9 @@ public class BaseDrawerActivity extends RoboFragmentActivity {
 	private class DrawerItemClickListener implements
 			ListView.OnItemClickListener {
 		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
+		public void onItemClick(AdapterView<?> parent, View view, int position,	long id) {
 			changeToActivity = position;
-			drawerListViewLeft.setItemChecked(classes.indexOf(this.getClass()),
-                    true);
+			drawerListViewLeft.setItemChecked(classes.indexOf(this.getClass()), true);
 			drawerLayout.closeDrawer(drawerListViewLeft);
 		}
 	}

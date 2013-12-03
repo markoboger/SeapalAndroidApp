@@ -24,16 +24,18 @@ import android.app.DialogFragment;
 import android.app.SearchManager;
 import android.content.Context;
 import android.graphics.Color;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.DrawerLayout;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 import android.widget.SearchView;
-import android.widget.TextView;
 import android.widget.Toast;
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.fragment.MapDialogFragment;
@@ -84,9 +86,37 @@ MapDialogFragment.MapDialogListener {
             map.setOnMapLongClickListener(this);
             map.setOnMarkerClickListener(this);
 
-            goToCurrentLocation(13);
+            goToLastKnownLocation(13);
         }
+
+        setupDrawerForMapView();
 	}
+
+    private void setupDrawerForMapView() {
+
+        int actionBarHeight = getActionBarHeight();
+        ListView listLeft = (ListView) findViewById(R.id.drawer_menu_drawer_list_left);
+        ListView listRight = (ListView) findViewById(R.id.drawer_menu_drawer_list_right);
+
+        listLeft.setBackgroundDrawable(getResources().getDrawable(R.drawable.tranparent_drawer_under_actionbar));
+        listRight.setBackgroundDrawable(getResources().getDrawable(R.drawable.tranparent_drawer_under_actionbar));
+
+        listLeft.setPadding(0,actionBarHeight,0,0);
+        listRight.setPadding(0,actionBarHeight,0,0);
+
+    }
+
+    private int getActionBarHeight() {
+        int actionBarHeight = 0;
+        // Calculate ActionBar height
+        TypedValue tv = new TypedValue();
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
+        {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(
+                                tv.data,getResources().getDisplayMetrics());
+        }
+        return actionBarHeight;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -107,13 +137,37 @@ MapDialogFragment.MapDialogListener {
 
         switch (item.getItemId()) {
             case R.id.action_goTo:
-                goToCurrentLocation(15);
+                goToLastKnownLocation(15);
                 break;
+            case R.id.action_show_right_drawer:
+                toggleRightDrawer();
+                break;
+            case android.R.id.home:
+                closeRightDreawer();
+                break;
+
         }
         return super.onMenuItemSelected(featureId, item);
     }
 
-	@Override
+    private void closeRightDreawer() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_menu_drawer_layout);
+        if(drawer.isDrawerOpen(Gravity.END)){
+            drawer.closeDrawer(Gravity.END);
+        }
+    }
+
+    private void toggleRightDrawer() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_menu_drawer_layout);
+        if(drawer.isDrawerOpen(Gravity.END)){
+            drawer.closeDrawer(Gravity.END);
+        }else{
+            drawer.openDrawer(Gravity.END);
+            drawer.closeDrawer(Gravity.START);
+        }
+    }
+
+    @Override
 	public void onMapClick(LatLng latlng) {
 		switch (option) {
 		case MARK:
@@ -135,7 +189,9 @@ MapDialogFragment.MapDialogListener {
 			List<LatLng> calclst = calcDistanceRoute.getPoints();
 			calclst.add(latlng);
 			calcDistanceRoute.setPoints(calclst);
-			Toast.makeText(getApplicationContext(), Math.round(calcDistance) + "KM", Toast.LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(),
+                    Math.round(calcDistance) + "KM",
+                    Toast.LENGTH_LONG).show();
 			break;
 		default:
 			break;
@@ -244,9 +300,10 @@ MapDialogFragment.MapDialogListener {
 		return R * c;
 	}
 
-    private void goToCurrentLocation(float ZoomLevel) {
+    private void goToLastKnownLocation(float ZoomLevel) {
         // get current position
         LatLng coordinate = getLastKnownLocation(false);
+
         if(coordinate == null){
             Toast.makeText(getApplicationContext(), getString(R.string.noLocationSignal), Toast.LENGTH_SHORT).show();
         }else{
@@ -259,19 +316,14 @@ MapDialogFragment.MapDialogListener {
     private LatLng getLastKnownLocation(boolean enabledProvidersOnly){
 
         LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
         Location location = null;
-
         List<String> providers = manager.getProviders(enabledProvidersOnly);
 
         for(String provider : providers){
-
             location = manager.getLastKnownLocation(provider);
             //maybe try adding some Criteria here
-
             if(location != null) return new LatLng(location.getLatitude(), location.getLongitude());
         }
-
         //at this point we've done all we can and no location is returned
         return null;
     }

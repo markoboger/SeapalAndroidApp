@@ -19,7 +19,6 @@
         android:choiceMode="singleChoice"
         android:divider="@color/black"
         android:dividerHeight="0.5dp"
-        android:paddingTop="?android:attr/actionBarSize"
         android:background="@color/white"/>
 
     <ListView

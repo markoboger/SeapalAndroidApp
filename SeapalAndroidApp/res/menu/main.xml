@@ -14,7 +14,7 @@
         android:icon="@android:drawable/ic_menu_mylocation" />
 
     <item
-        android:id="@+id/action_show_left_drawer"
+        android:id="@+id/action_show_right_drawer"
         android:orderInCategory="200"
         android:icon="@drawable/actionlogo"
         android:showAsAction="always"
