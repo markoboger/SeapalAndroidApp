@@ -6,8 +6,6 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -24,11 +22,15 @@ import roboguice.inject.InjectView;
 
 public class BaseDrawerActivity extends RoboFragmentActivity {
 
-	@InjectView(R.id.drawer_menu_drawer_list)
-	private ListView drawerListView;
+	@InjectView(R.id.drawer_menu_drawer_list_left)
+	private ListView drawerListViewLeft;
+    @InjectView(R.id.drawer_menu_drawer_list_right)
+    private ListView drawerListViewRight;
 
-	@InjectResource(R.array.drawer_list_array)
-	private String[] drawerActivityList;
+	@InjectResource(R.array.drawer_list_array_left)
+	private String[] drawerActivityListLeft;
+    @InjectResource(R.array.drawer_list_array_right)
+    private String[] drawerActivityListRight;
 
 	private DrawerLayout drawerLayout;
 
@@ -83,30 +85,25 @@ public class BaseDrawerActivity extends RoboFragmentActivity {
 		int index = classes.indexOf(this.getClass());
 		// if the activity is in the drawer set the title
 		if (index != -1)
-			drawerListView.setItemChecked(index, true);
+			drawerListViewLeft.setItemChecked(index, true);
 	}
 
 	// -------------------------------------------- ACTION - BAR ------------
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+	//@Override
+	//public boolean onOptionsItemSelected(MenuItem item) {
 		// The action bar home/up action should open or close the drawer.
-        return drawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
-    }
+    //    return drawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+    //}
 
 	// -------------------------------------------- DRAWER ------------------
 	private void initializeDrawer() {
-		drawerListView.setAdapter(new ArrayAdapter<String>(this,
-				R.layout.drawer_list_item, drawerActivityList));
+		drawerListViewLeft.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.drawer_list_item, drawerActivityListLeft));
+        drawerListViewRight.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.drawer_list_item_right, drawerActivityListRight));
 
-		drawerListView.setOnItemClickListener(new DrawerItemClickListener());
+		drawerListViewLeft.setOnItemClickListener(new DrawerItemClickListener());
+        drawerListViewRight.setOnItemClickListener(new DrawerItemClickListener());
 
         //getActionBar().hide();
 		getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -131,8 +128,8 @@ public class BaseDrawerActivity extends RoboFragmentActivity {
 		int index = classes.indexOf(this.getClass());
 		// if the activity is in the drawer set the title
 		if (index != -1) {
-			drawerListView.setItemChecked(index, true);
-			setTitle(drawerActivityList[index]);
+			drawerListViewLeft.setItemChecked(index, true);
+			setTitle(drawerActivityListLeft[index]);
 		} else
 			setTitle("Seapal");
 
@@ -144,9 +141,9 @@ public class BaseDrawerActivity extends RoboFragmentActivity {
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
 			changeToActivity = position;
-			drawerListView.setItemChecked(classes.indexOf(this.getClass()),
-					true);
-			drawerLayout.closeDrawer(drawerListView);
+			drawerListViewLeft.setItemChecked(classes.indexOf(this.getClass()),
+                    true);
+			drawerLayout.closeDrawer(drawerListViewLeft);
 		}
 	}
 

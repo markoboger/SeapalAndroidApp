@@ -6,40 +6,37 @@ import java.util.LinkedList;
 
 import java.util.List;
 import com.couchbase.cblite.router.CBLURLStreamHandlerFactory;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.inject.Inject;
 
 import android.app.DialogFragment;
+import android.app.SearchManager;
+import android.content.Context;
 import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.FragmentManager;
-import android.util.TypedValue;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.RelativeLayout;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.fragment.MapDialogFragment;
-import de.htwg.seapal.controller.IMarkController;
-import de.htwg.seapal.controller.IWaypointController;
 
 
 public class MapActivity extends BaseDrawerActivity
@@ -87,8 +84,34 @@ MapDialogFragment.MapDialogListener {
             map.setOnMapLongClickListener(this);
             map.setOnMarkerClickListener(this);
 
+            goToCurrentLocation(13);
         }
 	}
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.main, menu);
+
+        // Add SearchWidget.
+        SearchManager searchManager = (SearchManager) getSystemService( Context.SEARCH_SERVICE );
+        SearchView searchView = (SearchView) menu.findItem( R.id.action_search ).getActionView();
+
+        searchView.setSearchableInfo( searchManager.getSearchableInfo( getComponentName() ) );
+
+        return super.onCreateOptionsMenu( menu );
+    }
+
+    @Override
+    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.action_goTo:
+                goToCurrentLocation(15);
+                break;
+        }
+        return super.onMenuItemSelected(featureId, item);
+    }
 
 	@Override
 	public void onMapClick(LatLng latlng) {
@@ -220,4 +243,36 @@ MapDialogFragment.MapDialogListener {
 		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
 		return R * c;
 	}
+
+    private void goToCurrentLocation(float ZoomLevel) {
+        // get current position
+        LatLng coordinate = getLastKnownLocation(false);
+        if(coordinate == null){
+            Toast.makeText(getApplicationContext(), getString(R.string.noLocationSignal), Toast.LENGTH_SHORT).show();
+        }else{
+            // set map view to current position
+            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, ZoomLevel);
+            map.animateCamera(yourLocation);
+        }
+    }
+
+    private LatLng getLastKnownLocation(boolean enabledProvidersOnly){
+
+        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        Location location = null;
+
+        List<String> providers = manager.getProviders(enabledProvidersOnly);
+
+        for(String provider : providers){
+
+            location = manager.getLastKnownLocation(provider);
+            //maybe try adding some Criteria here
+
+            if(location != null) return new LatLng(location.getLatitude(), location.getLongitude());
+        }
+
+        //at this point we've done all we can and no location is returned
+        return null;
+    }
 }
