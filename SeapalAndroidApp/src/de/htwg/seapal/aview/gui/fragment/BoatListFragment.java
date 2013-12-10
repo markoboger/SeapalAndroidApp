@@ -76,11 +76,13 @@ public class BoatListFragment extends RoboListFragment {
                 return v;
             }
         });
+
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        setSelection(0);
     }
 
     @Override
@@ -138,8 +140,7 @@ public class BoatListFragment extends RoboListFragment {
     }
 
 
-    public void onSaveBoat() {
-        BoatViewFragment boatViewFragment =  (BoatViewFragment) getFragmentManager().findFragmentById(R.id.boat_view);
+    public void onSaveBoat(BoatViewFragment boatViewFragment) {
         Boat boat = (Boat) boatViewFragment.getBoatFromCurrentView();
         if (mPosition >= 0) {
             boatList.set(mPosition, boat);

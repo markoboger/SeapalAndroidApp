@@ -87,5 +87,8 @@
     <string name="newtext">NEW</string>
     <string name="show_right_drawer">Show map menu</string>
     <string name="noLocationSignal">No location signal</string>
+    <string name="delete_trip">Do you want to delete the trip?</string>
+    <string name="delete_trip_yes">yes</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

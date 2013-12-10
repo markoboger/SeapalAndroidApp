@@ -29,17 +29,18 @@ dependencies {
     compile 'com.couchbase.cblite:CBLiteEktorp:1.0.0-beta'
     compile project(':libs:google-play-services_lib')
     compile fileTree(dir: 'libs', include: 'td_collator_so.jar')
+    compile 'com.github.chrisbanes.actionbarpulltorefresh:extra-abs:+'
 }
 
 android {
     buildToolsVersion "17" 
-    compileSdkVersion 17
+    compileSdkVersion 19
     compileOptions.encoding = "UTF-8"
     defaultConfig {
         versionCode 1
         versionName "1.1"
         minSdkVersion 14
-        targetSdkVersion 17
+        targetSdkVersion 19
     }
     sourceSets {
         main {

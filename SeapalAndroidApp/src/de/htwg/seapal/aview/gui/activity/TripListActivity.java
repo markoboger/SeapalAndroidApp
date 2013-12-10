@@ -74,13 +74,13 @@ public class TripListActivity extends BaseDrawerActivity {
 	}
 
 	private void addListView() {
-		ListView listview = (ListView) findViewById(R.id.tripsListView);
+		ListView listview = (ListView) findViewById(android.R.id.list);
 		TripListAdapter adapter = new TripListAdapter(this,
                 tripList, controller);
 
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		header = inflater.inflate(R.layout.tripslistheader, null);
-		mainView = (ViewGroup) findViewById(R.id.tripList);
+		mainView = (ViewGroup) findViewById(R.id.trip_list);
 		mainView.addView(header, 0);
 
 		listview.setAdapter(adapter);

@@ -87,7 +87,7 @@ public class LogbookSlideFragment extends RoboFragment {
     public void onSaveBoat() {
         BoatListFragment boatListFragment = (BoatListFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.boat_list_fragment);
         if (boatListFragment != null) {
-            boatListFragment.onSaveBoat();
+            boatListFragment.onSaveBoat(mBoatViewFragment);
         }
 
     }

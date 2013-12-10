@@ -1,18 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingLeft="25dp"
-    android:paddingRight="25dp"
-    android:background="@color/darkGray"
-    android:id="@+id/tripList">
+    android:id="@+id/trip_list">
     
    
     
     <ListView 
-        android:id="@+id/tripsListView"
+        android:id="@android:id/list"
         android:layout_width="match_parent"
-    	android:layout_height="wrap_content"/>    
+    	android:layout_height="wrap_content"
+        android:scrollbarStyle="outsideInset"/>
 
-</LinearLayout>
+
+
+
+    <TextView
+        android:id="@android:id/empty"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:text="Empty"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:gravity="center" />
+
+
+</uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout>
