@@ -23,32 +23,49 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import android.app.DialogFragment;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.provider.MediaStore;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.fragment.MapDialogFragment;
+import roboguice.inject.InjectResource;
+import roboguice.inject.InjectView;
 
 
 public class MapActivity extends BaseDrawerActivity
 implements OnMapLongClickListener, OnMapClickListener, OnMarkerClickListener, 
 MapDialogFragment.MapDialogListener {
 
-	private enum SelectedOption {
-		NONE, MARK, ROUTE, DISTANCE, GOAL
-	}
+    @InjectView(R.id.drawer_menu_drawer_list_right)
+    private ListView drawerListViewRight;
 
+    @InjectResource(R.array.drawer_list_array_right)
+    private String[] drawerActivityListRight;
+
+	private enum SelectedOption {
+		NONE, MARK, ROUTE, DISTANCE, GOAL, MENU_ROUTE, MENU_MARK, MENU_DISTANCE, MENU_GOAL
+	}
 	
 	static {
 		CBLURLStreamHandlerFactory.registerSelfIgnoreError();
@@ -63,6 +80,7 @@ MapDialogFragment.MapDialogListener {
 	private final List<Marker> calcDistanceMarker = new LinkedList<Marker>();
 	private Polyline calcDistanceRoute = null;
 	private double calcDistance;
+    private DrawerLayout drawer;
 
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -89,8 +107,20 @@ MapDialogFragment.MapDialogListener {
             goToLastKnownLocation(13);
         }
 
+        drawer = (DrawerLayout) findViewById(R.id.drawer_menu_drawer_layout);
+
         setupDrawerForMapView();
+
+        drawerListViewRight.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.drawer_list_item_right, drawerActivityListRight));
+        drawerListViewRight.setOnItemClickListener(new DrawerItemClickListener());
 	}
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        handleSmallCameraPhoto(data);
+    }
 
     private void setupDrawerForMapView() {
 
@@ -145,20 +175,17 @@ MapDialogFragment.MapDialogListener {
             case android.R.id.home:
                 closeRightDreawer();
                 break;
-
         }
         return super.onMenuItemSelected(featureId, item);
     }
 
     private void closeRightDreawer() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_menu_drawer_layout);
         if(drawer.isDrawerOpen(Gravity.END)){
             drawer.closeDrawer(Gravity.END);
         }
     }
 
     private void toggleRightDrawer() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_menu_drawer_layout);
         if(drawer.isDrawerOpen(Gravity.END)){
             drawer.closeDrawer(Gravity.END);
         }else{
@@ -193,6 +220,22 @@ MapDialogFragment.MapDialogListener {
                     Math.round(calcDistance) + "KM",
                     Toast.LENGTH_LONG).show();
 			break;
+        case MENU_ROUTE:
+            setCrosshairMarker(latlng);
+            onDialogSetRouteClick(new DialogFragment());
+            option = SelectedOption.ROUTE;
+            onMapClick(latlng);
+            break;
+        case MENU_MARK:
+            setCrosshairMarker(latlng);
+            onDialogSetMarkClick(new DialogFragment());
+            option = SelectedOption.NONE;
+            break;
+        case MENU_DISTANCE:
+            setCrosshairMarker(latlng);
+            onDialogcalcDistanceClick(new DialogFragment());
+            option = SelectedOption.DISTANCE;
+            break;
 		default:
 			break;
 		}
@@ -200,26 +243,27 @@ MapDialogFragment.MapDialogListener {
 
 	}
 
-	@Override
-	public void onMapLongClick(LatLng arg0) {
-		option = SelectedOption.NONE;
+    private void setCrosshairMarker(LatLng latLng){
 
-		if(crosshairMarker != null) {
-			crosshairMarker.remove();
-		}
-		route = null;
-		crosshairMarker = map.addMarker(new MarkerOptions()
-		.position(arg0)
-		.icon(BitmapDescriptorFactory.fromResource(R.drawable.haircross))
-		.snippet(arg0.toString())
-        .anchor(0.5f, 0.5f));
+        if(crosshairMarker != null) {
+            crosshairMarker.remove();
+        }
+
+        crosshairMarker = map.addMarker(new MarkerOptions()
+                .position(latLng)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.haircross))
+                .snippet(latLng.toString())
+                .anchor(0.5f, 0.5f));
 
         Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         v.vibrate(100);
+    }
 
-		crosshairMarker.showInfoWindow();
-
-
+	@Override
+	public void onMapLongClick(LatLng latLng) {
+		option = SelectedOption.NONE;
+		setCrosshairMarker(latLng);
+        crosshairMarker.showInfoWindow();
 	}
 
 	@Override
@@ -282,9 +326,82 @@ MapDialogFragment.MapDialogListener {
 
 	@Override
 	public void onDialogDeleteClick(DialogFragment dialog) {
-		option = SelectedOption.NONE;
 		crosshairMarker.remove();
+		option = SelectedOption.NONE;
 	}
+
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position,	long id) {
+            if(parent.getId() == R.id.drawer_menu_drawer_list_right){
+                selectChoosenMeunPoint(position);
+                drawer.closeDrawer(Gravity.END);
+            }
+        }
+    }
+
+    void selectChoosenMeunPoint(int position){
+        switch(position){
+            case 0:
+                break;
+            case 1:
+                //Mark
+                option = SelectedOption.MENU_MARK;
+                break;
+            case 2:
+                // Route
+                option = SelectedOption.MENU_ROUTE;
+                break;
+            case 3:
+                // Distance
+                option = SelectedOption.MENU_DISTANCE;
+                break;
+            case 4:
+                // Goto Location
+                goToLastKnownLocation(15);
+                break;
+            case 5:
+                // Take Picture
+                if(isIntentAvailable(getApplicationContext(), MediaStore.ACTION_IMAGE_CAPTURE)){
+                    dispatchTakePictureIntent(1);
+                }else{
+                    Toast.makeText(getApplicationContext(),
+                            getString(R.string.noCameraAvailable),
+                            Toast.LENGTH_SHORT)
+                            .show();
+                }
+                break;
+            case 6:
+                // Person over Board
+                break;
+            case 7:
+                // Discard Target
+                crosshairMarker.remove();
+                option = SelectedOption.NONE;
+                break;
+
+
+        }
+    }
+
+    private void dispatchTakePictureIntent(int actionCode) {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(takePictureIntent, actionCode);
+    }
+
+    public static boolean isIntentAvailable(Context context, String action) {
+        final PackageManager packageManager = context.getPackageManager();
+        final Intent intent = new Intent(action);
+        List<ResolveInfo> list =
+                packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        return list.size() > 0;
+    }
+
+    private void handleSmallCameraPhoto(Intent intent) {
+        Bundle extras = intent.getExtras();
+        Bitmap mImageBitmap = (Bitmap) extras.get("data");
+        //mImageView.setImageBitmap(mImageBitmap);
+    }
 
 	Double calcDistance(LatLng pos1, LatLng pos2) {
 

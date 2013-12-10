@@ -59,10 +59,22 @@
         <item>@string/distance</item>
         <item>@string/goToCurrentLocation</item>
         <item>@string/takePicture</item>
-        <item>@string/takePicture</item>
         <item>@string/personOverBoard</item>
         <item>@string/discardTarget</item>
     </string-array>
+
+    <array name="drawer_list_icons_right">
+        <item>@android:drawable/ic_menu_mylocation</item>
+        <item>@android:drawable/ic_dialog_map</item>
+        <item>@android:drawable/ic_dialog_map</item>
+        <item>@android:drawable/ic_menu_mapmode</item>
+        <item>@android:drawable/ic_menu_mylocation</item>
+        <item>@android:drawable/ic_menu_camera</item>
+        <item>@android:drawable/ic_dialog_alert</item>
+        <item>@android:drawable/ic_menu_delete</item>
+    </array>
+
+    <string name="desc_list_item_icon">list Icon</string>
 
     <string name="drawer_open">open drawer</string>
     <string name="drawer_close">close drawer</string>
@@ -87,5 +99,6 @@
     <string name="newtext">NEW</string>
     <string name="show_right_drawer">Show map menu</string>
     <string name="noLocationSignal">No location signal</string>
+    <string name="noCameraAvailable">No Camera/Camera App Available</string>
 
 </resources>
