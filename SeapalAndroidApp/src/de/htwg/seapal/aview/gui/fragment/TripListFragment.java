@@ -1,22 +1,16 @@
 package de.htwg.seapal.aview.gui.fragment;
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.slf4j.LoggerFactory;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -29,17 +23,12 @@ import java.util.UUID;
 
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.activity.TripActivity;
-import de.htwg.seapal.aview.gui.activity.TripListActivity;
 import de.htwg.seapal.aview.gui.adapter.TripListAdapter;
 import de.htwg.seapal.controller.impl.BoatController;
 import de.htwg.seapal.controller.impl.TripController;
 import de.htwg.seapal.model.IBoat;
-import de.htwg.seapal.model.ITrip;
-import de.htwg.seapal.utils.logging.Logger;
-import roboguice.fragment.RoboFragment;
 import roboguice.fragment.RoboListFragment;
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
-import uk.co.senab.actionbarpulltorefresh.library.Options;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
 import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 

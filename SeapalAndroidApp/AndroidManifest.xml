@@ -28,11 +28,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
 
-        <activity android:name="de.htwg.seapal.aview.gui.activity.BoatActivity" >
-        </activity>
         <activity android:name="de.htwg.seapal.aview.gui.activity.TripActivity" >
-        </activity>
-        <activity android:name="de.htwg.seapal.aview.gui.activity.TripListActivity" >
         </activity>
         <activity android:name="de.htwg.seapal.aview.gui.activity.LogbookActivity" >
         </activity>
