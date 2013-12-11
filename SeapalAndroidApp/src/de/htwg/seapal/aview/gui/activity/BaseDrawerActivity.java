@@ -1,6 +1,7 @@
 package de.htwg.seapal.aview.gui.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -9,12 +10,15 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,20 +32,12 @@ public class BaseDrawerActivity extends RoboFragmentActivity {
 
 	@InjectView(R.id.drawer_menu_drawer_list_left)
 	private ListView drawerListViewLeft;
-    @InjectView(R.id.drawer_menu_drawer_list_right)
-    private ListView drawerListViewRight;
-
 	@InjectResource(R.array.drawer_list_array_left)
 	private String[] drawerActivityListLeft;
-    @InjectResource(R.array.drawer_list_array_right)
-    private String[] drawerActivityListRight;
 
 	private DrawerLayout drawerLayout;
-
     private ActionBarDrawerToggle drawerToggle;
-
 	private int changeToActivity;
-
 	private static final List<Class<? extends Activity>> classes;
 
 	// Add here all Activities in the drawerList (same order)
@@ -101,13 +97,19 @@ public class BaseDrawerActivity extends RoboFragmentActivity {
 
 	// -------------------------------------------- DRAWER ------------------
 	private void initializeDrawer() {
-		drawerListViewLeft.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, drawerActivityListLeft));
-        drawerListViewRight.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item_right, drawerActivityListRight));
 
+        int[] drawerIconsRight = { android.R.drawable.ic_menu_mylocation,
+                android.R.drawable.ic_dialog_map,
+                android.R.drawable.ic_dialog_map,
+                android.R.drawable.ic_menu_mapmode,
+                android.R.drawable.ic_menu_mylocation,
+                android.R.drawable.ic_menu_camera,
+                android.R.drawable.ic_dialog_alert,
+                android.R.drawable.ic_menu_delete };
+
+		drawerListViewLeft.setAdapter( new ArrayAdapter(this,
+                R.layout.drawer_list_item, drawerActivityListLeft));
 		drawerListViewLeft.setOnItemClickListener(new DrawerItemClickListener());
-        drawerListViewRight.setOnItemClickListener(new DrawerItemClickListener());
 
         //getActionBar().hide();
 		getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -136,16 +138,17 @@ public class BaseDrawerActivity extends RoboFragmentActivity {
 			setTitle(drawerActivityListLeft[index]);
 		} else
 			setTitle("Seapal");
-
 	}
 
 	private class DrawerItemClickListener implements
 			ListView.OnItemClickListener {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,	long id) {
-			changeToActivity = position;
-			drawerListViewLeft.setItemChecked(classes.indexOf(this.getClass()), true);
-			drawerLayout.closeDrawer(drawerListViewLeft);
+            if(parent.getId() == R.id.drawer_menu_drawer_list_left){
+                changeToActivity = position;
+                drawerListViewLeft.setItemChecked(classes.indexOf(this.getClass()), true);
+                drawerLayout.closeDrawer(drawerListViewLeft);
+            }
 		}
 	}
 

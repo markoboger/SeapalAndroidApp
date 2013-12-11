@@ -59,10 +59,22 @@
         <item>@string/distance</item>
         <item>@string/goToCurrentLocation</item>
         <item>@string/takePicture</item>
-        <item>@string/takePicture</item>
         <item>@string/personOverBoard</item>
         <item>@string/discardTarget</item>
     </string-array>
+
+    <array name="drawer_list_icons_right">
+        <item>@android:drawable/ic_menu_mylocation</item>
+        <item>@android:drawable/ic_dialog_map</item>
+        <item>@android:drawable/ic_dialog_map</item>
+        <item>@android:drawable/ic_menu_mapmode</item>
+        <item>@android:drawable/ic_menu_mylocation</item>
+        <item>@android:drawable/ic_menu_camera</item>
+        <item>@android:drawable/ic_dialog_alert</item>
+        <item>@android:drawable/ic_menu_delete</item>
+    </array>
+
+    <string name="desc_list_item_icon">list Icon</string>
 
     <string name="drawer_open">open drawer</string>
     <string name="drawer_close">close drawer</string>
@@ -90,6 +102,7 @@
     <string name="delete_trip">Do you want to delete the trip?</string>
     <string name="delete_trip_yes">yes</string>
     <string name="cancel">Cancel</string>
+    <string name="noCameraAvailable">No Camera/Camera App Available</string>
     <string name="save_boat_text">Save Boat</string>
     <string name="delete_boat_text">Delete Boat</string>
     <string name="new_boat_text">New Boat</string>
