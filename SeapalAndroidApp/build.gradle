@@ -29,7 +29,8 @@ dependencies {
     compile 'com.couchbase.cblite:CBLiteEktorp:1.0.0-beta'
     compile project(':libs:google-play-services_lib')
     compile fileTree(dir: 'libs', include: 'td_collator_so.jar')
-    compile 'com.github.chrisbanes.actionbarpulltorefresh:extra-abs:+'
+    compile 'com.github.chrisbanes.actionbarpulltorefresh:library:+'
+    compile 'com.android.support:appcompat-v7:18.0.+'
 }
 
 android {

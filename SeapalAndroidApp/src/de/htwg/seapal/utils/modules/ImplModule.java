@@ -53,6 +53,12 @@ public class ImplModule implements Module {
 
 		binder.bind(IWaypointController.class).to(WaypointController.class);
 		binder.bind(IWaypointDatabase.class).to(TouchDBWaypointDatabase.class);
+
+
+        // Fragments
+        binder.bind(IWaypointDatabase.class).to(TouchDBWaypointDatabase.class);
+
+
 	}
 
 }

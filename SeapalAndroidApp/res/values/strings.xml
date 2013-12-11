@@ -90,5 +90,8 @@
     <string name="delete_trip">Do you want to delete the trip?</string>
     <string name="delete_trip_yes">yes</string>
     <string name="cancel">Cancel</string>
+    <string name="save_boat_text">Save Boat</string>
+    <string name="delete_boat_text">Delete Boat</string>
+    <string name="new_boat_text">New Boat</string>
 
 </resources>
