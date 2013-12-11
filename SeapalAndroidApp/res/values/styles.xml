@@ -15,6 +15,7 @@
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+        <item name="ptrHeaderStyle">@style/Widget.Custom.PtrHeader</item>
     </style>
 
     <style name="blackLetters">
@@ -34,6 +35,14 @@
     <style name="Widget.ActionBar.Transparent">
         <item name="android:background">@color/darkTransparent</item>
         <item name="android:textColor">@color/white</item>
+    </style>
+
+
+    <style name="Widget.Custom.PtrHeader" parent="android:Widget">
+
+        <item name="ptrPullText">Ziehen um neuen Trip zu erzeugen</item>
+        <item name="ptrRefreshingText">Neuer Trip wird erzeugt</item>
+        <item name="ptrReleaseText">Trip Erzeugt!!! Oeffne Trip..</item>
     </style>
 
 </resources>

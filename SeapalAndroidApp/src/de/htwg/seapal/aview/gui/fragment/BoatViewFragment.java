@@ -15,12 +15,13 @@ import de.htwg.seapal.controller.impl.BoatController;
 import de.htwg.seapal.model.IBoat;
 import de.htwg.seapal.utils.seapal.BoatUtils;
 import roboguice.RoboGuice;
+import roboguice.fragment.RoboFragment;
 
 
 /**
  * Created by jakub on 11/16/13.
  */
-public class BoatViewFragment extends Fragment {
+public class BoatViewFragment extends RoboFragment {
     public final static String ARG_POSITION = "position";
     public final static String ARG_UUID = "uuid";
     private int mCurrentPosition = -1;
@@ -31,7 +32,6 @@ public class BoatViewFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        RoboGuice.getInjector(getActivity()).injectMembersWithoutViews(this);
     }
 
     @Override

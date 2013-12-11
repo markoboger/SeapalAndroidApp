@@ -8,21 +8,56 @@
 
     <TextView
         android:id="@+id/triplistadapter_tripname"
-        android:layout_width="160dp"
+        android:layout_width="210dp"
         android:layout_height="40dp"
         android:paddingTop="10dp"
         android:text=""
-        android:textSize="13sp"
+        android:textSize="18sp"
         android:textStyle="bold" >
     </TextView>
 
     <TextView
-        android:id="@+id/triplistadapter_destination"
-        android:layout_width="120dp"
+        android:id="@+id/triplistadapter_startdate"
+        android:layout_width="190dp"
         android:layout_height="40dp"
         android:paddingTop="10dp"
         android:text=""
-        android:textSize="13sp" >
+        android:textSize="18sp" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/triplistadapter_from"
+        android:layout_width="190dp"
+        android:layout_height="40dp"
+        android:paddingTop="10dp"
+        android:text=""
+        android:textSize="18sp" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/triplistadapter_destination"
+        android:layout_width="170dp"
+        android:layout_height="40dp"
+        android:paddingTop="10dp"
+        android:text=""
+        android:textSize="18sp" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/triplistadapter_enddate"
+        android:layout_width="170dp"
+        android:layout_height="40dp"
+        android:paddingTop="10dp"
+        android:text=""
+        android:textSize="18sp" >
+    </TextView>
+    <TextView
+        android:id="@+id/triplistadapter_skipper"
+        android:layout_width="170dp"
+        android:layout_height="40dp"
+        android:paddingTop="10dp"
+        android:text=""
+        android:textSize="18sp" >
     </TextView>
 
 </LinearLayout>

@@ -6,6 +6,8 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,7 +48,7 @@ public class BaseDrawerActivity extends RoboFragmentActivity {
 	static {
 		classes = new ArrayList<Class<? extends Activity>>();
 		classes.add(de.htwg.seapal.aview.gui.activity.MapActivity.class);
-		classes.add(LogbookActivity.class);
+		classes.add(LogbookTabsActivity.class);
         classes.add(de.htwg.seapal.aview.tui.activity.MenuActivity.class);
 	}
 

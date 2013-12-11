@@ -30,27 +30,4 @@ public class LogbookActivity extends BaseDrawerActivity implements BoatListFragm
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.boatmenu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onMenuItemSelected(int featureId, MenuItem item) {
-        LogbookSlideFragment logbookSlideFragment =  (LogbookSlideFragment) getSupportFragmentManager().findFragmentById(R.id.logbook_slide_fragment);
-        switch (item.getItemId()) {
-            case R.id.boatmenu_new:
-                logbookSlideFragment.onNewBoat();
-                break;
-            case R.id.boatmenu_delete:
-                logbookSlideFragment.onDeleteBoat();
-                break;
-            case R.id.boatmenu_save:
-                logbookSlideFragment.onSaveBoat();
-                break;
-        }
-        return super.onMenuItemSelected(featureId, item);
-    }
 }

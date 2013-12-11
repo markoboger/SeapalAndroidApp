@@ -33,11 +33,6 @@ public class StartState implements TuiState {
 			intent = new Intent((Context) context, RouteActivity.class);
 			((Context) context).startActivity(intent);
 			break;
-		case 'g':
-			intent = new Intent((Context) context,
-					de.htwg.seapal.aview.gui.activity.BoatActivity.class);
-			((Context) context).startActivity(intent);
-			break;
 		case 'x':
 			intent = new Intent((Context) context,
 					de.htwg.seapal.aview.gui.activity.MapActivity.class);
