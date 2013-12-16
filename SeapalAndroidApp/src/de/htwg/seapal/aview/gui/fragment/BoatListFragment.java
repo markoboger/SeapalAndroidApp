@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,7 +30,8 @@ import roboguice.fragment.RoboListFragment;
 public class BoatListFragment extends RoboListFragment {
 
 
-    private OnBoatNameSelectedListener mCallback;
+    private OnBoatNameSelectedListener mBoatSelectedCallback;
+    private OnBoatFavouredListener mBoatFavouredCallback;
     @Inject
     private IBoatController boatController;
 
@@ -100,10 +102,11 @@ public class BoatListFragment extends RoboListFragment {
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception.
         try {
-            mCallback = (OnBoatNameSelectedListener) activity;
+            mBoatSelectedCallback = (OnBoatNameSelectedListener) activity;
+            mBoatFavouredCallback = (OnBoatFavouredListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnBoatNameSelectedListener");
+                    + " must implement OnBoatNameSelectedListener and OnBoatFavouredListener");
         }
     }
 
@@ -112,7 +115,7 @@ public class BoatListFragment extends RoboListFragment {
         super.onListItemClick(l, v, position, id);
         // Notify the parent activity of selected item
         IBoat boat = (IBoat) l.getAdapter().getItem(position);
-        mCallback.onBoatSelected(position, boat.getUUID());
+        mBoatSelectedCallback.onBoatSelected(position, boat.getUUID());
         mPosition = position;
         v.setSelected(true);
         for (View a: l.getTouchables()) {
@@ -164,10 +167,23 @@ public class BoatListFragment extends RoboListFragment {
 
     }
 
+    public void onFavourBoat() {
+        if (mPosition >= 0){
+            IBoat boat = (IBoat) getListAdapter().getItem(mPosition);
+            ListView v = getListView();
+            View a = v.getSelectedView();
+            ImageView view = (ImageView) a.findViewById(R.id.favour_button);
+            view.setBackgroundDrawable(getResources().getDrawable(android.R.drawable.star_on));
+
+        }
+
+    }
+
     private void notifyListAdapter() {
         ArrayAdapter<IBoat> listAdapter = (ArrayAdapter<IBoat>) getListAdapter();
         listAdapter.notifyDataSetChanged();
     }
+
 
     public interface OnBoatNameSelectedListener {
 
@@ -176,4 +192,8 @@ public class BoatListFragment extends RoboListFragment {
     }
 
 
+    public interface OnBoatFavouredListener {
+        public void onBoatFavoured(UUID uuid);
+
+    }
 }

@@ -21,11 +21,13 @@ import de.htwg.seapal.aview.listener.TabListener;
 /**
  * Created by jakub on 12/10/13.
  */
-public class LogbookTabsActivity extends BaseDrawerActivity implements BoatListFragment.OnBoatNameSelectedListener {
+public class LogbookTabsActivity extends BaseDrawerActivity implements BoatListFragment.OnBoatNameSelectedListener, BoatListFragment.OnBoatFavouredListener {
 
 
     public static final int LOGBOOK_FRAGMENT = 1;
     public static final int CREW_FRAGMENT = 0;
+
+    public static final String LOGBOOK_PREFS = "logbook_prefs";
     private int mPosition;
     @Inject
     private LogbookFragment mLogbookFragment;
@@ -39,6 +41,7 @@ public class LogbookTabsActivity extends BaseDrawerActivity implements BoatListF
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.logbook_fragment_tabs);
+
 
 
         ActionBar ab = getActionBar();
@@ -115,7 +118,18 @@ public class LogbookTabsActivity extends BaseDrawerActivity implements BoatListF
                     logbookSlideFragment.onSaveBoat();
                 }
                 break;
+            case R.id.logbookmenu_favour:
+                if (mPosition == LOGBOOK_FRAGMENT) {
+                    LogbookSlideFragment logbookSlideFragment = (LogbookSlideFragment) getSupportFragmentManager().findFragmentById(R.id.logbook_slide_fragment);
+                    logbookSlideFragment.onFavourBoat();
+                }
+                break;
         }
         return super.onMenuItemSelected(featureId, item);
+    }
+
+    @Override
+    public void onBoatFavoured(UUID uuid) {
+
     }
 }

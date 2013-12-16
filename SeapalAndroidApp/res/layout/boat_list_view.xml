@@ -5,22 +5,21 @@
     android:background="@drawable/boat_names_list_item_selector"
     android:gravity="center_horizontal"
     android:id="@+id/boat_list_view"
-    android:layout_marginRight="20dp"
     android:layout_height="match_parent">
 
 
     <TextView
         android:id="@+id/boat_name"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:typeface="sans"
         android:textSize="20sp"
         android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/boat_type"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:textColor="@color/darkGray"
         android:layout_below="@+id/boat_name"
         android:typeface="sans"
@@ -30,28 +29,35 @@
 
        <TextView
         android:id="@+id/production_year"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@id/boat_name"
         android:gravity="right"
-        android:layout_marginRight="30dip"
         android:textSize="15sp"
         android:textColor="@color/darkGray"
         android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/constructor"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:gravity="right"
-        android:layout_marginRight="30dip"
         android:layout_below="@id/production_year"
-        android:layout_marginTop="5dip"
         android:textSize="15sp"
         android:textColor="@color/darkGray"
         android:textStyle="bold"/>
+
+     <ImageView
+         android:background="@android:drawable/star_off"
+         android:layout_below="@+id/production_year"
+         android:layout_toRightOf="@+id/constructor"
+         android:layout_alignParentRight="true"
+         android:id="@+id/favour_button"
+         android:layout_height="wrap_content"
+         android:layout_width="wrap_content" >
+     </ImageView>
 
 
     <ImageView
@@ -62,7 +68,8 @@
         android:gravity="right"
         android:visibility="invisible"
         android:background="@drawable/caret_white"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        android:contentDescription="@string/caret_contet_description" />
 
 
 </RelativeLayout>

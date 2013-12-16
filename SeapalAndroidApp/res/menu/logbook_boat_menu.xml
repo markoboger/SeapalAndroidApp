@@ -10,6 +10,10 @@
         android:showAsAction="ifRoom|withText"
         android:title="@string/delete_boat_text"/>
     <item
+        android:id="@+id/logbookmenu_favour"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/favour_boat_text"/>
+    <item
         android:id="@+id/logbookmenu_new"
         android:showAsAction="ifRoom|withText"
         android:title="@string/new_boat_text"/>
