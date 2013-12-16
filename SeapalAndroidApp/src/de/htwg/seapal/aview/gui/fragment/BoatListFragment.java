@@ -2,8 +2,8 @@ package de.htwg.seapal.aview.gui.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +21,6 @@ import de.htwg.seapal.R;
 import de.htwg.seapal.controller.IBoatController;
 import de.htwg.seapal.model.IBoat;
 import de.htwg.seapal.model.impl.Boat;
-import roboguice.RoboGuice;
 import roboguice.fragment.RoboListFragment;
 
 /**
@@ -29,13 +28,19 @@ import roboguice.fragment.RoboListFragment;
  */
 public class BoatListFragment extends RoboListFragment {
 
-    OnBoatNameSelectedListener mCallback;
+
+    private OnBoatNameSelectedListener mCallback;
     @Inject
     private IBoatController boatController;
+
+    public static final String BOATLIST_PREF_NAME = "boat_list_pref_name";
+    public static final String BOAT_UUID_PREF_NAME = "boat_uuid_pref_name";
 
     private List<IBoat> boatList;
 
     private int mPosition = -1;
+
+    private SharedPreferences settings;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,6 +48,7 @@ public class BoatListFragment extends RoboListFragment {
 
         boatList = boatController.getAllBoats();
         final int layout = R.layout.boat_list_view;
+
 
 
         setListAdapter(new ArrayAdapter<IBoat>(getActivity(), layout, boatList) {
@@ -75,7 +81,9 @@ public class BoatListFragment extends RoboListFragment {
 
                 return v;
             }
+
         });
+
 
     }
 

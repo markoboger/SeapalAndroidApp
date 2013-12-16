@@ -12,10 +12,15 @@
         android:showAsAction="ifRoom"
         android:title="@string/goToCurrentLocation"
         android:icon="@android:drawable/ic_menu_mylocation" />
+    <item
+        android:id="@+id/start_tracking"
+        android:showAsAction="ifRoom"
+        android:orderInCategory="200"
+        android:title="@string/start_tracking_text"/>
 
     <item
         android:id="@+id/action_show_right_drawer"
-        android:orderInCategory="200"
+        android:orderInCategory="300"
         android:icon="@drawable/actionlogo"
         android:showAsAction="ifRoom"
         android:title="@string/show_right_drawer"/>

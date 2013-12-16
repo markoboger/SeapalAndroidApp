@@ -2,24 +2,6 @@ package de.htwg.seapal.aview.gui.activity;
 
 
 
-import java.util.LinkedList;
-
-import java.util.List;
-import com.couchbase.cblite.router.CBLURLStreamHandlerFactory;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
-import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
-import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
-
 import android.app.DialogFragment;
 import android.app.SearchManager;
 import android.content.Context;
@@ -37,16 +19,33 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
+
+import com.couchbase.cblite.router.CBLURLStreamHandlerFactory;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+import java.util.LinkedList;
+import java.util.List;
+
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.fragment.MapDialogFragment;
 import roboguice.inject.InjectResource;
@@ -81,6 +80,7 @@ MapDialogFragment.MapDialogListener {
 	private Polyline calcDistanceRoute = null;
 	private double calcDistance;
     private DrawerLayout drawer;
+
 
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -168,6 +168,8 @@ MapDialogFragment.MapDialogListener {
         switch (item.getItemId()) {
             case R.id.action_goTo:
                 goToLastKnownLocation(15);
+                break;
+            case R.id.start_tracking:
                 break;
             case R.id.action_show_right_drawer:
                 toggleRightDrawer();

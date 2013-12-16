@@ -60,6 +60,9 @@ public class TripActivity extends BaseDrawerActivity implements IObserver {
 		trip = UUID.fromString(extras.getString("trip"));
 		waypointList = waypointController.getWaypoints(trip);
 
+
+
+
 		initUI();
 		fillText();
 	}
