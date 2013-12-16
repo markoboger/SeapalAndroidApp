@@ -44,5 +44,7 @@
         <item name="ptrRefreshingText">Neuer Trip wird erzeugt</item>
         <item name="ptrReleaseText">Trip Erzeugt!!! Oeffne Trip..</item>
     </style>
+    <dimen name="ptr_progress_bar_stroke_width">6dp</dimen>
+
 
 </resources>
