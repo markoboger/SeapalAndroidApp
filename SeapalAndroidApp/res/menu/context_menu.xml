@@ -3,9 +3,9 @@
     
     <item android:id="@+id/addMark" 
         android:visible="true" 
-        android:title="Add Mark"/>
+        android:title="@string/add_mark_text"/>
     <item android:id="@+id/deleteMark" 
         android:visible="false" 
-        android:title="delete Mark"/>
+        android:title="@string/delete_mark_text"/>
 
 </menu>

@@ -42,8 +42,7 @@ public class LogbookTabsActivity extends BaseDrawerActivity implements BoatListF
 
 
         ActionBar ab = getActionBar();
-
-        ab.addTab(ab.newTab().setText("Account").setTabListener(new TabListener<AccountFragment>(R.id.logbook_fragment_tabs, "Account", AccountFragment.class, this, new OnCreateOptionsMenuListener() {
+        ab.addTab(ab.newTab().setText("Account").setTabListener(new TabListener<AccountFragment>(R.id.logbook_fragment_tabs, AccountFragment.class, this, new OnCreateOptionsMenuListener() {
             @Override
             public void onCreateMenu() {
                 if (mMenu != null)
@@ -51,7 +50,7 @@ public class LogbookTabsActivity extends BaseDrawerActivity implements BoatListF
 
             }
         })));
-        ab.addTab(ab.newTab().setText("Crew").setTabListener(new TabListener<CrewFragment>(R.id.logbook_fragment_tabs, "crew", CrewFragment.class, this, new OnCreateOptionsMenuListener() {
+        ab.addTab(ab.newTab().setText("Crew").setTabListener(new TabListener<CrewFragment>(R.id.logbook_fragment_tabs,  CrewFragment.class, this, new OnCreateOptionsMenuListener() {
             @Override
             public void onCreateMenu() {
                 if (mMenu != null) {
@@ -63,7 +62,7 @@ public class LogbookTabsActivity extends BaseDrawerActivity implements BoatListF
 
             }
         })));
-        ab.addTab(ab.newTab().setText("Logbook").setTabListener(new TabListener<LogbookFragment>(R.id.logbook_fragment_tabs, "logbook", LogbookFragment.class, this, new OnCreateOptionsMenuListener() {
+        ab.addTab(ab.newTab().setText("Logbook").setTabListener(new TabListener<LogbookFragment>(R.id.logbook_fragment_tabs,  LogbookFragment.class, this, new OnCreateOptionsMenuListener() {
             @Override
             public void onCreateMenu() {
                 if (mMenu != null) {
@@ -72,6 +71,7 @@ public class LogbookTabsActivity extends BaseDrawerActivity implements BoatListF
 
                 }
             }
+
         })));
         ab.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 

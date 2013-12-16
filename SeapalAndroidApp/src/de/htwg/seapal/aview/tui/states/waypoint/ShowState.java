@@ -16,13 +16,8 @@ public class ShowState implements TuiState {
 
 	@Override
 	public String buildString(StateContext context) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("q - quit\n");
-		sb.append("e - edit waypoint\n");
-		sb.append("--------------------------------------------------\n");
-		sb.append(((WaypointActivity) context).getController().getString(
-				waypoint));
-		return sb.toString();
+        return "q - quit\n" + "e - edit waypoint\n" + "--------------------------------------------------\n" + ((WaypointActivity) context).getController().getString(
+                waypoint);
 	}
 
 	@Override

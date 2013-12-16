@@ -11,21 +11,18 @@ import android.app.FragmentTransaction;
 public class TabListener<T extends Fragment> implements ActionBar.TabListener {
     private Fragment mFragment;
     private final Activity mActivity;
-    private final String mTag;
     private final Class<T> mClass;
     private final int mTabsId;
     private final OnCreateOptionsMenuListener mOnCreateOptionsMenuListener;
 
     /** Constructor used each time a new tab is created.
-     * @param idOfTabsViewResource
-     * @param tag  The identifier tag for the fragment
+     * @param idOfTabsViewResource resource id of TabView
      * @param clz  The fragment's Class, used to instantiate the fragment
      * @param activity  The host Activity, used to instantiate the fragment
      */
-    public TabListener(int idOfTabsViewResource, String tag, Class<T> clz, Activity activity, OnCreateOptionsMenuListener listener ) {
+    public TabListener(int idOfTabsViewResource, Class<T> clz, Activity activity, OnCreateOptionsMenuListener listener ) {
         mTabsId = idOfTabsViewResource;
         mActivity = activity;
-        mTag = tag;
         mClass = clz;
         mOnCreateOptionsMenuListener = listener;
     }
@@ -37,7 +34,7 @@ public class TabListener<T extends Fragment> implements ActionBar.TabListener {
         if (mFragment == null) {
             // If not, instantiate and add it to the activity
             mFragment = Fragment.instantiate(mActivity, mClass.getName());
-            ft.add(mTabsId, mFragment, mTag);
+            ft.replace(mTabsId, mFragment);
         } else {
             // If it exists, simply attach it in order to show it
             ft.attach(mFragment);

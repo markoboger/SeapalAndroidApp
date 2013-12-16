@@ -18,7 +18,6 @@ import java.util.UUID;
 
 import de.htwg.seapal.R;
 import de.htwg.seapal.controller.IBoatController;
-import de.htwg.seapal.model.IBoat;
 import roboguice.fragment.RoboFragment;
 
 /**
@@ -38,7 +37,9 @@ public class LogbookSlideFragment extends RoboFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.logbook_detail_view_pager, container, false);
-        mPager = (ViewPager) rootView.findViewById(R.id.logbook_detail_view_pager);
+        if (rootView != null) {
+            mPager = (ViewPager) rootView.findViewById(R.id.logbook_detail_view_pager);
+        }
         mPagerAdapter = new ScreenSlidePagerAdapter(getActivity().getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
 

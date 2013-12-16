@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.UUID;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.format.DateFormat;

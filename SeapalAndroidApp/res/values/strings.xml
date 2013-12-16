@@ -107,5 +107,9 @@
     <string name="delete_boat_text">Delete Boat</string>
     <string name="new_boat_text">New Boat</string>
     <string name="logbook_crew_add">ADD CREW MEMBER</string>
+    <string name="add_mark_text">Add Mark</string>
+    <string name="delete_mark_text">delete Mark</string>
+    <string name="trip_title">Trip Title</string>
+    <string name="taken_picture_content_description">Take a picture</string>
 
 </resources>
