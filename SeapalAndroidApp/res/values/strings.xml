@@ -106,5 +106,6 @@
     <string name="save_boat_text">Save Boat</string>
     <string name="delete_boat_text">Delete Boat</string>
     <string name="new_boat_text">New Boat</string>
+    <string name="logbook_crew_add">ADD CREW MEMBER</string>
 
 </resources>
