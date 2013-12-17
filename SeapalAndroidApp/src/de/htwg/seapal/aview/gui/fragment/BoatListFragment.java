@@ -15,10 +15,13 @@ import android.widget.Toast;
 
 import com.google.inject.Inject;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.util.List;
 import java.util.UUID;
 
 import de.htwg.seapal.R;
+import de.htwg.seapal.aview.gui.activity.LogbookTabsActivity;
 import de.htwg.seapal.controller.IBoatController;
 import de.htwg.seapal.model.IBoat;
 import de.htwg.seapal.model.impl.Boat;
@@ -68,10 +71,16 @@ public class BoatListFragment extends RoboListFragment {
                 TextView boatType = (TextView) v.findViewById(R.id.boat_type);
                 TextView productionYear = (TextView) v.findViewById(R.id.production_year);
                 TextView constructor = (TextView) v.findViewById(R.id.constructor);
+                ImageView favImageView = (ImageView) v.findViewById(R.id.favour_button);
+
+                SharedPreferences s = getContext().getSharedPreferences(LogbookTabsActivity.LOGBOOK_PREFS,0);
+                String favouredBoatUUIDString = s.getString(LogbookTabsActivity.LOGBOOK_BOAT_FAVOURED, "");
+
+
 
 
                 IBoat b = getItem(position);
-                if (boatName != null && boatType != null && productionYear != null && constructor != null)
+                if (boatName != null && boatType != null && productionYear != null && constructor != null) {
                     boatName.setText(b.getBoatName());
                     boatType.setText(b.getType());
                     if (b.getYearOfConstruction() != 0) {
@@ -80,6 +89,15 @@ public class BoatListFragment extends RoboListFragment {
                         productionYear.setText("");
                     }
                     constructor.setText(b.getConstructor());
+
+                    UUID uuid = b.getUUID();
+                    UUID uuidFavoured = UUID.fromString(favouredBoatUUIDString);
+
+                    if (!StringUtils.isEmpty(favouredBoatUUIDString) && uuidFavoured.equals(uuid)) {
+                        favImageView.setBackgroundResource(android.R.drawable.star_big_on);
+
+                    }
+                }
 
 
                 return v;

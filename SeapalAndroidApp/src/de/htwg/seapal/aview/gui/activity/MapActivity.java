@@ -44,6 +44,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.inject.Inject;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.LinkedList;
@@ -201,6 +202,7 @@ MapDialogFragment.MapDialogListener {
     private void stopTracking() {
         LocationManager l = (LocationManager) getSystemService(LOCATION_SERVICE);
         if (trackingService != null) {
+            tripController.setEndTime(UUID.fromString(trackingService.getStringExtra(TrackingService.TRIP_UUID)),System.currentTimeMillis());
             stopService(trackingService);
 
         } else {
@@ -215,6 +217,8 @@ MapDialogFragment.MapDialogListener {
         if (!StringUtils.isEmpty(boatString)) {
             UUID boat = UUID.fromString(boatString);
             UUID trip = tripController.newTrip(boat);
+            tripController.setStartTime(trip, System.currentTimeMillis());
+            tripController.setName(trip, RandomStringUtils.random(12));
             trackingService = new Intent(this, TrackingService.class);
             trackingService.putExtra(TrackingService.TRIP_UUID, trip.toString());
             startService(trackingService);
