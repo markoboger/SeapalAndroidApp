@@ -5,53 +5,68 @@
     android:background="@drawable/boat_names_list_item_selector"
     android:gravity="center_horizontal"
     android:id="@+id/boat_list_view"
-    android:layout_marginRight="20dp"
+    android:layout_margin="5dp"
     android:layout_height="match_parent">
 
 
     <TextView
         android:id="@+id/boat_name"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
         android:typeface="sans"
         android:textSize="20sp"
         android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/boat_type"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:textColor="@color/darkGray"
         android:layout_below="@+id/boat_name"
         android:typeface="sans"
+        android:layout_alignParentBottom="true"
         android:textSize="15sp"
         android:textStyle="bold"/>
 
 
        <TextView
         android:id="@+id/production_year"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@id/boat_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/boat_name"
+        android:layout_toRightOf="@id/boat_name"
         android:gravity="right"
-        android:layout_marginRight="30dip"
+        android:layout_marginLeft="80dp"
         android:textSize="15sp"
         android:textColor="@color/darkGray"
         android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/constructor"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:gravity="right"
-        android:layout_marginRight="30dip"
-        android:layout_below="@id/production_year"
-        android:layout_marginTop="5dip"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/boat_type"
+        android:layout_alignBaseline="@id/boat_type"
+        android:layout_alignEnd="@id/production_year"
         android:textSize="15sp"
         android:textColor="@color/darkGray"
         android:textStyle="bold"/>
+
+     <ImageView
+         android:background="@android:drawable/star_big_off"
+         android:id="@+id/favour_button"
+         android:layout_height="48dp"
+         android:layout_width="48dp"
+         android:layout_alignParentRight="true"
+         android:layout_centerVertical="true"
+         android:layout_marginRight="20dp"
+         android:layout_alignParentBottom="@id/constructor"
+         android:contentDescription="@string/favour_boat_text">
+     </ImageView>
 
 
     <ImageView
@@ -59,10 +74,12 @@
         android:layout_height="48dip"
         android:layout_width="48dip"
         android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:gravity="right"
         android:visibility="invisible"
         android:background="@drawable/caret_white"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        android:contentDescription="@string/caret_contet_description" />
 
 
 </RelativeLayout>

@@ -93,6 +93,14 @@ public class LogbookSlideFragment extends RoboFragment {
 
     }
 
+    public void onFavourBoat() {
+        BoatListFragment boatListFragment = (BoatListFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.boat_list_fragment);
+        if (boatListFragment != null) {
+            boatListFragment.onFavourBoat();
+        }
+
+    }
+
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
         private static final int NUM_PAGES = 2;
 
