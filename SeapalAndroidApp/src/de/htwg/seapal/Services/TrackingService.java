@@ -63,15 +63,7 @@ public class TrackingService extends RoboService implements LocationListener {
     // Declaring a Location Manager
     protected LocationManager locationManager;
 
-    private AsyncTask<Location, LocationListener, Void> mTask = new AsyncTask<Location, LocationListener, Void>() {
-        @Override
-        protected Void doInBackground(Location... params) {
-            for (int i = 0; i < params.length; i++) {
-                waypointController.newWaypoint(mTrip, System.currentTimeMillis(),params[i].getLongitude(), params[i].getLatitude());
-            }
-            return null;
-        }
-    };
+    private AsyncTask<Location, LocationListener, Void> mTask;
 
     private IBinder mBinder = new TrackingServiceBinder();
 
@@ -118,20 +110,16 @@ public class TrackingService extends RoboService implements LocationListener {
                 }
                 // if GPS Enabled get lat/long using GPS Services
                 if (isGPSEnabled) {
-                    if (location == null) {
-                        locationManager.requestLocationUpdates(
-                                LocationManager.GPS_PROVIDER,
-                                MIN_TIME_BW_UPDATES,
-                                MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                        Log.d("GPS Enabled", "GPS Enabled");
-                        if (locationManager != null) {
-                            location = locationManager
-                                    .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                            if (location != null) {
-                                latitude = location.getLatitude();
-                                longitude = location.getLongitude();
-                            }
-                        }
+                    locationManager.requestLocationUpdates(
+                            LocationManager.GPS_PROVIDER,
+                            MIN_TIME_BW_UPDATES,
+                            MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                    Log.d("GPS Enabled", "GPS Enabled");
+                    if (locationManager != null) {
+                        location = locationManager
+                                .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        latitude = location.getLatitude();
+                        longitude = location.getLongitude();
                     }
                 }
             }
@@ -219,6 +207,15 @@ public class TrackingService extends RoboService implements LocationListener {
     public void onLocationChanged(Location location) {
         longitude =  location.getLongitude();
         latitude =  location.getLatitude();
+        mTask = new AsyncTask<Location, LocationListener, Void>() {
+            @Override
+            protected Void doInBackground(Location... params) {
+                for (int i = 0; i < params.length; i++) {
+                    waypointController.newWaypoint(mTrip, System.currentTimeMillis(),params[i].getLongitude(), params[i].getLatitude());
+                }
+                return null;
+            }
+        };
         mTask.execute(location);
     }
 
