@@ -17,6 +17,11 @@
         android:showAsAction="ifRoom"
         android:orderInCategory="200"
         android:title="@string/start_tracking_text"/>
+    <item
+        android:id="@+id/stop_tracking"
+        android:showAsAction="ifRoom"
+        android:orderInCategory="200"
+        android:title="@string/stop_tracking_text"/>
 
     <item
         android:id="@+id/action_show_right_drawer"

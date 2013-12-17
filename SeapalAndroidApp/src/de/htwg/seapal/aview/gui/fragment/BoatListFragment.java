@@ -41,6 +41,7 @@ public class BoatListFragment extends RoboListFragment {
     private List<IBoat> boatList;
 
     private int mPosition = -1;
+    private View mSelectedView;
 
     private SharedPreferences settings;
 
@@ -117,6 +118,7 @@ public class BoatListFragment extends RoboListFragment {
         IBoat boat = (IBoat) l.getAdapter().getItem(position);
         mBoatSelectedCallback.onBoatSelected(position, boat.getUUID());
         mPosition = position;
+        mSelectedView = v;
         v.setSelected(true);
         for (View a: l.getTouchables()) {
             a.findViewById(R.id.caret).setVisibility(View.INVISIBLE);
@@ -168,13 +170,17 @@ public class BoatListFragment extends RoboListFragment {
     }
 
     public void onFavourBoat() {
-        if (mPosition >= 0){
-            IBoat boat = (IBoat) getListAdapter().getItem(mPosition);
-            ListView v = getListView();
-            View a = v.getSelectedView();
-            ImageView view = (ImageView) a.findViewById(R.id.favour_button);
-            view.setBackgroundDrawable(getResources().getDrawable(android.R.drawable.star_on));
+        if (mPosition >= 0 && mSelectedView != null){
+            ListView l = getListView();
+            for (View a: l.getTouchables()) {
+                ImageView switchStarOffView = (ImageView) a.findViewById(R.id.favour_button);
+                switchStarOffView.setBackgroundResource(android.R.drawable.star_big_off);
 
+            }
+            ImageView view = (ImageView) mSelectedView.findViewById(R.id.favour_button);
+            view.setBackgroundResource(android.R.drawable.star_big_on);
+            IBoat boat = (IBoat) getListAdapter().getItem(mPosition);
+            mBoatFavouredCallback.onBoatFavoured(boat.getUUID());
         }
 
     }

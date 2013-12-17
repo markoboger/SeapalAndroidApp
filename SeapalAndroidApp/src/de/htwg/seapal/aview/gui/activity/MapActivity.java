@@ -1,11 +1,11 @@
 package de.htwg.seapal.aview.gui.activity;
 
 
-
 import android.app.DialogFragment;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
@@ -42,12 +42,18 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.inject.Inject;
+
+import org.apache.commons.lang.StringUtils;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import de.htwg.seapal.R;
+import de.htwg.seapal.Services.TrackingService;
 import de.htwg.seapal.aview.gui.fragment.MapDialogFragment;
+import de.htwg.seapal.controller.ITripController;
 import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
@@ -62,7 +68,12 @@ MapDialogFragment.MapDialogListener {
     @InjectResource(R.array.drawer_list_array_right)
     private String[] drawerActivityListRight;
 
-	private enum SelectedOption {
+    @Inject
+    private ITripController tripController;
+    private Intent trackingService;
+
+
+    private enum SelectedOption {
 		NONE, MARK, ROUTE, DISTANCE, GOAL, MENU_ROUTE, MENU_MARK, MENU_DISTANCE, MENU_GOAL
 	}
 	
@@ -170,6 +181,12 @@ MapDialogFragment.MapDialogListener {
                 goToLastKnownLocation(15);
                 break;
             case R.id.start_tracking:
+                startTracking();
+                break;
+            case R.id.stop_tracking:
+                stopTracking();
+
+
                 break;
             case R.id.action_show_right_drawer:
                 toggleRightDrawer();
@@ -179,6 +196,34 @@ MapDialogFragment.MapDialogListener {
                 break;
         }
         return super.onMenuItemSelected(featureId, item);
+    }
+
+    private void stopTracking() {
+        LocationManager l = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (trackingService != null) {
+            stopService(trackingService);
+
+        } else {
+            Toast.makeText(getApplicationContext(), "Tracking not Started", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private void startTracking() {
+        SharedPreferences s = getSharedPreferences(LogbookTabsActivity.LOGBOOK_PREFS,0);
+        final String boatString = s.getString(LogbookTabsActivity.LOGBOOK_BOAT_FAVOURED,"");
+        if (!StringUtils.isEmpty(boatString)) {
+            UUID boat = UUID.fromString(boatString);
+            UUID trip = tripController.newTrip(boat);
+            trackingService = new Intent(this, TrackingService.class);
+            trackingService.putExtra(TrackingService.TRIP_UUID, trip.toString());
+            startService(trackingService);
+        } else {
+            Toast.makeText(getApplicationContext(), "No favoured boat", Toast.LENGTH_SHORT).show();
+        }
+
+
+
     }
 
     private void closeRightDreawer() {

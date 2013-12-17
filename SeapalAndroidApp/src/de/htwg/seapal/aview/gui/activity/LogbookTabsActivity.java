@@ -1,6 +1,7 @@
 package de.htwg.seapal.aview.gui.activity;
 
 import android.app.ActionBar;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,10 +25,9 @@ import de.htwg.seapal.aview.listener.TabListener;
 public class LogbookTabsActivity extends BaseDrawerActivity implements BoatListFragment.OnBoatNameSelectedListener, BoatListFragment.OnBoatFavouredListener {
 
 
-    public static final int LOGBOOK_FRAGMENT = 1;
-    public static final int CREW_FRAGMENT = 0;
 
     public static final String LOGBOOK_PREFS = "logbook_prefs";
+    public static final String LOGBOOK_BOAT_FAVOURED = "logbook_boat_favoured";
     private int mPosition;
     @Inject
     private LogbookFragment mLogbookFragment;
@@ -99,30 +99,19 @@ public class LogbookTabsActivity extends BaseDrawerActivity implements BoatListF
 
     @Override
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
+        LogbookSlideFragment logbookSlideFragment = (LogbookSlideFragment) getSupportFragmentManager().findFragmentById(R.id.logbook_slide_fragment);
         switch (item.getItemId()) {
             case R.id.logbookmenu_new:
-                if (mPosition == LOGBOOK_FRAGMENT) {
-                    LogbookSlideFragment logbookSlideFragment = (LogbookSlideFragment) getSupportFragmentManager().findFragmentById(R.id.logbook_slide_fragment);
-                    logbookSlideFragment.onNewBoat();
-                }
+                logbookSlideFragment.onNewBoat();
                 break;
             case R.id.logbookmenu_delete:
-                if (mPosition == LOGBOOK_FRAGMENT) {
-                    LogbookSlideFragment logbookSlideFragment = (LogbookSlideFragment) getSupportFragmentManager().findFragmentById(R.id.logbook_slide_fragment);
-                    logbookSlideFragment.onDeleteBoat();
-                }
+                logbookSlideFragment.onDeleteBoat();
                 break;
             case R.id.logbookmenu_save:
-                if (mPosition == LOGBOOK_FRAGMENT) {
-                    LogbookSlideFragment logbookSlideFragment = (LogbookSlideFragment) getSupportFragmentManager().findFragmentById(R.id.logbook_slide_fragment);
-                    logbookSlideFragment.onSaveBoat();
-                }
+                logbookSlideFragment.onSaveBoat();
                 break;
             case R.id.logbookmenu_favour:
-                if (mPosition == LOGBOOK_FRAGMENT) {
-                    LogbookSlideFragment logbookSlideFragment = (LogbookSlideFragment) getSupportFragmentManager().findFragmentById(R.id.logbook_slide_fragment);
-                    logbookSlideFragment.onFavourBoat();
-                }
+                logbookSlideFragment.onFavourBoat();
                 break;
         }
         return super.onMenuItemSelected(featureId, item);
@@ -130,6 +119,7 @@ public class LogbookTabsActivity extends BaseDrawerActivity implements BoatListF
 
     @Override
     public void onBoatFavoured(UUID uuid) {
-
+        SharedPreferences s = getSharedPreferences(LOGBOOK_PREFS,0);
+        s.edit().putString(LOGBOOK_BOAT_FAVOURED, uuid.toString()).commit();
     }
 }

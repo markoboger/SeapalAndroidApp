@@ -2,6 +2,10 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:id="@+id/logbookmenu_favour"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/favour_boat_text"/>
+    <item
         android:id="@+id/logbookmenu_save"
         android:showAsAction="ifRoom|withText"
         android:title="@string/save_boat_text"/>
@@ -9,10 +13,6 @@
         android:id="@+id/logbookmenu_delete"
         android:showAsAction="ifRoom|withText"
         android:title="@string/delete_boat_text"/>
-    <item
-        android:id="@+id/logbookmenu_favour"
-        android:showAsAction="ifRoom|withText"
-        android:title="@string/favour_boat_text"/>
     <item
         android:id="@+id/logbookmenu_new"
         android:showAsAction="ifRoom|withText"
