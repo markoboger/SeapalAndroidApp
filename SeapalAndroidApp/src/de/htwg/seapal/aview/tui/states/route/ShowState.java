@@ -1,8 +1,9 @@
 package de.htwg.seapal.aview.tui.states.route;
 
+import android.widget.Toast;
+
 import java.util.UUID;
 
-import android.widget.Toast;
 import de.htwg.seapal.aview.tui.StateContext;
 import de.htwg.seapal.aview.tui.TuiState;
 import de.htwg.seapal.aview.tui.activity.RouteActivity;
@@ -17,14 +18,7 @@ public class ShowState implements TuiState {
 
 	@Override
 	public String buildString(StateContext context) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("q - quit\n");
-		sb.append("d - delete route\n");
-		sb.append("e - edit routename\n");
-		sb.append("s - show marks\n");
-		sb.append("--------------------------------------------------\n");
-		sb.append(((RouteActivity) context).getController().getString(route));
-		return sb.toString();
+        return "q - quit\n" + "d - delete route\n" + "e - edit routename\n" + "s - show marks\n" + "--------------------------------------------------\n" + ((RouteActivity) context).getController().getString(route);
 	}
 
 	@Override

@@ -108,5 +108,15 @@
     <string name="new_boat_text">New Boat</string>
     <string name="search_hint">Search Points of interest</string>
     <string name="location">Location</string>
-
+    <string name="logbook_crew_add">ADD CREW MEMBER</string>
+    <string name="add_mark_text">Add Mark</string>
+    <string name="delete_mark_text">delete Mark</string>
+    <string name="trip_title">Trip Title</string>
+    <string name="taken_picture_content_description">Take a picture</string>
+    <string name="start_tracking_text">Start Tracking</string>
+    <string name="caret_contet_description">caret white</string>
+    <string name="favour_boat_text">FAVOUR BOAT</string>
+    <string name="stop_tracking_text">Stop Tracking</string>
+    <string name="tracking_service_started_text">Tracking Service Started</string>
+    <item name="tracking_service_started_text" type="id">Tracking Service Started</item>
 </resources>

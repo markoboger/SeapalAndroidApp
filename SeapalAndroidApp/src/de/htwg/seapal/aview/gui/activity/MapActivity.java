@@ -1,29 +1,11 @@
 package de.htwg.seapal.aview.gui.activity;
 
 
-
-import java.util.LinkedList;
-
-import java.util.List;
-import com.couchbase.cblite.router.CBLURLStreamHandlerFactory;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
-import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
-import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
-
 import android.app.DialogFragment;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
@@ -38,21 +20,45 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.couchbase.cblite.router.CBLURLStreamHandlerFactory;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.inject.Inject;
+
+import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringUtils;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
+
 import de.htwg.seapal.R;
+import de.htwg.seapal.Services.TrackingService;
 import de.htwg.seapal.aview.gui.fragment.MapDialogFragment;
 import de.htwg.seapal.aview.gui.fragment.PictureDialogFragment;
+import de.htwg.seapal.controller.ITripController;
 import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
@@ -67,7 +73,12 @@ MapDialogFragment.MapDialogListener {
     @InjectResource(R.array.drawer_list_array_right)
     private String[] drawerActivityListRight;
 
-	private enum SelectedOption {
+    @Inject
+    private ITripController tripController;
+    private Intent trackingService;
+
+
+    private enum SelectedOption {
 		NONE, MARK, ROUTE, DISTANCE, GOAL, MENU_ROUTE, MENU_MARK, MENU_DISTANCE, MENU_GOAL
 	}
 	
@@ -85,6 +96,7 @@ MapDialogFragment.MapDialogListener {
 	private Polyline calcDistanceRoute = null;
 	private double calcDistance;
     private DrawerLayout drawer;
+
 
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -173,6 +185,14 @@ MapDialogFragment.MapDialogListener {
             case R.id.action_goTo:
                 goToLastKnownLocation(15);
                 break;
+            case R.id.start_tracking:
+                startTracking();
+                break;
+            case R.id.stop_tracking:
+                stopTracking();
+
+
+                break;
             case R.id.action_show_right_drawer:
                 toggleRightDrawer();
                 break;
@@ -181,6 +201,37 @@ MapDialogFragment.MapDialogListener {
                 break;
         }
         return super.onMenuItemSelected(featureId, item);
+    }
+
+    private void stopTracking() {
+        LocationManager l = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (trackingService != null) {
+            tripController.setEndTime(UUID.fromString(trackingService.getStringExtra(TrackingService.TRIP_UUID)),System.currentTimeMillis());
+            stopService(trackingService);
+
+        } else {
+            Toast.makeText(getApplicationContext(), "Tracking not Started", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private void startTracking() {
+        SharedPreferences s = getSharedPreferences(LogbookTabsActivity.LOGBOOK_PREFS,0);
+        final String boatString = s.getString(LogbookTabsActivity.LOGBOOK_BOAT_FAVOURED,"");
+        if (!StringUtils.isEmpty(boatString)) {
+            UUID boat = UUID.fromString(boatString);
+            UUID trip = tripController.newTrip(boat);
+            tripController.setStartTime(trip, System.currentTimeMillis());
+            tripController.setName(trip, RandomStringUtils.random(12));
+            trackingService = new Intent(this, TrackingService.class);
+            trackingService.putExtra(TrackingService.TRIP_UUID, trip.toString());
+            startService(trackingService);
+        } else {
+            Toast.makeText(getApplicationContext(), "No favoured boat", Toast.LENGTH_SHORT).show();
+        }
+
+
+
     }
 
     private void closeRightDreawer() {

@@ -1,19 +1,5 @@
 package de.htwg.seapal.database.impl;
 
-import java.util.LinkedList;
-
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import org.ektorp.CouchDbConnector;
-import org.ektorp.DocumentNotFoundException;
-import org.ektorp.UpdateConflictException;
-import org.ektorp.ViewQuery;
-import org.ektorp.ViewResult;
-import org.ektorp.ViewResult.Row;
-
-import roboguice.inject.ContextSingleton;
 import android.content.Context;
 import android.util.Log;
 
@@ -23,9 +9,22 @@ import com.couchbase.cblite.CBLViewMapBlock;
 import com.couchbase.cblite.CBLViewMapEmitBlock;
 import com.google.inject.Inject;
 
+import org.ektorp.CouchDbConnector;
+import org.ektorp.DocumentNotFoundException;
+import org.ektorp.UpdateConflictException;
+import org.ektorp.ViewQuery;
+import org.ektorp.ViewResult;
+import org.ektorp.ViewResult.Row;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import de.htwg.seapal.database.ITripDatabase;
 import de.htwg.seapal.model.ITrip;
 import de.htwg.seapal.model.impl.Trip;
+import roboguice.inject.ContextSingleton;
 
 @ContextSingleton
 public class TouchDBTripDatabase implements ITripDatabase {
@@ -151,7 +150,6 @@ public class TouchDBTripDatabase implements ITripDatabase {
 
 	public List<ITrip> findByBoat(UUID boatId) {
 		List<ITrip> lst = new LinkedList<ITrip>();
-		List<ITrip> log = new LinkedList<ITrip>();
 
 		ViewQuery viewQuery = new ViewQuery()
 				.designDocId("_design/" + DDOCNAME).viewName(VIEWNAME);
@@ -162,7 +160,6 @@ public class TouchDBTripDatabase implements ITripDatabase {
 			if (r.getKey() != null && !r.getKey().isEmpty()) {
 				if (boatId.equals(UUID.fromString(r.getKey()))) {
 					lst.add(get(UUID.fromString(r.getValue())));
-					log.add(get(UUID.fromString(r.getValue())));
 				}
 			}
 

@@ -1,10 +1,11 @@
 package de.htwg.seapal.aview.gui.activity;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.format.DateFormat;
@@ -25,6 +26,7 @@ import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.adapter.WaypointListAdapter;
 import de.htwg.seapal.controller.impl.TripController;
 import de.htwg.seapal.controller.impl.WaypointController;
+import de.htwg.seapal.model.IWaypoint;
 import de.htwg.seapal.utils.observer.Event;
 import de.htwg.seapal.utils.observer.IObserver;
 
@@ -59,8 +61,11 @@ public class TripActivity extends BaseDrawerActivity implements IObserver {
 		setContentView(R.layout.trip);
 		Bundle extras = getIntent().getExtras();
 		trip = UUID.fromString(extras.getString("trip"));
-		waypointList = waypointController.getWaypoints(trip);
-
+        waypointList = new ArrayList<UUID>();
+        List<IWaypoint> waypoints = waypointController.getAllWaypoints(trip);
+        for (IWaypoint waypoint : waypoints) {
+            waypointList.add(waypoint.getUUID());
+        }
 		initUI();
 		fillText();
 	}

@@ -2,26 +2,29 @@ package de.htwg.seapal.aview.gui.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.inject.Inject;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.util.List;
 import java.util.UUID;
 
 import de.htwg.seapal.R;
+import de.htwg.seapal.aview.gui.activity.LogbookTabsActivity;
 import de.htwg.seapal.controller.IBoatController;
 import de.htwg.seapal.model.IBoat;
 import de.htwg.seapal.model.impl.Boat;
-import roboguice.RoboGuice;
 import roboguice.fragment.RoboListFragment;
 
 /**
@@ -29,13 +32,21 @@ import roboguice.fragment.RoboListFragment;
  */
 public class BoatListFragment extends RoboListFragment {
 
-    OnBoatNameSelectedListener mCallback;
+
+    private OnBoatNameSelectedListener mBoatSelectedCallback;
+    private OnBoatFavouredListener mBoatFavouredCallback;
     @Inject
     private IBoatController boatController;
+
+    public static final String BOATLIST_PREF_NAME = "boat_list_pref_name";
+    public static final String BOAT_UUID_PREF_NAME = "boat_uuid_pref_name";
 
     private List<IBoat> boatList;
 
     private int mPosition = -1;
+    private View mSelectedView;
+
+    private SharedPreferences settings;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,6 +54,7 @@ public class BoatListFragment extends RoboListFragment {
 
         boatList = boatController.getAllBoats();
         final int layout = R.layout.boat_list_view;
+
 
 
         setListAdapter(new ArrayAdapter<IBoat>(getActivity(), layout, boatList) {
@@ -59,10 +71,16 @@ public class BoatListFragment extends RoboListFragment {
                 TextView boatType = (TextView) v.findViewById(R.id.boat_type);
                 TextView productionYear = (TextView) v.findViewById(R.id.production_year);
                 TextView constructor = (TextView) v.findViewById(R.id.constructor);
+                ImageView favImageView = (ImageView) v.findViewById(R.id.favour_button);
+
+                SharedPreferences s = getContext().getSharedPreferences(LogbookTabsActivity.LOGBOOK_PREFS,0);
+                String favouredBoatUUIDString = s.getString(LogbookTabsActivity.LOGBOOK_BOAT_FAVOURED, "");
+
+
 
 
                 IBoat b = getItem(position);
-                if (boatName != null && boatType != null && productionYear != null && constructor != null)
+                if (boatName != null && boatType != null && productionYear != null && constructor != null) {
                     boatName.setText(b.getBoatName());
                     boatType.setText(b.getType());
                     if (b.getYearOfConstruction() != 0) {
@@ -72,10 +90,21 @@ public class BoatListFragment extends RoboListFragment {
                     }
                     constructor.setText(b.getConstructor());
 
+                    UUID uuid = b.getUUID();
+                    UUID uuidFavoured = UUID.fromString(favouredBoatUUIDString);
+
+                    if (!StringUtils.isEmpty(favouredBoatUUIDString) && uuidFavoured.equals(uuid)) {
+                        favImageView.setBackgroundResource(android.R.drawable.star_big_on);
+
+                    }
+                }
+
 
                 return v;
             }
+
         });
+
 
     }
 
@@ -92,10 +121,11 @@ public class BoatListFragment extends RoboListFragment {
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception.
         try {
-            mCallback = (OnBoatNameSelectedListener) activity;
+            mBoatSelectedCallback = (OnBoatNameSelectedListener) activity;
+            mBoatFavouredCallback = (OnBoatFavouredListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnBoatNameSelectedListener");
+                    + " must implement OnBoatNameSelectedListener and OnBoatFavouredListener");
         }
     }
 
@@ -104,8 +134,9 @@ public class BoatListFragment extends RoboListFragment {
         super.onListItemClick(l, v, position, id);
         // Notify the parent activity of selected item
         IBoat boat = (IBoat) l.getAdapter().getItem(position);
-        mCallback.onBoatSelected(position, boat.getUUID());
+        mBoatSelectedCallback.onBoatSelected(position, boat.getUUID());
         mPosition = position;
+        mSelectedView = v;
         v.setSelected(true);
         for (View a: l.getTouchables()) {
             a.findViewById(R.id.caret).setVisibility(View.INVISIBLE);
@@ -156,10 +187,27 @@ public class BoatListFragment extends RoboListFragment {
 
     }
 
+    public void onFavourBoat() {
+        if (mPosition >= 0 && mSelectedView != null){
+            ListView l = getListView();
+            for (View a: l.getTouchables()) {
+                ImageView switchStarOffView = (ImageView) a.findViewById(R.id.favour_button);
+                switchStarOffView.setBackgroundResource(android.R.drawable.star_big_off);
+
+            }
+            ImageView view = (ImageView) mSelectedView.findViewById(R.id.favour_button);
+            view.setBackgroundResource(android.R.drawable.star_big_on);
+            IBoat boat = (IBoat) getListAdapter().getItem(mPosition);
+            mBoatFavouredCallback.onBoatFavoured(boat.getUUID());
+        }
+
+    }
+
     private void notifyListAdapter() {
         ArrayAdapter<IBoat> listAdapter = (ArrayAdapter<IBoat>) getListAdapter();
         listAdapter.notifyDataSetChanged();
     }
+
 
     public interface OnBoatNameSelectedListener {
 
@@ -168,4 +216,8 @@ public class BoatListFragment extends RoboListFragment {
     }
 
 
+    public interface OnBoatFavouredListener {
+        public void onBoatFavoured(UUID uuid);
+
+    }
 }

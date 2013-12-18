@@ -199,6 +199,7 @@ public class TripListFragment  extends RoboListFragment implements  AdapterView.
     }
 
 
+
     public class DeleteTripDialog extends DialogFragment {
 
         private int mPosition;

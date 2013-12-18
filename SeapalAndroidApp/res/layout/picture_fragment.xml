@@ -7,7 +7,8 @@
     <ImageView
         android:id="@+id/taken_picture_ImageView"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent" />
+        android:layout_width="match_parent"
+        android:contentDescription="@string/taken_picture_content_description" />
 
     <TextView
         android:id="@+id/taken_picture_description_TextView"

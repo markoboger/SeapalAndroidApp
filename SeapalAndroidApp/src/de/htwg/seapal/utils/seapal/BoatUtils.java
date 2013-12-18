@@ -54,7 +54,7 @@ public class BoatUtils {
         flotationDepth.setText(Double.toString(boat.getDraft()));
         sewageWaterTankSize.setText(Double.toString(boat.getWasteWaterTankSize()));
         if (boat.getOwner() != null)
-            owner.setText(boat.getOwner().toString());
+            owner.setText(boat.getOwner());
         mastHeight.setText(Double.toString(boat.getMastHeight()));
         mainSailSize.setText(Double.toString(boat.getMainSailSize()));
         insurance.setText(boat.getInsurance());
