@@ -182,7 +182,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="80dp"
             android:layout_marginRight="15dp"
             android:layout_weight="1"
             android:background="@drawable/tripborder" >
@@ -194,7 +194,8 @@
                 android:layout_gravity="center"
                 android:text="NOTES"
                 android:textColor="#D9D9D9"
-                android:textSize="28sp" />
+                android:textSize="28sp"
+                android:id="@+id/textView" />
 
             <EditText
                 android:id="@+id/trip_editNotes"
@@ -203,12 +204,13 @@
                 android:gravity="top|left"
                 android:inputType="textMultiLine"
                 android:lines="7"
-                android:scrollHorizontally="false" />
+                android:scrollHorizontally="false"
+                android:layout_alignParentBottom="true" />
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="76dp"
             android:layout_marginRight="15dp"
             android:layout_weight="1"
             android:background="@drawable/tripborder" >
@@ -225,7 +227,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="73dp"
             android:layout_weight="1"
             android:background="@drawable/tripborder" >
 

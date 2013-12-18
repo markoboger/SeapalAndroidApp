@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -29,51 +28,29 @@ import roboguice.service.RoboService;
  */
 public class TrackingService extends RoboService implements LocationListener {
 
-    public static final String TRIP_UUID = "trip_uuid" ;
+    public static final String TRIP_UUID = "trip_uuid";
+    // The minimum distance to change Updates in meters
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
+    // The minimum time between updates in milliseconds
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
+    // Declaring a Location Manager
+    protected LocationManager locationManager;
     private Context mContext;
-
     // flag for GPS status
-    boolean isGPSEnabled = false;
-
+    private boolean isGPSEnabled = false;
     // flag for network status
-    boolean isNetworkEnabled = false;
-
+    private boolean isNetworkEnabled = false;
     // flag for GPS status
-    boolean canGetLocation = false;
-
+    private boolean canGetLocation = false;
     @Inject
     private IWaypointController waypointController;
     private UUID mTrip;
-
-    Location location; // location
-    double latitude; // latitude
-    double longitude; // longitude
-
+    private Location location; // location
+    private double latitude; // latitude
+    private double longitude; // longitude
     private NotificationManager mNotificationManager;
-
     private int NOTIFICATION = R.string.tracking_service_started_text;
-
-
-    // The minimum distance to change Updates in meters
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
-
-    // The minimum time between updates in milliseconds
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
-
-    // Declaring a Location Manager
-    protected LocationManager locationManager;
-
-    private AsyncTask<Location, LocationListener, Void> mTask;
-
     private IBinder mBinder = new TrackingServiceBinder();
-
-
-    public class TrackingServiceBinder extends Binder {
-        TrackingService getService() {
-            return TrackingService.this;
-        }
-    }
-
 
     private void startGps() {
         try {
@@ -132,18 +109,18 @@ public class TrackingService extends RoboService implements LocationListener {
     /**
      * Stop using GPS listener
      * Calling this function will stop using GPS in your app
-     * */
-    public void stopUsingGPS(){
-        if(locationManager != null){
+     */
+    public void stopUsingGPS() {
+        if (locationManager != null) {
             locationManager.removeUpdates(TrackingService.this);
         }
     }
 
     /**
      * Function to get latitude
-     * */
-    public double getLatitude(){
-        if(location != null){
+     */
+    public double getLatitude() {
+        if (location != null) {
             latitude = location.getLatitude();
         }
 
@@ -153,9 +130,9 @@ public class TrackingService extends RoboService implements LocationListener {
 
     /**
      * Function to get longitude
-     * */
-    public double getLongitude(){
-        if(location != null){
+     */
+    public double getLongitude() {
+        if (location != null) {
             longitude = location.getLongitude();
         }
 
@@ -165,8 +142,9 @@ public class TrackingService extends RoboService implements LocationListener {
 
     /**
      * Function to check GPS/wifi enabled
+     *
      * @return boolean
-     * */
+     */
     public boolean canGetLocation() {
         return this.canGetLocation;
     }
@@ -174,8 +152,8 @@ public class TrackingService extends RoboService implements LocationListener {
     /**
      * Function to show settings alert dialog
      * On pressing Settings button will lauch Settings Options
-     * */
-    public void showSettingsAlert(){
+     */
+    public void showSettingsAlert() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
         // Setting Dialog Title
@@ -186,7 +164,7 @@ public class TrackingService extends RoboService implements LocationListener {
 
         // On pressing Settings button
         alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog,int which) {
+            public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 mContext.startActivity(intent);
             }
@@ -195,7 +173,7 @@ public class TrackingService extends RoboService implements LocationListener {
         // on pressing cancel button
         alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-            dialog.cancel();
+                dialog.cancel();
             }
         });
 
@@ -205,18 +183,9 @@ public class TrackingService extends RoboService implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        longitude =  location.getLongitude();
-        latitude =  location.getLatitude();
-        mTask = new AsyncTask<Location, LocationListener, Void>() {
-            @Override
-            protected Void doInBackground(Location... params) {
-                for (int i = 0; i < params.length; i++) {
-                    waypointController.newWaypoint(mTrip, System.currentTimeMillis(),params[i].getLongitude(), params[i].getLatitude());
-                }
-                return null;
-            }
-        };
-        mTask.execute(location);
+        longitude = location.getLongitude();
+        latitude = location.getLatitude();
+        waypointController.newWaypoint(mTrip, System.currentTimeMillis(), location.getLongitude(), location.getLatitude());
     }
 
     @Override
@@ -236,7 +205,7 @@ public class TrackingService extends RoboService implements LocationListener {
         String tripString = intent.getStringExtra(TRIP_UUID);
         mTrip = UUID.fromString(tripString);
         mContext = getApplicationContext();
-        mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         startGps();
         showNotification();
         super.onStart(intent, startId);
@@ -261,15 +230,20 @@ public class TrackingService extends RoboService implements LocationListener {
         return super.stopService(name);
     }
 
-
     private void showNotification() {
         // In this sample, we'll use the same text for the ticker and the expanded notification
-        CharSequence text =  getText(NOTIFICATION);
+        CharSequence text = getText(NOTIFICATION);
 
         // Set the icon, scrolling text and timestamp
         Notification notification = new Notification.Builder(mContext).setContentTitle(text).setSmallIcon(R.drawable.seapal_launcher).build();
 
         // Send the notification.
         mNotificationManager.notify(NOTIFICATION, notification);
+    }
+
+    public class TrackingServiceBinder extends Binder {
+        TrackingService getService() {
+            return TrackingService.this;
+        }
     }
 }
