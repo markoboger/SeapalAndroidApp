@@ -106,5 +106,7 @@
     <string name="save_boat_text">Save Boat</string>
     <string name="delete_boat_text">Delete Boat</string>
     <string name="new_boat_text">New Boat</string>
+    <string name="search_hint">Search Points of interest</string>
+    <string name="location">Location</string>
 
 </resources>
