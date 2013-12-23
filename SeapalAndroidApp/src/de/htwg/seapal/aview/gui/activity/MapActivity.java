@@ -15,20 +15,17 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.provider.MediaStore;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.couchbase.cblite.router.CBLURLStreamHandlerFactory;
@@ -208,7 +205,7 @@ MapDialogFragment.MapDialogListener {
         if (trackingService != null) {
             tripController.setEndTime(UUID.fromString(trackingService.getStringExtra(TrackingService.TRIP_UUID)),System.currentTimeMillis());
             stopService(trackingService);
-
+            trackingService = null;
         } else {
             Toast.makeText(getApplicationContext(), "Tracking not Started", Toast.LENGTH_SHORT).show();
         }
@@ -218,7 +215,7 @@ MapDialogFragment.MapDialogListener {
     private void startTracking() {
         SharedPreferences s = getSharedPreferences(LogbookTabsActivity.LOGBOOK_PREFS,0);
         final String boatString = s.getString(LogbookTabsActivity.LOGBOOK_BOAT_FAVOURED,"");
-        if (!StringUtils.isEmpty(boatString)) {
+        if (!StringUtils.isEmpty(boatString) && trackingService == null) {
             UUID boat = UUID.fromString(boatString);
             UUID trip = tripController.newTrip(boat);
             tripController.setStartTime(trip, System.currentTimeMillis());
@@ -227,7 +224,7 @@ MapDialogFragment.MapDialogListener {
             trackingService.putExtra(TrackingService.TRIP_UUID, trip.toString());
             startService(trackingService);
         } else {
-            Toast.makeText(getApplicationContext(), "No favoured boat", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "No favoured boat or tracking already started", Toast.LENGTH_SHORT).show();
         }
 
 
