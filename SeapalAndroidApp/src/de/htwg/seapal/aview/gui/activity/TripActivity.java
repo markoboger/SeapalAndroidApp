@@ -1,11 +1,7 @@
 package de.htwg.seapal.aview.gui.activity;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
-
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.format.DateFormat;
@@ -18,9 +14,14 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.inject.Inject;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.adapter.WaypointListAdapter;
@@ -51,8 +52,10 @@ public class TripActivity extends BaseDrawerActivity implements IObserver {
 	private EditText notes;
 	private EditText engine;
 	private EditText tank;
+    private TextView map;
 
 	private List<UUID> waypointList;
+    private List<IWaypoint> waypoints;
 
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +65,7 @@ public class TripActivity extends BaseDrawerActivity implements IObserver {
 		Bundle extras = getIntent().getExtras();
 		trip = UUID.fromString(extras.getString("trip"));
         waypointList = new ArrayList<UUID>();
-        List<IWaypoint> waypoints = waypointController.getAllWaypoints(trip);
+        waypoints = waypointController.getAllWaypoints(trip);
         for (IWaypoint waypoint : waypoints) {
             waypointList.add(waypoint.getUUID());
         }
@@ -191,7 +194,21 @@ public class TripActivity extends BaseDrawerActivity implements IObserver {
 		tank = (EditText) findViewById(R.id.trip_editTank);
 		tank.setInputType(InputType.TYPE_CLASS_NUMBER
 				| InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        map = (TextView) findViewById(R.id.trip_editMap);
+        map.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(TripActivity.this,MapActivity.class);
+                TripActivity.this.startActivity(i);
+
+
+
+
+            }
+        });
+
 	}
+
 
 	private void addListView() {
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -215,4 +232,14 @@ public class TripActivity extends BaseDrawerActivity implements IObserver {
 
 		});
 	}
+
+    public interface OnTripViewMapOpenListener {
+        void onTripViewMapOpen(List<IWaypoint> waypoints);
+
+    }
+
+
+
+
+
 }
