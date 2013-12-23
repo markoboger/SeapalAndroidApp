@@ -3,7 +3,7 @@ buildscript {
       mavenCentral()
     }
     dependencies {
-      classpath 'com.android.tools.build:gradle:0.6.1'
+      classpath 'com.android.tools.build:gradle:0.7.+'
     }
 }
 
@@ -27,22 +27,33 @@ dependencies {
     compile files('libs/core-1.0-SNAPSHOT.jar')    
     compile files('libs/commons-lang-2.6.jar')    
     compile 'com.couchbase.cblite:CBLiteEktorp:1.0.0-beta'
-    compile project(':libs:google-play-services_lib')
+    compile 'com.google.android.gms:play-services:3.2.+'
     compile fileTree(dir: 'libs', include: 'td_collator_so.jar')
     compile 'com.github.chrisbanes.actionbarpulltorefresh:library:+'
-    compile 'com.android.support:appcompat-v7:18.0.+'
 }
 
 android {
-    buildToolsVersion "17" 
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/ASL2.0.txt'
+    }
+
+    buildToolsVersion "19" 
     compileSdkVersion 19
     compileOptions.encoding = "UTF-8"
+    sourceCompatibility = org.gradle.api.JavaVersion.VERSION_1_6
+    targetCompatibility = org.gradle.api.JavaVersion.VERSION_1_6
     defaultConfig {
         versionCode 1
         versionName "1.1"
         minSdkVersion 14
         targetSdkVersion 19
     }
+
     sourceSets {
         main {
               manifest.srcFile 'AndroidManifest.xml'
