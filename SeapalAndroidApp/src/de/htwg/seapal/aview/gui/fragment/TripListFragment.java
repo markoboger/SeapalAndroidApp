@@ -1,5 +1,6 @@
 package de.htwg.seapal.aview.gui.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -200,6 +201,9 @@ public class TripListFragment  extends RoboListFragment implements  AdapterView.
 
 
 
+
+
+    @SuppressLint("ValidFragment")
     public class DeleteTripDialog extends DialogFragment {
 
         private int mPosition;
