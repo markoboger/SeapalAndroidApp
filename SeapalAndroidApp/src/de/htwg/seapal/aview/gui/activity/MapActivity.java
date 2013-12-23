@@ -15,17 +15,20 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.provider.MediaStore;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.couchbase.cblite.router.CBLURLStreamHandlerFactory;
@@ -54,6 +57,7 @@ import java.util.UUID;
 import de.htwg.seapal.R;
 import de.htwg.seapal.Services.TrackingService;
 import de.htwg.seapal.aview.gui.fragment.MapDialogFragment;
+import de.htwg.seapal.aview.gui.fragment.PictureDialogFragment;
 import de.htwg.seapal.controller.ITripController;
 import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
@@ -435,6 +439,13 @@ MapDialogFragment.MapDialogListener {
         }
     }
 
+    private void showPictureDialogFragment() {
+        FragmentManager fm = getSupportFragmentManager();
+        PictureDialogFragment fragment = new PictureDialogFragment();
+        //fragment.show(fm, "picture_dialog_fragment");
+    }
+
+
     private void dispatchTakePictureIntent(int actionCode) {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(takePictureIntent, actionCode);
@@ -467,6 +478,18 @@ MapDialogFragment.MapDialogListener {
 		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
 		return R * c;
 	}
+
+    public boolean onPrepareOptionsMenu (LatLng latLng)
+    {
+
+        //MenuInflater inflater = getMenuInflater();
+        //getActionBar().
+
+        //TextView title  = (TextView) findViewById(R.id.coordinates);
+        //menu.getItem(0).setTitle("Lat: " + latLng.latitude + " Lng: " + latLng.longitude);
+
+        return true;
+    }
 
     private void goToLastKnownLocation(float ZoomLevel) {
         // get current position
