@@ -13,6 +13,7 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.inject.Inject;
@@ -234,8 +235,7 @@ public class TrackingService extends RoboService implements LocationListener {
         // In this sample, we'll use the same text for the ticker and the expanded notification
         CharSequence text = getText(NOTIFICATION);
 
-        // Set the icon, scrolling text and timestamp
-        Notification notification = new Notification.Builder(mContext).setContentTitle(text).setSmallIcon(R.drawable.seapal_launcher).build();
+        Notification notification = new NotificationCompat.Builder(mContext).setContentTitle(text).setSmallIcon(R.drawable.seapal_launcher).build();
 
         // Send the notification.
         mNotificationManager.notify(NOTIFICATION, notification);
