@@ -210,24 +210,26 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="76dp"
+            android:layout_height="match_parent"
             android:layout_marginRight="15dp"
             android:layout_weight="1"
             android:background="@drawable/tripborder" >
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageView
+                android:id="@+id/trip_editMap"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_centerInParent="true"
                 android:layout_gravity="center"
                 android:text="MAP"
+                android:background="@drawable/trip_map_default_img"
                 android:textColor="#D9D9D9"
                 android:textSize="28sp" />
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="73dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/tripborder" >
 

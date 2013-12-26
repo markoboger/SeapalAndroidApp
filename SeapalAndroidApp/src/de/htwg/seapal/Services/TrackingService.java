@@ -16,6 +16,7 @@ import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.inject.Inject;
 
 import java.util.UUID;
@@ -33,7 +34,10 @@ public class TrackingService extends RoboService implements LocationListener {
     // The minimum distance to change Updates in meters
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
     // The minimum time between updates in milliseconds
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
+    private static final long MIN_TIME_BW_UPDATES = 100;
+    public static final String TRIP_MAP = "trip_map";
+    public static final String WAYPOINT_BROADCAST_RECEIVER = "broadcast_receiver";
+    public static final String LAT_LNG = "trip_lat_lng";
     // Declaring a Location Manager
     protected LocationManager locationManager;
     private Context mContext;
@@ -52,6 +56,7 @@ public class TrackingService extends RoboService implements LocationListener {
     private NotificationManager mNotificationManager;
     private int NOTIFICATION = R.string.tracking_service_started_text;
     private IBinder mBinder = new TrackingServiceBinder();
+
 
     private void startGps() {
         try {
@@ -182,11 +187,17 @@ public class TrackingService extends RoboService implements LocationListener {
         alertDialog.show();
     }
 
+
     @Override
     public void onLocationChanged(Location location) {
         longitude = location.getLongitude();
         latitude = location.getLatitude();
         waypointController.newWaypoint(mTrip, System.currentTimeMillis(), location.getLongitude(), location.getLatitude());
+        Intent intent = new Intent(WAYPOINT_BROADCAST_RECEIVER);
+        intent.putExtra(LAT_LNG, new LatLng(location.getLatitude(), location.getLongitude()));
+        sendBroadcast(intent);
+
+
     }
 
     @Override
@@ -207,6 +218,8 @@ public class TrackingService extends RoboService implements LocationListener {
         mTrip = UUID.fromString(tripString);
         mContext = getApplicationContext();
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+
         startGps();
         showNotification();
         super.onStart(intent, startId);
@@ -223,6 +236,7 @@ public class TrackingService extends RoboService implements LocationListener {
         stopUsingGPS();
         mNotificationManager.cancel(NOTIFICATION);
     }
+
 
     @Override
     public boolean stopService(Intent name) {
@@ -246,4 +260,6 @@ public class TrackingService extends RoboService implements LocationListener {
             return TrackingService.this;
         }
     }
+
+
 }

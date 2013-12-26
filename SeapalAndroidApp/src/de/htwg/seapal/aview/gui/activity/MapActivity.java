@@ -3,8 +3,10 @@ package de.htwg.seapal.aview.gui.activity;
 
 import android.app.DialogFragment;
 import android.app.SearchManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -12,6 +14,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.provider.MediaStore;
@@ -38,6 +41,7 @@ import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -47,6 +51,7 @@ import com.google.inject.Inject;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -56,6 +61,7 @@ import de.htwg.seapal.Services.TrackingService;
 import de.htwg.seapal.aview.gui.fragment.MapDialogFragment;
 import de.htwg.seapal.aview.gui.fragment.PictureDialogFragment;
 import de.htwg.seapal.controller.ITripController;
+import de.htwg.seapal.model.IWaypoint;
 import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
@@ -64,6 +70,8 @@ public class MapActivity extends BaseDrawerActivity
 implements OnMapLongClickListener, OnMapClickListener, OnMarkerClickListener, 
 MapDialogFragment.MapDialogListener {
 
+    private static final String WAYPOINT_POLYLINE = "map_waypoint_polyline";
+    private static final String TRACKING_SERVICE = "map_tracking_service";
     @InjectView(R.id.drawer_menu_drawer_list_right)
     private ListView drawerListViewRight;
 
@@ -73,6 +81,8 @@ MapDialogFragment.MapDialogListener {
     @Inject
     private ITripController tripController;
     private Intent trackingService;
+    private TrackingServiceWaypointBroadcastReceiver waypointBroadcastReceiver = new TrackingServiceWaypointBroadcastReceiver();
+    private Polyline waypointsPolyline;
 
 
     private enum SelectedOption {
@@ -94,15 +104,21 @@ MapDialogFragment.MapDialogListener {
 	private double calcDistance;
     private DrawerLayout drawer;
 
+    private List<IWaypoint> waypoints;
+
 
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.map);
 
+
 		FragmentManager myFragmentManager = getSupportFragmentManager();
 		SupportMapFragment myMapFragment  = (SupportMapFragment) myFragmentManager.findFragmentById(R.id.map);
 		map = myMapFragment.getMap();
+
+
+
 
         if (map != null) {
 
@@ -127,7 +143,80 @@ MapDialogFragment.MapDialogListener {
         drawerListViewRight.setAdapter(new ArrayAdapter<String>(this,
                 R.layout.drawer_list_item_right, drawerActivityListRight));
         drawerListViewRight.setOnItemClickListener(new DrawerItemClickListener());
+
+
 	}
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        waypointsPolyline = map.addPolyline(new PolylineOptions().width(5).color(Color.LTGRAY));
+        AsyncTask<Void,Void,Void> drawWaypointsTask = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    Thread.sleep(3);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                drawWaypoints();
+            }
+        }.execute();
+    }
+
+    private void drawWaypoints() {
+        Intent i = getIntent();
+        waypoints  = (List<IWaypoint>) i.getSerializableExtra("waypoints");
+        List<LatLng> latLngList = new LinkedList<LatLng>();
+        if (waypoints != null){
+            for (IWaypoint w : waypoints){
+                LatLng cords =  new LatLng(w.getLatitude(), w.getLongitude());
+                latLngList.add(cords);
+            }
+            waypointsPolyline.setPoints(latLngList);
+
+
+        }
+        zoomToWaypointRoute(latLngList);
+    }
+
+    private void zoomToWaypointRoute(List<LatLng> waypointList) {
+        if (!waypointList.isEmpty()) {
+            LatLngBounds.Builder boundsBuilder = LatLngBounds.builder();
+            for (LatLng latLng : waypointList) {
+                boundsBuilder.include(latLng);
+            }
+            LatLngBounds latLngBounds = boundsBuilder.build();
+            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngBounds(latLngBounds, 50);
+            map.animateCamera(yourLocation);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable(WAYPOINT_POLYLINE, (Serializable) waypointsPolyline.getPoints());
+        outState.putParcelable(TRACKING_SERVICE,  trackingService);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        List<LatLng> latLngs = (List<LatLng>) savedInstanceState.getSerializable(WAYPOINT_POLYLINE);
+        waypointsPolyline = map.addPolyline(new PolylineOptions().width(5).color(Color.LTGRAY));
+        waypointsPolyline.setPoints(latLngs);
+        trackingService = savedInstanceState.getParcelable(TRACKING_SERVICE);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -172,7 +261,7 @@ MapDialogFragment.MapDialogListener {
 
         searchView.setSearchableInfo( searchManager.getSearchableInfo( getComponentName() ) );
 
-        return super.onCreateOptionsMenu( menu );
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -201,9 +290,17 @@ MapDialogFragment.MapDialogListener {
     }
 
     private void stopTracking() {
-        LocationManager l = (LocationManager) getSystemService(LOCATION_SERVICE);
         if (trackingService != null) {
             tripController.setEndTime(UUID.fromString(trackingService.getStringExtra(TrackingService.TRIP_UUID)),System.currentTimeMillis());
+
+            SharedPreferences s = getSharedPreferences(TripActivity.TRIP_PREFS,0);
+            SharedPreferences.Editor editor = s.edit();
+
+            unregisterReceiver(waypointBroadcastReceiver);
+
+            List<LatLng> waypointLatLngList = waypointsPolyline.getPoints();
+            zoomToWaypointRoute(waypointLatLngList);
+
             stopService(trackingService);
             trackingService = null;
         } else {
@@ -216,13 +313,20 @@ MapDialogFragment.MapDialogListener {
         SharedPreferences s = getSharedPreferences(LogbookTabsActivity.LOGBOOK_PREFS,0);
         final String boatString = s.getString(LogbookTabsActivity.LOGBOOK_BOAT_FAVOURED,"");
         if (!StringUtils.isEmpty(boatString) && trackingService == null) {
+
             UUID boat = UUID.fromString(boatString);
             UUID trip = tripController.newTrip(boat);
             tripController.setStartTime(trip, System.currentTimeMillis());
             tripController.setName(trip, RandomStringUtils.random(12));
+
             trackingService = new Intent(this, TrackingService.class);
             trackingService.putExtra(TrackingService.TRIP_UUID, trip.toString());
+
+            waypointsPolyline = map.addPolyline(new PolylineOptions().width(5).color(Color.LTGRAY));
+            registerReceiver(waypointBroadcastReceiver, new IntentFilter(TrackingService.WAYPOINT_BROADCAST_RECEIVER));
+
             startService(trackingService);
+
         } else {
             Toast.makeText(getApplicationContext(), "No favoured boat or tracking already started", Toast.LENGTH_SHORT).show();
         }
@@ -514,5 +618,20 @@ MapDialogFragment.MapDialogListener {
         }
         //at this point we've done all we can and no location is returned
         return null;
+    }
+
+    public class TrackingServiceWaypointBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            LatLng latLng = (LatLng) intent.getParcelableExtra(TrackingService.LAT_LNG);
+            List<LatLng> waypointsLatLngList = waypointsPolyline.getPoints();
+            waypointsLatLngList.add(latLng);
+            waypointsPolyline.setPoints(waypointsLatLngList);
+
+
+
+
+        }
     }
 }
