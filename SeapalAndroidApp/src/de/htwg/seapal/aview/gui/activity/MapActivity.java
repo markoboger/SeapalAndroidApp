@@ -183,6 +183,10 @@ MapDialogFragment.MapDialogListener {
             for (IWaypoint w : waypoints){
                 LatLng cords =  new LatLng(w.getLatitude(), w.getLongitude());
                 latLngList.add(cords);
+                map.addMarker(new MarkerOptions()
+                        .position(cords)
+                        .anchor(0.25f, 1.0f - 0.08333f)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_mark)));
             }
             waypointsPolyline.setPoints(latLngList);
 
