@@ -80,6 +80,8 @@ public class MapActivity extends BaseDrawerActivity
         CBLURLStreamHandlerFactory.registerSelfIgnoreError();
     }
 
+    private static final String MAP_SELECTED_OPTION_STATE = "map_selected_option_state";
+
     private MarkerOptions calcDistanceMarkerOptions;
 
     private MarkerOptions waypointsMarkerOptions;
@@ -291,6 +293,7 @@ public class MapActivity extends BaseDrawerActivity
         }
 
         outState.putParcelable(TRACKING_SERVICE, trackingService);
+        outState.putSerializable(MAP_SELECTED_OPTION_STATE, option);
     }
 
     @Override
@@ -299,13 +302,17 @@ public class MapActivity extends BaseDrawerActivity
         List<LatLng> waypoints = (List<LatLng>) savedInstanceState.getSerializable(WAYPOINT_POLYLINE);
         List<LatLng> routeList = (List<LatLng>) savedInstanceState.getSerializable(ROUTES_POLYLINE);
         List<LatLng> distance = (List<LatLng>) savedInstanceState.getSerializable(DISTANCE_POLYLINE);
+        option = (SelectedOption) savedInstanceState.getSerializable(MAP_SELECTED_OPTION_STATE);
         waypointsPolyline = map.addPolyline(waypointPolylineOption);
         calcDistanceRoute = map.addPolyline(calcDistancePolylineOptions);
         route = map.addPolyline(routePolylineOptions);
 
-        calcDistanceRoute.setPoints(distance);
-        route.setPoints(routeList);
-        waypointsPolyline.setPoints(waypoints);
+        if (distance != null)
+            calcDistanceRoute.setPoints(distance);
+        if (routeList != null)
+            route.setPoints(routeList);
+        if (waypoints != null)
+            waypointsPolyline.setPoints(waypoints);
 
 
         trackingService = savedInstanceState.getParcelable(TRACKING_SERVICE);
