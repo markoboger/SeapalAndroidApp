@@ -33,21 +33,52 @@ import roboguice.fragment.RoboListFragment;
 public class BoatListFragment extends RoboListFragment {
 
 
+    /**
+     * callback the activity if a boat got selected
+     */
     private OnBoatNameSelectedListener mBoatSelectedCallback;
+    /**
+     * callback the activity if a boat got favoured
+     */
     private OnBoatFavouredListener mBoatFavouredCallback;
+
     @Inject
     private IBoatController boatController;
 
-    public static final String BOATLIST_PREF_NAME = "boat_list_pref_name";
-    public static final String BOAT_UUID_PREF_NAME = "boat_uuid_pref_name";
-
+    /**
+     * boatList ist used by the ListAdapter to handle the list of boats
+     */
     private List<IBoat> boatList;
 
+    /**
+     * is the selected position inside the list
+     */
     private int mPosition = -1;
     private View mSelectedView;
 
-    private SharedPreferences settings;
 
+    /**
+     * interface for callback if a Boat inside the list is selected
+     */
+    public interface OnBoatNameSelectedListener {
+
+        public void onBoatSelected(int position, UUID uuid);
+
+    }
+
+
+    /**
+     * interface for callback if a Boat in the list is favoured
+     */
+    public interface OnBoatFavouredListener {
+        public void onBoatFavoured(UUID uuid);
+
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +89,9 @@ public class BoatListFragment extends RoboListFragment {
 
 
         setListAdapter(new ArrayAdapter<IBoat>(getActivity(), layout, boatList) {
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View v = convertView;
@@ -108,12 +142,18 @@ public class BoatListFragment extends RoboListFragment {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onStart() {
         super.onStart();
         setSelection(0);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -129,6 +169,9 @@ public class BoatListFragment extends RoboListFragment {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
@@ -145,6 +188,11 @@ public class BoatListFragment extends RoboListFragment {
 
     }
 
+    /**
+     * onNewBoat handles the request to create a new boat.
+     * it adds the boat in the database and in boatList,
+     * which is used in the list-adapter
+     */
     public void onNewBoat() {
         UUID uuid = boatController.newBoat();
         IBoat boat = boatController.getBoat(uuid);
@@ -155,6 +203,11 @@ public class BoatListFragment extends RoboListFragment {
                 Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * onDeleteBoat handles the request to delete a boat.
+     * it removes the boat in the database and in boatList,
+     * which is used in the list-adapter
+     */
     public void onDeleteBoat() {
         if (mPosition >= 0) {
             IBoat boat = (IBoat) getListAdapter().getItem(mPosition);
@@ -171,6 +224,11 @@ public class BoatListFragment extends RoboListFragment {
     }
 
 
+    /**
+     * onSaveBoat handles the request to save a boat.
+     * it saves the boat in the database and in boatList,
+     * which is used in the list-adapter
+     */
     public void onSaveBoat(BoatViewFragment boatViewFragment) {
         Boat boat = (Boat) boatViewFragment.getBoatFromCurrentView();
         if (mPosition >= 0) {
@@ -187,6 +245,14 @@ public class BoatListFragment extends RoboListFragment {
 
     }
 
+
+    /**
+     * onFavourBoat handles the request to favour a boat
+     * it just  switches off the stars of all other boats
+     * and replaces the favoured boat star with a drawable star_big_on.
+     * After this it will callback the activities onBoatFavoured to save
+     * the uuid in SharedPreferences.
+     */
     public void onFavourBoat() {
         if (mPosition >= 0 && mSelectedView != null){
             ListView l = getListView();
@@ -203,21 +269,13 @@ public class BoatListFragment extends RoboListFragment {
 
     }
 
+    /**
+     * notifies the listView's list-adapter that the data-set has changed.
+     */
     private void notifyListAdapter() {
         ArrayAdapter<IBoat> listAdapter = (ArrayAdapter<IBoat>) getListAdapter();
         listAdapter.notifyDataSetChanged();
     }
 
 
-    public interface OnBoatNameSelectedListener {
-
-        public void onBoatSelected(int position, UUID uuid);
-
-    }
-
-
-    public interface OnBoatFavouredListener {
-        public void onBoatFavoured(UUID uuid);
-
-    }
 }
