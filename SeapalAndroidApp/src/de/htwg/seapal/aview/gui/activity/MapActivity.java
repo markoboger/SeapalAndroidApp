@@ -59,7 +59,6 @@ import java.util.UUID;
 import de.htwg.seapal.R;
 import de.htwg.seapal.Services.TrackingService;
 import de.htwg.seapal.aview.gui.fragment.MapDialogFragment;
-import de.htwg.seapal.aview.gui.fragment.PictureDialogFragment;
 import de.htwg.seapal.controller.ITripController;
 import de.htwg.seapal.model.IWaypoint;
 import roboguice.inject.InjectResource;
@@ -72,25 +71,36 @@ public class MapActivity extends BaseDrawerActivity
 
     private static final String WAYPOINT_POLYLINE = "map_waypoint_polyline";
     private static final String TRACKING_SERVICE = "map_tracking_service";
-    public static Marker crosshairMarker = null;
-    private final List<Marker> calcDistanceMarker = new LinkedList<Marker>();
-    @InjectView(R.id.drawer_menu_drawer_list_right)
-    private ListView drawerListViewRight;
-    @InjectResource(R.array.drawer_list_array_right)
-    private String[] drawerActivityListRight;
+    private static final String ROUTES_POLYLINE = "map_routes_polyline";
+
     @Inject
     private ITripController tripController;
+
+
+    @InjectView(R.id.drawer_menu_drawer_list_right)
+    private ListView drawerListViewRight;
+
+    @InjectResource(R.array.drawer_list_array_right)
+    private String[] drawerActivityListRight;
+
+    private DrawerLayout drawer;
+
+    public static Marker crosshairMarker = null;
+    private final List<Marker> calcDistanceMarker = new LinkedList<Marker>();
+
     private Intent trackingService;
+
     private TrackingServiceWaypointBroadcastReceiver waypointBroadcastReceiver = new TrackingServiceWaypointBroadcastReceiver();
-    private Polyline waypointsPolyline;
+
     private GoogleMap map;
+
+    private Polyline waypointsPolyline;
     private Polyline route = null;
+    private Polyline calcDistanceRoute = null;
+
     private SelectedOption option = SelectedOption.NONE;
     private LatLng lastPos;
-    private Polyline calcDistanceRoute = null;
     private double calcDistance;
-    private DrawerLayout drawer;
-    private List<IWaypoint> waypoints;
 
 
     private enum SelectedOption {
@@ -124,6 +134,14 @@ public class MapActivity extends BaseDrawerActivity
     }
 
 
+    private static boolean isIntentAvailable(Context context) {
+        final PackageManager packageManager = context.getPackageManager();
+        final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        List<ResolveInfo> list =
+                packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        return list.size() > 0;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,8 +149,8 @@ public class MapActivity extends BaseDrawerActivity
 
 
         FragmentManager myFragmentManager = getSupportFragmentManager();
-        SupportMapFragment myMapFragment = (SupportMapFragment) myFragmentManager.findFragmentById(R.id.map);
-        map = myMapFragment.getMap();
+        SupportMapFragment mapFragment = (SupportMapFragment) myFragmentManager.findFragmentById(R.id.map);
+        map = mapFragment.getMap();
 
 
         if (map != null) {
@@ -160,17 +178,14 @@ public class MapActivity extends BaseDrawerActivity
         drawerListViewRight.setOnItemClickListener(new DrawerItemClickListener());
 
 
-    }
+        waypointsPolyline = map.addPolyline(new PolylineOptions().width(5).color(Color.LTGRAY));
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        waypointsPolyline = map.addPolyline(new PolylineOptions().width(5).color(Color.LTGRAY));
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
@@ -191,17 +206,6 @@ public class MapActivity extends BaseDrawerActivity
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putSerializable(WAYPOINT_POLYLINE, (Serializable) waypointsPolyline.getPoints());
-
-        if (waypointBroadcastReceiver.isOrderedBroadcast()) {
-            unregisterReceiver(waypointBroadcastReceiver);
-        }
-
-        outState.putParcelable(TRACKING_SERVICE, trackingService);
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         Bundle pauseState = getIntent().getBundleExtra("pause_state");
@@ -218,14 +222,28 @@ public class MapActivity extends BaseDrawerActivity
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable(WAYPOINT_POLYLINE, (Serializable) waypointsPolyline.getPoints());
+
+        if (waypointBroadcastReceiver.isOrderedBroadcast()) {
+            unregisterReceiver(waypointBroadcastReceiver);
+        }
+
+        outState.putParcelable(TRACKING_SERVICE, trackingService);
+    }
+
+    @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        List<LatLng> latLngs = (List<LatLng>) savedInstanceState.getSerializable(WAYPOINT_POLYLINE);
+        List<LatLng> waypoints = (List<LatLng>) savedInstanceState.getSerializable(WAYPOINT_POLYLINE);
+        List<LatLng> route = (List<LatLng>) savedInstanceState.getSerializable(ROUTES_POLYLINE);
         waypointsPolyline = map.addPolyline(new PolylineOptions().width(5).color(Color.LTGRAY));
 
-        if (latLngs != null) {
-            waypointsPolyline.setPoints(latLngs);
+        if (waypoints != null) {
+            waypointsPolyline.setPoints(waypoints);
         }
+
+
         trackingService = savedInstanceState.getParcelable(TRACKING_SERVICE);
         if (trackingService != null) {
             registerReceiver(waypointBroadcastReceiver, new IntentFilter(TrackingService.WAYPOINT_BROADCAST_RECEIVER));
@@ -237,7 +255,6 @@ public class MapActivity extends BaseDrawerActivity
         super.onActivityResult(requestCode, resultCode, data);
         handleSmallCameraPhoto(data);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -405,19 +422,9 @@ public class MapActivity extends BaseDrawerActivity
         option = SelectedOption.NONE;
     }
 
-
-    public static boolean isIntentAvailable(Context context, String action) {
-        final PackageManager packageManager = context.getPackageManager();
-        final Intent intent = new Intent(action);
-        List<ResolveInfo> list =
-                packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-        return list.size() > 0;
-    }
-
-
     private void drawWaypoints() {
         Intent i = getIntent();
-        waypoints = (List<IWaypoint>) i.getSerializableExtra("waypoints");
+        List<IWaypoint> waypoints = (List<IWaypoint>) i.getSerializableExtra("waypoints");
         List<LatLng> latLngList = new LinkedList<LatLng>();
         if (waypoints != null) {
             for (IWaypoint w : waypoints) {
@@ -478,6 +485,7 @@ public class MapActivity extends BaseDrawerActivity
 
             SharedPreferences s = getSharedPreferences(TripActivity.TRIP_PREFS, 0);
             SharedPreferences.Editor editor = s.edit();
+            editor.commit();
 
             unregisterReceiver(waypointBroadcastReceiver);
 
@@ -571,8 +579,8 @@ public class MapActivity extends BaseDrawerActivity
                 break;
             case 5:
                 // Take Picture
-                if (isIntentAvailable(getApplicationContext(), MediaStore.ACTION_IMAGE_CAPTURE)) {
-                    dispatchTakePictureIntent(1);
+                if (isIntentAvailable(getApplicationContext())) {
+                    dispatchTakePictureIntent();
                 } else {
                     Toast.makeText(getApplicationContext(),
                             getString(R.string.noCameraAvailable),
@@ -593,15 +601,17 @@ public class MapActivity extends BaseDrawerActivity
         }
     }
 
-    private void showPictureDialogFragment() {
-        FragmentManager fm = getSupportFragmentManager();
-        PictureDialogFragment fragment = new PictureDialogFragment();
-        //fragment.show(fm, "picture_dialog_fragment");
-    }
+// --Commented out by Inspection START (12/27/13 2:16 PM):
+//    private void showPictureDialogFragment() {
+//        FragmentManager fm = getSupportFragmentManager();
+//        PictureDialogFragment fragment = new PictureDialogFragment();
+//        //fragment.show(fm, "picture_dialog_fragment");
+//    }
+// --Commented out by Inspection STOP (12/27/13 2:16 PM)
 
-    private void dispatchTakePictureIntent(int actionCode) {
+    private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(takePictureIntent, actionCode);
+        startActivityForResult(takePictureIntent, 1);
     }
 
     private void handleSmallCameraPhoto(Intent intent) {
@@ -633,7 +643,7 @@ public class MapActivity extends BaseDrawerActivity
 
     private void goToLastKnownLocation(float ZoomLevel) {
         // get current position
-        LatLng coordinate = getLastKnownLocation(false);
+        LatLng coordinate = getLastKnownLocation();
 
         if (coordinate == null) {
             Toast.makeText(getApplicationContext(), getString(R.string.noLocationSignal), Toast.LENGTH_SHORT).show();
@@ -644,11 +654,11 @@ public class MapActivity extends BaseDrawerActivity
         }
     }
 
-    private LatLng getLastKnownLocation(boolean enabledProvidersOnly) {
+    private LatLng getLastKnownLocation() {
 
         LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location location = null;
-        List<String> providers = manager.getProviders(enabledProvidersOnly);
+        List<String> providers = manager.getProviders(false);
 
         for (String provider : providers) {
             location = manager.getLastKnownLocation(provider);
@@ -659,6 +669,7 @@ public class MapActivity extends BaseDrawerActivity
         //at this point we've done all we can and no location is returned
         return null;
     }
+
 
 
 }
