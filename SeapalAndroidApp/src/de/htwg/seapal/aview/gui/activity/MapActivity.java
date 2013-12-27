@@ -52,6 +52,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -59,6 +60,10 @@ import java.util.UUID;
 import de.htwg.seapal.R;
 import de.htwg.seapal.Services.TrackingService;
 import de.htwg.seapal.aview.gui.fragment.MapDialogFragment;
+import de.htwg.seapal.aview.gui.plugins.IMapPlugin;
+import de.htwg.seapal.aview.gui.plugins.impl.CalcDistanceMapPlugin;
+import de.htwg.seapal.aview.gui.plugins.impl.RouteDrawingMapPlugin;
+import de.htwg.seapal.aview.gui.plugins.impl.WaypointDrawingMapPlugin;
 import de.htwg.seapal.controller.ITripController;
 import de.htwg.seapal.model.IWaypoint;
 import roboguice.inject.InjectResource;
@@ -73,7 +78,6 @@ public class MapActivity extends BaseDrawerActivity
 
     private static final String WAYPOINT_POLYLINE = "map_waypoint_polyline";
     private static final String TRACKING_SERVICE = "map_tracking_service";
-    private static final String ORANGE = "#FFBB03";
     private static final String ROUTES_POLYLINE = "map_routes_polyline";
 
     static {
@@ -128,8 +132,7 @@ public class MapActivity extends BaseDrawerActivity
     private LatLng lastPos;
     private double calcDistance;
 
-
-
+    private HashMap<String, IMapPlugin> mapPluginHashMap;
 
     private enum SelectedOption {
         NONE, MARK, ROUTE, DISTANCE, GOAL, MENU_ROUTE, MENU_MARK, MENU_DISTANCE, MENU_GOAL
@@ -202,11 +205,12 @@ public class MapActivity extends BaseDrawerActivity
         drawerListViewRight.setOnItemClickListener(new DrawerItemClickListener());
 
 
-        // Marker configuration
-        calcDistanceMarkerOptions = new MarkerOptions()
-                .anchor(0.25f, 1.0f - 0.08333f)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_distance));
+        registerMapPlugin("calc_distance_map_plugin",new CalcDistanceMapPlugin(map));
+        registerMapPlugin("route_drawing_map_plugin",new RouteDrawingMapPlugin(map));
+        registerMapPlugin("waypoint_drawing_map_plugin",new WaypointDrawingMapPlugin(map));
 
+
+        // Marker configuration
         waypointsMarkerOptions = new MarkerOptions()
                 .anchor(0.25f, 1.0f - 0.08333f)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_mark));
@@ -219,10 +223,6 @@ public class MapActivity extends BaseDrawerActivity
                 .anchor(0.5f, 0.5f);
 
 
-        // Polyline Configuration
-        calcDistancePolylineOptions = new PolylineOptions()
-                .width(5)
-                .color(Color.parseColor(ORANGE));
 
         waypointPolylineOption = new PolylineOptions()
                 .width(5)
@@ -238,6 +238,10 @@ public class MapActivity extends BaseDrawerActivity
         waypointBroadcastReceiver = new TrackingServiceWaypointBroadcastReceiver();
         calcDistanceMarker = new LinkedList<Marker>();
 
+
+    }
+
+    private void registerMapPlugin(String name, IMapPlugin plugin) {
 
     }
 
