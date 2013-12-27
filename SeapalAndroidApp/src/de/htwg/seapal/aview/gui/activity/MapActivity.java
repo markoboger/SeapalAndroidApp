@@ -71,7 +71,24 @@ public class MapActivity extends BaseDrawerActivity
 
     private static final String WAYPOINT_POLYLINE = "map_waypoint_polyline";
     private static final String TRACKING_SERVICE = "map_tracking_service";
+    private static final String ORANGE = "#FFBB03";
     private static final String ROUTES_POLYLINE = "map_routes_polyline";
+
+    private static final MarkerOptions CALC_DISTANCE_MARKER_OPTIONS = new MarkerOptions()
+            .anchor(0.25f, 1.0f - 0.08333f)
+            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_distance));
+
+    private static final MarkerOptions WAYPOINTS_MARKER_OPTIONS = new MarkerOptions()
+            .anchor(0.25f, 1.0f - 0.08333f)
+            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_mark));
+
+    private static final MarkerOptions ROUTE_MARKER_OPTIONS = new MarkerOptions()
+            .anchor(0.25f, 1.0f - 0.08333f)
+            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_route));
+
+    private static final MarkerOptions CROSSHAIR_MARKER_OPTIONS = new MarkerOptions()
+            .icon(BitmapDescriptorFactory.fromResource(R.drawable.haircross))
+            .anchor(0.5f, 0.5f);
 
     @Inject
     private ITripController tripController;
@@ -85,22 +102,35 @@ public class MapActivity extends BaseDrawerActivity
 
     private DrawerLayout drawer;
 
-    public static Marker crosshairMarker = null;
-    private final List<Marker> calcDistanceMarker = new LinkedList<Marker>();
+    public static Marker crosshairMarker;
+    private List<Marker> calcDistanceMarker;
 
     private Intent trackingService;
 
-    private TrackingServiceWaypointBroadcastReceiver waypointBroadcastReceiver = new TrackingServiceWaypointBroadcastReceiver();
+    private TrackingServiceWaypointBroadcastReceiver waypointBroadcastReceiver;
 
     private GoogleMap map;
 
+
     private Polyline waypointsPolyline;
-    private Polyline route = null;
-    private Polyline calcDistanceRoute = null;
+    private Polyline route;
+    private Polyline calcDistanceRoute;
 
     private SelectedOption option = SelectedOption.NONE;
     private LatLng lastPos;
     private double calcDistance;
+
+
+    private static final PolylineOptions CALC_DISTANCE_POLYLINE_OPTIONS = new PolylineOptions()
+            .width(5)
+            .color(Color.parseColor(ORANGE));
+
+    private static final PolylineOptions WAYPOINT_POLYLINE_OPTION = new PolylineOptions().width(5).color(Color.LTGRAY);
+
+
+    private static final PolylineOptions ROUTE_POLYLINE_OPTIONS = new PolylineOptions()
+            .add(crosshairMarker.getPosition())
+            .width(5).color(Color.RED);
 
 
     private enum SelectedOption {
@@ -178,7 +208,9 @@ public class MapActivity extends BaseDrawerActivity
         drawerListViewRight.setOnItemClickListener(new DrawerItemClickListener());
 
 
-        waypointsPolyline = map.addPolyline(new PolylineOptions().width(5).color(Color.LTGRAY));
+        waypointsPolyline = map.addPolyline(WAYPOINT_POLYLINE_OPTION);
+        waypointBroadcastReceiver = new TrackingServiceWaypointBroadcastReceiver();
+        calcDistanceMarker = new LinkedList<Marker>();
 
 
     }
@@ -237,7 +269,7 @@ public class MapActivity extends BaseDrawerActivity
         super.onRestoreInstanceState(savedInstanceState);
         List<LatLng> waypoints = (List<LatLng>) savedInstanceState.getSerializable(WAYPOINT_POLYLINE);
         List<LatLng> route = (List<LatLng>) savedInstanceState.getSerializable(ROUTES_POLYLINE);
-        waypointsPolyline = map.addPolyline(new PolylineOptions().width(5).color(Color.LTGRAY));
+        waypointsPolyline = map.addPolyline(WAYPOINT_POLYLINE_OPTION);
 
         if (waypoints != null) {
             waypointsPolyline.setPoints(waypoints);
@@ -301,10 +333,7 @@ public class MapActivity extends BaseDrawerActivity
             case MARK:
                 break;
             case ROUTE:
-                map.addMarker(new MarkerOptions()
-                        .position(latlng)
-                        .anchor(0.25f, 1.0f - 0.08333f)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_route)));
+                map.addMarker(ROUTE_MARKER_OPTIONS.position(latlng));
                 List<LatLng> routelst = route.getPoints();
                 routelst.add(latlng);
                 route.setPoints(routelst);
@@ -312,15 +341,12 @@ public class MapActivity extends BaseDrawerActivity
             case DISTANCE:
                 calcDistance += calcDistance(lastPos, latlng);
                 lastPos = latlng;
-                calcDistanceMarker.add(map.addMarker(new MarkerOptions()
-                        .position(latlng)
-                        .anchor(0.25f, 1.0f - 0.08333f)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_distance))));
+                calcDistanceMarker.add(map.addMarker(CALC_DISTANCE_MARKER_OPTIONS.position(latlng)));
                 List<LatLng> calclst = calcDistanceRoute.getPoints();
                 calclst.add(latlng);
                 calcDistanceRoute.setPoints(calclst);
                 Toast.makeText(getApplicationContext(),
-                        Math.round(calcDistance) + "KM",
+                        String.format("%.2f", calcDistance) + "KM",
                         Toast.LENGTH_LONG).show();
                 break;
             case MENU_ROUTE:
@@ -374,14 +400,9 @@ public class MapActivity extends BaseDrawerActivity
             route = null;
 
         }
-        map.addMarker(new MarkerOptions().
-                position(crosshairMarker.getPosition())
-                .anchor(0.25f, 1.0f - 0.08333f)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_route)));
+        map.addMarker(ROUTE_MARKER_OPTIONS);
 
-        route = map.addPolyline(new PolylineOptions()
-                .add(crosshairMarker.getPosition())
-                .width(5).color(Color.RED));
+        route = map.addPolyline(ROUTE_POLYLINE_OPTIONS);
 
 
         crosshairMarker.remove();
@@ -399,15 +420,8 @@ public class MapActivity extends BaseDrawerActivity
         }
         lastPos = crosshairMarker.getPosition();
         calcDistance = 0.0;
-        calcDistanceMarker.add(map.addMarker(new MarkerOptions()
-                .position(crosshairMarker.getPosition())
-                .anchor(0.25f, 1.0f - 0.08333f)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_distance))));
-        String ORANGE = "#FFBB03";
-        calcDistanceRoute = map.addPolyline(new PolylineOptions()
-                .add(lastPos)
-                .width(5)
-                .color(Color.parseColor(ORANGE)));
+        calcDistanceMarker.add(map.addMarker(CALC_DISTANCE_MARKER_OPTIONS.position(lastPos)));
+        calcDistanceRoute = map.addPolyline(CALC_DISTANCE_POLYLINE_OPTIONS);
         crosshairMarker.remove();
     }
 
@@ -430,10 +444,7 @@ public class MapActivity extends BaseDrawerActivity
             for (IWaypoint w : waypoints) {
                 LatLng cords = new LatLng(w.getLatitude(), w.getLongitude());
                 latLngList.add(cords);
-                map.addMarker(new MarkerOptions()
-                        .position(cords)
-                        .anchor(0.25f, 1.0f - 0.08333f)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_mark)));
+                map.addMarker(WAYPOINTS_MARKER_OPTIONS);
             }
             waypointsPolyline.setPoints(latLngList);
 
@@ -547,11 +558,7 @@ public class MapActivity extends BaseDrawerActivity
             crosshairMarker.remove();
         }
 
-        crosshairMarker = map.addMarker(new MarkerOptions()
-                .position(latLng)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.haircross))
-                .snippet(latLng.toString())
-                .anchor(0.5f, 0.5f));
+        crosshairMarker = map.addMarker(CROSSHAIR_MARKER_OPTIONS.position(latLng).snippet(latLng.toString()));
 
         Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         v.vibrate(100);
