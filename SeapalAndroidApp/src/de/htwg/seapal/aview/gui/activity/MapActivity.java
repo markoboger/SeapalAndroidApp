@@ -67,57 +67,72 @@ import roboguice.inject.InjectView;
 
 
 public class MapActivity extends BaseDrawerActivity
-implements OnMapLongClickListener, OnMapClickListener, OnMarkerClickListener, 
-MapDialogFragment.MapDialogListener {
+        implements OnMapLongClickListener, OnMapClickListener, OnMarkerClickListener,
+        MapDialogFragment.MapDialogListener {
 
     private static final String WAYPOINT_POLYLINE = "map_waypoint_polyline";
     private static final String TRACKING_SERVICE = "map_tracking_service";
+    public static Marker crosshairMarker = null;
+    private final List<Marker> calcDistanceMarker = new LinkedList<Marker>();
     @InjectView(R.id.drawer_menu_drawer_list_right)
     private ListView drawerListViewRight;
-
     @InjectResource(R.array.drawer_list_array_right)
     private String[] drawerActivityListRight;
-
     @Inject
     private ITripController tripController;
     private Intent trackingService;
     private TrackingServiceWaypointBroadcastReceiver waypointBroadcastReceiver = new TrackingServiceWaypointBroadcastReceiver();
     private Polyline waypointsPolyline;
-
-
-    private enum SelectedOption {
-		NONE, MARK, ROUTE, DISTANCE, GOAL, MENU_ROUTE, MENU_MARK, MENU_DISTANCE, MENU_GOAL
-	}
-	
-	static {
-		CBLURLStreamHandlerFactory.registerSelfIgnoreError();
-		//needed for TouchDB
-	}
-
-	private GoogleMap map;
-	public static Marker crosshairMarker = null;
-	private Polyline route = null;
-	private SelectedOption option = SelectedOption.NONE;
-	private LatLng lastPos;
-	private final List<Marker> calcDistanceMarker = new LinkedList<Marker>();
-	private Polyline calcDistanceRoute = null;
-	private double calcDistance;
+    private GoogleMap map;
+    private Polyline route = null;
+    private SelectedOption option = SelectedOption.NONE;
+    private LatLng lastPos;
+    private Polyline calcDistanceRoute = null;
+    private double calcDistance;
     private DrawerLayout drawer;
-
     private List<IWaypoint> waypoints;
 
 
+    private enum SelectedOption {
+        NONE, MARK, ROUTE, DISTANCE, GOAL, MENU_ROUTE, MENU_MARK, MENU_DISTANCE, MENU_GOAL
+    }
+
+    static {
+        CBLURLStreamHandlerFactory.registerSelfIgnoreError();
+        //needed for TouchDB
+    }
+
+    public class TrackingServiceWaypointBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            LatLng latLng = intent.getParcelableExtra(TrackingService.LAT_LNG);
+            List<LatLng> waypointsLatLngList = waypointsPolyline.getPoints();
+            waypointsLatLngList.add(latLng);
+            waypointsPolyline.setPoints(waypointsLatLngList);
+        }
+    }
+
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            if (parent.getId() == R.id.drawer_menu_drawer_list_right) {
+                selectChoosenMeunPoint(position);
+                drawer.closeDrawer(Gravity.END);
+            }
+        }
+    }
+
+
     @Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.map);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.map);
 
 
-		FragmentManager myFragmentManager = getSupportFragmentManager();
-		SupportMapFragment myMapFragment  = (SupportMapFragment) myFragmentManager.findFragmentById(R.id.map);
-		map = myMapFragment.getMap();
-
-
+        FragmentManager myFragmentManager = getSupportFragmentManager();
+        SupportMapFragment myMapFragment = (SupportMapFragment) myFragmentManager.findFragmentById(R.id.map);
+        map = myMapFragment.getMap();
 
 
         if (map != null) {
@@ -145,7 +160,7 @@ MapDialogFragment.MapDialogListener {
         drawerListViewRight.setOnItemClickListener(new DrawerItemClickListener());
 
 
-	}
+    }
 
     @Override
     protected void onStart() {
@@ -156,7 +171,7 @@ MapDialogFragment.MapDialogListener {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         waypointsPolyline = map.addPolyline(new PolylineOptions().width(5).color(Color.LTGRAY));
-        AsyncTask<Void,Void,Void> drawWaypointsTask = new AsyncTask<Void, Void, Void>() {
+        new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
                 try {
@@ -175,42 +190,31 @@ MapDialogFragment.MapDialogListener {
         }.execute();
     }
 
-    private void drawWaypoints() {
-        Intent i = getIntent();
-        waypoints  = (List<IWaypoint>) i.getSerializableExtra("waypoints");
-        List<LatLng> latLngList = new LinkedList<LatLng>();
-        if (waypoints != null){
-            for (IWaypoint w : waypoints){
-                LatLng cords =  new LatLng(w.getLatitude(), w.getLongitude());
-                latLngList.add(cords);
-                map.addMarker(new MarkerOptions()
-                        .position(cords)
-                        .anchor(0.25f, 1.0f - 0.08333f)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_mark)));
-            }
-            waypointsPolyline.setPoints(latLngList);
-
-
-        }
-        zoomToWaypointRoute(latLngList);
-    }
-
-    private void zoomToWaypointRoute(List<LatLng> waypointList) {
-        if (!waypointList.isEmpty()) {
-            LatLngBounds.Builder boundsBuilder = LatLngBounds.builder();
-            for (LatLng latLng : waypointList) {
-                boundsBuilder.include(latLng);
-            }
-            LatLngBounds latLngBounds = boundsBuilder.build();
-            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngBounds(latLngBounds, 50);
-            map.animateCamera(yourLocation);
-        }
-    }
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putSerializable(WAYPOINT_POLYLINE, (Serializable) waypointsPolyline.getPoints());
-        outState.putParcelable(TRACKING_SERVICE,  trackingService);
+
+        if (waypointBroadcastReceiver.isOrderedBroadcast()) {
+            unregisterReceiver(waypointBroadcastReceiver);
+        }
+
+        outState.putParcelable(TRACKING_SERVICE, trackingService);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Bundle pauseState = getIntent().getBundleExtra("pause_state");
+        if (pauseState != null)
+            onRestoreInstanceState(pauseState);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Bundle pauseState = new Bundle();
+        getIntent().putExtra("pause_state", pauseState);
+        onSaveInstanceState(pauseState);
     }
 
     @Override
@@ -218,8 +222,14 @@ MapDialogFragment.MapDialogListener {
         super.onRestoreInstanceState(savedInstanceState);
         List<LatLng> latLngs = (List<LatLng>) savedInstanceState.getSerializable(WAYPOINT_POLYLINE);
         waypointsPolyline = map.addPolyline(new PolylineOptions().width(5).color(Color.LTGRAY));
-        waypointsPolyline.setPoints(latLngs);
+
+        if (latLngs != null) {
+            waypointsPolyline.setPoints(latLngs);
+        }
         trackingService = savedInstanceState.getParcelable(TRACKING_SERVICE);
+        if (trackingService != null) {
+            registerReceiver(waypointBroadcastReceiver, new IntentFilter(TrackingService.WAYPOINT_BROADCAST_RECEIVER));
+        }
     }
 
     @Override
@@ -228,31 +238,6 @@ MapDialogFragment.MapDialogListener {
         handleSmallCameraPhoto(data);
     }
 
-    private void setupDrawerForMapView() {
-
-        int actionBarHeight = getActionBarHeight();
-        ListView listLeft = (ListView) findViewById(R.id.drawer_menu_drawer_list_left);
-        ListView listRight = (ListView) findViewById(R.id.drawer_menu_drawer_list_right);
-
-        listLeft.setBackgroundDrawable(getResources().getDrawable(R.drawable.tranparent_drawer_under_actionbar));
-        listRight.setBackgroundDrawable(getResources().getDrawable(R.drawable.tranparent_drawer_under_actionbar));
-
-        listLeft.setPadding(0,actionBarHeight,0,0);
-        listRight.setPadding(0,actionBarHeight,0,0);
-
-    }
-
-    private int getActionBarHeight() {
-        int actionBarHeight = 0;
-        // Calculate ActionBar height
-        TypedValue tv = new TypedValue();
-        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
-        {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(
-                                tv.data,getResources().getDisplayMetrics());
-        }
-        return actionBarHeight;
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -260,10 +245,10 @@ MapDialogFragment.MapDialogListener {
         getMenuInflater().inflate(R.menu.main, menu);
 
         // Add SearchWidget.
-        SearchManager searchManager = (SearchManager) getSystemService( Context.SEARCH_SERVICE );
-        SearchView searchView = (SearchView) menu.findItem( R.id.action_search ).getActionView();
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
 
-        searchView.setSearchableInfo( searchManager.getSearchableInfo( getComponentName() ) );
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -293,11 +278,205 @@ MapDialogFragment.MapDialogListener {
         return super.onMenuItemSelected(featureId, item);
     }
 
+    @Override
+    public void onMapClick(LatLng latlng) {
+        switch (option) {
+            case MARK:
+                break;
+            case ROUTE:
+                map.addMarker(new MarkerOptions()
+                        .position(latlng)
+                        .anchor(0.25f, 1.0f - 0.08333f)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_route)));
+                List<LatLng> routelst = route.getPoints();
+                routelst.add(latlng);
+                route.setPoints(routelst);
+                break;
+            case DISTANCE:
+                calcDistance += calcDistance(lastPos, latlng);
+                lastPos = latlng;
+                calcDistanceMarker.add(map.addMarker(new MarkerOptions()
+                        .position(latlng)
+                        .anchor(0.25f, 1.0f - 0.08333f)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_distance))));
+                List<LatLng> calclst = calcDistanceRoute.getPoints();
+                calclst.add(latlng);
+                calcDistanceRoute.setPoints(calclst);
+                Toast.makeText(getApplicationContext(),
+                        Math.round(calcDistance) + "KM",
+                        Toast.LENGTH_LONG).show();
+                break;
+            case MENU_ROUTE:
+                setCrosshairMarker(latlng);
+                onDialogSetRouteClick(new DialogFragment());
+                option = SelectedOption.ROUTE;
+                onMapClick(latlng);
+                break;
+            case MENU_MARK:
+                setCrosshairMarker(latlng);
+                onDialogSetMarkClick(new DialogFragment());
+                option = SelectedOption.NONE;
+                break;
+            case MENU_DISTANCE:
+                setCrosshairMarker(latlng);
+                onDialogcalcDistanceClick(new DialogFragment());
+                option = SelectedOption.DISTANCE;
+                break;
+            default:
+                break;
+        }
+
+
+    }
+
+    @Override
+    public void onMapLongClick(LatLng latLng) {
+        option = SelectedOption.NONE;
+        setCrosshairMarker(latLng);
+        crosshairMarker.showInfoWindow();
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker arg0) {
+        MapDialogFragment f = new MapDialogFragment();
+        f.show(getFragmentManager(), "dialog");
+        return false;
+    }
+
+    @Override
+    public void onDialogSetMarkClick(DialogFragment dialog) {
+        option = SelectedOption.MARK;
+        map.addMarker(new MarkerOptions().position(crosshairMarker.getPosition()));
+        crosshairMarker.remove();
+    }
+
+    @Override
+    public void onDialogSetRouteClick(DialogFragment dialog) {
+        option = SelectedOption.ROUTE;
+        if (route != null) {
+            route = null;
+
+        }
+        map.addMarker(new MarkerOptions().
+                position(crosshairMarker.getPosition())
+                .anchor(0.25f, 1.0f - 0.08333f)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_route)));
+
+        route = map.addPolyline(new PolylineOptions()
+                .add(crosshairMarker.getPosition())
+                .width(5).color(Color.RED));
+
+
+        crosshairMarker.remove();
+    }
+
+    @Override
+    public void onDialogcalcDistanceClick(DialogFragment dialog) {
+        option = SelectedOption.DISTANCE;
+        if (calcDistanceRoute != null) {
+            calcDistanceRoute.remove();
+            for (Marker m : calcDistanceMarker) {
+                m.remove();
+            }
+            calcDistanceMarker.clear();
+        }
+        lastPos = crosshairMarker.getPosition();
+        calcDistance = 0.0;
+        calcDistanceMarker.add(map.addMarker(new MarkerOptions()
+                .position(crosshairMarker.getPosition())
+                .anchor(0.25f, 1.0f - 0.08333f)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_distance))));
+        String ORANGE = "#FFBB03";
+        calcDistanceRoute = map.addPolyline(new PolylineOptions()
+                .add(lastPos)
+                .width(5)
+                .color(Color.parseColor(ORANGE)));
+        crosshairMarker.remove();
+    }
+
+    @Override
+    public void onDialogSetTargetClick(DialogFragment dialog) {
+        option = SelectedOption.GOAL;
+    }
+
+    @Override
+    public void onDialogDeleteClick(DialogFragment dialog) {
+        crosshairMarker.remove();
+        option = SelectedOption.NONE;
+    }
+
+
+    public static boolean isIntentAvailable(Context context, String action) {
+        final PackageManager packageManager = context.getPackageManager();
+        final Intent intent = new Intent(action);
+        List<ResolveInfo> list =
+                packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        return list.size() > 0;
+    }
+
+
+    private void drawWaypoints() {
+        Intent i = getIntent();
+        waypoints = (List<IWaypoint>) i.getSerializableExtra("waypoints");
+        List<LatLng> latLngList = new LinkedList<LatLng>();
+        if (waypoints != null) {
+            for (IWaypoint w : waypoints) {
+                LatLng cords = new LatLng(w.getLatitude(), w.getLongitude());
+                latLngList.add(cords);
+                map.addMarker(new MarkerOptions()
+                        .position(cords)
+                        .anchor(0.25f, 1.0f - 0.08333f)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_mark)));
+            }
+            waypointsPolyline.setPoints(latLngList);
+
+
+        }
+        zoomToWaypointRoute(latLngList);
+    }
+
+    private void zoomToWaypointRoute(List<LatLng> waypointList) {
+        if (!waypointList.isEmpty()) {
+            LatLngBounds.Builder boundsBuilder = LatLngBounds.builder();
+            for (LatLng latLng : waypointList) {
+                boundsBuilder.include(latLng);
+            }
+            LatLngBounds latLngBounds = boundsBuilder.build();
+            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngBounds(latLngBounds, 50);
+            map.animateCamera(yourLocation);
+        }
+    }
+
+    private void setupDrawerForMapView() {
+
+        int actionBarHeight = getActionBarHeight();
+        ListView listLeft = (ListView) findViewById(R.id.drawer_menu_drawer_list_left);
+        ListView listRight = (ListView) findViewById(R.id.drawer_menu_drawer_list_right);
+
+        listLeft.setBackgroundDrawable(getResources().getDrawable(R.drawable.tranparent_drawer_under_actionbar));
+        listRight.setBackgroundDrawable(getResources().getDrawable(R.drawable.tranparent_drawer_under_actionbar));
+
+        listLeft.setPadding(0, actionBarHeight, 0, 0);
+        listRight.setPadding(0, actionBarHeight, 0, 0);
+
+    }
+
+    private int getActionBarHeight() {
+        int actionBarHeight = 0;
+        // Calculate ActionBar height
+        TypedValue tv = new TypedValue();
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(
+                    tv.data, getResources().getDisplayMetrics());
+        }
+        return actionBarHeight;
+    }
+
     private void stopTracking() {
         if (trackingService != null) {
-            tripController.setEndTime(UUID.fromString(trackingService.getStringExtra(TrackingService.TRIP_UUID)),System.currentTimeMillis());
+            tripController.setEndTime(UUID.fromString(trackingService.getStringExtra(TrackingService.TRIP_UUID)), System.currentTimeMillis());
 
-            SharedPreferences s = getSharedPreferences(TripActivity.TRIP_PREFS,0);
+            SharedPreferences s = getSharedPreferences(TripActivity.TRIP_PREFS, 0);
             SharedPreferences.Editor editor = s.edit();
 
             unregisterReceiver(waypointBroadcastReceiver);
@@ -314,8 +493,8 @@ MapDialogFragment.MapDialogListener {
     }
 
     private void startTracking() {
-        SharedPreferences s = getSharedPreferences(LogbookTabsActivity.LOGBOOK_PREFS,0);
-        final String boatString = s.getString(LogbookTabsActivity.LOGBOOK_BOAT_FAVOURED,"");
+        SharedPreferences s = getSharedPreferences(LogbookTabsActivity.LOGBOOK_PREFS, 0);
+        final String boatString = s.getString(LogbookTabsActivity.LOGBOOK_BOAT_FAVOURED, "");
         if (!StringUtils.isEmpty(boatString) && trackingService == null) {
 
             UUID boat = UUID.fromString(boatString);
@@ -329,6 +508,7 @@ MapDialogFragment.MapDialogListener {
             waypointsPolyline = map.addPolyline(new PolylineOptions().width(5).color(Color.LTGRAY));
             registerReceiver(waypointBroadcastReceiver, new IntentFilter(TrackingService.WAYPOINT_BROADCAST_RECEIVER));
 
+
             startService(trackingService);
 
         } else {
@@ -336,76 +516,26 @@ MapDialogFragment.MapDialogListener {
         }
 
 
-
     }
 
     private void closeRightDreawer() {
-        if(drawer.isDrawerOpen(Gravity.END)){
+        if (drawer.isDrawerOpen(Gravity.END)) {
             drawer.closeDrawer(Gravity.END);
         }
     }
 
     private void toggleRightDrawer() {
-        if(drawer.isDrawerOpen(Gravity.END)){
+        if (drawer.isDrawerOpen(Gravity.END)) {
             drawer.closeDrawer(Gravity.END);
-        }else{
+        } else {
             drawer.openDrawer(Gravity.END);
             drawer.closeDrawer(Gravity.START);
         }
     }
 
-    @Override
-	public void onMapClick(LatLng latlng) {
-		switch (option) {
-		case MARK:
-			break;
-		case ROUTE:
-			map.addMarker(new MarkerOptions()
-					.position(latlng)
-					.icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_route)));
-			List<LatLng> routelst = route.getPoints();
-			routelst.add(latlng);
-			route.setPoints(routelst);
-			break;
-		case DISTANCE:
-			calcDistance += calcDistance(lastPos, latlng);
-			lastPos = latlng;
-			calcDistanceMarker.add(map.addMarker(new MarkerOptions().
-					position(latlng).
-					icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_distance))));
-			List<LatLng> calclst = calcDistanceRoute.getPoints();
-			calclst.add(latlng);
-			calcDistanceRoute.setPoints(calclst);
-			Toast.makeText(getApplicationContext(),
-                    Math.round(calcDistance) + "KM",
-                    Toast.LENGTH_LONG).show();
-			break;
-        case MENU_ROUTE:
-            setCrosshairMarker(latlng);
-            onDialogSetRouteClick(new DialogFragment());
-            option = SelectedOption.ROUTE;
-            onMapClick(latlng);
-            break;
-        case MENU_MARK:
-            setCrosshairMarker(latlng);
-            onDialogSetMarkClick(new DialogFragment());
-            option = SelectedOption.NONE;
-            break;
-        case MENU_DISTANCE:
-            setCrosshairMarker(latlng);
-            onDialogcalcDistanceClick(new DialogFragment());
-            option = SelectedOption.DISTANCE;
-            break;
-		default:
-			break;
-		}
+    private void setCrosshairMarker(LatLng latLng) {
 
-
-	}
-
-    private void setCrosshairMarker(LatLng latLng){
-
-        if(crosshairMarker != null) {
+        if (crosshairMarker != null) {
             crosshairMarker.remove();
         }
 
@@ -419,89 +549,8 @@ MapDialogFragment.MapDialogListener {
         v.vibrate(100);
     }
 
-	@Override
-	public void onMapLongClick(LatLng latLng) {
-		option = SelectedOption.NONE;
-		setCrosshairMarker(latLng);
-        crosshairMarker.showInfoWindow();
-	}
-
-	@Override
-	public boolean onMarkerClick(Marker arg0) {		
-		MapDialogFragment f = new MapDialogFragment();
-		f.show(getFragmentManager(), "dialog");
-		return false;
-	}
-
-	@Override
-	public void onDialogSetMarkClick(DialogFragment dialog) {
-		option = SelectedOption.MARK;
-		map.addMarker(new MarkerOptions().position(crosshairMarker.getPosition()));
-		crosshairMarker.remove();
-	}
-
-	@Override
-	public void onDialogSetRouteClick(DialogFragment dialog) {
-		option = SelectedOption.ROUTE;
-		if(route != null) {
-			route = null;
-
-		}
-		map.addMarker(new MarkerOptions().
-				position(crosshairMarker.getPosition()).
-				icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_route)));
-
-		route = map.addPolyline(new PolylineOptions().
-				add(crosshairMarker.getPosition()).
-				width(5).color(Color.RED));
-
-
-		crosshairMarker.remove();
-	}
-
-	@Override
-	public void onDialogcalcDistanceClick(DialogFragment dialog) {
-		option = SelectedOption.DISTANCE;
-		if(calcDistanceRoute != null) {
-			calcDistanceRoute.remove();
-			for(Marker m : calcDistanceMarker) {
-				m.remove();
-			}
-			calcDistanceMarker.clear();
-		}
-		lastPos = crosshairMarker.getPosition();
-		calcDistance = 0.0;
-		calcDistanceMarker.add(map.addMarker(new MarkerOptions().
-				position(crosshairMarker.getPosition()).
-				icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_distance))));
-        String ORANGE = "#FFBB03";
-        calcDistanceRoute = map.addPolyline(new PolylineOptions().add(lastPos).width(5).color(Color.parseColor(ORANGE)));
-		crosshairMarker.remove();
-	}
-
-	@Override
-	public void onDialogSetTargetClick(DialogFragment dialog) {
-		option = SelectedOption.GOAL;
-	}
-
-	@Override
-	public void onDialogDeleteClick(DialogFragment dialog) {
-		crosshairMarker.remove();
-		option = SelectedOption.NONE;
-	}
-
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position,	long id) {
-            if(parent.getId() == R.id.drawer_menu_drawer_list_right){
-                selectChoosenMeunPoint(position);
-                drawer.closeDrawer(Gravity.END);
-            }
-        }
-    }
-
-    void selectChoosenMeunPoint(int position){
-        switch(position){
+    private void selectChoosenMeunPoint(int position) {
+        switch (position) {
             case 0:
                 break;
             case 1:
@@ -522,9 +571,9 @@ MapDialogFragment.MapDialogListener {
                 break;
             case 5:
                 // Take Picture
-                if(isIntentAvailable(getApplicationContext(), MediaStore.ACTION_IMAGE_CAPTURE)){
+                if (isIntentAvailable(getApplicationContext(), MediaStore.ACTION_IMAGE_CAPTURE)) {
                     dispatchTakePictureIntent(1);
-                }else{
+                } else {
                     Toast.makeText(getApplicationContext(),
                             getString(R.string.noCameraAvailable),
                             Toast.LENGTH_SHORT)
@@ -550,18 +599,9 @@ MapDialogFragment.MapDialogListener {
         //fragment.show(fm, "picture_dialog_fragment");
     }
 
-
     private void dispatchTakePictureIntent(int actionCode) {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(takePictureIntent, actionCode);
-    }
-
-    public static boolean isIntentAvailable(Context context, String action) {
-        final PackageManager packageManager = context.getPackageManager();
-        final Intent intent = new Intent(action);
-        List<ResolveInfo> list =
-                packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-        return list.size() > 0;
     }
 
     private void handleSmallCameraPhoto(Intent intent) {
@@ -570,72 +610,55 @@ MapDialogFragment.MapDialogListener {
         //mImageView.setImageBitmap(mImageBitmap);
     }
 
-	Double calcDistance(LatLng pos1, LatLng pos2) {
+    /**
+     * calculates the Distance of currentPosition and distantPosition
+     *
+     * @param currentPosition latlng of the current position
+     * @param distantPosition latlnt of the distant position
+     * @return the distance in kilometers
+     */
+    private Double calcDistance(LatLng currentPosition, LatLng distantPosition) {
 
-		int R = 6371; // km earth radius
-		double dLat = Math.toRadians(pos2.latitude - pos1.latitude);
-		double dLon = Math.toRadians(pos2.longitude - pos1.longitude);
-		double lat1 = Math.toRadians(pos1.latitude);
-		double lat2 = Math.toRadians(pos2.latitude);
+        int R = 6371; // km earth radius
+        double dLat = Math.toRadians(distantPosition.latitude - currentPosition.latitude);
+        double dLon = Math.toRadians(distantPosition.longitude - currentPosition.longitude);
+        double lat1 = Math.toRadians(currentPosition.latitude);
+        double lat2 = Math.toRadians(distantPosition.latitude);
 
-		double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-				Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
-		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-		return R * c;
-	}
-
-    public boolean onPrepareOptionsMenu (LatLng latLng)
-    {
-
-        //MenuInflater inflater = getMenuInflater();
-        //getActionBar().
-
-        //TextView title  = (TextView) findViewById(R.id.coordinates);
-        //menu.getItem(0).setTitle("Lat: " + latLng.latitude + " Lng: " + latLng.longitude);
-
-        return true;
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
     }
 
     private void goToLastKnownLocation(float ZoomLevel) {
         // get current position
         LatLng coordinate = getLastKnownLocation(false);
 
-        if(coordinate == null){
+        if (coordinate == null) {
             Toast.makeText(getApplicationContext(), getString(R.string.noLocationSignal), Toast.LENGTH_SHORT).show();
-        }else{
+        } else {
             // set map view to current position
             CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, ZoomLevel);
             map.animateCamera(yourLocation);
         }
     }
 
-    private LatLng getLastKnownLocation(boolean enabledProvidersOnly){
+    private LatLng getLastKnownLocation(boolean enabledProvidersOnly) {
 
         LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location location = null;
         List<String> providers = manager.getProviders(enabledProvidersOnly);
 
-        for(String provider : providers){
+        for (String provider : providers) {
             location = manager.getLastKnownLocation(provider);
             //maybe try adding some Criteria here
-            if(location != null) return new LatLng(location.getLatitude(), location.getLongitude());
+            if (location != null)
+                return new LatLng(location.getLatitude(), location.getLongitude());
         }
         //at this point we've done all we can and no location is returned
         return null;
     }
 
-    public class TrackingServiceWaypointBroadcastReceiver extends BroadcastReceiver {
 
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            LatLng latLng = (LatLng) intent.getParcelableExtra(TrackingService.LAT_LNG);
-            List<LatLng> waypointsLatLngList = waypointsPolyline.getPoints();
-            waypointsLatLngList.add(latLng);
-            waypointsPolyline.setPoints(waypointsLatLngList);
-
-
-
-
-        }
-    }
 }
