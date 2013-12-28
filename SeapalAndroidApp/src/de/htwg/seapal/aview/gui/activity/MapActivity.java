@@ -11,7 +11,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -44,21 +43,25 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.inject.Inject;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 
-import java.io.Serializable;
-import java.util.LinkedList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import de.htwg.seapal.R;
 import de.htwg.seapal.Services.TrackingService;
 import de.htwg.seapal.aview.gui.fragment.MapDialogFragment;
+import de.htwg.seapal.aview.gui.plugins.IMapPlugin;
+import de.htwg.seapal.aview.gui.plugins.IMapPluginable;
+import de.htwg.seapal.aview.gui.plugins.impl.CalcDistanceMapPlugin;
+import de.htwg.seapal.aview.gui.plugins.impl.RouteDrawingMapPlugin;
+import de.htwg.seapal.aview.gui.plugins.impl.WaypointDrawingMapPlugin;
 import de.htwg.seapal.controller.ITripController;
 import de.htwg.seapal.model.IWaypoint;
 import roboguice.inject.InjectResource;
@@ -67,13 +70,12 @@ import roboguice.inject.InjectView;
 
 public class MapActivity extends BaseDrawerActivity
         implements OnMapLongClickListener, OnMapClickListener, OnMarkerClickListener,
-        MapDialogFragment.MapDialogListener {
+        MapDialogFragment.MapDialogListener, IMapPluginable{
 
     private static final String DISTANCE_POLYLINE = "map_distance_polyline";
 
     private static final String WAYPOINT_POLYLINE = "map_waypoint_polyline";
     private static final String TRACKING_SERVICE = "map_tracking_service";
-    private static final String ORANGE = "#FFBB03";
     private static final String ROUTES_POLYLINE = "map_routes_polyline";
 
     static {
@@ -81,22 +83,10 @@ public class MapActivity extends BaseDrawerActivity
     }
 
     private static final String MAP_SELECTED_OPTION_STATE = "map_selected_option_state";
+    private static final String REGISTERED_PLUGINS_LIST = "map_registered_plugins";
 
-    private MarkerOptions calcDistanceMarkerOptions;
-
-    private MarkerOptions waypointsMarkerOptions;
-
-    private MarkerOptions routeMarkerOptions;
 
     private MarkerOptions crosshairMarkerOptions;
-
-
-    private PolylineOptions calcDistancePolylineOptions;
-
-    private PolylineOptions waypointPolylineOption;
-
-
-    private PolylineOptions routePolylineOptions;
 
     @Inject
     private ITripController tripController;
@@ -111,7 +101,6 @@ public class MapActivity extends BaseDrawerActivity
     private DrawerLayout drawer;
 
     public static Marker crosshairMarker;
-    private List<Marker> calcDistanceMarker;
 
     private Intent trackingService;
 
@@ -120,15 +109,9 @@ public class MapActivity extends BaseDrawerActivity
     private GoogleMap map;
 
 
-    private Polyline waypointsPolyline;
-    private Polyline route;
-    private Polyline calcDistanceRoute;
-
     private SelectedOption option = SelectedOption.NONE;
-    private LatLng lastPos;
-    private double calcDistance;
 
-
+    private HashMap<String, IMapPlugin> mapPluginHashMap;
 
 
     private enum SelectedOption {
@@ -141,9 +124,12 @@ public class MapActivity extends BaseDrawerActivity
         @Override
         public void onReceive(Context context, Intent intent) {
             LatLng latLng = intent.getParcelableExtra(TrackingService.LAT_LNG);
-            List<LatLng> waypointsLatLngList = waypointsPolyline.getPoints();
-            waypointsLatLngList.add(latLng);
-            waypointsPolyline.setPoints(waypointsLatLngList);
+            WaypointDrawingMapPlugin plugin = (WaypointDrawingMapPlugin) getMapPlugin("waypoint_tracking_map_plugin");
+            if (plugin != null) {
+                plugin.doAction(map, latLng);
+                plugin.redraw(map);
+            }
+
         }
     }
 
@@ -202,44 +188,44 @@ public class MapActivity extends BaseDrawerActivity
         drawerListViewRight.setOnItemClickListener(new DrawerItemClickListener());
 
 
-        // Marker configuration
-        calcDistanceMarkerOptions = new MarkerOptions()
-                .anchor(0.25f, 1.0f - 0.08333f)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_distance));
 
-        waypointsMarkerOptions = new MarkerOptions()
-                .anchor(0.25f, 1.0f - 0.08333f)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_mark));
-        routeMarkerOptions = new MarkerOptions()
-                .anchor(0.25f, 1.0f - 0.08333f)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_route));
+        mapPluginHashMap = new LinkedHashMap<String, IMapPlugin>();
+
+//        registerMapPlugin("route_drawing_map_plugin",new RouteDrawingMapPlugin(map));
+//        registerMapPlugin("waypoint_drawing_map_plugin",new WaypointDrawingMapPlugin(map));
+
+
+        // Marker configuration
 
         crosshairMarkerOptions = new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.haircross))
                 .anchor(0.5f, 0.5f);
 
 
-        // Polyline Configuration
-        calcDistancePolylineOptions = new PolylineOptions()
-                .width(5)
-                .color(Color.parseColor(ORANGE));
 
-        waypointPolylineOption = new PolylineOptions()
-                .width(5)
-                .color(Color.LTGRAY);
-
-
-        routePolylineOptions = new PolylineOptions()
-                .width(5)
-                .color(Color.RED);
-
-
-        waypointsPolyline = map.addPolyline(waypointPolylineOption);
         waypointBroadcastReceiver = new TrackingServiceWaypointBroadcastReceiver();
-        calcDistanceMarker = new LinkedList<Marker>();
 
 
     }
+
+    @Override
+    public void registerMapPlugin(String name, IMapPlugin plugin) {
+        mapPluginHashMap.put(name, plugin);
+    }
+
+    @Override
+    public IMapPlugin getMapPlugin(String name) {
+        return mapPluginHashMap.get(name);
+    }
+
+    @Override
+    public void  unregisterMapPlugin(String name) {
+        if (mapPluginHashMap.containsKey(name)) {
+            mapPluginHashMap.remove(name);
+        }
+
+    }
+
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -274,50 +260,44 @@ public class MapActivity extends BaseDrawerActivity
     @Override
     protected void onPause() {
         super.onPause();
-        Bundle pauseState = new Bundle();
-        getIntent().putExtra("pause_state", pauseState);
-        onSaveInstanceState(pauseState);
+        onSaveInstanceState(null);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        if (waypointsPolyline != null)
-            outState.putSerializable(WAYPOINT_POLYLINE, (Serializable) waypointsPolyline.getPoints());
-        if (route != null)
-            outState.putSerializable(ROUTES_POLYLINE, (Serializable) route.getPoints());
-        if (calcDistanceRoute != null)
-            outState.putSerializable(DISTANCE_POLYLINE, (Serializable) calcDistanceRoute.getPoints());
+        Bundle pauseState = new Bundle();
+        getIntent().putExtra("pause_state", pauseState);
 
-        if (waypointBroadcastReceiver.isOrderedBroadcast()) {
+        // Saving Plugins
+        pauseState.putSerializable(REGISTERED_PLUGINS_LIST, mapPluginHashMap);
+
+        if (waypointBroadcastReceiver.isInitialStickyBroadcast()) {
             unregisterReceiver(waypointBroadcastReceiver);
         }
 
-        outState.putParcelable(TRACKING_SERVICE, trackingService);
-        outState.putSerializable(MAP_SELECTED_OPTION_STATE, option);
+        pauseState.putParcelable(TRACKING_SERVICE, trackingService);
+        pauseState.putSerializable(MAP_SELECTED_OPTION_STATE, option);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        List<LatLng> waypoints = (List<LatLng>) savedInstanceState.getSerializable(WAYPOINT_POLYLINE);
-        List<LatLng> routeList = (List<LatLng>) savedInstanceState.getSerializable(ROUTES_POLYLINE);
-        List<LatLng> distance = (List<LatLng>) savedInstanceState.getSerializable(DISTANCE_POLYLINE);
-        option = (SelectedOption) savedInstanceState.getSerializable(MAP_SELECTED_OPTION_STATE);
-        waypointsPolyline = map.addPolyline(waypointPolylineOption);
-        calcDistanceRoute = map.addPolyline(calcDistancePolylineOptions);
-        route = map.addPolyline(routePolylineOptions);
+        Bundle pauseState = getIntent().getBundleExtra("pause_state");
+        if (pauseState != null) {
+        // Restoring registered plugins.
+            mapPluginHashMap = (HashMap<String, IMapPlugin>) pauseState.get(REGISTERED_PLUGINS_LIST);
+            // Restoring Map State
+            option = (SelectedOption) pauseState.getSerializable(MAP_SELECTED_OPTION_STATE);
 
-        if (distance != null)
-            calcDistanceRoute.setPoints(distance);
-        if (routeList != null)
-            route.setPoints(routeList);
-        if (waypoints != null)
-            waypointsPolyline.setPoints(waypoints);
+            // Redrawing Plugins
+            for (Map.Entry<String, IMapPlugin> m: mapPluginHashMap.entrySet()) {
+                m.getValue().redraw(map);
+            }
 
-
-        trackingService = savedInstanceState.getParcelable(TRACKING_SERVICE);
-        if (trackingService != null) {
-            registerReceiver(waypointBroadcastReceiver, new IntentFilter(TrackingService.WAYPOINT_BROADCAST_RECEIVER));
+            trackingService = pauseState.getParcelable(TRACKING_SERVICE);
+            if (trackingService != null) {
+                registerReceiver(waypointBroadcastReceiver, new IntentFilter(TrackingService.WAYPOINT_BROADCAST_RECEIVER));
+            }
         }
     }
 
@@ -372,18 +352,12 @@ public class MapActivity extends BaseDrawerActivity
             case MARK:
                 break;
             case ROUTE:
-                map.addMarker(routeMarkerOptions.position(latlng));
-                List<LatLng> routelst = route.getPoints();
-                routelst.add(latlng);
-                route.setPoints(routelst);
+                RouteDrawingMapPlugin routeDrawingMapPlugin = (RouteDrawingMapPlugin) getMapPlugin("route_drawing_map_plugin");
+                routeDrawingMapPlugin.doAction(map,latlng);
                 break;
             case DISTANCE:
-                calcDistance += calcDistance(lastPos, latlng);
-                lastPos = latlng;
-                calcDistanceMarker.add(map.addMarker(calcDistanceMarkerOptions.position(latlng)));
-                List<LatLng> calclst = calcDistanceRoute.getPoints();
-                calclst.add(latlng);
-                calcDistanceRoute.setPoints(calclst);
+                CalcDistanceMapPlugin c = (CalcDistanceMapPlugin) getMapPlugin("calc_distance_map_plugin");
+                double calcDistance =  c.doAction(map, latlng);
                 Toast.makeText(getApplicationContext(),
                         String.format("%.2f", calcDistance) + "KM",
                         Toast.LENGTH_SHORT).show();
@@ -435,33 +409,14 @@ public class MapActivity extends BaseDrawerActivity
     @Override
     public void onDialogSetRouteClick(DialogFragment dialog) {
         option = SelectedOption.ROUTE;
-        if (route != null) {
-            route = null;
-
-        }
-        map.addMarker(routeMarkerOptions.position(crosshairMarker.getPosition()));
-
-        route = map.addPolyline(routePolylineOptions.add(crosshairMarker.getPosition()));
-
-
+        registerMapPlugin("route_drawing_map_plugin",new RouteDrawingMapPlugin(map, crosshairMarker.getPosition()));
         crosshairMarker.remove();
     }
 
     @Override
     public void onDialogcalcDistanceClick(DialogFragment dialog) {
         option = SelectedOption.DISTANCE;
-        if (calcDistanceRoute != null) {
-            calcDistanceRoute.remove();
-            for (Marker m : calcDistanceMarker) {
-                m.remove();
-            }
-            calcDistanceMarker.clear();
-        }
-        lastPos = crosshairMarker.getPosition();
-        calcDistance = 0.0;
-        calcDistanceMarker.add(map.addMarker(calcDistanceMarkerOptions.position(lastPos)));
-        calcDistanceRoute = map.addPolyline(calcDistancePolylineOptions.add(lastPos));
-
+        registerMapPlugin("calc_distance_map_plugin",new CalcDistanceMapPlugin(map, crosshairMarker.getPosition()));
         crosshairMarker.remove();
     }
 
@@ -479,22 +434,18 @@ public class MapActivity extends BaseDrawerActivity
     private void drawWaypoints() {
         Intent i = getIntent();
         List<IWaypoint> waypoints = (List<IWaypoint>) i.getSerializableExtra("waypoints");
-        List<LatLng> latLngList = new LinkedList<LatLng>();
         if (waypoints != null) {
+            registerMapPlugin("map_way_point_trough_trip_plugin", new WaypointDrawingMapPlugin(map,"#333333"));
+            WaypointDrawingMapPlugin waypointDrawingMapPlugin = (WaypointDrawingMapPlugin) getMapPlugin("map_way_point_trough_trip_plugin");
             for (IWaypoint w : waypoints) {
-                LatLng cords = new LatLng(w.getLatitude(), w.getLongitude());
-                latLngList.add(cords);
-                map.addMarker(waypointsMarkerOptions);
+                 waypointDrawingMapPlugin.doAction(map, new LatLng(w.getLatitude(), w.getLongitude()));
             }
-            waypointsPolyline.setPoints(latLngList);
-
-
+            waypointDrawingMapPlugin.zoomTo(map);
         }
-        zoomToWaypointRoute(latLngList);
     }
 
-    private void zoomToWaypointRoute(List<LatLng> waypointList) {
-        if (!waypointList.isEmpty()) {
+    public static void zoomToWaypointRoute(GoogleMap map, List<LatLng> waypointList) {
+        if (waypointList != null && !waypointList.isEmpty()) {
             LatLngBounds.Builder boundsBuilder = LatLngBounds.builder();
             for (LatLng latLng : waypointList) {
                 boundsBuilder.include(latLng);
@@ -539,10 +490,9 @@ public class MapActivity extends BaseDrawerActivity
             editor.commit();
 
             unregisterReceiver(waypointBroadcastReceiver);
-
-            List<LatLng> waypointLatLngList = waypointsPolyline.getPoints();
-            zoomToWaypointRoute(waypointLatLngList);
-
+            WaypointDrawingMapPlugin w = (WaypointDrawingMapPlugin) getMapPlugin("waypoint_tracking_map_plugin");
+            w.zoomTo(map);
+            unregisterMapPlugin("waypoint_tracking_map_plugin");
             stopService(trackingService);
             trackingService = null;
         } else {
@@ -564,8 +514,8 @@ public class MapActivity extends BaseDrawerActivity
             trackingService = new Intent(this, TrackingService.class);
             trackingService.putExtra(TrackingService.TRIP_UUID, trip.toString());
 
-            waypointsPolyline = map.addPolyline(waypointPolylineOption);
             registerReceiver(waypointBroadcastReceiver, new IntentFilter(TrackingService.WAYPOINT_BROADCAST_RECEIVER));
+            registerMapPlugin("waypoint_tracking_map_plugin", new WaypointDrawingMapPlugin(map,"#345212"));
 
 
             startService(trackingService);
@@ -667,26 +617,6 @@ public class MapActivity extends BaseDrawerActivity
         //mImageView.setImageBitmap(mImageBitmap);
     }
 
-    /**
-     * calculates the Distance of currentPosition and distantPosition
-     *
-     * @param currentPosition latlng of the current position
-     * @param distantPosition latlnt of the distant position
-     * @return the distance in kilometers
-     */
-    private Double calcDistance(LatLng currentPosition, LatLng distantPosition) {
-
-        int R = 6371; // km earth radius
-        double dLat = Math.toRadians(distantPosition.latitude - currentPosition.latitude);
-        double dLon = Math.toRadians(distantPosition.longitude - currentPosition.longitude);
-        double lat1 = Math.toRadians(currentPosition.latitude);
-        double lat2 = Math.toRadians(distantPosition.latitude);
-
-        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c;
-    }
 
     private void goToLastKnownLocation(float ZoomLevel) {
         // get current position
