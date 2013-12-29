@@ -125,10 +125,11 @@ public class BoatListFragment extends RoboListFragment {
                     constructor.setText(b.getConstructor());
 
                     UUID uuid = b.getUUID();
-                    UUID uuidFavoured = UUID.fromString(favouredBoatUUIDString);
 
-                    if (!StringUtils.isEmpty(favouredBoatUUIDString) && uuidFavoured.equals(uuid)) {
-                        favImageView.setBackgroundResource(android.R.drawable.star_big_on);
+                    if (!StringUtils.isEmpty(favouredBoatUUIDString)) {
+                        UUID uuidFavoured = UUID.fromString(favouredBoatUUIDString);
+                        if (uuidFavoured.equals(uuid))
+                            favImageView.setBackgroundResource(android.R.drawable.star_big_on);
 
                     }
                 }
