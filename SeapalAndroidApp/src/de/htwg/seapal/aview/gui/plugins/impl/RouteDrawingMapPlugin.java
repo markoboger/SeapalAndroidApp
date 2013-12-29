@@ -44,6 +44,9 @@ public class RouteDrawingMapPlugin  implements IMapPlugin<LatLng, Void> {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Void doAction(GoogleMap map, LatLng o) {
         markers.add(map.addMarker(routeMarkerOptions.position(o)));
@@ -53,6 +56,9 @@ public class RouteDrawingMapPlugin  implements IMapPlugin<LatLng, Void> {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void redraw(GoogleMap map) {
         for (Marker m : markers) {
@@ -65,12 +71,18 @@ public class RouteDrawingMapPlugin  implements IMapPlugin<LatLng, Void> {
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void clear() {
         route.remove();
         markers.clear();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void zoomTo(GoogleMap map) {
         MapActivity.zoomToWaypointRoute(map, route.getPoints());

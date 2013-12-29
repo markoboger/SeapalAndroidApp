@@ -53,6 +53,9 @@ public class CalcDistanceMapPlugin implements IMapPlugin<LatLng, Double> {
         calcDistanceRoute = map.addPolyline(calcDistancePolylineOptions.add(mLastPos));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Double doAction(GoogleMap mMap, LatLng latLng) {
         calcDistance += calcDistance(mLastPos, latLng);
@@ -65,6 +68,9 @@ public class CalcDistanceMapPlugin implements IMapPlugin<LatLng, Double> {
         return calcDistance;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void redraw(GoogleMap mMap) {
         for (Marker m : calcDistanceMarker) {
@@ -75,12 +81,18 @@ public class CalcDistanceMapPlugin implements IMapPlugin<LatLng, Double> {
         calcDistanceRoute.setPoints(calcDistanceRoutePoints);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void clear() {
         calcDistanceMarker.clear();
         calcDistanceRoute.remove();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void zoomTo(GoogleMap map) {
         MapActivity.zoomToWaypointRoute(map, calcDistanceRoute.getPoints());
