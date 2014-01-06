@@ -4,6 +4,7 @@ package de.htwg.seapal.aview.gui.activity;
 import android.app.DialogFragment;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -12,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,6 +23,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -53,6 +56,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import de.htwg.seapal.R;
 import de.htwg.seapal.Services.TrackingService;
@@ -62,10 +68,16 @@ import de.htwg.seapal.aview.gui.plugins.IMapPluginable;
 import de.htwg.seapal.aview.gui.plugins.impl.CalcDistanceMapPlugin;
 import de.htwg.seapal.aview.gui.plugins.impl.RouteDrawingMapPlugin;
 import de.htwg.seapal.aview.gui.plugins.impl.WaypointDrawingMapPlugin;
+import de.htwg.seapal.aview.listener.TrackLocationListener;
 import de.htwg.seapal.controller.ITripController;
 import de.htwg.seapal.model.IWaypoint;
 import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
+
+import static java.lang.Math.asin;
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
+import static java.lang.Math.toDegrees;
 
 
 public class MapActivity extends BaseDrawerActivity
@@ -108,11 +120,13 @@ public class MapActivity extends BaseDrawerActivity
 
     private GoogleMap map;
 
-
     private SelectedOption option = SelectedOption.NONE;
 
     private HashMap<String, IMapPlugin> mapPluginHashMap;
 
+    private Marker movingDirectionMarker;
+    private Marker aimDirectionMarker;
+    private Location oldLocation;
 
     private enum SelectedOption {
         NONE, MARK, ROUTE, DISTANCE, GOAL, MENU_ROUTE, MENU_MARK, MENU_DISTANCE, MENU_GOAL
@@ -178,6 +192,30 @@ public class MapActivity extends BaseDrawerActivity
 
             goToLastKnownLocation(13);
         }
+
+        // Aim and direction arrows
+        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        List<String> providers = manager.getProviders(false);
+
+        final LocationListener loactionListener = new LocationListener() {
+
+            @Override
+            public void onLocationChanged(Location location) {
+                calualteArrowDirection(location);
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+            @Override
+            public void onProviderEnabled(String provider) {}
+
+            @Override
+            public void onProviderDisabled(String provider) {}
+        };
+
+        manager.requestLocationUpdates(providers.get(1),0,0,loactionListener);
+        // Aim and direction arrows
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_menu_drawer_layout);
 
@@ -326,15 +364,13 @@ public class MapActivity extends BaseDrawerActivity
 
         switch (item.getItemId()) {
             case R.id.action_goTo:
-                goToLastKnownLocation(15);
+                goToLastKnownLocation(0);
                 break;
             case R.id.start_tracking:
                 startTracking();
                 break;
             case R.id.stop_tracking:
                 stopTracking();
-
-
                 break;
             case R.id.action_show_right_drawer:
                 toggleRightDrawer();
@@ -523,8 +559,6 @@ public class MapActivity extends BaseDrawerActivity
         } else {
             Toast.makeText(getApplicationContext(), "No favoured boat or tracking already started", Toast.LENGTH_SHORT).show();
         }
-
-
     }
 
     private void closeRightDreawer() {
@@ -572,7 +606,7 @@ public class MapActivity extends BaseDrawerActivity
                 break;
             case 4:
                 // Goto Location
-                goToLastKnownLocation(15);
+                goToLastKnownLocation(0);
                 break;
             case 5:
                 // Take Picture
@@ -617,10 +651,17 @@ public class MapActivity extends BaseDrawerActivity
         //mImageView.setImageBitmap(mImageBitmap);
     }
 
-
+    /**
+     * goToLastKnownLocation
+     * @param ZoomLevel value 0 keeps the current zoom level
+     */
     private void goToLastKnownLocation(float ZoomLevel) {
         // get current position
         LatLng coordinate = getLastKnownLocation();
+
+        if(ZoomLevel == 0){
+            ZoomLevel = map.getCameraPosition().zoom;
+        }
 
         if (coordinate == null) {
             Toast.makeText(getApplicationContext(), getString(R.string.noLocationSignal), Toast.LENGTH_SHORT).show();
@@ -647,6 +688,50 @@ public class MapActivity extends BaseDrawerActivity
         return null;
     }
 
+    private void showMovingDirection(float direction){
 
+        if(movingDirectionMarker != null){
+            movingDirectionMarker.remove();
+        }
 
+        if(map.getMyLocation() != null){
+
+            LatLng position = new LatLng(map.getMyLocation().getLatitude(),map.getMyLocation().getLongitude());
+
+            movingDirectionMarker = map.addMarker(new MarkerOptions()
+                    .position(position)
+                    .rotation(direction));
+            movingDirectionMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.moving_direction));
+        }
+    }
+
+    private void showAimDirection(float direction){
+
+        if(aimDirectionMarker != null){
+            aimDirectionMarker.remove();
+        }
+
+        if(map.getMyLocation() != null){
+
+            LatLng position = new LatLng(map.getMyLocation().getLatitude(),map.getMyLocation().getLongitude());
+
+            aimDirectionMarker = map.addMarker(new MarkerOptions()
+                    .position(position)
+                    .rotation(direction));
+            aimDirectionMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.aim_direction));
+        }
+    }
+
+    private void calualteArrowDirection(Location location){
+
+        if(oldLocation == null){
+            oldLocation = location;
+            return;
+        }
+
+        double hypo = sqrt(pow(location.getLatitude() - oldLocation.getLatitude(), 2) + pow(location.getLongitude() - oldLocation.getLongitude(), 2));
+        double sin = (float) asin((location.getLatitude() - oldLocation.getLatitude()) / hypo);
+        showAimDirection(0);
+        showMovingDirection((float) toDegrees(sin));
+    }
 }
