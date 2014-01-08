@@ -1,18 +1,43 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:orientation="vertical" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/picture_alert_dialog_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="vertical"  >
 
     <ImageView
-        android:id="@+id/taken_picture_ImageView"
+        android:id="@+id/taken_picture_fragment"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:contentDescription="@string/taken_picture_content_description" />
+        android:layout_gravity="center"
+        android:layout_margin="20dp"
+        android:src="@drawable/seapal_launcher"/>
 
     <TextView
-        android:id="@+id/taken_picture_description_TextView"
+        android:id="@+id/picture_infos"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent" />
+        android:gravity="center"
+        android:text="Location : N50.418716° , E006.750000°"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="Other : "/>
+
+        <EditText
+            android:id="@+id/txt_other"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:imeOptions="actionDone"
+            android:layout_marginRight="20dp"/>
+
+    </LinearLayout>
 </LinearLayout>
