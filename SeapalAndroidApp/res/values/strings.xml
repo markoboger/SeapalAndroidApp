@@ -102,6 +102,7 @@
     <string name="delete_trip">Do you want to delete the trip?</string>
     <string name="delete_trip_yes">yes</string>
     <string name="cancel">Cancel</string>
+    <string name="ok">Ok</string>
     <string name="noCameraAvailable">No Camera/Camera App Available</string>
     <string name="save_boat_text">Save Boat</string>
     <string name="delete_boat_text">Delete Boat</string>
@@ -118,5 +119,6 @@
     <string name="favour_boat_text">FAVOUR BOAT</string>
     <string name="stop_tracking_text">Stop Track</string>
     <string name="tracking_service_started_text">Tracking Service Started</string>
+    <string name="picture_headder">Picture</string>
     <item name="tracking_service_started_text" type="id">Tracking Service Started</item>
 </resources>

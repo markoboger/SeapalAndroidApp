@@ -1,22 +1,31 @@
 package de.htwg.seapal.aview.gui.activity;
 
 
+import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
-import android.content.ClipData;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentManager;
@@ -29,6 +38,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -51,24 +62,25 @@ import com.google.inject.Inject;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import de.htwg.seapal.R;
 import de.htwg.seapal.Services.TrackingService;
 import de.htwg.seapal.aview.gui.fragment.MapDialogFragment;
+import de.htwg.seapal.aview.gui.fragment.PictureDialogFragment;
 import de.htwg.seapal.aview.gui.plugins.IMapPlugin;
 import de.htwg.seapal.aview.gui.plugins.IMapPluginable;
 import de.htwg.seapal.aview.gui.plugins.impl.CalcDistanceMapPlugin;
 import de.htwg.seapal.aview.gui.plugins.impl.RouteDrawingMapPlugin;
 import de.htwg.seapal.aview.gui.plugins.impl.WaypointDrawingMapPlugin;
-import de.htwg.seapal.aview.listener.TrackLocationListener;
 import de.htwg.seapal.controller.ITripController;
 import de.htwg.seapal.model.IWaypoint;
 import roboguice.inject.InjectResource;
@@ -82,10 +94,9 @@ import static java.lang.Math.toDegrees;
 
 public class MapActivity extends BaseDrawerActivity
         implements OnMapLongClickListener, OnMapClickListener, OnMarkerClickListener,
-        MapDialogFragment.MapDialogListener, IMapPluginable{
+        MapDialogFragment.MapDialogListener, IMapPluginable, PictureDialogFragment.PictureDialogFragmentListener {
 
     private static final String DISTANCE_POLYLINE = "map_distance_polyline";
-
     private static final String WAYPOINT_POLYLINE = "map_waypoint_polyline";
     private static final String TRACKING_SERVICE = "map_tracking_service";
     private static final String ROUTES_POLYLINE = "map_routes_polyline";
@@ -96,13 +107,12 @@ public class MapActivity extends BaseDrawerActivity
 
     private static final String MAP_SELECTED_OPTION_STATE = "map_selected_option_state";
     private static final String REGISTERED_PLUGINS_LIST = "map_registered_plugins";
-
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
 
     private MarkerOptions crosshairMarkerOptions;
 
     @Inject
     private ITripController tripController;
-
 
     @InjectView(R.id.drawer_menu_drawer_list_right)
     private ListView drawerListViewRight;
@@ -127,6 +137,8 @@ public class MapActivity extends BaseDrawerActivity
     private Marker movingDirectionMarker;
     private Marker aimDirectionMarker;
     private Location oldLocation;
+    private Uri fileUri;
+    private Marker pictureMarker;
 
     private enum SelectedOption {
         NONE, MARK, ROUTE, DISTANCE, GOAL, MENU_ROUTE, MENU_MARK, MENU_DISTANCE, MENU_GOAL
@@ -193,29 +205,7 @@ public class MapActivity extends BaseDrawerActivity
             goToLastKnownLocation(13);
         }
 
-        // Aim and direction arrows
-        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        List<String> providers = manager.getProviders(false);
-
-        final LocationListener loactionListener = new LocationListener() {
-
-            @Override
-            public void onLocationChanged(Location location) {
-                calualteArrowDirection(location);
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {}
-
-            @Override
-            public void onProviderEnabled(String provider) {}
-
-            @Override
-            public void onProviderDisabled(String provider) {}
-        };
-
-        manager.requestLocationUpdates(providers.get(1),0,0,loactionListener);
-        // Aim and direction arrows
+        setupAimDirectionArrows();
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_menu_drawer_layout);
 
@@ -225,8 +215,6 @@ public class MapActivity extends BaseDrawerActivity
                 R.layout.drawer_list_item_right, drawerActivityListRight));
         drawerListViewRight.setOnItemClickListener(new DrawerItemClickListener());
 
-
-
         mapPluginHashMap = new LinkedHashMap<String, IMapPlugin>();
 
 //        registerMapPlugin("route_drawing_map_plugin",new RouteDrawingMapPlugin(map));
@@ -234,16 +222,11 @@ public class MapActivity extends BaseDrawerActivity
 
 
         // Marker configuration
-
         crosshairMarkerOptions = new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.haircross))
                 .anchor(0.5f, 0.5f);
 
-
-
         waypointBroadcastReceiver = new TrackingServiceWaypointBroadcastReceiver();
-
-
     }
 
     @Override
@@ -341,8 +324,33 @@ public class MapActivity extends BaseDrawerActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        handleSmallCameraPhoto(data);
+        //super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+
+            Location loc = map.getMyLocation();
+            LatLng coor = new LatLng(loc.getLatitude(), loc.getLongitude());
+
+            Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+            Bitmap bmp = Bitmap.createBitmap(imageBitmap.getWidth() + 10, imageBitmap.getHeight() + 10, conf);
+            Canvas canvas1 = new Canvas(bmp);
+
+            Paint color = new Paint();
+            color.setColor(Color.BLUE);
+
+            //modify canvas
+            canvas1.drawColor(color.getColor());
+            canvas1.drawBitmap(imageBitmap, 5, 5, color);
+
+            //add marker to Map
+            if(pictureMarker != null)
+                pictureMarker.remove();
+            pictureMarker = map.addMarker(new MarkerOptions().position(coor).icon(BitmapDescriptorFactory.fromBitmap(bmp)));
+
+            showPictureDialog();
+        }
     }
 
     @Override
@@ -350,13 +358,19 @@ public class MapActivity extends BaseDrawerActivity
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.main, menu);
 
-        // Add SearchWidget.
+        // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-
+        // Assumes current activity is the searchable activity
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onSearchRequested() {
+        Toast.makeText(this,"Coooool",Toast.LENGTH_SHORT).show();
+        return super.onSearchRequested();
     }
 
     @Override
@@ -417,8 +431,6 @@ public class MapActivity extends BaseDrawerActivity
             default:
                 break;
         }
-
-
     }
 
     @Override
@@ -503,7 +515,6 @@ public class MapActivity extends BaseDrawerActivity
 
         listLeft.setPadding(0, actionBarHeight, 0, 0);
         listRight.setPadding(0, actionBarHeight, 0, 0);
-
     }
 
     private int getActionBarHeight() {
@@ -553,7 +564,6 @@ public class MapActivity extends BaseDrawerActivity
             registerReceiver(waypointBroadcastReceiver, new IntentFilter(TrackingService.WAYPOINT_BROADCAST_RECEIVER));
             registerMapPlugin("waypoint_tracking_map_plugin", new WaypointDrawingMapPlugin(map,"#345212"));
 
-
             startService(trackingService);
 
         } else {
@@ -591,6 +601,8 @@ public class MapActivity extends BaseDrawerActivity
     private void selectChoosenMeunPoint(int position) {
         switch (position) {
             case 0:
+                Intent search = new Intent(this, SearchActivity.class);
+                startActivity(search);
                 break;
             case 1:
                 //Mark
@@ -627,28 +639,34 @@ public class MapActivity extends BaseDrawerActivity
                 crosshairMarker.remove();
                 option = SelectedOption.NONE;
                 break;
-
-
         }
     }
 
-// --Commented out by Inspection START (12/27/13 2:16 PM):
-//    private void showPictureDialogFragment() {
-//        FragmentManager fm = getSupportFragmentManager();
-//        PictureDialogFragment fragment = new PictureDialogFragment();
-//        //fragment.show(fm, "picture_dialog_fragment");
-//    }
-// --Commented out by Inspection STOP (12/27/13 2:16 PM)
-
     private void dispatchTakePictureIntent() {
+
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(takePictureIntent, 1);
+
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
     }
 
-    private void handleSmallCameraPhoto(Intent intent) {
-        Bundle extras = intent.getExtras();
-        Bitmap mImageBitmap = (Bitmap) extras.get("data");
-        //mImageView.setImageBitmap(mImageBitmap);
+    String mCurrentPhotoPath;
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        return image;
     }
 
     /**
@@ -686,6 +704,30 @@ public class MapActivity extends BaseDrawerActivity
         }
         //at this point we've done all we can and no location is returned
         return null;
+    }
+
+    private void setupAimDirectionArrows() {
+        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        List<String> providers = manager.getProviders(false);
+
+        final LocationListener loactionListener = new LocationListener() {
+
+            @Override
+            public void onLocationChanged(Location location) {
+                calualteArrowDirection(location);
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+            @Override
+            public void onProviderEnabled(String provider) {}
+
+            @Override
+            public void onProviderDisabled(String provider) {}
+        };
+
+        manager.requestLocationUpdates(providers.get(1),0,0,loactionListener);
     }
 
     private void showMovingDirection(float direction){
@@ -733,5 +775,33 @@ public class MapActivity extends BaseDrawerActivity
         double sin = (float) asin((location.getLatitude() - oldLocation.getLatitude()) / hypo);
         showAimDirection(0);
         showMovingDirection((float) toDegrees(sin));
+    }
+
+    private void showPictureDialog(){
+
+        // Get the layout inflater
+        LayoutInflater inflater = LayoutInflater.from(this);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
+        builder.setView(inflater.inflate(R.layout.picture_fragment, null));
+        // Add the buttons
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+                pictureMarker.remove();
+            }
+        });
+
+        builder.create().show();
+    }
+
+    @Override
+    public void onFinishEditDialog(String inputText) {
+        Toast.makeText(this, "Hi, " + inputText, Toast.LENGTH_SHORT).show();
     }
 }
