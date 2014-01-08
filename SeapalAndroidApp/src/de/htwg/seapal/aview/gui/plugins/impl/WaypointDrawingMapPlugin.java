@@ -43,6 +43,9 @@ public class WaypointDrawingMapPlugin  implements IMapPlugin<LatLng, List<LatLng
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<LatLng> doAction(GoogleMap map, LatLng o) {
         List<LatLng> waypointsLatLngList = waypointsPolyline.getPoints();
@@ -63,11 +66,17 @@ public class WaypointDrawingMapPlugin  implements IMapPlugin<LatLng, List<LatLng
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void clear() {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void zoomTo(GoogleMap map) {
         MapActivity.zoomToWaypointRoute(map, waypointsPolyline.getPoints());

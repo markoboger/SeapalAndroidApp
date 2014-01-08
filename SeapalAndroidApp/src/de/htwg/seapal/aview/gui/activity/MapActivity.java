@@ -99,7 +99,6 @@ public class MapActivity extends BaseDrawerActivity
     private static final String DISTANCE_POLYLINE = "map_distance_polyline";
     private static final String WAYPOINT_POLYLINE = "map_waypoint_polyline";
     private static final String TRACKING_SERVICE = "map_tracking_service";
-    private static final String ROUTES_POLYLINE = "map_routes_polyline";
 
     static {
         CBLURLStreamHandlerFactory.registerSelfIgnoreError();
@@ -109,30 +108,39 @@ public class MapActivity extends BaseDrawerActivity
     private static final String REGISTERED_PLUGINS_LIST = "map_registered_plugins";
     private static final int REQUEST_IMAGE_CAPTURE = 1;
 
+    // Tracking Service
+    private Intent trackingService;
+    private TrackingServiceWaypointBroadcastReceiver waypointBroadcastReceiver;
+
+
+    /**
+     *  used to register plugins for the map.
+     */
+    private HashMap<String, IMapPlugin> mapPluginHashMap;
+
+
     private MarkerOptions crosshairMarkerOptions;
 
     @Inject
     private ITripController tripController;
 
+    // Drawer fields
     @InjectView(R.id.drawer_menu_drawer_list_right)
     private ListView drawerListViewRight;
-
     @InjectResource(R.array.drawer_list_array_right)
     private String[] drawerActivityListRight;
-
     private DrawerLayout drawer;
 
     public static Marker crosshairMarker;
 
-    private Intent trackingService;
-
-    private TrackingServiceWaypointBroadcastReceiver waypointBroadcastReceiver;
 
     private GoogleMap map;
 
+    /**
+     * State of the Activity
+     */
     private SelectedOption option = SelectedOption.NONE;
 
-    private HashMap<String, IMapPlugin> mapPluginHashMap;
 
     private Marker movingDirectionMarker;
     private Marker aimDirectionMarker;

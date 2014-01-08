@@ -1,7 +1,6 @@
 package de.htwg.seapal.aview.gui.fragment;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,6 @@ import de.htwg.seapal.R;
 import de.htwg.seapal.controller.impl.BoatController;
 import de.htwg.seapal.model.IBoat;
 import de.htwg.seapal.utils.seapal.BoatUtils;
-import roboguice.RoboGuice;
 import roboguice.fragment.RoboFragment;
 
 
