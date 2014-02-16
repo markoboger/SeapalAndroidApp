@@ -10,7 +10,7 @@ import com.google.inject.Inject;
 import java.util.UUID;
 
 import de.htwg.seapal.R;
-import de.htwg.seapal.controller.impl.BoatController;
+import de.htwg.seapal.controller.IMainController;
 import de.htwg.seapal.model.IBoat;
 import de.htwg.seapal.utils.seapal.BoatUtils;
 import roboguice.fragment.RoboFragment;
@@ -24,8 +24,9 @@ public class BoatViewFragment extends RoboFragment {
     public final static String ARG_UUID = "uuid";
     private int mCurrentPosition = -1;
     private UUID mCurrentUUID;
+
     @Inject
-    private BoatController boatController;
+    private IMainController mainController;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,7 +63,7 @@ public class BoatViewFragment extends RoboFragment {
 
     public void updateBoatView(int position, UUID uuid) {
         if (uuid != null) {
-            IBoat b = boatController.getBoat(uuid);
+            IBoat b = (IBoat) mainController.getSingleDocument("boat","", uuid);
             if (b != null) {
                 BoatUtils.setViewFromBoat(getActivity(), b);
 
@@ -73,7 +74,7 @@ public class BoatViewFragment extends RoboFragment {
     }
 
     public IBoat getBoatFromCurrentView() {
-        IBoat boat = boatController.getBoat(mCurrentUUID);
-        return BoatUtils.convertViewToBoat(getView(), boat);
+        IBoat b = (IBoat) mainController.getSingleDocument("boat","", mCurrentUUID);
+        return BoatUtils.convertViewToBoat(getView(), b);
     }
 }

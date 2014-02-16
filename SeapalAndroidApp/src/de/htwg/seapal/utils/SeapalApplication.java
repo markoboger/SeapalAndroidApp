@@ -1,10 +1,18 @@
 package de.htwg.seapal.utils;
 
-import roboguice.RoboGuice;
 import android.app.Application;
+
+import com.couchbase.lite.router.URLStreamHandlerFactory;
+
 import de.htwg.seapal.utils.modules.ImplModule;
+import roboguice.RoboGuice;
 
 public class SeapalApplication extends Application {
+
+    static {
+        URLStreamHandlerFactory.registerSelfIgnoreError();
+
+    }
 
 	@Override
 	public void onCreate() {

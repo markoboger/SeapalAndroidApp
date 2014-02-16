@@ -1,8 +1,9 @@
 package de.htwg.seapal.database.impl;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import android.content.Context;
+import android.util.Log;
+
+import com.google.inject.Inject;
 
 import org.ektorp.CouchDbConnector;
 import org.ektorp.DocumentNotFoundException;
@@ -11,15 +12,18 @@ import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.ViewResult.Row;
 
-import roboguice.inject.ContextSingleton;
-import android.content.Context;
-import android.util.Log;
-
-import com.google.inject.Inject;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
 
 import de.htwg.seapal.database.IMarkDatabase;
 import de.htwg.seapal.model.IMark;
+import de.htwg.seapal.model.ModelDocument;
 import de.htwg.seapal.model.impl.Mark;
+import roboguice.inject.ContextSingleton;
 
 @ContextSingleton
 public class TouchDBMarkDatabase implements IMarkDatabase {
@@ -124,4 +128,28 @@ public class TouchDBMarkDatabase implements IMarkDatabase {
 		return false;
 	}
 
+    @Override
+    public void create(ModelDocument modelDocument) {
+
+    }
+
+    @Override
+    public List<? extends IMark> queryViews(String s, String s2) {
+        return null;
+    }
+
+    @Override
+    public void update(ModelDocument modelDocument) {
+
+    }
+
+    @Override
+    public boolean addPhoto(IMark iMark, String s, File file) throws FileNotFoundException {
+        return false;
+    }
+
+    @Override
+    public InputStream getPhoto(UUID uuid) {
+        return null;
+    }
 }

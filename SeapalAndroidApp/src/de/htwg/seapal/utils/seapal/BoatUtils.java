@@ -38,11 +38,11 @@ public class BoatUtils {
         EditText rigKind = (EditText) view.findViewById(R.id.editRigKind);
         EditText spiSize = (EditText) view.findViewById(R.id.editSpiSize);
 
-        name.setText(boat.getBoatName());
+        name.setText(boat.getName());
         typ.setText(boat.getType());
         productionYear.setText(Integer.toString(boat.getYearOfConstruction()));
         corporateIdNumber.setText(boat.getRegisterNr());
-        draftsman.setText(boat.getConstructor());
+        draftsman.setText(boat.getBoatConstructor());
         engine.setText(boat.getMotor());
         sailEmblem.setText(boat.getSailSign());
         length.setText(Double.toString(boat.getLength()));
@@ -53,8 +53,8 @@ public class BoatUtils {
         yachtClub.setText(boat.getYachtclub());
         flotationDepth.setText(Double.toString(boat.getDraft()));
         sewageWaterTankSize.setText(Double.toString(boat.getWasteWaterTankSize()));
-        if (boat.getOwner() != null)
-            owner.setText(boat.getOwner());
+        if (boat.getBoatOwner() != null)
+            owner.setText(boat.getBoatOwner());
         mastHeight.setText(Double.toString(boat.getMastHeight()));
         mainSailSize.setText(Double.toString(boat.getMainSailSize()));
         insurance.setText(boat.getInsurance());
@@ -91,10 +91,10 @@ public class BoatUtils {
         EditText rigKind = (EditText) view.findViewById(R.id.editRigKind);
         EditText spiSize = (EditText) view.findViewById(R.id.editSpiSize);
 
-        boat.setBoatName(name.getText().toString());
+        boat.setName(name.getText().toString());
         boat.setType(typ.getText().toString());
         boat.setRegisterNr(corporateIdNumber.getText() .toString());
-        boat.setConstructor(draftsman.getText().toString());
+        boat.setBoatConstructor(draftsman.getText().toString());
         boat.setMotor(engine.getText().toString());
         boat.setSailSign(sailEmblem.getText().toString());
         boat.setHomePort(homePort.getText().toString());

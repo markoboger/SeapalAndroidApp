@@ -1,8 +1,9 @@
 package de.htwg.seapal.database.impl;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import android.content.Context;
+import android.util.Log;
+
+import com.google.inject.Inject;
 
 import org.ektorp.CouchDbConnector;
 import org.ektorp.DocumentNotFoundException;
@@ -11,15 +12,15 @@ import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.ViewResult.Row;
 
-import roboguice.inject.ContextSingleton;
-import android.content.Context;
-import android.util.Log;
-
-import com.google.inject.Inject;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
 
 import de.htwg.seapal.database.IPersonDatabase;
 import de.htwg.seapal.model.IPerson;
+import de.htwg.seapal.model.ModelDocument;
 import de.htwg.seapal.model.impl.Person;
+import roboguice.inject.ContextSingleton;
 
 @ContextSingleton
 public class TouchDBPersonDatabase implements IPersonDatabase {
@@ -123,5 +124,20 @@ public class TouchDBPersonDatabase implements IPersonDatabase {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+    @Override
+    public void create(ModelDocument modelDocument) {
+
+    }
+
+    @Override
+    public List<? extends IPerson> queryViews(String s, String s2) {
+        return null;
+    }
+
+    @Override
+    public void update(ModelDocument modelDocument) {
+
+    }
 
 }

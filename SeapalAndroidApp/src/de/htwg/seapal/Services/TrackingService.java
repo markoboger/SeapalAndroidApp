@@ -22,7 +22,8 @@ import com.google.inject.Inject;
 import java.util.UUID;
 
 import de.htwg.seapal.R;
-import de.htwg.seapal.controller.IWaypointController;
+import de.htwg.seapal.controller.IMainController;
+import de.htwg.seapal.model.impl.Waypoint;
 import roboguice.service.RoboService;
 
 /**
@@ -48,7 +49,7 @@ public class TrackingService extends RoboService implements LocationListener {
     // flag for GPS status
     private boolean canGetLocation = false;
     @Inject
-    private IWaypointController waypointController;
+    private IMainController mainController;
     private UUID mTrip;
     private Location location; // location
     private double latitude; // latitude
@@ -192,7 +193,12 @@ public class TrackingService extends RoboService implements LocationListener {
     public void onLocationChanged(Location location) {
         longitude = location.getLongitude();
         latitude = location.getLatitude();
-        waypointController.newWaypoint(mTrip, System.currentTimeMillis(), location.getLongitude(), location.getLatitude());
+        Waypoint wp = new Waypoint();
+        wp.setDate(System.currentTimeMillis());
+        wp.setLatitude(location.getLatitude());
+        wp.setLongitude(location.getLongitude());
+        mainController.creatDocument("waypoint",wp, "");
+
         Intent intent = new Intent(WAYPOINT_BROADCAST_RECEIVER);
         intent.putExtra(LAT_LNG, new LatLng(location.getLatitude(), location.getLongitude()));
         sendBroadcast(intent);

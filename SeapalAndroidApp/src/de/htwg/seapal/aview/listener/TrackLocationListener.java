@@ -1,27 +1,33 @@
 package de.htwg.seapal.aview.listener;
 
-import java.util.UUID;
-
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
-import de.htwg.seapal.controller.IWaypointController;
+
+import java.util.UUID;
+
+import de.htwg.seapal.controller.IMainController;
+import de.htwg.seapal.model.impl.Trip;
+import de.htwg.seapal.model.impl.Waypoint;
 
 public class TrackLocationListener implements LocationListener {
 
-	private final UUID trip;
-	private final IWaypointController controller;
+	private final Trip trip;
+	private final IMainController controller;
 
-	public TrackLocationListener(UUID trip, IWaypointController controller) {
-		this.trip = trip;
+	public TrackLocationListener(UUID trip, IMainController controller) {
+		this.trip = (Trip) controller.getSingleDocument("trip","", trip);
 		this.controller = controller;
 	}
 
 	@Override
 	public void onLocationChanged(Location location) {
 		long date = System.currentTimeMillis() / 1000L;
-		controller.newWaypoint(trip, date, location.getLongitude(),
-				location.getLatitude());
+        Waypoint w = new Waypoint();
+        w.setDate(date);
+        w.setLatitude(location.getLatitude());
+        w.setLongitude(location.getLongitude());
+		controller.creatDocument("waypoint", w, "");
 	}
 
 	@Override

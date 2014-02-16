@@ -1,8 +1,9 @@
 package de.htwg.seapal.database.impl;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import android.content.Context;
+import android.util.Log;
+
+import com.google.inject.Inject;
 
 import org.ektorp.CouchDbConnector;
 import org.ektorp.DocumentNotFoundException;
@@ -11,21 +12,21 @@ import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.ViewResult.Row;
 
-import roboguice.inject.ContextSingleton;
-import android.content.Context;
-import android.util.Log;
-
-import com.google.inject.Inject;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
 
 import de.htwg.seapal.database.IBoatDatabase;
 import de.htwg.seapal.model.IBoat;
+import de.htwg.seapal.model.ModelDocument;
 import de.htwg.seapal.model.impl.Boat;
+import roboguice.inject.ContextSingleton;
 
 @ContextSingleton
 public class TouchDBBoatDatabase implements IBoatDatabase {
 
 	private static final String TAG = "Boat-TouchDB";
-	private static final String DATABASE_NAME = "seapal_boats_db";
+	private static final String DATABASE_NAME = "seapal_boat_db";
 
 	private static TouchDBBoatDatabase touchDBBoatDatabase;
 	private final CouchDbConnector couchDbConnector;
@@ -118,7 +119,22 @@ public class TouchDBBoatDatabase implements IBoatDatabase {
 		return false;
 	}
 
-	@Override
+    @Override
+    public void create(ModelDocument modelDocument) {
+
+    }
+
+    @Override
+    public List<? extends IBoat> queryViews(String s, String s2) {
+        return null;
+    }
+
+    @Override
+    public void update(ModelDocument modelDocument) {
+
+    }
+
+    @Override
 	public boolean open() {
 		// TODO Auto-generated method stub
 		return false;

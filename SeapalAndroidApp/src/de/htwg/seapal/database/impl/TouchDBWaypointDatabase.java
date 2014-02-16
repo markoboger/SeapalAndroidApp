@@ -1,10 +1,13 @@
 package de.htwg.seapal.database.impl;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import android.content.Context;
+import android.util.Log;
+
+import com.couchbase.lite.Database;
+import com.couchbase.lite.Emitter;
+import com.couchbase.lite.Mapper;
+import com.couchbase.lite.View;
+import com.google.inject.Inject;
 
 import org.ektorp.CouchDbConnector;
 import org.ektorp.DocumentNotFoundException;
@@ -13,22 +16,17 @@ import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.ViewResult.Row;
 
-import roboguice.inject.ContextSingleton;
-import android.content.Context;
-import android.util.Log;
-
-import com.couchbase.cblite.CBLDatabase;
-import com.couchbase.cblite.CBLView;
-import com.couchbase.cblite.CBLViewMapBlock;
-import com.couchbase.cblite.CBLViewMapEmitBlock;
-import com.google.inject.Inject;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import de.htwg.seapal.database.IWaypointDatabase;
 import de.htwg.seapal.model.IWaypoint;
-import de.htwg.seapal.model.IWaypoint.ForeSail;
-import de.htwg.seapal.model.IWaypoint.MainSail;
-import de.htwg.seapal.model.IWaypoint.Maneuver;
+import de.htwg.seapal.model.ModelDocument;
 import de.htwg.seapal.model.impl.Waypoint;
+import roboguice.inject.ContextSingleton;
 
 
 @ContextSingleton
@@ -50,24 +48,24 @@ public class TouchDBWaypointDatabase implements IWaypointDatabase {
 		dbHelper.pullFromDatabase();
 		couchDbConnector = dbHelper.getCouchDbConnector();
 
-		CBLDatabase tdDB = dbHelper.getTDDatabase();
+		Database tdDB = dbHelper.getTDDatabase();
 
-		CBLView view = tdDB.getViewNamed(String.format("%s/%s", DDOCNAME,
-				VIEWNAME));
+		View view = tdDB.getView(String.format("%s/%s", DDOCNAME,
+                VIEWNAME));
 
-		view.setMapReduceBlocks(new CBLViewMapBlock() {
-			@Override
-			public void map(Map<String, Object> document,
-					CBLViewMapEmitBlock emitter) {
-				Object Trip = document.get("trip");
-				Map<Object, Object> m = new HashMap<Object, Object>();
-				if (Trip != null) {
-					m.put(document.get("trip"), document.get("date"));
-					emitter.emit(m, document.get("_id"));
-				}
+		view.setMapReduce(new Mapper() {
+            @Override
+            public void map(Map<String, Object> document,
+                            Emitter emitter) {
+                Object Trip = document.get("trip");
+                Map<Object, Object> m = new HashMap<Object, Object>();
+                if (Trip != null) {
+                    m.put(document.get("trip"), document.get("date"));
+                    emitter.emit(m, document.get("_id"));
+                }
 
-			}
-		}, null, "1.0");
+            }
+        }, null, "1.0");
 
 	}
 
@@ -79,8 +77,7 @@ public class TouchDBWaypointDatabase implements IWaypointDatabase {
 
 	@Override
 	public UUID create() {
-		IWaypoint waypoint = new Waypoint(Maneuver.NONE, ForeSail.NONE,
-				MainSail.NONE);
+		IWaypoint waypoint = new Waypoint();
 		try {
 			couchDbConnector.create(waypoint.getId(), waypoint);
 		} catch (UpdateConflictException e) {
@@ -155,13 +152,27 @@ public class TouchDBWaypointDatabase implements IWaypointDatabase {
 		return false;
 	}
 
-	@Override
+    @Override
+    public void create(ModelDocument modelDocument) {
+
+    }
+
+    @Override
+    public List<? extends IWaypoint> queryViews(String s, String s2) {
+        return null;
+    }
+
+    @Override
+    public void update(ModelDocument modelDocument) {
+
+    }
+
+    @Override
 	public boolean open() {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
 	public List<IWaypoint> findByTrip(UUID tripId) {
 		List<IWaypoint> lst = new LinkedList<IWaypoint>();
 		List<IWaypoint> log = new LinkedList<IWaypoint>();

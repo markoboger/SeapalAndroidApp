@@ -19,4 +19,10 @@ public class Logger implements ILogger {
 		Log.e(tag, msg);
 	}
 
+    @Override
+    public void exc(Exception e) {
+        Log.e("Exception",e.getMessage());
+
+    }
+
 }

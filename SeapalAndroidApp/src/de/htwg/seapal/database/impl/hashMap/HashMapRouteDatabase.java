@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import de.htwg.seapal.database.IRouteDatabase;
 import de.htwg.seapal.model.IRoute;
+import de.htwg.seapal.model.ModelDocument;
 import de.htwg.seapal.model.impl.Route;
 
 public class HashMapRouteDatabase implements IRouteDatabase {
@@ -60,7 +61,22 @@ public class HashMapRouteDatabase implements IRouteDatabase {
 		return true;
 	}
 
-	@Override
+    @Override
+    public void create(ModelDocument modelDocument) {
+
+    }
+
+    @Override
+    public List<? extends IRoute> queryViews(String s, String s2) {
+        return null;
+    }
+
+    @Override
+    public void update(ModelDocument modelDocument) {
+
+    }
+
+    @Override
 	public boolean open() {
 		// TODO Auto-generated method stub
 		return false;

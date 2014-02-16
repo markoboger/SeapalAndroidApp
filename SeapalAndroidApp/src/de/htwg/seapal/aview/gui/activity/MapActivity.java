@@ -13,12 +13,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -38,13 +35,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
-import com.couchbase.cblite.router.CBLURLStreamHandlerFactory;
+import com.couchbase.lite.router.URLStreamHandlerFactory;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -81,8 +76,9 @@ import de.htwg.seapal.aview.gui.plugins.IMapPluginable;
 import de.htwg.seapal.aview.gui.plugins.impl.CalcDistanceMapPlugin;
 import de.htwg.seapal.aview.gui.plugins.impl.RouteDrawingMapPlugin;
 import de.htwg.seapal.aview.gui.plugins.impl.WaypointDrawingMapPlugin;
-import de.htwg.seapal.controller.ITripController;
+import de.htwg.seapal.controller.IMainController;
 import de.htwg.seapal.model.IWaypoint;
+import de.htwg.seapal.model.impl.Trip;
 import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
@@ -100,9 +96,6 @@ public class MapActivity extends BaseDrawerActivity
     private static final String WAYPOINT_POLYLINE = "map_waypoint_polyline";
     private static final String TRACKING_SERVICE = "map_tracking_service";
 
-    static {
-        CBLURLStreamHandlerFactory.registerSelfIgnoreError();
-    }
 
     private static final String MAP_SELECTED_OPTION_STATE = "map_selected_option_state";
     private static final String REGISTERED_PLUGINS_LIST = "map_registered_plugins";
@@ -122,7 +115,7 @@ public class MapActivity extends BaseDrawerActivity
     private MarkerOptions crosshairMarkerOptions;
 
     @Inject
-    private ITripController tripController;
+    private IMainController mainController;
 
     // Drawer fields
     @InjectView(R.id.drawer_menu_drawer_list_right)
@@ -538,7 +531,10 @@ public class MapActivity extends BaseDrawerActivity
 
     private void stopTracking() {
         if (trackingService != null) {
-            tripController.setEndTime(UUID.fromString(trackingService.getStringExtra(TrackingService.TRIP_UUID)), System.currentTimeMillis());
+            UUID tripUuid = UUID.fromString(trackingService.getStringExtra(TrackingService.TRIP_UUID));
+            Trip t = (Trip) mainController.getSingleDocument("trip", "", tripUuid);
+            t.setEndDate(System.currentTimeMillis());
+            mainController.creatDocument("trip", t, "");
 
             SharedPreferences s = getSharedPreferences(TripActivity.TRIP_PREFS, 0);
             SharedPreferences.Editor editor = s.edit();
@@ -562,12 +558,13 @@ public class MapActivity extends BaseDrawerActivity
         if (!StringUtils.isEmpty(boatString) && trackingService == null) {
 
             UUID boat = UUID.fromString(boatString);
-            UUID trip = tripController.newTrip(boat);
-            tripController.setStartTime(trip, System.currentTimeMillis());
-            tripController.setName(trip, RandomStringUtils.random(12));
+            Trip t = new Trip();
+            t.setStartDate(System.currentTimeMillis());
+            t.setName(RandomStringUtils.random(12));
+            t = (Trip) mainController.creatDocument("trip", t, "");
 
             trackingService = new Intent(this, TrackingService.class);
-            trackingService.putExtra(TrackingService.TRIP_UUID, trip.toString());
+            trackingService.putExtra(TrackingService.TRIP_UUID, t.getUUID());
 
             registerReceiver(waypointBroadcastReceiver, new IntentFilter(TrackingService.WAYPOINT_BROADCAST_RECEIVER));
             registerMapPlugin("waypoint_tracking_map_plugin", new WaypointDrawingMapPlugin(map,"#345212"));

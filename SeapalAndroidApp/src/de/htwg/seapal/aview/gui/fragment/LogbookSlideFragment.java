@@ -17,7 +17,8 @@ import org.apache.commons.lang.StringUtils;
 import java.util.UUID;
 
 import de.htwg.seapal.R;
-import de.htwg.seapal.controller.IBoatController;
+import de.htwg.seapal.controller.IMainController;
+import de.htwg.seapal.model.IBoat;
 import roboguice.fragment.RoboFragment;
 
 /**
@@ -31,8 +32,9 @@ public class LogbookSlideFragment extends RoboFragment {
     private PagerAdapter mPagerAdapter;
     private  TripListFragment mTripListFragment;
     private  BoatViewFragment mBoatViewFragment;
+
     @Inject
-    private IBoatController boatController;
+    private IMainController mainController;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -53,7 +55,8 @@ public class LogbookSlideFragment extends RoboFragment {
     }
 
     public void updateBoatView(int position, UUID uuid) {
-        String boatName =  boatController.getBoatName(uuid);
+        IBoat boat = (IBoat) mainController.getSingleDocument("boat", "", uuid);
+        String boatName = boat.getName();
         if (StringUtils.isEmpty(boatName)) {
             mPager.setCurrentItem(BOAT_VIEW_FRAGMENT);
         } else {

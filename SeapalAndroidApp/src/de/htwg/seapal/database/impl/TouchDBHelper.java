@@ -1,25 +1,30 @@
 package de.htwg.seapal.database.impl;
 
-import java.io.IOException;
+import android.content.Context;
+import android.util.Log;
+
+import com.couchbase.lite.CouchbaseLiteException;
+import com.couchbase.lite.Database;
+import com.couchbase.lite.Manager;
+import com.couchbase.lite.ektorp.CBLiteHttpClient;
+
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ReplicationCommand;
 import org.ektorp.http.HttpClient;
 import org.ektorp.impl.StdCouchDbInstance;
 
-import android.content.Context;
-import android.util.Log;
+import java.io.File;
+import java.io.IOException;
 
-import com.couchbase.cblite.*;
-import com.couchbase.cblite.ektorp.*;
 
 class TouchDBHelper {
 
 	private static final String TAG = "TouchDB";
 	private final String DATABASE_NAME;
-    private final String hostDB = "http://roroettg.iriscouch.com/";
+    private final String hostDB = "http://192.168.0.107:5984/";
     private StdCouchDbInstance dbInstance;
 	private CouchDbConnector couchDbConnector;
-	private CBLDatabase tdDB;
+	private Database tdDB;
 
 
     public TouchDBHelper(String dbName) {
@@ -33,11 +38,12 @@ class TouchDBHelper {
 		}
 		// TouchDB
 		Log.d(TAG, "Starting " + DATABASE_NAME);
-		CBLServer server = null;
-		String filesDir = ctx.getFilesDir().getAbsolutePath();
+
+		Manager server = null;
+		File filesDir = ctx.getFilesDir();
 		Log.d(TAG, ctx.getFilesDir().getAbsolutePath());
 		try {
-			server = new CBLServer(filesDir);
+			server = new Manager(filesDir, Manager.DEFAULT_OPTIONS);
 		} catch (IOException e) {
 			Log.e(TAG, "Error starting Boat-TDServer", e);
 		}
@@ -50,7 +56,11 @@ class TouchDBHelper {
 		couchDbConnector = dbInstance.createConnector(DATABASE_NAME, true);
 
         if (server != null) {
-            tdDB = server.getDatabaseNamed(DATABASE_NAME);
+            try {
+                tdDB = server.getDatabase(DATABASE_NAME);
+            } catch (CouchbaseLiteException e) {
+                e.printStackTrace();
+            }
         }
 
 
@@ -61,7 +71,7 @@ class TouchDBHelper {
 		return this.couchDbConnector;
 	}
 	
-	public CBLDatabase getTDDatabase() {
+	public Database getTDDatabase() {
 		return this.tdDB;
 	}
 

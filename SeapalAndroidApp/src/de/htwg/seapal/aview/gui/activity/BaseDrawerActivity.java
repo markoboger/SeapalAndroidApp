@@ -13,15 +13,21 @@ import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
+import com.couchbase.lite.router.URLStreamHandlerFactory;
+import com.google.inject.Inject;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import de.htwg.seapal.R;
+import de.htwg.seapal.controller.IMainController;
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
 public class BaseDrawerActivity extends RoboFragmentActivity {
+
+
 
 	@InjectView(R.id.drawer_menu_drawer_list_left)
 	private ListView drawerListViewLeft;
@@ -33,13 +39,19 @@ public class BaseDrawerActivity extends RoboFragmentActivity {
 	private int changeToActivity;
 	private static final List<Class<? extends Activity>> classes;
 
+    @Inject
+    private IMainController mainController;
+
+
 	// Add here all Activities in the drawerList (same order)
 	static {
 		classes = new ArrayList<Class<? extends Activity>>();
 		classes.add(de.htwg.seapal.aview.gui.activity.MapActivity.class);
 		classes.add(LogbookTabsActivity.class);
-        classes.add(de.htwg.seapal.aview.tui.activity.MenuActivity.class);
+
 	}
+
+
 
 	// -------------------------------------------- CREATION ------------
 

@@ -120,5 +120,18 @@
     <string name="stop_tracking_text">Stop Track</string>
     <string name="tracking_service_started_text">Tracking Service Started</string>
     <string name="picture_headder">Picture</string>
+    <string name="account_info_text" >
+        The Seapal Logbook Feature can store your logbook data in the cloud.
+        This enables you to access your logbooks form other devices or on the web.
+        You just need to create an account.
+        The first 10 Trips ar free of charge.
+    </string>
+    <string name="account_info_header">About SeaPal Accounts</string>
+    <string name="create_new_account">Create a fresh Account</string>
+    <string name="account_management">Handle your Account</string>
+    <string name="crew_about">About SeaPal Crew</string>
+    <string name="crew_your_crew">Your Crew</string>
+    <string name="crew_about_text" >You can invite others with an Account on SeaPal to read or contribute to your Logbook. Likewise you can be invited to join someone elses logbook</string>
+    <string name="crew_member_of">You are Crew Member of</string>
     <item name="tracking_service_started_text" type="id">Tracking Service Started</item>
 </resources>

@@ -3,10 +3,10 @@ package de.htwg.seapal.database.impl;
 import android.content.Context;
 import android.util.Log;
 
-import com.couchbase.cblite.CBLDatabase;
-import com.couchbase.cblite.CBLView;
-import com.couchbase.cblite.CBLViewMapBlock;
-import com.couchbase.cblite.CBLViewMapEmitBlock;
+import com.couchbase.lite.Database;
+import com.couchbase.lite.Emitter;
+import com.couchbase.lite.Mapper;
+import com.couchbase.lite.View;
 import com.google.inject.Inject;
 
 import org.ektorp.CouchDbConnector;
@@ -23,6 +23,7 @@ import java.util.UUID;
 
 import de.htwg.seapal.database.ITripDatabase;
 import de.htwg.seapal.model.ITrip;
+import de.htwg.seapal.model.ModelDocument;
 import de.htwg.seapal.model.impl.Trip;
 import roboguice.inject.ContextSingleton;
 
@@ -32,7 +33,7 @@ public class TouchDBTripDatabase implements ITripDatabase {
 	private static final String TAG = "Trip-TouchDB";
 	private static final String DDOCNAME = "Trip";
 	private static final String VIEWNAME = "by_boat";
-	private static final String DATABASE_NAME = "seapal_trips_db";
+	private static final String DATABASE_NAME = "seapal_trip_db";
 
 	private static TouchDBTripDatabase touchDBTripDatabase;
 	private final CouchDbConnector couchDbConnector;
@@ -45,22 +46,22 @@ public class TouchDBTripDatabase implements ITripDatabase {
 		dbHelper.pullFromDatabase();
 		couchDbConnector = dbHelper.getCouchDbConnector();
 
-		CBLDatabase tdDB = dbHelper.getTDDatabase();
+		Database tdDB = dbHelper.getTDDatabase();
 
-		CBLView view = tdDB.getViewNamed(String.format("%s/%s", DDOCNAME,
-				VIEWNAME));
+		View view = tdDB.getView(String.format("%s/%s", DDOCNAME,
+                VIEWNAME));
 
-		view.setMapReduceBlocks(new CBLViewMapBlock() {
-			@Override
-			public void map(Map<String, Object> document,
-					CBLViewMapEmitBlock emitter) {
-				Object Boat = document.get("boat");
-				if (Boat != null) {
-					emitter.emit(document.get("boat"), document.get("_id"));
-				}
 
-			}
-		}, null, "1.0");
+		view.setMapReduce(new Mapper() {
+            @Override
+            public void map(Map<String, Object> document, Emitter emitter) {
+                Object Boat = document.get("boat");
+                if (Boat != null) {
+                    emitter.emit(document.get("boat"), document.get("_id"));
+                }
+
+            }
+        }, null, "1.0");
 
 	}
 
@@ -142,7 +143,22 @@ public class TouchDBTripDatabase implements ITripDatabase {
 		return false;
 	}
 
-	@Override
+    @Override
+    public void create(ModelDocument modelDocument) {
+
+    }
+
+    @Override
+    public List<? extends ITrip> queryViews(String s, String s2) {
+        return null;
+    }
+
+    @Override
+    public void update(ModelDocument modelDocument) {
+
+    }
+
+    @Override
 	public boolean open() {
 		// TODO Auto-generated method stub
 		return false;

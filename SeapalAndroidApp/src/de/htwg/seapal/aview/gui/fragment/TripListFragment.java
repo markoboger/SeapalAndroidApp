@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -25,9 +24,11 @@ import java.util.UUID;
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.activity.TripActivity;
 import de.htwg.seapal.aview.gui.adapter.TripListAdapter;
-import de.htwg.seapal.controller.impl.BoatController;
-import de.htwg.seapal.controller.impl.TripController;
+import de.htwg.seapal.controller.IMainController;
 import de.htwg.seapal.model.IBoat;
+import de.htwg.seapal.model.IModel;
+import de.htwg.seapal.model.ITrip;
+import de.htwg.seapal.model.impl.Trip;
 import roboguice.fragment.RoboListFragment;
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
@@ -41,11 +42,11 @@ public class TripListFragment  extends RoboListFragment implements  AdapterView.
     private static final String ARG_POSITION = "postition";
     private static final String ARG_UUID = "uuid";
     public static final int SIMULATED_REFRESH_LENGTH = 5000;
-    private List<UUID> tripList;
+    private List<IModel> tripList;
+
     @Inject
-    private TripController tripController;
-    @Inject
-    private BoatController boatController;
+    private IMainController mainController;
+
     private int mCurrentPosition;
     private UUID mCurrentUUID;
 
@@ -79,8 +80,8 @@ public class TripListFragment  extends RoboListFragment implements  AdapterView.
         }
 
 
-        tripList = new LinkedList<UUID>();
-        TripListAdapter adapter = new TripListAdapter(getActivity(), tripList, tripController);
+        tripList = new LinkedList<IModel>();
+        TripListAdapter adapter = new TripListAdapter(getActivity(), tripList, mainController);
         setListAdapter(adapter);
 
 
@@ -113,10 +114,10 @@ public class TripListFragment  extends RoboListFragment implements  AdapterView.
 
     public void updateTripView(int position, UUID uuid) {
         if (uuid != null) {
-            IBoat b = boatController.getBoat(uuid);
+            IBoat b = (IBoat) mainController.getSingleDocument("boat", "", uuid);
             if (b != null) {
                 tripList.clear();
-                tripList.addAll(tripController.getTrips(b.getUUID()));
+                tripList.addAll(mainController.getByParent("trip", "boat", "", b.getUUID()));
                 notifyListAdapter();
                 mCurrentPosition = position;
                 mCurrentUUID = uuid;
@@ -126,9 +127,10 @@ public class TripListFragment  extends RoboListFragment implements  AdapterView.
 
     public void deleteTrip(int listPosition)  {
         TripListAdapter listAdapter = (TripListAdapter) getListView().getAdapter();
-        UUID uuid = listAdapter.getItem(listPosition);
-        tripController.deleteTrip(uuid);
-        listAdapter.remove(uuid);
+        Trip trip = (Trip) listAdapter.getItem(listPosition);
+        mainController.deleteDocument("trip", "", trip.getUUID());
+//        tripController.deleteTrip(uuid);
+        listAdapter.remove(trip);
         notifyListAdapter();
         Toast.makeText(getActivity(), "Trip deleted",
                 Toast.LENGTH_SHORT).show();
@@ -183,7 +185,7 @@ public class TripListFragment  extends RoboListFragment implements  AdapterView.
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                UUID trip =  tripController.newTrip(mCurrentUUID);
+                ITrip trip = (ITrip) mainController.creatDocument("trip", new Trip(), "");
                 tripList.add(trip);
 
                 Intent intent = new Intent(getActivity(),
