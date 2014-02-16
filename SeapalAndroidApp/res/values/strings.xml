@@ -139,5 +139,7 @@
     <string name="password_repeat">and you password again</string>
     <string name="first_name">your first name</string>
     <string name="last_name">your last name</string>
+    <string name="account_login_text">Or Login With Credentials</string>
+    <string name="account_login">Login</string>
     <item name="tracking_service_started_text" type="id">Tracking Service Started</item>
 </resources>
