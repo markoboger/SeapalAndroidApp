@@ -133,5 +133,11 @@
     <string name="crew_your_crew">Your Crew</string>
     <string name="crew_about_text" >You can invite others with an Account on SeaPal to read or contribute to your Logbook. Likewise you can be invited to join someone elses logbook</string>
     <string name="crew_member_of">You are Crew Member of</string>
+    <string name="username">type in you email</string>
+    <string name="password">and your password</string>
+    <string name="signup">Sign Up</string>
+    <string name="password_repeat">and you password again</string>
+    <string name="first_name">your first name</string>
+    <string name="last_name">your last name</string>
     <item name="tracking_service_started_text" type="id">Tracking Service Started</item>
 </resources>

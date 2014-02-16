@@ -7,6 +7,7 @@ import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Database;
 import com.couchbase.lite.Manager;
 import com.couchbase.lite.ektorp.CBLiteHttpClient;
+import com.google.inject.Inject;
 
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ReplicationCommand;
@@ -17,18 +18,20 @@ import java.io.File;
 import java.io.IOException;
 
 
-class TouchDBHelper {
+public class TouchDBHelper {
 
 	private static final String TAG = "TouchDB";
 	private final String DATABASE_NAME;
-    private final String hostDB = "http://192.168.0.107:5984/";
+    private final String hostDB = "http://192.168.0.107/";
     private StdCouchDbInstance dbInstance;
 	private CouchDbConnector couchDbConnector;
 	private Database tdDB;
 
 
-    public TouchDBHelper(String dbName) {
-		DATABASE_NAME = dbName;		
+    @Inject
+    public TouchDBHelper(String dbName, Context ctx) {
+		DATABASE_NAME = dbName;
+        createDatabase(ctx);
 	}
 
 	public void createDatabase(Context ctx) {
@@ -55,6 +58,7 @@ class TouchDBHelper {
 		// create a local database
 		couchDbConnector = dbInstance.createConnector(DATABASE_NAME, true);
 
+
         if (server != null) {
             try {
                 tdDB = server.getDatabase(DATABASE_NAME);
@@ -62,6 +66,10 @@ class TouchDBHelper {
                 e.printStackTrace();
             }
         }
+
+
+        pullFromDatabase();
+        pushToDatabase();
 
 
 

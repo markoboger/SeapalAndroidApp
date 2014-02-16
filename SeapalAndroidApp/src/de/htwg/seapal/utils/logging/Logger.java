@@ -21,8 +21,7 @@ public class Logger implements ILogger {
 
     @Override
     public void exc(Exception e) {
-        Log.e("Exception",e.getMessage());
-
+        e.printStackTrace();
     }
 
 }

@@ -1,19 +1,41 @@
 package de.htwg.seapal.database.impl;
 
+import android.content.Context;
+
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+
+import org.ektorp.CouchDbConnector;
+import org.ektorp.DocumentNotFoundException;
+import org.ektorp.support.CouchDbRepositorySupport;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
 import de.htwg.seapal.database.IRaceDatabase;
 import de.htwg.seapal.model.ModelDocument;
 import de.htwg.seapal.model._IRace;
+import de.htwg.seapal.model.impl._Race;
 
 /**
  * Created by jakub on 2/15/14.
  */
-public class TouchDBRaceDatabase implements IRaceDatabase{
+public class TouchDBRaceDatabase extends CouchDbRepositorySupport<_Race> implements IRaceDatabase {
+
+
+    private final CouchDbConnector connector;
+
+    @Inject
+    protected TouchDBRaceDatabase(@Named("raceCouchDbConnector") TouchDBHelper helper, Context ctx) {
+        super(_Race.class, helper.getCouchDbConnector());
+        connector = helper.getCouchDbConnector();
+    }
+
     @Override
     public boolean open() {
-        return false;
+        return true;
     }
 
     @Override
@@ -22,42 +44,64 @@ public class TouchDBRaceDatabase implements IRaceDatabase{
     }
 
     @Override
-    public boolean save(_IRace iRace) {
+    public boolean save(_IRace data) {
+        _Race entity = (_Race) data;
+
+        if (entity.isNew()) {
+            // ensure that the id is generated and revision is null for saving a new entity
+            entity.setId(UUID.randomUUID().toString());
+            entity.setRevision(null);
+            add(entity);
+            return true;
+        }
+
+        update(entity);
         return false;
     }
 
     @Override
-    public _IRace get(UUID uuid) {
-        return null;
+    public _IRace get(UUID id) {
+        try {
+            return get(id.toString());
+        } catch (DocumentNotFoundException e) {
+            return null;
+        }
     }
 
     @Override
     public List<_IRace> loadAll() {
-        return null;
+        List<_IRace> races = new LinkedList<_IRace>(getAll());
+        return races;
     }
 
     @Override
-    public void delete(UUID uuid) {
-
+    public void delete(UUID id) {
+        remove((_Race) get(id));
     }
 
     @Override
     public boolean close() {
-        return false;
+        return true;
     }
 
     @Override
-    public void create(ModelDocument modelDocument) {
-
+    public List<? extends _IRace> queryViews(final String viewName, final String key) {
+        try {
+            return super.queryView(viewName, key);
+        } catch (DocumentNotFoundException e) {
+            return new ArrayList<_Race>();
+        }
     }
 
     @Override
-    public List<? extends _IRace> queryViews(String s, String s2) {
-        return null;
+    public void create(ModelDocument doc) {
+        connector.create(doc);
     }
 
     @Override
-    public void update(ModelDocument modelDocument) {
-
+    public void update(ModelDocument document) {
+        connector.update(document);
     }
+
+
 }

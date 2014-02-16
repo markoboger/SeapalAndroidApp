@@ -1,17 +1,15 @@
 package de.htwg.seapal.database.impl;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 import org.ektorp.CouchDbConnector;
 import org.ektorp.DocumentNotFoundException;
-import org.ektorp.UpdateConflictException;
-import org.ektorp.ViewQuery;
-import org.ektorp.ViewResult;
-import org.ektorp.ViewResult.Row;
+import org.ektorp.support.CouchDbRepositorySupport;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -23,121 +21,92 @@ import de.htwg.seapal.model.impl.Boat;
 import roboguice.inject.ContextSingleton;
 
 @ContextSingleton
-public class TouchDBBoatDatabase implements IBoatDatabase {
+public class TouchDBBoatDatabase extends CouchDbRepositorySupport<Boat> implements IBoatDatabase {
 
-	private static final String TAG = "Boat-TouchDB";
-	private static final String DATABASE_NAME = "seapal_boat_db";
+    private static final String TAG = "Boat-TouchDB";
 
-	private static TouchDBBoatDatabase touchDBBoatDatabase;
-	private final CouchDbConnector couchDbConnector;
-	private final TouchDBHelper dbHelper;
+    private final CouchDbConnector connector;
+    private final TouchDBHelper dbHelper;
 
-	@Inject
-	public TouchDBBoatDatabase(Context ctx) {
-		dbHelper = new TouchDBHelper(DATABASE_NAME);
-		dbHelper.createDatabase(ctx);
-		dbHelper.pullFromDatabase();
-		couchDbConnector = dbHelper.getCouchDbConnector();
-
-	}
-
-	public static TouchDBBoatDatabase getInstance(Context ctx) {
-		if (touchDBBoatDatabase == null)
-			touchDBBoatDatabase = new TouchDBBoatDatabase(ctx);
-		return touchDBBoatDatabase;
-	}
-
-	@Override
-	public UUID create() {
-		IBoat boat = new Boat();
-		try {
-			couchDbConnector.create(boat.getId(), boat);
-		} catch (UpdateConflictException e) {
-			Log.e(TAG, e.toString());
-		}
-		UUID id = UUID.fromString(boat.getId());
-		Log.d(TAG, "Boat created: " + boat.getId());
-		dbHelper.pushToDatabase();
-		return id;
-	}
-
-	@Override
-	public boolean save(IBoat boat) {
-		try {
-			couchDbConnector.update(boat);
-			dbHelper.pushToDatabase();
-		} catch (DocumentNotFoundException e) {
-			Log.d(TAG, "Document not Found");
-			Log.d(TAG, e.toString());
-			return false;
-		}
-		Log.d(TAG, "Boat saved: " + boat.getId());
-		return true;
-	}
-
-	@Override
-	public void delete(UUID id) {
-		try {
-			couchDbConnector.delete(get(id));
-			dbHelper.pushToDatabase();
-		} catch (Exception e) {
-			Log.e(TAG, e.toString());
-			return;
-		}
-		Log.d(TAG, "Boat deleted");
-	}
-
-	@Override
-	public IBoat get(UUID id) {
-		IBoat boat;
-		try {
-			boat = couchDbConnector.get(Boat.class, id.toString());
-		} catch (DocumentNotFoundException e) {
-			Log.e(TAG, "Boat not found" + id.toString());
-			return null;
-		}
-		return boat;
-	}
-
-	@Override
-	public List<IBoat> loadAll() {
-		List<IBoat> lst = new LinkedList<IBoat>();
-		List<String> log = new LinkedList<String>();
-		ViewQuery query = new ViewQuery().allDocs();
-		ViewResult vr = couchDbConnector.queryView(query);
-
-		for (Row r : vr.getRows()) {
-			lst.add(get(UUID.fromString(r.getId())));
-			log.add(r.getId());
-		}
-		Log.d(TAG, "All Boats: " + log.toString());
-		return lst;
-	}
-
-	@Override
-	public boolean close() {
-		return false;
-	}
-
-    @Override
-    public void create(ModelDocument modelDocument) {
+    @Inject
+    public TouchDBBoatDatabase(@Named("boatCouchDbConnector") TouchDBHelper helper, Context ctx) {
+        super(Boat.class, helper.getCouchDbConnector());
+        dbHelper = helper;
+        dbHelper.pullFromDatabase();
+        connector = dbHelper.getCouchDbConnector();
 
     }
 
+
     @Override
-    public List<? extends IBoat> queryViews(String s, String s2) {
+    public boolean open() {
+        return true;
+    }
+
+    @Override
+    public UUID create() {
         return null;
     }
 
     @Override
-    public void update(ModelDocument modelDocument) {
+    public boolean save(IBoat data) {
+        Boat entity = (Boat) data;
 
+        if (entity.isNew()) {
+            // ensure that the id is generated and revision is null for saving a new entity
+            entity.setId(UUID.randomUUID().toString());
+            entity.setRevision(null);
+            add(entity);
+            return true;
+        }
+
+        update(entity);
+        return false;
     }
 
     @Override
-	public boolean open() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    public IBoat get(UUID id) {
+        try {
+            return get(id.toString());
+        } catch (DocumentNotFoundException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public List<IBoat> loadAll() {
+        List<IBoat> boats = new LinkedList<IBoat>(getAll());
+        return boats;
+    }
+
+    @Override
+    public void delete(UUID id) {
+        remove((Boat) get(id));
+    }
+
+    @Override
+    public boolean close() {
+        return true;
+    }
+
+    @Override
+    public List<? extends IBoat> queryViews(final String viewName, final String key) {
+        try {
+            return super.queryView(viewName, key);
+        } catch (DocumentNotFoundException e) {
+            return new ArrayList<Boat>();
+        }
+    }
+
+    @Override
+    public void create(ModelDocument doc) {
+        connector.create(doc);
+    }
+
+    @Override
+    public void update(ModelDocument document) {
+        connector.update(document);
+    }
+
 
 }
