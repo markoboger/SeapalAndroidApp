@@ -1,0 +1,3 @@
+[submodule "SeapalAndroidApp/libs/couchbase-lite-android-ektorp"]
+	path = SeapalAndroidApp/libs/couchbase-lite-android-ektorp
+	url = https://github.com/couchbaselabs/couchbase-lite-android-ektorp.git

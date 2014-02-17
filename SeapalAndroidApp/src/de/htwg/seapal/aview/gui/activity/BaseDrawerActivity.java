@@ -8,12 +8,12 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
-import com.couchbase.lite.router.URLStreamHandlerFactory;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
@@ -72,6 +72,7 @@ public class BaseDrawerActivity extends RoboFragmentActivity {
 	@Override
 	public void setContentView(final int layoutResID) {
 		// base layout
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 		drawerLayout = (DrawerLayout) getLayoutInflater().inflate(
 				R.layout.drawer_menu, null);
         FrameLayout frameLayout = (FrameLayout) drawerLayout
@@ -115,6 +116,7 @@ public class BaseDrawerActivity extends RoboFragmentActivity {
 		drawerListViewLeft.setAdapter( new ArrayAdapter(this,
                 R.layout.drawer_list_item, drawerActivityListLeft));
 		drawerListViewLeft.setOnItemClickListener(new DrawerItemClickListener());
+
 
         //getActionBar().hide();
 		getActionBar().setDisplayHomeAsUpEnabled(true);

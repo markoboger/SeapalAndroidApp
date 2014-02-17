@@ -1,6 +1,7 @@
 package de.htwg.seapal.database.impl;
 
 import android.content.Context;
+import android.os.StrictMode;
 import android.util.Log;
 
 import com.couchbase.lite.CouchbaseLiteException;
@@ -20,46 +21,56 @@ import java.io.IOException;
 
 public class TouchDBHelper {
 
-	private static final String TAG = "TouchDB";
-	private final String DATABASE_NAME;
+    private static final String TAG = "TouchDB";
+    private final String DATABASE_NAME;
     private final String hostDB = "http://192.168.0.107:5984/";
     private StdCouchDbInstance dbInstance;
-	private CouchDbConnector couchDbConnector;
-	private Database tdDB;
+    private CouchDbConnector couchDbConnector;
+    private Database tdDB;
 
 
     @Inject
     public TouchDBHelper(String dbName, Context ctx) {
-		DATABASE_NAME = dbName;
+        DATABASE_NAME = dbName;
         createDatabase(ctx);
-	}
+    }
 
-	public void createDatabase(Context ctx) {
+    public void createDatabase(Context ctx) {
 
-		if (couchDbConnector != null) {
-			return;
-		}
-		// TouchDB
-		Log.d(TAG, "Starting " + DATABASE_NAME);
+        if (couchDbConnector != null) {
+            return;
+        }
+        // TouchDB
+        Log.d(TAG, "Starting " + DATABASE_NAME);
 
-		Manager server = null;
-		File filesDir = ctx.getFilesDir();
-		Log.d(TAG, ctx.getFilesDir().getAbsolutePath());
-		try {
-			server = new Manager(filesDir, Manager.DEFAULT_OPTIONS);
+        Manager server = null;
+        File filesDir = ctx.getFilesDir();
+        Log.d(TAG, ctx.getFilesDir().getAbsolutePath());
+        try {
+            server = new Manager(filesDir, Manager.DEFAULT_OPTIONS);
 
-		} catch (IOException e) {
-			Log.e(TAG, "Error starting Boat-TDServer", e);
-		}
+        } catch (IOException e) {
+            Log.e(TAG, "Error starting Boat-TDServer", e);
+        }
 
-		// start TouchDB-Ektorp adapter
-		HttpClient httpClient = new CBLiteHttpClient(server);
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
 
-		dbInstance = new StdCouchDbInstance(httpClient);
+        try {
+            Database b = server.getDatabase(DATABASE_NAME);
+        } catch (CouchbaseLiteException e) {
+            e.printStackTrace();
+        }
 
-		// create a local database
-		couchDbConnector = dbInstance.createConnector(DATABASE_NAME, true);
+        HttpClient h = new CBLiteHttpClient(server);
 
+        dbInstance = new StdCouchDbInstance(h);
+
+
+        // create a local database
+        couchDbConnector = dbInstance.createConnector(DATABASE_NAME, true);
 
 
         if (server != null) {
@@ -75,38 +86,36 @@ public class TouchDBHelper {
         pushToDatabase();
 
 
-
-
     }
 
-	public CouchDbConnector getCouchDbConnector() {
-		return this.couchDbConnector;
-	}
-	
-	public Database getTDDatabase() {
-		return this.tdDB;
-	}
+    public CouchDbConnector getCouchDbConnector() {
+        return this.couchDbConnector;
+    }
 
-	public void pullFromDatabase() {
-		ReplicationCommand pullReplicationCommand = new ReplicationCommand.Builder()
-				.source(hostDB + DATABASE_NAME)
-				.target(DATABASE_NAME)
+    public Database getTDDatabase() {
+        return this.tdDB;
+    }
+
+    public void pullFromDatabase() {
+        ReplicationCommand pullReplicationCommand = new ReplicationCommand.Builder()
+                .source(hostDB + DATABASE_NAME)
+                .target(DATABASE_NAME)
                 .continuous(true)
                 .createTarget(true)
                 .build();
 
-		dbInstance.replicate(pullReplicationCommand);
+        dbInstance.replicate(pullReplicationCommand);
 
-	}
+    }
 
-	public void pushToDatabase() {
-		ReplicationCommand pushReplicationCommand = new ReplicationCommand.Builder()
-				.source(DATABASE_NAME)
-				.target(hostDB + DATABASE_NAME)
-				.continuous(true)
+    public void pushToDatabase() {
+        ReplicationCommand pushReplicationCommand = new ReplicationCommand.Builder()
+                .source(DATABASE_NAME)
+                .target(hostDB + DATABASE_NAME)
+                .continuous(true)
                 .build();
 
-		dbInstance.replicate(pushReplicationCommand);
-	}
+        dbInstance.replicate(pushReplicationCommand);
+    }
 
 }

@@ -47,10 +47,10 @@ public class TouchDBAccountDatabase extends CouchDbRepositorySupport<Account> im
     @Inject
     public TouchDBAccountDatabase(@Named("accountCouchDbConnector") TouchDBHelper helper, Context ctx) {
         super(Account.class, helper.getCouchDbConnector());
-        initStandardDesignDocument();
+        super.initStandardDesignDocument();
         dbHelper = helper;
         couchDbConnector = dbHelper.getCouchDbConnector();
-        Log.i(TAG, "Doc Ids " + super.getDesignDocumentFactory().generateFrom(this).getViews());
+
     }
 
     @Override
