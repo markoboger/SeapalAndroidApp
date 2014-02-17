@@ -27,15 +27,14 @@ dependencies {
     compile 'com.android.support:appcompat-v7:+'
     compile 'com.google.android.gms:play-services:3.2.+'
     compile 'com.github.chrisbanes.actionbarpulltorefresh:library:+'
-    compile files('libs/commons-lang-2.6.jar')    
+
+
 
     compile project(':libs:facebook')
-
-    compile fileTree(dir: 'libs', include: 'td_collator_so.jar')
-    compile 'com.couchbase.cblite:CBLite:1.0.0-beta2'
+    compile fileTree(dir: 'libs', includes: ['*.jar'])
     compile 'com.couchbase.cblite:CBLiteEktorp:1.0.0-beta2'
+    compile 'com.couchbase.cblite:CBLiteJavascript:1.0.0-beta2'
 
-    compile files('libs/core-1.0-SNAPSHOT.jar')    
 }
 
 android {

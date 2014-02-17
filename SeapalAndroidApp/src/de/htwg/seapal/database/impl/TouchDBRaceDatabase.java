@@ -1,6 +1,7 @@
 package de.htwg.seapal.database.impl;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -8,6 +9,8 @@ import com.google.inject.name.Named;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.DocumentNotFoundException;
 import org.ektorp.support.CouchDbRepositorySupport;
+import org.ektorp.support.View;
+import org.ektorp.support.Views;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -18,19 +21,30 @@ import de.htwg.seapal.database.IRaceDatabase;
 import de.htwg.seapal.model.ModelDocument;
 import de.htwg.seapal.model._IRace;
 import de.htwg.seapal.model.impl._Race;
+import roboguice.inject.ContextSingleton;
 
 /**
  * Created by jakub on 2/15/14.
  */
+@Views({
+        @View(name = "singleDocument", map = "views/singleDocument.js"),
+        @View(name = "own", map = "views/own.js")
+})
+@ContextSingleton
 public class TouchDBRaceDatabase extends CouchDbRepositorySupport<_Race> implements IRaceDatabase {
 
 
+    private static final String TAG =  "Race-TouchDB";
     private final CouchDbConnector connector;
 
     @Inject
     protected TouchDBRaceDatabase(@Named("raceCouchDbConnector") TouchDBHelper helper, Context ctx) {
         super(_Race.class, helper.getCouchDbConnector());
+        super.initStandardDesignDocument();
         connector = helper.getCouchDbConnector();
+
+
+        Log.i(TAG, "Doc Ids " + super.getDesignDocumentFactory().generateFrom(this).getViews());
     }
 
     @Override

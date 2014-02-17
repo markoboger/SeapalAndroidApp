@@ -18,6 +18,8 @@ import org.apache.commons.lang.StringUtils;
 import de.htwg.seapal.R;
 import de.htwg.seapal.controller.IAccountController;
 import de.htwg.seapal.controller.IMainController;
+import de.htwg.seapal.model.IAccount;
+import de.htwg.seapal.model.impl.Account;
 import de.htwg.seapal.model.impl.SignupAccount;
 import roboguice.RoboGuice;
 
@@ -46,7 +48,7 @@ public class AccountFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(final View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
 
@@ -78,15 +80,20 @@ public class AccountFragment extends Fragment {
                                 EditText password = (EditText) view.findViewById(R.id.password);
                                 EditText password_repeat = (EditText) view.findViewById(R.id.password_repeat);
                                 if (StringUtils.equals(password.getText().toString(), password_repeat.getText().toString())) {
-                                    SignupAccount s = new SignupAccount();
-                                    s.setEmail(email.getText().toString());
-                                    s.setFirstName(firstName.getText().toString());
-                                    s.setLastName(lastName.getText().toString());
-                                    s.setPassword(password.getText().toString());
-                                    accountController.saveAccount(s, true);
+                                    if (!accountController.accountExists(email.getText().toString())) {
+                                        SignupAccount s = new SignupAccount();
+                                        s.setEmail(email.getText().toString());
+                                        s.setFirstName(firstName.getText().toString());
+                                        s.setLastName(lastName.getText().toString());
+                                        s.setPassword(password.getText().toString());
+                                        accountController.saveAccount(s, true);
+                                        Toast.makeText(getActivity(), "Successfully Signed Up...  Now u can login with your Credentials", Toast.LENGTH_LONG);
+                                    } else {
+                                        Toast.makeText(getActivity(), "Account already exists", Toast.LENGTH_LONG);
+                                    }
 
                                 } else {
-                                    Toast.makeText(getActivity(),"password is not the same", 0);
+                                    Toast.makeText(getActivity(), "password is not the same", Toast.LENGTH_LONG);
 
                                 }
                             }
@@ -99,7 +106,28 @@ public class AccountFragment extends Fragment {
 
             }
         });
+
+        view.findViewById(R.id.account_login).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText email = (EditText) view.findViewById(R.id.account_username);
+                EditText password = (EditText) view.findViewById(R.id.account_password);
+                if (accountController.accountExists(email.getText().toString())) {
+                    Account aLogin = new Account();
+                    aLogin.setEmail(email.getText().toString());
+                    aLogin.setPassword(password.getText().toString());
+                    IAccount authenticated = accountController.authenticate(aLogin);
+                    if (authenticated != null) {
+                        Toast.makeText(getActivity(), "successfully logged in", Toast.LENGTH_LONG);
+
+                    }
+
+
+                }
+            }
+        });
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

@@ -1,6 +1,7 @@
 package de.htwg.seapal.database.impl;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -8,6 +9,8 @@ import com.google.inject.name.Named;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.DocumentNotFoundException;
 import org.ektorp.support.CouchDbRepositorySupport;
+import org.ektorp.support.View;
+import org.ektorp.support.Views;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -21,6 +24,12 @@ import de.htwg.seapal.model.impl.Waypoint;
 import roboguice.inject.ContextSingleton;
 
 
+@Views({
+        @View(name = "singleDocument", map = "views/singleDocument.js"),
+        @View(name = "own", map = "views/own.js"),
+        @View(name = "boat", map = "views/waypoint/boat.js"),
+        @View(name = "trip", map = "views/waypoint/trip.js")
+})
 @ContextSingleton
 public class TouchDBWaypointDatabase extends CouchDbRepositorySupport<Waypoint> implements IWaypointDatabase {
 
@@ -36,9 +45,10 @@ public class TouchDBWaypointDatabase extends CouchDbRepositorySupport<Waypoint> 
     @Inject
     public TouchDBWaypointDatabase(@Named("waypointCouchDbConnector") TouchDBHelper helper, Context ctx) {
         super(Waypoint.class, helper.getCouchDbConnector());
+        super.initStandardDesignDocument();
         dbHelper = helper;
-        dbHelper.pullFromDatabase();
         connector = dbHelper.getCouchDbConnector();
+        Log.i(TAG, "Doc Ids " + super.getDesignDocumentFactory().generateFrom(this).getViews());
 
 
     }

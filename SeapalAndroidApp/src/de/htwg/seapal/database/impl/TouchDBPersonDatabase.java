@@ -1,6 +1,7 @@
 package de.htwg.seapal.database.impl;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -8,6 +9,8 @@ import com.google.inject.name.Named;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.DocumentNotFoundException;
 import org.ektorp.support.CouchDbRepositorySupport;
+import org.ektorp.support.View;
+import org.ektorp.support.Views;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -20,6 +23,10 @@ import de.htwg.seapal.model.ModelDocument;
 import de.htwg.seapal.model.impl.Person;
 import roboguice.inject.ContextSingleton;
 
+@Views({
+        @View(name = "singleDocument", map = "views/singleDocument.js"),
+        @View(name = "own", map = "views/own.js")
+})
 @ContextSingleton
 public class TouchDBPersonDatabase extends CouchDbRepositorySupport<Person> implements IPersonDatabase {
 
@@ -30,10 +37,11 @@ public class TouchDBPersonDatabase extends CouchDbRepositorySupport<Person> impl
 
     @Inject
     public TouchDBPersonDatabase(@Named("personCouchDbConnector") TouchDBHelper helper, Context ctx) {
-        super(Person.class, helper.getCouchDbConnector());
+        super(Person.class, helper.getCouchDbConnector(), "Person");
         super.initStandardDesignDocument();
-        helper.pullFromDatabase();
         connector = helper.getCouchDbConnector();
+
+        Log.i(TAG, "Doc Ids " + super.getDesignDocumentFactory().generateFrom(this).getViews());
     }
 
     @Override
@@ -90,7 +98,7 @@ public class TouchDBPersonDatabase extends CouchDbRepositorySupport<Person> impl
     @Override
     public List<? extends IPerson> queryViews(final String viewName, final String key) {
         try {
-            return super.queryView(viewName, key);
+            return queryView(viewName, key);
         } catch (DocumentNotFoundException e) {
             return new ArrayList<Person>();
         }

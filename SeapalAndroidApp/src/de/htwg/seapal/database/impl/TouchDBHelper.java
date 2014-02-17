@@ -22,7 +22,7 @@ public class TouchDBHelper {
 
 	private static final String TAG = "TouchDB";
 	private final String DATABASE_NAME;
-    private final String hostDB = "http://192.168.0.107/";
+    private final String hostDB = "http://192.168.0.107:5984/";
     private StdCouchDbInstance dbInstance;
 	private CouchDbConnector couchDbConnector;
 	private Database tdDB;
@@ -47,16 +47,19 @@ public class TouchDBHelper {
 		Log.d(TAG, ctx.getFilesDir().getAbsolutePath());
 		try {
 			server = new Manager(filesDir, Manager.DEFAULT_OPTIONS);
+
 		} catch (IOException e) {
 			Log.e(TAG, "Error starting Boat-TDServer", e);
 		}
 
 		// start TouchDB-Ektorp adapter
 		HttpClient httpClient = new CBLiteHttpClient(server);
+
 		dbInstance = new StdCouchDbInstance(httpClient);
 
 		// create a local database
 		couchDbConnector = dbInstance.createConnector(DATABASE_NAME, true);
+
 
 
         if (server != null) {
@@ -70,6 +73,7 @@ public class TouchDBHelper {
 
         pullFromDatabase();
         pushToDatabase();
+
 
 
 
@@ -88,6 +92,7 @@ public class TouchDBHelper {
 				.source(hostDB + DATABASE_NAME)
 				.target(DATABASE_NAME)
                 .continuous(true)
+                .createTarget(true)
                 .build();
 
 		dbInstance.replicate(pullReplicationCommand);

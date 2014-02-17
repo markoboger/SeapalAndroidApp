@@ -17,9 +17,10 @@ public class SeapalApplication extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+        System.setProperty("org.ektorp.support.AutoUpdateViewOnChange", "true");
 
 		RoboGuice.setBaseApplicationInjector(this, RoboGuice.DEFAULT_STAGE,
-				RoboGuice.newDefaultRoboModule(this), new ImplModule());
+                RoboGuice.newDefaultRoboModule(this), new ImplModule());
 	}
 
 }

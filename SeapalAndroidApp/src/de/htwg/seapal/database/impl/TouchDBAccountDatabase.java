@@ -1,6 +1,7 @@
 package de.htwg.seapal.database.impl;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -8,6 +9,8 @@ import com.google.inject.name.Named;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.DocumentNotFoundException;
 import org.ektorp.support.CouchDbRepositorySupport;
+import org.ektorp.support.View;
+import org.ektorp.support.Views;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -18,10 +21,19 @@ import de.htwg.seapal.database.IAccountDatabase;
 import de.htwg.seapal.model.IAccount;
 import de.htwg.seapal.model.ModelDocument;
 import de.htwg.seapal.model.impl.Account;
+import roboguice.inject.ContextSingleton;
 
 /**
  * Created by jakub on 2/15/14.
  */
+@Views({
+        @View(name = "by_email", map = "views/account/by_email.js"),
+        @View(name = "friends", map = "views/account/friends.js"),
+        @View(name = "this", map = "function(doc) { return emit(doc._id, doc); }"),
+        @View(name = "googleID", map = "views/account/googleID.js"),
+        @View(name = "resetToken", map = "views/account/resetToken.js")
+})
+@ContextSingleton
 public class TouchDBAccountDatabase extends CouchDbRepositorySupport<Account> implements IAccountDatabase {
 
 
@@ -35,16 +47,17 @@ public class TouchDBAccountDatabase extends CouchDbRepositorySupport<Account> im
     @Inject
     public TouchDBAccountDatabase(@Named("accountCouchDbConnector") TouchDBHelper helper, Context ctx) {
         super(Account.class, helper.getCouchDbConnector());
-        super.initStandardDesignDocument();
+        initStandardDesignDocument();
         dbHelper = helper;
-        dbHelper.pullFromDatabase();
         couchDbConnector = dbHelper.getCouchDbConnector();
-
+        Log.i(TAG, "Doc Ids " + super.getDesignDocumentFactory().generateFrom(this).getViews());
     }
 
     @Override
     public IAccount getAccount(String email) {
-        List<Account> accounts = super.queryView("by_email", email);
+        open();
+        List<Account> accounts = queryView("by_email", email);
+        close();
         if (accounts.size() > 1 || accounts.size() < 1) {
             return null;
         } else {
@@ -56,6 +69,7 @@ public class TouchDBAccountDatabase extends CouchDbRepositorySupport<Account> im
 
     @Override
     public boolean open() {
+        Log.i(TAG, "Database connection opened");
         return true;
     }
 
@@ -68,11 +82,16 @@ public class TouchDBAccountDatabase extends CouchDbRepositorySupport<Account> im
     public boolean save(IAccount iAccount) {
         Account entity = (Account) iAccount;
         if (entity.isNew()) {
+            open();
             entity.setRevision(null);
             add(entity);
+            close();
             return true;
         } else {
+            open();
+            Log.i(TAG, "Updating entity with UUID: " + entity.getUUID());
             update(entity);
+            close();
             return false;
         }
     }
@@ -80,7 +99,10 @@ public class TouchDBAccountDatabase extends CouchDbRepositorySupport<Account> im
     @Override
     public IAccount get(UUID uuid) {
         try {
-            return get(uuid.toString());
+            open();
+            IAccount a = get(uuid.toString());
+            close();
+            return a;
         } catch (DocumentNotFoundException e) {
             return null;
         }
@@ -88,20 +110,27 @@ public class TouchDBAccountDatabase extends CouchDbRepositorySupport<Account> im
 
     @Override
     public List<IAccount> loadAll() {
+        open();
         List<IAccount> Accounts = new LinkedList<IAccount>(getAll());
+        Log.i(TAG, "Loaded entities. Count:  " + Accounts.size());
+        close();
         return Accounts;
 
     }
 
     @Override
     public void delete(UUID uuid) {
+        open();
+        Log.i(TAG, "Removing entity with UUID: " + uuid);
         remove((Account) get(uuid));
+        close();
 
 
     }
 
     @Override
     public boolean close() {
+        Log.i(TAG, "Closing database");
         return true;
     }
 
@@ -114,7 +143,12 @@ public class TouchDBAccountDatabase extends CouchDbRepositorySupport<Account> im
     @Override
     public List<? extends IAccount> queryViews(String viewName, String key) {
         try {
-            return super.queryView(viewName, key);
+            open();
+            initStandardDesignDocument();
+            List<Account> a = queryView(viewName, key);
+            close();
+            return a;
+
         } catch (DocumentNotFoundException e) {
             return new ArrayList<Account>();
         }
