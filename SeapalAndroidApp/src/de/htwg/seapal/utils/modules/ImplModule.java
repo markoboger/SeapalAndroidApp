@@ -41,7 +41,7 @@ public class ImplModule implements Module {
     public void configure(Binder binder) {
         binder.bind(ILogger.class).to(Logger.class);
 
-        binder.bind(IBoatDatabase.class).to(TouchDBBoatDatabase.class);
+        binder.bind(IBoatDatabase.class).to(TouchDBBoatDatabase.class).in(Scopes.SINGLETON);
 
         binder.bind(IMarkDatabase.class).to(TouchDBMarkDatabase.class);
 
@@ -58,9 +58,8 @@ public class ImplModule implements Module {
         binder.bind(IRaceDatabase.class).to(TouchDBRaceDatabase.class);
 
         binder.bind(IMainController.class).to(MainController.class).in(Scopes.SINGLETON);
-        binder.bind(IPersonController.class).to(PersonController.class);
-        binder.bind(IAccountController.class).to(AccountController.class);
-
+        binder.bind(IPersonController.class).to(PersonController.class).in(Scopes.SINGLETON);
+        binder.bind(IAccountController.class).to(AccountController.class).in(Scopes.SINGLETON);
 
         binder.bind(String.class).annotatedWith(Names.named("databaseOfAccount")).toInstance("seapal_account_db");
         binder.bind(String.class).annotatedWith(Names.named("databaseOfPerson")).toInstance("seapal_person_db");

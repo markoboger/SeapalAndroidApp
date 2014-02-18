@@ -64,26 +64,23 @@ public class TouchDBHelper {
             e.printStackTrace();
         }
 
+        Log.i(TAG, "A");
         HttpClient h = new CBLiteHttpClient(server);
 
+        Log.i(TAG, "B");
         dbInstance = new StdCouchDbInstance(h);
 
 
+        Log.i(TAG, "C");
         // create a local database
         couchDbConnector = dbInstance.createConnector(DATABASE_NAME, true);
 
-
-        if (server != null) {
-            try {
-                tdDB = server.getDatabase(DATABASE_NAME);
-            } catch (CouchbaseLiteException e) {
-                e.printStackTrace();
-            }
-        }
-
+        Log.i(TAG, "D");
 
         pullFromDatabase();
+        Log.i(TAG, "E");
         pushToDatabase();
+        Log.i(TAG, "F");
 
 
     }
