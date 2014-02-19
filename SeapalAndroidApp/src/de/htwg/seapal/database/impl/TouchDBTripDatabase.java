@@ -3,6 +3,9 @@ package de.htwg.seapal.database.impl;
 import android.content.Context;
 import android.util.Log;
 
+import com.couchbase.lite.CouchbaseLiteException;
+import com.couchbase.lite.Database;
+import com.couchbase.lite.View;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -17,6 +20,8 @@ import java.util.List;
 import java.util.UUID;
 
 import de.htwg.seapal.database.ITripDatabase;
+import de.htwg.seapal.database.impl.views.OwnView;
+import de.htwg.seapal.database.impl.views.SingleDocumentView;
 import de.htwg.seapal.model.ITrip;
 import de.htwg.seapal.model.ModelDocument;
 import de.htwg.seapal.model.impl.Trip;
@@ -30,6 +35,7 @@ public class TouchDBTripDatabase extends CouchDbRepositorySupport<Trip> implemen
 
     private final CouchDbConnector connector;
     private final TouchDBHelper dbHelper;
+    private final Database database;
 
     @Inject
     public TouchDBTripDatabase(@Named("tripCouchDbConnector") TouchDBHelper helper, Context ctx) {
@@ -37,8 +43,24 @@ public class TouchDBTripDatabase extends CouchDbRepositorySupport<Trip> implemen
         super.initStandardDesignDocument();
         dbHelper = helper;
         connector = dbHelper.getCouchDbConnector();
+
+        database = dbHelper.getTDDatabase();
+
         DesignDocument d = super.getDesignDocumentFactory().generateFrom(this);
         Log.i(TAG, "Views = " + d.getViews());
+
+
+        View singleDoc = database.getView(String.format("%s/%s", "Trip", "singleDocument"));
+        singleDoc.setMap(new SingleDocumentView(), "1");
+
+        View ownDoc = database.getView(String.format("%s/%s", "Trip", "own"));
+        ownDoc.setMap(new OwnView(), "1");
+        try {
+            singleDoc.updateIndex();
+            ownDoc.updateIndex();
+        } catch (CouchbaseLiteException e) {
+            e.printStackTrace();
+        }
 
     }
 

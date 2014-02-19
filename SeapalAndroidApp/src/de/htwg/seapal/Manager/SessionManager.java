@@ -39,6 +39,8 @@ public class SessionManager {
     // Email address (make variable public to access from outside)
     public static final String KEY_EMAIL = "email";
 
+    // Session Cookie
+    public static final String KEY_SESSION_COOKIE = "session_cookie";
     // Constructor
     @Inject
     public SessionManager(Context context){
@@ -50,7 +52,9 @@ public class SessionManager {
     /**
      * Create login session
      * */
-    public void createLoginSession(String name, String email){
+    public void createLoginSession(String sessionKey, String name, String email){
+
+
         // Storing login value as TRUE
         editor.putBoolean(IS_LOGIN, true);
 
@@ -59,6 +63,10 @@ public class SessionManager {
 
         // Storing email in pref
         editor.putString(KEY_EMAIL, email);
+
+        // Storing email in pref
+        editor.putString(KEY_SESSION_COOKIE, sessionKey);
+
 
         // commit changes
         editor.commit();
@@ -71,10 +79,11 @@ public class SessionManager {
      * */
     public boolean checkLogin(){
         // Check login status
-        if(!this.isLoggedIn()){
-            return true;
-        }
-        return false;
+        return this.isLoggedIn();
+    }
+
+    public String getSession() {
+        return pref.getString(KEY_SESSION_COOKIE, "");
     }
 
 

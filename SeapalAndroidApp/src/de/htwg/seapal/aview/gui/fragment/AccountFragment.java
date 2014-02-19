@@ -19,10 +19,10 @@ import org.apache.commons.lang.StringUtils;
 
 import de.htwg.seapal.Manager.SessionManager;
 import de.htwg.seapal.R;
-import de.htwg.seapal.aview.gui.fragment.listener.account.AccountLoginListener;
-import de.htwg.seapal.aview.gui.fragment.listener.account.AccountSignupListener;
 import de.htwg.seapal.controller.IAccountController;
 import de.htwg.seapal.controller.IMainController;
+import de.htwg.seapal.model.IAccount;
+import de.htwg.seapal.model.impl.Account;
 import de.htwg.seapal.model.impl.SignupAccount;
 import roboguice.RoboGuice;
 
@@ -41,15 +41,6 @@ public class AccountFragment extends Fragment {
 
     @Inject
     private SessionManager sessionManager;
-
-    @Inject
-    private Injector injector;
-
-    @Inject
-    private AccountLoginListener loginListener;
-
-    @Inject
-    private AccountSignupListener signupListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -82,8 +73,6 @@ public class AccountFragment extends Fragment {
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-
 
 
         TextView usernameText = (TextView) view.findViewById(R.id.account_loggedin_username);
@@ -155,7 +144,28 @@ public class AccountFragment extends Fragment {
 
         View account_login = view.findViewById(R.id.account_login);
         if (account_login != null) {
-            account_login.setOnClickListener(loginListener);
+            account_login.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    EditText email = (EditText) view.findViewById(R.id.account_username);
+                    EditText password = (EditText) view.findViewById(R.id.account_password);
+
+                    if (accountController.accountExists(email.getText().toString())) {
+                        Account aLogin = new Account();
+                        aLogin.setEmail(email.getText().toString());
+                        aLogin.setPassword(password.getText().toString());
+                        IAccount authenticated = accountController.authenticate(aLogin);
+                        if (authenticated != null) {
+                            sessionManager.createLoginSession(authenticated.getUUID().toString(),authenticated.getEmail(), authenticated.getEmail());
+                            Toast.makeText(getActivity(), "successfully logged in", Toast.LENGTH_LONG).show();
+
+                        }
+
+
+                    }
+
+                }
+            });
 
         }
     }

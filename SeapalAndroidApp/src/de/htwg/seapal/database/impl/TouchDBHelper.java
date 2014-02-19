@@ -10,16 +10,20 @@ import com.couchbase.lite.Manager;
 import com.couchbase.lite.ektorp.CBLiteHttpClient;
 import com.google.inject.Inject;
 
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.ObjectReader;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ReplicationCommand;
+import org.ektorp.ViewResult;
 import org.ektorp.http.HttpClient;
 import org.ektorp.impl.StdCouchDbInstance;
 import org.ektorp.impl.StdObjectMapperFactory;
 
 import java.io.File;
 import java.io.IOException;
-
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class TouchDBHelper {
@@ -111,6 +115,23 @@ public class TouchDBHelper {
 
         dbInstance.replicate(pullReplicationCommand);
 
+    }
+
+    public <T> List<T> mapViewResultTo(ViewResult viewResult, Class<T> clazz) {
+        List<T> list = new ArrayList<T>();
+        if (viewResult.getTotalRows() > 0) {
+            for (ViewResult.Row row: viewResult.getRows()){
+                ObjectMapper mapper = objectMapper;
+                ObjectReader reader = mapper.reader(clazz);
+                JsonNode valueAsNode =  row.getValueAsNode();
+                try {
+                    list.add((T) reader.readValue(valueAsNode));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return list;
     }
 
     public void pushToDatabase() {

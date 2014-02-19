@@ -13,6 +13,10 @@ public class OwnView implements Mapper {
     @Override
     public void map(Map<String, Object> stringObjectMap, Emitter emitter) {
         Object owner = stringObjectMap.get("owner");
+        if (owner != null) {
+            emitter.emit(owner, stringObjectMap);
+
+        }
 
     }
 }

@@ -21,6 +21,7 @@ import com.google.inject.Inject;
 
 import java.util.UUID;
 
+import de.htwg.seapal.Manager.SessionManager;
 import de.htwg.seapal.R;
 import de.htwg.seapal.controller.IMainController;
 import de.htwg.seapal.model.impl.Waypoint;
@@ -50,6 +51,10 @@ public class TrackingService extends RoboService implements LocationListener {
     private boolean canGetLocation = false;
     @Inject
     private IMainController mainController;
+
+    @Inject
+    private SessionManager sessionManager;
+
     private UUID mTrip;
     private Location location; // location
     private double latitude; // latitude
@@ -197,7 +202,7 @@ public class TrackingService extends RoboService implements LocationListener {
         wp.setDate(System.currentTimeMillis());
         wp.setLatitude(location.getLatitude());
         wp.setLongitude(location.getLongitude());
-        mainController.creatDocument("waypoint",wp, "");
+        mainController.creatDocument("waypoint",wp, sessionManager.getSession());
 
         Intent intent = new Intent(WAYPOINT_BROADCAST_RECEIVER);
         intent.putExtra(LAT_LNG, new LatLng(location.getLatitude(), location.getLongitude()));

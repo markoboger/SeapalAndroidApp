@@ -17,10 +17,12 @@ import android.widget.Toast;
 
 import com.google.inject.Inject;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+import de.htwg.seapal.Manager.SessionManager;
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.activity.TripActivity;
 import de.htwg.seapal.aview.gui.adapter.TripListAdapter;
@@ -28,6 +30,7 @@ import de.htwg.seapal.controller.IMainController;
 import de.htwg.seapal.model.IBoat;
 import de.htwg.seapal.model.IModel;
 import de.htwg.seapal.model.ITrip;
+import de.htwg.seapal.model.impl.Boat;
 import de.htwg.seapal.model.impl.Trip;
 import roboguice.fragment.RoboListFragment;
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
@@ -46,6 +49,8 @@ public class TripListFragment  extends RoboListFragment implements  AdapterView.
 
     @Inject
     private IMainController mainController;
+    @Inject
+    private SessionManager sessionManager;
 
     private int mCurrentPosition;
     private UUID mCurrentUUID;
@@ -81,7 +86,7 @@ public class TripListFragment  extends RoboListFragment implements  AdapterView.
 
 
         tripList = new LinkedList<IModel>();
-        TripListAdapter adapter = new TripListAdapter(getActivity(), tripList, mainController);
+        TripListAdapter adapter = new TripListAdapter(getActivity(), tripList);
         setListAdapter(adapter);
 
 
@@ -114,13 +119,17 @@ public class TripListFragment  extends RoboListFragment implements  AdapterView.
 
     public void updateTripView(int position, UUID uuid) {
         if (uuid != null) {
-            IBoat b = (IBoat) mainController.getSingleDocument("boat", "", uuid);
-            if (b != null) {
-                tripList.clear();
-                tripList.addAll(mainController.getByParent("trip", "boat", "", b.getUUID()));
-                notifyListAdapter();
-                mCurrentPosition = position;
-                mCurrentUUID = uuid;
+
+            Collection<Boat> boats = (Collection<Boat>) mainController.getSingleDocument("boat", sessionManager.getSession(), uuid);
+            if (!boats.isEmpty() && boats.iterator().hasNext()) {
+                IBoat b = boats.iterator().next();
+                if (b != null) {
+                    tripList.clear();
+                    tripList.addAll(mainController.getByParent("trip", "boat", sessionManager.getSession(), b.getUUID()));
+                    notifyListAdapter();
+                    mCurrentPosition = position;
+                    mCurrentUUID = uuid;
+                }
             }
         }
     }
@@ -128,7 +137,7 @@ public class TripListFragment  extends RoboListFragment implements  AdapterView.
     public void deleteTrip(int listPosition)  {
         TripListAdapter listAdapter = (TripListAdapter) getListView().getAdapter();
         Trip trip = (Trip) listAdapter.getItem(listPosition);
-        mainController.deleteDocument("trip", "", trip.getUUID());
+        mainController.deleteDocument("trip", sessionManager.getSession(), trip.getUUID());
 //        tripController.deleteTrip(uuid);
         listAdapter.remove(trip);
         notifyListAdapter();
@@ -185,7 +194,7 @@ public class TripListFragment  extends RoboListFragment implements  AdapterView.
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                ITrip trip = (ITrip) mainController.creatDocument("trip", new Trip(), "");
+                ITrip trip = (ITrip) mainController.creatDocument("trip", new Trip(), sessionManager.getSession());
                 tripList.add(trip);
 
                 Intent intent = new Intent(getActivity(),

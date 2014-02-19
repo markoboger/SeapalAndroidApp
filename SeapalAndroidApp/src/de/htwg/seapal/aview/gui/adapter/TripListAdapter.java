@@ -11,7 +11,6 @@ import android.widget.TextView;
 import java.util.List;
 
 import de.htwg.seapal.R;
-import de.htwg.seapal.controller.IMainController;
 import de.htwg.seapal.model.IModel;
 import de.htwg.seapal.model.ITrip;
 
@@ -19,12 +18,9 @@ public class TripListAdapter extends ArrayAdapter<IModel> {
 
 	private final List<IModel> trips;
 
-	private final IMainController controller;
 
-	public TripListAdapter(Context context, List<IModel> items,
-                           IMainController controller) {
+	public TripListAdapter(Context context, List<IModel> items) {
 		super(context, R.layout.triplistadapter, items);
-		this.controller = controller;
 		this.trips = items;
 	}
 

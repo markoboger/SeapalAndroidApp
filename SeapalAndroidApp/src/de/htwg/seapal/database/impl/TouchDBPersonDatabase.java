@@ -3,6 +3,9 @@ package de.htwg.seapal.database.impl;
 import android.content.Context;
 import android.util.Log;
 
+import com.couchbase.lite.CouchbaseLiteException;
+import com.couchbase.lite.Database;
+import com.couchbase.lite.View;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -17,6 +20,8 @@ import java.util.List;
 import java.util.UUID;
 
 import de.htwg.seapal.database.IPersonDatabase;
+import de.htwg.seapal.database.impl.views.OwnView;
+import de.htwg.seapal.database.impl.views.SingleDocumentView;
 import de.htwg.seapal.model.IPerson;
 import de.htwg.seapal.model.ModelDocument;
 import de.htwg.seapal.model.impl.Person;
@@ -26,6 +31,7 @@ import roboguice.inject.ContextSingleton;
 public class TouchDBPersonDatabase extends CouchDbRepositorySupport<Person> implements IPersonDatabase {
 
     private static final String TAG = "person-TouchDB";
+    private final Database database;
 
     private CouchDbConnector connector;
 
@@ -35,10 +41,22 @@ public class TouchDBPersonDatabase extends CouchDbRepositorySupport<Person> impl
         super(Person.class, helper.getCouchDbConnector(), "Person");
         super.initStandardDesignDocument();
         connector = helper.getCouchDbConnector();
+        database = helper.getTDDatabase();
 
         DesignDocument d = super.getDesignDocumentFactory().generateFrom(this);
         Log.i(TAG, "Views = " + d.getViews());
 
+        View singleDoc = database.getView(String.format("%s/%s", "Person", "singleDocument"));
+        singleDoc.setMap(new SingleDocumentView(), "1");
+
+        View ownDoc = database.getView(String.format("%s/%s", "Person", "own"));
+        ownDoc.setMap(new OwnView(), "1");
+        try {
+            singleDoc.updateIndex();
+            ownDoc.updateIndex();
+        } catch (CouchbaseLiteException e) {
+            e.printStackTrace();
+        }
 
     }
 

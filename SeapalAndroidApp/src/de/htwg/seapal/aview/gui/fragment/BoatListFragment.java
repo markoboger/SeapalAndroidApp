@@ -20,6 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import java.util.List;
 import java.util.UUID;
 
+import de.htwg.seapal.Manager.SessionManager;
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.activity.LogbookTabsActivity;
 import de.htwg.seapal.controller.IMainController;
@@ -45,6 +46,8 @@ public class BoatListFragment extends RoboListFragment {
     @Inject
     private IMainController mainController;
 
+    @Inject
+    private SessionManager sessionManager;
     /**
      * boatList ist used by the ListAdapter to handle the list of boats
      */
@@ -83,7 +86,7 @@ public class BoatListFragment extends RoboListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        boatList = (List<IBoat>) mainController.getDocuments("boat", "", "all");
+        boatList = (List<IBoat>) mainController.getDocuments("boat", sessionManager.getSession(), "all");
         final int layout = R.layout.boat_list_view;
 
 
@@ -178,7 +181,8 @@ public class BoatListFragment extends RoboListFragment {
         super.onListItemClick(l, v, position, id);
         // Notify the parent activity of selected item
         IBoat boat = (IBoat) l.getAdapter().getItem(position);
-        mBoatSelectedCallback.onBoatSelected(position, boat.getUUID());
+        UUID boatUuid = boat.getUUID();
+        mBoatSelectedCallback.onBoatSelected(position, boatUuid);
         mPosition = position;
         mSelectedView = v;
         v.setSelected(true);
@@ -195,7 +199,7 @@ public class BoatListFragment extends RoboListFragment {
      * which is used in the list-adapter
      */
     public void onNewBoat() {
-        IBoat boat = (IBoat) mainController.creatDocument("boat", new Boat(), "");
+        IBoat boat = (IBoat) mainController.creatDocument("boat", new Boat(), sessionManager.getSession());
         boatList.add(boat);
         notifyListAdapter();
         getListView().setSelection(boatList.size());
@@ -212,7 +216,7 @@ public class BoatListFragment extends RoboListFragment {
         if (mPosition >= 0) {
             IBoat boat = (IBoat) getListAdapter().getItem(mPosition);
             boatList.remove(mPosition);
-            mainController.deleteDocument("boat", "", boat.getUUID());
+            mainController.deleteDocument("boat", sessionManager.getSession(), boat.getUUID());
             notifyListAdapter();
             getListView().setSelection(mPosition);
             Toast.makeText(getActivity(), "Boat Deleted",
@@ -233,7 +237,7 @@ public class BoatListFragment extends RoboListFragment {
         Boat boat = (Boat) boatViewFragment.getBoatFromCurrentView();
         if (mPosition >= 0) {
             boatList.set(mPosition, boat);
-            mainController.creatDocument("boat", boat, "");
+            mainController.creatDocument("boat", boat, sessionManager.getSession());
             notifyListAdapter();
             Toast.makeText(getActivity(), "Boat Saved",
                     Toast.LENGTH_SHORT).show();

@@ -14,11 +14,14 @@ import com.google.inject.Inject;
 
 import org.apache.commons.lang.StringUtils;
 
+import java.util.Collection;
 import java.util.UUID;
 
+import de.htwg.seapal.Manager.SessionManager;
 import de.htwg.seapal.R;
 import de.htwg.seapal.controller.IMainController;
 import de.htwg.seapal.model.IBoat;
+import de.htwg.seapal.model.IModel;
 import roboguice.fragment.RoboFragment;
 
 /**
@@ -35,6 +38,9 @@ public class LogbookSlideFragment extends RoboFragment {
 
     @Inject
     private IMainController mainController;
+
+    @Inject
+    private SessionManager sessionManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -55,21 +61,24 @@ public class LogbookSlideFragment extends RoboFragment {
     }
 
     public void updateBoatView(int position, UUID uuid) {
-        IBoat boat = (IBoat) mainController.getSingleDocument("boat", "", uuid);
-        String boatName = boat.getName();
-        if (StringUtils.isEmpty(boatName)) {
-            mPager.setCurrentItem(BOAT_VIEW_FRAGMENT);
-        } else {
-            mPager.setCurrentItem(TRIP_LIST_FRAGMENT);
+        Collection<? extends IModel> l = mainController.getSingleDocument("boat", sessionManager.getSession(), uuid);
+        if (!l.isEmpty() && l.iterator().hasNext()) {
+            IBoat boat = (IBoat) l.iterator().next();
+            String boatName = boat.getName();
+            if (StringUtils.isEmpty(boatName)) {
+                mPager.setCurrentItem(BOAT_VIEW_FRAGMENT);
+            } else {
+                mPager.setCurrentItem(TRIP_LIST_FRAGMENT);
 
-        }
-        if (mBoatViewFragment != null) {
-            mBoatViewFragment.updateBoatView(position, uuid);
-        }
-        if (mTripListFragment != null) {
-            mTripListFragment.updateTripView(position, uuid);
+            }
+            if (mBoatViewFragment != null) {
+                mBoatViewFragment.updateBoatView(position, uuid);
+            }
+            if (mTripListFragment != null) {
+                mTripListFragment.updateTripView(position, uuid);
 
 
+            }
         }
 
     }

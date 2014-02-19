@@ -7,11 +7,14 @@ import android.view.ViewGroup;
 
 import com.google.inject.Inject;
 
+import java.util.Collection;
 import java.util.UUID;
 
+import de.htwg.seapal.Manager.SessionManager;
 import de.htwg.seapal.R;
 import de.htwg.seapal.controller.IMainController;
 import de.htwg.seapal.model.IBoat;
+import de.htwg.seapal.model.impl.Boat;
 import de.htwg.seapal.utils.seapal.BoatUtils;
 import roboguice.fragment.RoboFragment;
 
@@ -27,6 +30,9 @@ public class BoatViewFragment extends RoboFragment {
 
     @Inject
     private IMainController mainController;
+
+    @Inject
+    private SessionManager sessionManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,18 +69,27 @@ public class BoatViewFragment extends RoboFragment {
 
     public void updateBoatView(int position, UUID uuid) {
         if (uuid != null) {
-            IBoat b = (IBoat) mainController.getSingleDocument("boat","", uuid);
-            if (b != null) {
-                BoatUtils.setViewFromBoat(getActivity(), b);
+            Collection<Boat> boats = (Collection<Boat>) mainController.getSingleDocument("boat", sessionManager.getSession(), uuid);
+            if (!boats.isEmpty() && boats.iterator().hasNext()) {
+                IBoat b = boats.iterator().next();
+                if (b != null) {
+                    BoatUtils.setViewFromBoat(getActivity(), b);
 
-                mCurrentPosition = position;
-                mCurrentUUID = uuid;
+                    mCurrentPosition = position;
+                    mCurrentUUID = uuid;
+                }
             }
         }
     }
 
     public IBoat getBoatFromCurrentView() {
-        IBoat b = (IBoat) mainController.getSingleDocument("boat","", mCurrentUUID);
-        return BoatUtils.convertViewToBoat(getView(), b);
+        Collection<Boat> boats = (Collection<Boat>) mainController.getSingleDocument("boat", sessionManager.getSession(), mCurrentUUID);
+        if (!boats.isEmpty() && boats.iterator().hasNext()) {
+            IBoat b = boats.iterator().next();
+            if (b != null) {
+                return BoatUtils.convertViewToBoat(getView(), b);
+            }
+        }
+        return null;
     }
 }

@@ -39,7 +39,6 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
-import com.couchbase.lite.router.URLStreamHandlerFactory;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -60,6 +59,7 @@ import org.apache.commons.lang.StringUtils;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -67,6 +67,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import de.htwg.seapal.Manager.SessionManager;
 import de.htwg.seapal.R;
 import de.htwg.seapal.Services.TrackingService;
 import de.htwg.seapal.aview.gui.fragment.MapDialogFragment;
@@ -116,6 +117,9 @@ public class MapActivity extends BaseDrawerActivity
 
     @Inject
     private IMainController mainController;
+
+    @Inject
+    private SessionManager sessionManager;
 
     // Drawer fields
     @InjectView(R.id.drawer_menu_drawer_list_right)
@@ -532,20 +536,23 @@ public class MapActivity extends BaseDrawerActivity
     private void stopTracking() {
         if (trackingService != null) {
             UUID tripUuid = UUID.fromString(trackingService.getStringExtra(TrackingService.TRIP_UUID));
-            Trip t = (Trip) mainController.getSingleDocument("trip", "", tripUuid);
-            t.setEndDate(System.currentTimeMillis());
-            mainController.creatDocument("trip", t, "");
+            Collection<Trip> trips = (Collection<Trip>) mainController.getSingleDocument("trip", sessionManager.getSession(), tripUuid);
+            if (trips.iterator().hasNext()) {
+                Trip t = trips.iterator().next();
+                t.setEndDate(System.currentTimeMillis());
+                mainController.creatDocument("trip", t, sessionManager.getSession());
 
-            SharedPreferences s = getSharedPreferences(TripActivity.TRIP_PREFS, 0);
-            SharedPreferences.Editor editor = s.edit();
-            editor.commit();
+                SharedPreferences s = getSharedPreferences(TripActivity.TRIP_PREFS, 0);
+                SharedPreferences.Editor editor = s.edit();
+                editor.commit();
 
-            unregisterReceiver(waypointBroadcastReceiver);
-            WaypointDrawingMapPlugin w = (WaypointDrawingMapPlugin) getMapPlugin("waypoint_tracking_map_plugin");
-            w.zoomTo(map);
-            unregisterMapPlugin("waypoint_tracking_map_plugin");
-            stopService(trackingService);
-            trackingService = null;
+                unregisterReceiver(waypointBroadcastReceiver);
+                WaypointDrawingMapPlugin w = (WaypointDrawingMapPlugin) getMapPlugin("waypoint_tracking_map_plugin");
+                w.zoomTo(map);
+                unregisterMapPlugin("waypoint_tracking_map_plugin");
+                stopService(trackingService);
+                trackingService = null;
+            }
         } else {
             Toast.makeText(getApplicationContext(), "Tracking not Started", Toast.LENGTH_SHORT).show();
         }
@@ -557,14 +564,15 @@ public class MapActivity extends BaseDrawerActivity
         final String boatString = s.getString(LogbookTabsActivity.LOGBOOK_BOAT_FAVOURED, "");
         if (!StringUtils.isEmpty(boatString) && trackingService == null) {
 
-            UUID boat = UUID.fromString(boatString);
             Trip t = new Trip();
             t.setStartDate(System.currentTimeMillis());
             t.setName(RandomStringUtils.random(12));
-            t = (Trip) mainController.creatDocument("trip", t, "");
+            t = (Trip) mainController.creatDocument("trip", t, sessionManager.getSession());
+            t.setBoat(boatString);
 
             trackingService = new Intent(this, TrackingService.class);
-            trackingService.putExtra(TrackingService.TRIP_UUID, t.getUUID());
+            UUID tripUuid = t.getUUID();
+            trackingService.putExtra(TrackingService.TRIP_UUID, tripUuid.toString());
 
             registerReceiver(waypointBroadcastReceiver, new IntentFilter(TrackingService.WAYPOINT_BROADCAST_RECEIVER));
             registerMapPlugin("waypoint_tracking_map_plugin", new WaypointDrawingMapPlugin(map,"#345212"));
