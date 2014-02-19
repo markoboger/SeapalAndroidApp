@@ -12,6 +12,7 @@ import com.google.inject.name.Named;
 import org.ektorp.AttachmentInputStream;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.DocumentNotFoundException;
+import org.ektorp.ViewResult;
 import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.DesignDocument;
 
@@ -19,7 +20,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -45,7 +45,6 @@ public class TouchDBMarkDatabase extends CouchDbRepositorySupport<Mark> implemen
     @Inject
     public TouchDBMarkDatabase(@Named("markCouchDbConnector") TouchDBHelper helper, Context ctx) {
         super(Mark.class, helper.getCouchDbConnector());
-        super.initStandardDesignDocument();
         dbHelper = helper;
         connector = dbHelper.getCouchDbConnector();
         database = dbHelper.getTDDatabase();
@@ -118,11 +117,9 @@ public class TouchDBMarkDatabase extends CouchDbRepositorySupport<Mark> implemen
 
     @Override
     public List<? extends IMark> queryViews(final String viewName, final String key) {
-        try {
-            return super.queryView(viewName, key);
-        } catch (DocumentNotFoundException e) {
-            return new ArrayList<Mark>();
-        }
+        ViewResult vr = db.queryView(createQuery(viewName).key(key));
+        List<Mark> marks = dbHelper.mapViewResultTo(vr, Mark.class);
+        return marks;
     }
 
     @Override

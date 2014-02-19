@@ -11,10 +11,10 @@ import com.google.inject.name.Named;
 
 import org.ektorp.CouchDbConnector;
 import org.ektorp.DocumentNotFoundException;
+import org.ektorp.ViewResult;
 import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.DesignDocument;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -40,7 +40,6 @@ public class TouchDBRouteDatabase extends CouchDbRepositorySupport<Route> implem
     @Inject
     public TouchDBRouteDatabase(@Named("routeCouchDbConnector") TouchDBHelper helper, Context ctx) {
         super(Route.class, helper.getCouchDbConnector());
-        super.initStandardDesignDocument();
         dbHelper = helper;
         database = helper.getTDDatabase();
         connector = dbHelper.getCouchDbConnector();
@@ -121,11 +120,9 @@ public class TouchDBRouteDatabase extends CouchDbRepositorySupport<Route> implem
 
     @Override
     public List<Route> queryView(final String viewName, final String key) {
-        try {
-            return super.queryView(viewName, key);
-        } catch (DocumentNotFoundException e) {
-            return new ArrayList<Route>();
-        }
+        ViewResult vr = db.queryView(createQuery(viewName).key(key));
+        List<Route> routes = dbHelper.mapViewResultTo(vr, Route.class);
+        return routes;
     }
 
     @Override

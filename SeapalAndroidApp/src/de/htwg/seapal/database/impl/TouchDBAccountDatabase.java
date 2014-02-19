@@ -40,7 +40,6 @@ public class TouchDBAccountDatabase extends CouchDbRepositorySupport<Account> im
     @Inject
     public TouchDBAccountDatabase(@Named("accountCouchDbConnector") TouchDBHelper helper, Context ctx) {
         super(Account.class, helper.getCouchDbConnector());
-        initStandardDesignDocument();
         dbHelper = helper;
         couchDbConnector = dbHelper.getCouchDbConnector();
         database = dbHelper.getTDDatabase();
@@ -120,7 +119,7 @@ public class TouchDBAccountDatabase extends CouchDbRepositorySupport<Account> im
 
     @Override
     public List<? extends IAccount> queryViews(String viewName, String key) {
-        ViewResult vr = db.queryView(createQuery(viewName).key(key).queryParam("debug", "true"));
+        ViewResult vr = db.queryView(createQuery(viewName).key(key));
         List<Account> accounts = dbHelper.mapViewResultTo(vr, Account.class);
         return accounts;
     }

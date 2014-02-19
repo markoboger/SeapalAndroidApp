@@ -1,7 +1,6 @@
 package de.htwg.seapal.database.impl;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -9,7 +8,6 @@ import com.google.inject.name.Named;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.DocumentNotFoundException;
 import org.ektorp.support.CouchDbRepositorySupport;
-import org.ektorp.support.DesignDocument;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -35,11 +33,7 @@ public class TouchDBRaceDatabase extends CouchDbRepositorySupport<_Race> impleme
     @Inject
     protected TouchDBRaceDatabase(@Named("raceCouchDbConnector") TouchDBHelper helper, Context ctx) {
         super(_Race.class, helper.getCouchDbConnector());
-        super.initStandardDesignDocument();
         connector = helper.getCouchDbConnector();
-
-        DesignDocument d = super.getDesignDocumentFactory().generateFrom(this);
-        Log.i(TAG, "Views = " + d.getViews());
 
     }
 

@@ -11,10 +11,10 @@ import com.google.inject.name.Named;
 
 import org.ektorp.CouchDbConnector;
 import org.ektorp.DocumentNotFoundException;
+import org.ektorp.ViewResult;
 import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.DesignDocument;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -32,6 +32,7 @@ public class TouchDBPersonDatabase extends CouchDbRepositorySupport<Person> impl
 
     private static final String TAG = "person-TouchDB";
     private final Database database;
+    private final TouchDBHelper dbHelper;
 
     private CouchDbConnector connector;
 
@@ -39,9 +40,9 @@ public class TouchDBPersonDatabase extends CouchDbRepositorySupport<Person> impl
     @Inject
     public TouchDBPersonDatabase(@Named("personCouchDbConnector") TouchDBHelper helper, Context ctx) {
         super(Person.class, helper.getCouchDbConnector(), "Person");
-        super.initStandardDesignDocument();
         connector = helper.getCouchDbConnector();
         database = helper.getTDDatabase();
+        dbHelper = helper;
 
         DesignDocument d = super.getDesignDocumentFactory().generateFrom(this);
         Log.i(TAG, "Views = " + d.getViews());
@@ -113,11 +114,9 @@ public class TouchDBPersonDatabase extends CouchDbRepositorySupport<Person> impl
 
     @Override
     public List<? extends IPerson> queryViews(final String viewName, final String key) {
-        try {
-            return queryView(viewName, key);
-        } catch (DocumentNotFoundException e) {
-            return new ArrayList<Person>();
-        }
+        ViewResult vr = db.queryView(createQuery(viewName).key(key));
+        List<Person> persons = dbHelper.mapViewResultTo(vr, Person.class);
+        return persons;
     }
 
     @Override

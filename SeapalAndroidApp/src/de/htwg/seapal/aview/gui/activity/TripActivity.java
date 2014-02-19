@@ -21,14 +21,16 @@ import com.google.inject.Inject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+import de.htwg.seapal.Manager.SessionManager;
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.adapter.WaypointListAdapter;
 import de.htwg.seapal.controller.IMainController;
-import de.htwg.seapal.model.ITrip;
 import de.htwg.seapal.model.IWaypoint;
+import de.htwg.seapal.model.impl.Trip;
 import de.htwg.seapal.utils.observer.Event;
 import de.htwg.seapal.utils.observer.IObserver;
 
@@ -38,6 +40,9 @@ public class TripActivity extends BaseDrawerActivity implements IObserver {
 
     @Inject
     private IMainController mainController;
+
+    @Inject
+    private SessionManager sessionManager;
 
 	private UUID trip;
 
@@ -65,7 +70,7 @@ public class TripActivity extends BaseDrawerActivity implements IObserver {
 		Bundle extras = getIntent().getExtras();
 		trip = UUID.fromString(extras.getString("trip"));
         waypointList = new ArrayList<UUID>();
-        waypoints = (List<IWaypoint>) mainController.getByParent("waypoint", "trip", "", trip);
+        waypoints = (List<IWaypoint>) mainController.getByParent("waypoint", "trip",sessionManager.getSession(), trip);
         for (IWaypoint waypoint : waypoints) {
             waypointList.add(waypoint.getUUID());
         }
@@ -91,28 +96,31 @@ public class TripActivity extends BaseDrawerActivity implements IObserver {
 		// if (item.getItemId() == android.R.id.home)
 		// NavUtils.navigateUpFromSameTask(this);
 
-        ITrip iTrip = (ITrip) mainController.getSingleDocument("trip", "", trip);
+        Collection<Trip> trips = (Collection<Trip>) mainController.getSingleDocument("trip", sessionManager.getSession(), trip);
+        if (trips.iterator().hasNext()) {
+            Trip iTrip = trips.iterator().next();
 
-		if (item.getItemId() == R.id.tripmenu_save) {
+            if (item.getItemId() == R.id.tripmenu_save) {
 
-			if (!iTrip.getName() .equals(triptitle.getText().toString()))
-				iTrip.setName(triptitle.getText().toString());
-			if (!iTrip.getFrom().equals(
-                    from.getText().toString()))
-				iTrip.setFrom(from.getText().toString());
-			if (!iTrip.getTo()
-					.equals(to.getText().toString()))
-				iTrip.setTo(to.getText().toString());
-			if (!iTrip.getCrew().equals(crew.getText().toString()))
-				iTrip.setCrew(crew.getText().toString());
+                if (!iTrip.getName() .equals(triptitle.getText().toString()))
+                    iTrip.setName(triptitle.getText().toString());
+                if (!iTrip.getFrom().equals(
+                        from.getText().toString()))
+                    iTrip.setFrom(from.getText().toString());
+                if (!iTrip.getTo()
+                        .equals(to.getText().toString()))
+                    iTrip.setTo(to.getText().toString());
+                if (!iTrip.getCrew().equals(crew.getText().toString()))
+                    iTrip.setCrew(crew.getText().toString());
 
-			if (!iTrip.getNotes().equals(notes.getText().toString()))
-				iTrip.setNotes(notes.getText().toString());
+                if (!iTrip.getNotes().equals(notes.getText().toString()))
+                    iTrip.setNotes(notes.getText().toString());
 
-			// skipper
+                // skipper
 
-			Toast.makeText(this, "Saved Changes", Toast.LENGTH_SHORT).show();
-		}
+                Toast.makeText(this, "Saved Changes", Toast.LENGTH_SHORT).show();
+            }
+        }
 
 		return true;
 	}
@@ -124,51 +132,57 @@ public class TripActivity extends BaseDrawerActivity implements IObserver {
 
 	private void fillText() {
 
-        ITrip iTrip = (ITrip) mainController.getSingleDocument("trip", "", trip);
+        Collection<Trip> trips = (Collection<Trip>) mainController.getSingleDocument("trip", sessionManager.getSession(), trip);
+        if (trips.iterator().hasNext()) {
+            Trip iTrip = trips.iterator().next();
 
-		triptitle.setText(iTrip.getName());
-		from.setText(iTrip.getFrom());
-		to.setText(iTrip.getTo());
-		start.setText(DateFormat.format("yyyy/MM/dd hh:mm",
-				iTrip.getStartDate()));
-		end.setText(DateFormat.format("yyyy/MM/dd hh:mm",
-				iTrip.getEndDate()));
+            triptitle.setText(iTrip.getName());
+            from.setText(iTrip.getFrom());
+            to.setText(iTrip.getTo());
+            start.setText(DateFormat.format("yyyy/MM/dd hh:mm",
+                    iTrip.getStartDate()));
+            end.setText(DateFormat.format("yyyy/MM/dd hh:mm",
+                    iTrip.getEndDate()));
 
-		if (iTrip.getSkipper() == null)
-			skipper.setText("-");
-		else
-			skipper.setText(iTrip.getSkipper().toString());
+            if (iTrip.getSkipper() == null)
+                skipper.setText("-");
+            else
+                skipper.setText(iTrip.getSkipper().toString());
 
-		duration.setText(calcDuration());
-		notes.setText(iTrip.getNotes());
-		crew.setText(iTrip.getCrew());
+            duration.setText(calcDuration());
+            notes.setText(iTrip.getNotes());
+            crew.setText(iTrip.getCrew());
+        }
 
 	}
 
 	private String calcDuration() {
 
-        ITrip iTrip = (ITrip) mainController.getSingleDocument("trip", "", trip);
+        Collection<Trip> trips = (Collection<Trip>) mainController.getSingleDocument("trip", sessionManager.getSession(), trip);
+        if (trips.iterator().hasNext()) {
+            Trip iTrip = trips.iterator().next();
 
+            long l1 = iTrip.getStartDate();
+            long l2 = iTrip.getEndDate();
+            long diff = l2 - l1;
 
-		long l1 = iTrip.getStartDate();
-		long l2 = iTrip.getEndDate();
-		long diff = l2 - l1;
+            long secondInMillis = 1000;
+            long minuteInMillis = secondInMillis * 60;
+            long hourInMillis = minuteInMillis * 60;
+            long dayInMillis = hourInMillis * 24;
 
-		long secondInMillis = 1000;
-		long minuteInMillis = secondInMillis * 60;
-		long hourInMillis = minuteInMillis * 60;
-		long dayInMillis = hourInMillis * 24;
+            long elapsedDays = diff / dayInMillis;
+            diff = diff % dayInMillis;
+            long elapsedHours = diff / hourInMillis;
+            diff = diff % hourInMillis;
+            long elapsedMinutes = diff / minuteInMillis;
+            diff = diff % minuteInMillis;
+            long elapsedSeconds = diff / secondInMillis;
 
-		long elapsedDays = diff / dayInMillis;
-		diff = diff % dayInMillis;
-		long elapsedHours = diff / hourInMillis;
-		diff = diff % hourInMillis;
-		long elapsedMinutes = diff / minuteInMillis;
-		diff = diff % minuteInMillis;
-		long elapsedSeconds = diff / secondInMillis;
-
-		return elapsedDays + "d   " + elapsedHours + "h   " + elapsedMinutes
-				+ "m   " + elapsedSeconds + "s";
+            return elapsedDays + "d   " + elapsedHours + "h   " + elapsedMinutes
+                    + "m   " + elapsedSeconds + "s";
+        }
+        return "";
 	}
 
 	private void initUI() {
@@ -213,8 +227,7 @@ public class TripActivity extends BaseDrawerActivity implements IObserver {
 		mainView.addView(header, 0);
 		ListView waypointListView = (ListView) findViewById(R.id.trip_WaypointList);
 		WaypointListAdapter adapter = new WaypointListAdapter(this,
-                waypointList,
-				mainController);
+                waypointList);
 
 
 		waypointListView.setAdapter(adapter);

@@ -11,17 +11,19 @@ import com.google.inject.name.Named;
 
 import org.ektorp.CouchDbConnector;
 import org.ektorp.DocumentNotFoundException;
+import org.ektorp.ViewResult;
 import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.DesignDocument;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
 import de.htwg.seapal.database.IWaypointDatabase;
+import de.htwg.seapal.database.impl.views.BoatView;
 import de.htwg.seapal.database.impl.views.OwnView;
 import de.htwg.seapal.database.impl.views.SingleDocumentView;
+import de.htwg.seapal.database.impl.views.TripView;
 import de.htwg.seapal.model.IWaypoint;
 import de.htwg.seapal.model.ModelDocument;
 import de.htwg.seapal.model.impl.Waypoint;
@@ -32,11 +34,6 @@ import roboguice.inject.ContextSingleton;
 public class TouchDBWaypointDatabase extends CouchDbRepositorySupport<Waypoint> implements IWaypointDatabase {
 
     private static final String TAG = "Waypoint-TouchDB";
-    private static final String DDOCNAME = "Waypoint";
-    private static final String VIEWNAME = "by_trip";
-    private static final String DATABASE_NAME = "seapal_waypoint_db";
-
-    private static TouchDBWaypointDatabase touchDBWaypointDatabase;
     private final CouchDbConnector connector;
     private final TouchDBHelper dbHelper;
     private final Database database;
@@ -44,7 +41,6 @@ public class TouchDBWaypointDatabase extends CouchDbRepositorySupport<Waypoint> 
     @Inject
     public TouchDBWaypointDatabase(@Named("waypointCouchDbConnector") TouchDBHelper helper, Context ctx) {
         super(Waypoint.class, helper.getCouchDbConnector());
-        super.initStandardDesignDocument();
         dbHelper = helper;
         connector = dbHelper.getCouchDbConnector();
 
@@ -60,9 +56,18 @@ public class TouchDBWaypointDatabase extends CouchDbRepositorySupport<Waypoint> 
 
         View ownDoc = database.getView(String.format("%s/%s", "Waypoint", "own"));
         ownDoc.setMap(new OwnView(), "1");
+
+
+        View boatDoc = database.getView(String.format("%s/%s", "Waypoint", "boat"));
+        boatDoc.setMap(new BoatView(), "1");
+
+        View tripDoc = database.getView(String.format("%s/%s", "Waypoint", "trip"));
+        tripDoc.setMap(new TripView(), "1");
+
         try {
             singleDoc.updateIndex();
             ownDoc.updateIndex();
+            boatDoc.updateIndex();
         } catch (CouchbaseLiteException e) {
             e.printStackTrace();
         }
@@ -123,11 +128,9 @@ public class TouchDBWaypointDatabase extends CouchDbRepositorySupport<Waypoint> 
 
     @Override
     public List<? extends IWaypoint> queryViews(final String viewName, final String key) {
-        try {
-            return super.queryView(viewName, key);
-        } catch (DocumentNotFoundException e) {
-            return new ArrayList<Waypoint>();
-        }
+        ViewResult vr = db.queryView(createQuery(viewName).key(key));
+        List<Waypoint> waypoints = dbHelper.mapViewResultTo(vr, Waypoint.class);
+        return waypoints;
     }
 
     @Override

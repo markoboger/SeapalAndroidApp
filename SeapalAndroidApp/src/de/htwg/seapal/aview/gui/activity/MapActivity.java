@@ -567,8 +567,8 @@ public class MapActivity extends BaseDrawerActivity
             Trip t = new Trip();
             t.setStartDate(System.currentTimeMillis());
             t.setName(RandomStringUtils.random(12));
-            t = (Trip) mainController.creatDocument("trip", t, sessionManager.getSession());
             t.setBoat(boatString);
+            t = (Trip) mainController.creatDocument("trip", t, sessionManager.getSession());
 
             trackingService = new Intent(this, TrackingService.class);
             UUID tripUuid = t.getUUID();

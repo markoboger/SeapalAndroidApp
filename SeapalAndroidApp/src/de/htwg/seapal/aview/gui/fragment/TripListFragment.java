@@ -156,8 +156,8 @@ public class TripListFragment  extends RoboListFragment implements  AdapterView.
     public void onListItemClick(ListView l, View v, int position, long id) {
         Intent intent = new Intent(getActivity(),
                 TripActivity.class);
-        UUID trip = (UUID) l.getAdapter().getItem(position);
-        intent.putExtra("trip", trip.toString());
+        Trip trip = (Trip) l.getAdapter().getItem(position);
+        intent.putExtra("trip", trip.getId());
         getActivity().startActivity(intent);
     }
 
