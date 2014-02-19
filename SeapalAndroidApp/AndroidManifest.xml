@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="de.htwg.seapal"
-    android:versionCode="1"
-    android:versionName="1.0" >
+    xmlns:tools="http://schemas.android.com/tools"
+    package="de.htwg.seapal">
 
     <uses-sdk
         android:minSdkVersion="14"
-        android:targetSdkVersion="19" />
+        android:targetSdkVersion="19"
+        tools:ignore="GradleOverrides" />
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -37,22 +37,6 @@
             android:name="de.htwg.seapal.aview.gui.activity.LogbookTabsActivity"
             android:screenOrientation="landscape">
         </activity>
-        <activity android:name="de.htwg.seapal.aview.tui.activity.MenuActivity" >
-        </activity>
-        <activity android:name="de.htwg.seapal.aview.tui.activity.PersonActivity" >
-        </activity>
-        <activity android:name="de.htwg.seapal.aview.tui.activity.BoatActivity" >
-        </activity>
-        <activity android:name="de.htwg.seapal.aview.tui.activity.TripActivity" >
-        </activity>
-        <activity android:name="de.htwg.seapal.aview.tui.activity.WaypointActivity" >
-        </activity>
-        <activity android:name="de.htwg.seapal.aview.tui.activity.TripRecordActivity" >
-        </activity>
-        <activity android:name="de.htwg.seapal.aview.tui.activity.MarkActivity" >
-        </activity>
-        <activity android:name="de.htwg.seapal.aview.tui.activity.RouteActivity" >
-        </activity>
         <activity android:name="de.htwg.seapal.aview.gui.activity.SearchActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -71,7 +55,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name="de.htwg.seapal.Services.TrackingService"></service>
+        <service android:name="de.htwg.seapal.Services.TrackingService"/>
+
+        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
 
         <meta-data android:name="android.app.default_searchable"
             android:value=".SearchActivity" />

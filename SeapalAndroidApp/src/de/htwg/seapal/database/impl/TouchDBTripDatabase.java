@@ -9,8 +9,7 @@ import com.google.inject.name.Named;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.DocumentNotFoundException;
 import org.ektorp.support.CouchDbRepositorySupport;
-import org.ektorp.support.View;
-import org.ektorp.support.Views;
+import org.ektorp.support.DesignDocument;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -23,11 +22,6 @@ import de.htwg.seapal.model.ModelDocument;
 import de.htwg.seapal.model.impl.Trip;
 import roboguice.inject.ContextSingleton;
 
-@Views({
-        @View(name = "singleDocument", map = "views/singleDocument.js"),
-        @View(name = "own", map = "views/own.js"),
-        @View(name = "boat", map = "views/trip/boat.js")
-})
 @ContextSingleton
 public class TouchDBTripDatabase extends CouchDbRepositorySupport<Trip> implements ITripDatabase {
 
@@ -43,8 +37,8 @@ public class TouchDBTripDatabase extends CouchDbRepositorySupport<Trip> implemen
         super.initStandardDesignDocument();
         dbHelper = helper;
         connector = dbHelper.getCouchDbConnector();
-        Log.i(TAG, "Doc Ids " + super.getDesignDocumentFactory().generateFrom(this).getViews());
-
+        DesignDocument d = super.getDesignDocumentFactory().generateFrom(this);
+        Log.i(TAG, "Views = " + d.getViews());
 
     }
 

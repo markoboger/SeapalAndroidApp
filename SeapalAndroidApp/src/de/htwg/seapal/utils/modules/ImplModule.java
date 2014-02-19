@@ -61,6 +61,7 @@ public class ImplModule implements Module {
         binder.bind(IPersonController.class).to(PersonController.class).in(Scopes.SINGLETON);
         binder.bind(IAccountController.class).to(AccountController.class).in(Scopes.SINGLETON);
 
+
         binder.bind(String.class).annotatedWith(Names.named("databaseOfAccount")).toInstance("seapal_account_db");
         binder.bind(String.class).annotatedWith(Names.named("databaseOfPerson")).toInstance("seapal_person_db");
         binder.bind(String.class).annotatedWith(Names.named("databaseOfBoat")).toInstance("seapal_boat_db");

@@ -141,5 +141,7 @@
     <string name="last_name">your last name</string>
     <string name="account_login_text">Or Login With Credentials</string>
     <string name="account_login">Login</string>
+    <string name="loggin_in_text">You are now logged in as</string>
+    <string name="account_logout">Logout</string>
     <item name="tracking_service_started_text" type="id">Tracking Service Started</item>
 </resources>

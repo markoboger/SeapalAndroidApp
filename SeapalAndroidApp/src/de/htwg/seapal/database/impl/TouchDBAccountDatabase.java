@@ -3,21 +3,25 @@ package de.htwg.seapal.database.impl;
 import android.content.Context;
 import android.util.Log;
 
+import com.couchbase.lite.Database;
+import com.couchbase.lite.View;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.ObjectReader;
 import org.ektorp.CouchDbConnector;
-import org.ektorp.DocumentNotFoundException;
+import org.ektorp.ViewResult;
 import org.ektorp.support.CouchDbRepositorySupport;
-import org.ektorp.support.View;
-import org.ektorp.support.Views;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
 import de.htwg.seapal.database.IAccountDatabase;
+import de.htwg.seapal.database.impl.views.account.ByEmailView;
 import de.htwg.seapal.model.IAccount;
 import de.htwg.seapal.model.ModelDocument;
 import de.htwg.seapal.model.impl.Account;
@@ -26,51 +30,45 @@ import roboguice.inject.ContextSingleton;
 /**
  * Created by jakub on 2/15/14.
  */
-@Views({
-        @View(name = "by_email", map = "views/account/by_email.js"),
-        @View(name = "friends", map = "views/account/friends.js"),
-        @View(name = "this", map = "function(doc) { return emit(doc._id, doc); }"),
-        @View(name = "googleID", map = "views/account/googleID.js"),
-        @View(name = "resetToken", map = "views/account/resetToken.js")
-})
 @ContextSingleton
 public class TouchDBAccountDatabase extends CouchDbRepositorySupport<Account> implements IAccountDatabase {
 
 
     private static final String TAG = "Account-TouchDB";
 
-    private static TouchDBBoatDatabase touchDBBoatDatabase;
+    private static Database database;
     private final CouchDbConnector couchDbConnector;
     private final TouchDBHelper dbHelper;
-
+    public static final String dDocName = "Account";
+    public static final String dDocId = "_design/" + dDocName;
 
     @Inject
     public TouchDBAccountDatabase(@Named("accountCouchDbConnector") TouchDBHelper helper, Context ctx) {
         super(Account.class, helper.getCouchDbConnector());
-        super.initStandardDesignDocument();
+        initStandardDesignDocument();
         dbHelper = helper;
         couchDbConnector = dbHelper.getCouchDbConnector();
+        database = dbHelper.getTDDatabase();
 
+
+        View by_email = database.getView(String.format("%s/%s", dDocName,"by_email"));
+        by_email.setMap(new ByEmailView(), "1");
+
+        Log.i(TAG, "Views = " + dbHelper.getTDDatabase().getAllViews());
     }
 
     @Override
     public IAccount getAccount(String email) {
-        open();
-        List<Account> accounts = queryView("by_email", email);
-        close();
-        if (accounts.size() > 1 || accounts.size() < 1) {
-            return null;
-        } else {
+        List<? extends IAccount> accounts = queryViews("by_email", email);
+        if (accounts.size() == 1) {
             return accounts.get(0);
         }
-
-
+        return null;
     }
 
     @Override
     public boolean open() {
-        Log.i(TAG, "Database connection opened");
-        return true;
+        return false;
     }
 
     @Override
@@ -80,78 +78,51 @@ public class TouchDBAccountDatabase extends CouchDbRepositorySupport<Account> im
 
     @Override
     public boolean save(IAccount iAccount) {
-        Account entity = (Account) iAccount;
-        if (entity.isNew()) {
-            open();
-            entity.setRevision(null);
-            add(entity);
-            close();
-            return true;
-        } else {
-            open();
-            Log.i(TAG, "Updating entity with UUID: " + entity.getUUID());
-            update(entity);
-            close();
-            return false;
-        }
+        return false;
     }
 
     @Override
     public IAccount get(UUID uuid) {
-        try {
-            open();
-            IAccount a = get(uuid.toString());
-            close();
-            return a;
-        } catch (DocumentNotFoundException e) {
-            return null;
-        }
+        return null;
     }
 
     @Override
     public List<IAccount> loadAll() {
-        open();
-        List<IAccount> Accounts = new LinkedList<IAccount>(getAll());
-        Log.i(TAG, "Loaded entities. Count:  " + Accounts.size());
-        close();
-        return Accounts;
-
+        return null;
     }
 
     @Override
     public void delete(UUID uuid) {
-        open();
-        Log.i(TAG, "Removing entity with UUID: " + uuid);
-        remove((Account) get(uuid));
-        close();
-
 
     }
 
     @Override
     public boolean close() {
-        Log.i(TAG, "Closing database");
-        return true;
+        return false;
     }
 
     @Override
     public void create(ModelDocument modelDocument) {
 
-
     }
 
     @Override
     public List<? extends IAccount> queryViews(String viewName, String key) {
-        try {
-            open();
-            initStandardDesignDocument();
-            List<Account> a = queryView(viewName, key);
-            close();
-            return a;
-
-        } catch (DocumentNotFoundException e) {
-            return new ArrayList<Account>();
+        ViewResult vr = db.queryView(createQuery(viewName).key(key));
+        List<Account> accounts = new ArrayList<Account>();
+        if (vr.getTotalRows() > 0) {
+            for (ViewResult.Row row: vr.getRows()){
+                ObjectMapper mapper = dbHelper.getObjectMapper();
+                ObjectReader reader = mapper.reader(Account.class);
+                JsonNode valueAsNode =  row.getValueAsNode();
+                try {
+                    accounts.add((Account) reader.readValue(valueAsNode));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+        return accounts;
     }
 
     @Override

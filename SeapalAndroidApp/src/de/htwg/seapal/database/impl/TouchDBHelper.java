@@ -10,13 +10,16 @@ import com.couchbase.lite.Manager;
 import com.couchbase.lite.ektorp.CBLiteHttpClient;
 import com.google.inject.Inject;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ReplicationCommand;
 import org.ektorp.http.HttpClient;
 import org.ektorp.impl.StdCouchDbInstance;
+import org.ektorp.impl.StdObjectMapperFactory;
 
 import java.io.File;
 import java.io.IOException;
+
 
 
 public class TouchDBHelper {
@@ -26,6 +29,7 @@ public class TouchDBHelper {
     private final String hostDB = "http://192.168.0.107:5984/";
     private StdCouchDbInstance dbInstance;
     private CouchDbConnector couchDbConnector;
+    private ObjectMapper  objectMapper;
     private Database tdDB;
 
 
@@ -33,6 +37,10 @@ public class TouchDBHelper {
     public TouchDBHelper(String dbName, Context ctx) {
         DATABASE_NAME = dbName;
         createDatabase(ctx);
+    }
+
+    public ObjectMapper getObjectMapper() {
+        return objectMapper;
     }
 
     public void createDatabase(Context ctx) {
@@ -59,28 +67,28 @@ public class TouchDBHelper {
         }
 
         try {
-            Database b = server.getDatabase(DATABASE_NAME);
+            tdDB = server.getDatabase(DATABASE_NAME);
         } catch (CouchbaseLiteException e) {
             e.printStackTrace();
         }
 
-        Log.i(TAG, "A");
+
+
         HttpClient h = new CBLiteHttpClient(server);
 
-        Log.i(TAG, "B");
-        dbInstance = new StdCouchDbInstance(h);
+        StdObjectMapperFactory s = new StdObjectMapperFactory();
+        dbInstance = new StdCouchDbInstance(h, s);
 
 
-        Log.i(TAG, "C");
         // create a local database
         couchDbConnector = dbInstance.createConnector(DATABASE_NAME, true);
 
-        Log.i(TAG, "D");
+        objectMapper = s.createObjectMapper(couchDbConnector);
+
 
         pullFromDatabase();
-        Log.i(TAG, "E");
         pushToDatabase();
-        Log.i(TAG, "F");
+        Log.i(TAG, "Doc-Ids" + couchDbConnector.getAllDocIds());
 
 
     }

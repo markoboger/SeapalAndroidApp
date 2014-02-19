@@ -9,8 +9,7 @@ import com.google.inject.name.Named;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.DocumentNotFoundException;
 import org.ektorp.support.CouchDbRepositorySupport;
-import org.ektorp.support.View;
-import org.ektorp.support.Views;
+import org.ektorp.support.DesignDocument;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -26,10 +25,6 @@ import roboguice.inject.ContextSingleton;
 /**
  * Created by jakub on 2/15/14.
  */
-@Views({
-        @View(name = "singleDocument", map = "views/singleDocument.js"),
-        @View(name = "own", map = "views/own.js")
-})
 @ContextSingleton
 public class TouchDBRaceDatabase extends CouchDbRepositorySupport<_Race> implements IRaceDatabase {
 
@@ -43,8 +38,9 @@ public class TouchDBRaceDatabase extends CouchDbRepositorySupport<_Race> impleme
         super.initStandardDesignDocument();
         connector = helper.getCouchDbConnector();
 
+        DesignDocument d = super.getDesignDocumentFactory().generateFrom(this);
+        Log.i(TAG, "Views = " + d.getViews());
 
-        Log.i(TAG, "Doc Ids " + super.getDesignDocumentFactory().generateFrom(this).getViews());
     }
 
     @Override
