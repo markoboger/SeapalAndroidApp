@@ -462,7 +462,7 @@ public class MapActivity extends BaseDrawerActivity
     @Override
     public void onDialogSetRouteClick(DialogFragment dialog) {
         option = SelectedOption.ROUTE;
-        registerMapPlugin("route_drawing_map_plugin",new RouteDrawingMapPlugin(map, crosshairMarker.getPosition()));
+        registerMapPlugin("route_drawing_map_plugin", new RouteDrawingMapPlugin(map, crosshairMarker.getPosition()));
         crosshairMarker.remove();
     }
 
@@ -573,6 +573,7 @@ public class MapActivity extends BaseDrawerActivity
             trackingService = new Intent(this, TrackingService.class);
             UUID tripUuid = t.getUUID();
             trackingService.putExtra(TrackingService.TRIP_UUID, tripUuid.toString());
+            trackingService.putExtra(TrackingService.BOAT_UUID, boatString);
 
             registerReceiver(waypointBroadcastReceiver, new IntentFilter(TrackingService.WAYPOINT_BROADCAST_RECEIVER));
             registerMapPlugin("waypoint_tracking_map_plugin", new WaypointDrawingMapPlugin(map,"#345212"));

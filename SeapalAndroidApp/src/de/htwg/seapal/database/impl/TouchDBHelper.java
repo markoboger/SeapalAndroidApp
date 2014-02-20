@@ -30,7 +30,7 @@ public class TouchDBHelper {
 
     private static final String TAG = "TouchDB";
     private final String DATABASE_NAME;
-    private final String hostDB = "http://192.168.0.107:5984/";
+    private final String hostDB = "https://seapal.iriscouch.com/";
     private StdCouchDbInstance dbInstance;
     private CouchDbConnector couchDbConnector;
     private ObjectMapper  objectMapper;

@@ -66,22 +66,22 @@ public class WaypointListAdapter extends ArrayAdapter<UUID> {
                     TextView tt5 = (TextView) v
                             .findViewById(R.id.tripwaypointlistadapter_long);
 
-                    if (tt0 != null)
+                    if (tt0 != null && w.getName() != null)
                         tt0.setText(w.getName());
 
-                    if (tt2 != null)
+                    if (tt2 != null && w.getCOG() != null)
                         tt2.setText(w.getCOG());
 
-                    if (tt3 != null)
+                    if (tt3 != null && w.getSOG() != null)
                         tt3.setText(w.getSOG());
 
-                    if (tt4 != null) {
+                    if (tt4 != null && w.getLatitude() != null) {
                         Location location = new Location("");
                         location.setLatitude(w.getLatitude());
                         tt4.setText(Double.toString(location.getLatitude()));
                     }
 
-                    if (tt5 != null) {
+                    if (tt5 != null && w.getLongitude() != null) {
                         Location location = new Location("");
                         location.setLongitude(w.getLongitude());
                         tt5.setText(Double.toString(location.getLongitude()));

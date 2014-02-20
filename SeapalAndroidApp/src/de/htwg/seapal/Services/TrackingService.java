@@ -40,6 +40,7 @@ public class TrackingService extends RoboService implements LocationListener {
     public static final String TRIP_MAP = "trip_map";
     public static final String WAYPOINT_BROADCAST_RECEIVER = "broadcast_receiver";
     public static final String LAT_LNG = "trip_lat_lng";
+    public static final String BOAT_UUID = "boat_uuid";
     // Declaring a Location Manager
     protected LocationManager locationManager;
     private Context mContext;
@@ -56,6 +57,7 @@ public class TrackingService extends RoboService implements LocationListener {
     private SessionManager sessionManager;
 
     private UUID mTrip;
+    private UUID mBoat;
     private Location location; // location
     private double latitude; // latitude
     private double longitude; // longitude
@@ -202,6 +204,8 @@ public class TrackingService extends RoboService implements LocationListener {
         wp.setDate(System.currentTimeMillis());
         wp.setLatitude(location.getLatitude());
         wp.setLongitude(location.getLongitude());
+        wp.setTrip(mTrip.toString());
+        wp.setBoat(mBoat.toString());
         mainController.creatDocument("waypoint",wp, sessionManager.getSession());
 
         Intent intent = new Intent(WAYPOINT_BROADCAST_RECEIVER);
@@ -226,7 +230,9 @@ public class TrackingService extends RoboService implements LocationListener {
     @Override
     public void onStart(Intent intent, int startId) {
         String tripString = intent.getStringExtra(TRIP_UUID);
+        String boatString = intent.getStringExtra(BOAT_UUID);
         mTrip = UUID.fromString(tripString);
+        mBoat = UUID.fromString(boatString);
         mContext = getApplicationContext();
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
