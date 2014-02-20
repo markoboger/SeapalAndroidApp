@@ -10,6 +10,7 @@ import com.google.inject.Inject;
 
 import java.util.UUID;
 
+import de.htwg.seapal.Manager.SessionManager;
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.fragment.AccountFragment;
 import de.htwg.seapal.aview.gui.fragment.BoatListFragment;
@@ -25,7 +26,6 @@ import de.htwg.seapal.aview.listener.TabListener;
 public class LogbookTabsActivity extends BaseDrawerActivity implements BoatListFragment.OnBoatNameSelectedListener, BoatListFragment.OnBoatFavouredListener {
 
 
-
     public static final String LOGBOOK_PREFS = "logbook_prefs";
     public static final String LOGBOOK_BOAT_FAVOURED = "logbook_boat_favoured";
     private int mPosition;
@@ -37,14 +37,41 @@ public class LogbookTabsActivity extends BaseDrawerActivity implements BoatListF
     private CrewFragment mCrewFragment;
     private Menu mMenu;
 
+    @Inject
+    private SessionManager sessionManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.logbook_fragment_tabs);
 
 
+        final ActionBar ab = getActionBar();
+        addTabs(ab);
+        ab.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-        ActionBar ab = getActionBar();
+        sessionManager.addListener(new SessionManager.OnLoginListener() {
+            @Override
+            public void onLogin() {
+                ab.removeAllTabs();
+                addTabs(ab);
+
+            }
+        });
+
+        sessionManager.addListener(new SessionManager.OnLogOutListener() {
+            @Override
+            public void onLogout() {
+                ab.removeAllTabs();
+                addTabs(ab);
+
+            }
+        });
+
+
+    }
+
+    private void addTabs(ActionBar ab) {
         ab.addTab(ab.newTab().setText("Account").setTabListener(new TabListener<AccountFragment>(R.id.logbook_fragment_tabs, AccountFragment.class, this, new OnCreateOptionsMenuListener() {
             @Override
             public void onCreateMenu() {
@@ -53,32 +80,32 @@ public class LogbookTabsActivity extends BaseDrawerActivity implements BoatListF
 
             }
         })));
-        ab.addTab(ab.newTab().setText("Crew").setTabListener(new TabListener<CrewFragment>(R.id.logbook_fragment_tabs,  CrewFragment.class, this, new OnCreateOptionsMenuListener() {
-            @Override
-            public void onCreateMenu() {
-                if (mMenu != null) {
-                    mMenu.clear();
-                    getMenuInflater().inflate(R.menu.logbook_crew_menu, mMenu);
+
+        if (sessionManager.isLoggedIn()) {
+            ab.addTab(ab.newTab().setText("Crew").setTabListener(new TabListener<CrewFragment>(R.id.logbook_fragment_tabs, CrewFragment.class, this, new OnCreateOptionsMenuListener() {
+                @Override
+                public void onCreateMenu() {
+                    if (mMenu != null) {
+                        mMenu.clear();
+                        getMenuInflater().inflate(R.menu.logbook_crew_menu, mMenu);
+
+                    }
+
 
                 }
+            })));
+            ab.addTab(ab.newTab().setText("Logbook").setTabListener(new TabListener<LogbookFragment>(R.id.logbook_fragment_tabs, LogbookFragment.class, this, new OnCreateOptionsMenuListener() {
+                @Override
+                public void onCreateMenu() {
+                    if (mMenu != null) {
+                        mMenu.clear();
+                        getMenuInflater().inflate(R.menu.logbook_boat_menu, mMenu);
 
-
-            }
-        })));
-        ab.addTab(ab.newTab().setText("Logbook").setTabListener(new TabListener<LogbookFragment>(R.id.logbook_fragment_tabs,  LogbookFragment.class, this, new OnCreateOptionsMenuListener() {
-            @Override
-            public void onCreateMenu() {
-                if (mMenu != null) {
-                    mMenu.clear();
-                    getMenuInflater().inflate(R.menu.logbook_boat_menu, mMenu);
-
+                    }
                 }
-            }
 
-        })));
-        ab.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-
+            })));
+        }
     }
 
     @Override
@@ -119,7 +146,7 @@ public class LogbookTabsActivity extends BaseDrawerActivity implements BoatListF
 
     @Override
     public void onBoatFavoured(UUID uuid) {
-        SharedPreferences s = getSharedPreferences(LOGBOOK_PREFS,0);
+        SharedPreferences s = getSharedPreferences(LOGBOOK_PREFS, 0);
         s.edit().putString(LOGBOOK_BOAT_FAVOURED, uuid.toString()).commit();
     }
 }

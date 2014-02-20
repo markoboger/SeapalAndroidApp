@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import com.google.inject.Inject;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 import roboguice.inject.ContextSingleton;
 
@@ -42,12 +44,53 @@ public class SessionManager {
     // Session Cookie
     public static final String KEY_SESSION_COOKIE = "session_cookie";
     // Constructor
+
+    private List<SessionListener> callbackList;
+
+
     @Inject
     public SessionManager(Context context){
         this._context = context;
         pref = _context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
         editor = pref.edit();
+        callbackList = new LinkedList<SessionListener>();
     }
+
+    interface SessionListener {
+    }
+
+
+    public interface OnLoginListener extends SessionListener{
+        void onLogin();
+    }
+
+    public interface OnLogOutListener extends SessionListener{
+        void onLogout();
+    }
+
+    public void addListener(SessionListener l) {
+        callbackList.add(l);
+    }
+    private void callbackLoginListeners() {
+        for (SessionListener s: callbackList) {
+            if (s instanceof OnLoginListener) {
+                OnLoginListener o = (OnLoginListener) s;
+                o.onLogin();
+            }
+        }
+
+    }
+    private void callbackLogoutListeners() {
+        for (SessionListener s: callbackList) {
+            if (s instanceof  OnLogOutListener) {
+                OnLogOutListener o = (OnLogOutListener) s;
+                o.onLogout();
+            }
+        }
+
+    }
+
+
 
     /**
      * Create login session
@@ -70,6 +113,8 @@ public class SessionManager {
 
         // commit changes
         editor.commit();
+
+        callbackLoginListeners();
     }
 
     /**
@@ -85,6 +130,8 @@ public class SessionManager {
     public String getSession() {
         return pref.getString(KEY_SESSION_COOKIE, "");
     }
+
+
 
 
 
@@ -110,6 +157,7 @@ public class SessionManager {
         // Clearing all data from Shared Preferences
         editor.clear();
         editor.commit();
+        callbackLogoutListeners();
     }
 
     /**
