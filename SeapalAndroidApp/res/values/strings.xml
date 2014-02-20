@@ -124,7 +124,7 @@
         The Seapal Logbook Feature can store your logbook data in the cloud.
         This enables you to access your logbooks form other devices or on the web.
         You just need to create an account.
-        The first 10 Trips ar free of charge.
+        The first 10 Trips are free of charge.
     </string>
     <string name="account_info_header">About SeaPal Accounts</string>
     <string name="create_new_account">Create a fresh Account</string>
