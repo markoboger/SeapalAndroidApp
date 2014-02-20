@@ -47,9 +47,6 @@
     <string-array name="drawer_list_array_left">
         <item>Map</item>
         <item>Logbook</item>
-        <item>TUI</item>
-        <item>-Marks-</item>
-        <item>-Routes-</item>
     </string-array>
 
     <string-array name="drawer_list_array_right">
