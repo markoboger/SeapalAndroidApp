@@ -19,6 +19,8 @@ import java.util.UUID;
 
 import de.htwg.seapal.database.IAccountDatabase;
 import de.htwg.seapal.database.impl.views.account.ByEmailView;
+import de.htwg.seapal.database.impl.views.account.FriendsView;
+import de.htwg.seapal.database.impl.views.account.GoogleIDView;
 import de.htwg.seapal.model.IAccount;
 import de.htwg.seapal.model.ModelDocument;
 import de.htwg.seapal.model.impl.Account;
@@ -47,6 +49,14 @@ public class TouchDBAccountDatabase extends CouchDbRepositorySupport<Account> im
 
         View by_email = database.getView(String.format("%s/%s", dDocName, "by_email"));
         by_email.setMap(new ByEmailView(), "1");
+
+
+        View friends = database.getView(String.format("%s/%s", dDocName, "friends"));
+        friends.setMap(new FriendsView(), "1");
+
+
+        View googlID = database.getView(String.format("%s/%s", dDocName, "googleID"));
+        googlID.setMap(new GoogleIDView(), "1");
 
         Log.i(TAG, "Views = " + dbHelper.getTDDatabase().getAllViews());
     }

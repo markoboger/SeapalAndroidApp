@@ -21,7 +21,9 @@ import de.htwg.seapal.Manager.SessionManager;
 import de.htwg.seapal.R;
 import de.htwg.seapal.controller.IAccountController;
 import de.htwg.seapal.controller.IMainController;
+import de.htwg.seapal.controller.IPersonController;
 import de.htwg.seapal.model.IAccount;
+import de.htwg.seapal.model.IPerson;
 import de.htwg.seapal.model.impl.Account;
 import de.htwg.seapal.model.impl.SignupAccount;
 import roboguice.RoboGuice;
@@ -41,6 +43,9 @@ public class AccountFragment extends Fragment {
 
     @Inject
     private IAccountController accountController;
+
+    @Inject
+    private IPersonController personController;
 
     @Inject
     private SessionManager sessionManager;
@@ -78,7 +83,7 @@ public class AccountFragment extends Fragment {
 
         if (sessionManager.isLoggedIn()) {
             TextView usernameText = (TextView) view.findViewById(R.id.account_loggedin_username);
-            usernameText.setText(sessionManager.getUserDetails().get(SessionManager.KEY_EMAIL));
+            usernameText.setText(sessionManager.getUserDetails().get(SessionManager.KEY_NAME));
             View logout = view.findViewById(R.id.account_logout);
             logout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -120,10 +125,16 @@ public class AccountFragment extends Fragment {
                 aLogin.setPassword(password.getText().toString());
                 IAccount authenticated = accountController.authenticate(aLogin);
                 if (authenticated != null) {
-                    sessionManager.createLoginSession(authenticated.getUUID().toString(), authenticated.getEmail(), authenticated.getEmail());
-                    Toast.makeText(getActivity(), "successfully logged in", Toast.LENGTH_LONG).show();
-                    ViewSwitcher viewSwitcher = (ViewSwitcher) view;
-                    viewSwitcher.setDisplayedChild(LOGGEDIN_CHILD);
+                    IPerson p = personController.getByAccount(authenticated.getUUID());
+                    if (p != null) {
+                        sessionManager.createLoginSession(authenticated.getUUID().toString(),String.format("%s %s", p.getFirstname(), p.getLastname()), authenticated.getEmail());
+                        Toast.makeText(getActivity(), "successfully logged in", Toast.LENGTH_LONG).show();
+                        ViewSwitcher viewSwitcher = (ViewSwitcher) view;
+                        viewSwitcher.setDisplayedChild(LOGGEDIN_CHILD);
+
+                    }
+                } else {
+                    Toast.makeText(getActivity(),"Username or Password wrong try again", Toast.LENGTH_LONG).show();
 
                 }
 

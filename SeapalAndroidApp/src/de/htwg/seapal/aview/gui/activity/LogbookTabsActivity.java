@@ -19,6 +19,7 @@ import de.htwg.seapal.aview.gui.fragment.LogbookFragment;
 import de.htwg.seapal.aview.gui.fragment.LogbookSlideFragment;
 import de.htwg.seapal.aview.listener.OnCreateOptionsMenuListener;
 import de.htwg.seapal.aview.listener.TabListener;
+import de.htwg.seapal.controller.IMainController;
 
 /**
  * Created by jakub on 12/10/13.
@@ -39,6 +40,8 @@ public class LogbookTabsActivity extends BaseDrawerActivity implements BoatListF
 
     @Inject
     private SessionManager sessionManager;
+    @Inject
+    private IMainController mainController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +142,9 @@ public class LogbookTabsActivity extends BaseDrawerActivity implements BoatListF
                 break;
             case R.id.logbookmenu_favour:
                 logbookSlideFragment.onFavourBoat();
+                break;
+            case R.id.crew_add:
+                mainController.addFriend(sessionManager.getSession(), "jack@g.de");
                 break;
         }
         return super.onMenuItemSelected(featureId, item);

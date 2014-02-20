@@ -2,6 +2,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
+    android:id="@+id/crew_view"
     android:layout_height="match_parent">
 
     <TextView
@@ -19,33 +20,13 @@
         android:layout_margin="5dp"
         android:layout_height="wrap_content" />
 
-
-    <TextView
+    <ExpandableListView
         android:layout_width="match_parent"
-        android:text="@string/crew_your_crew"
-        android:textStyle="bold"
-        android:textSize="20dp"
-        android:background="@color/lightGray"
-        android:layout_height="wrap_content" />
+        android:id="@+id/crew_expandable_list"
 
-    <ListView
-        android:layout_width="match_parent"
-        android:id="@+id/crew_your_crew_list"
-        android:layout_height="wrap_content"></ListView>
-
-
-    <TextView
-        android:layout_width="match_parent"
-        android:text="@string/crew_member_of"
-        android:textStyle="bold"
-        android:textSize="20dp"
-        android:background="@color/lightGray"
-        android:layout_height="wrap_content" />
-
-    <ListView
-        android:layout_width="match_parent"
-        android:id="@+id/crew_member_of_list"
         android:layout_height="wrap_content">
-        </ListView>
+
+        </ExpandableListView>
+
 
 </LinearLayout>
