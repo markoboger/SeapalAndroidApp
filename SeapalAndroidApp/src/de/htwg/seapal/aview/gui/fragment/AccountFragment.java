@@ -20,7 +20,7 @@ import com.google.inject.Injector;
 
 import org.apache.commons.lang.StringUtils;
 
-import de.htwg.seapal.Manager.SessionManager;
+import de.htwg.seapal.manager.SessionManager;
 import de.htwg.seapal.R;
 import de.htwg.seapal.controller.IAccountController;
 import de.htwg.seapal.controller.IMainController;

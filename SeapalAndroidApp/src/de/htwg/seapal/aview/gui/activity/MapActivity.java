@@ -67,9 +67,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import de.htwg.seapal.Manager.SessionManager;
+import de.htwg.seapal.manager.SessionManager;
 import de.htwg.seapal.R;
-import de.htwg.seapal.Services.TrackingService;
+import de.htwg.seapal.services.TrackingService;
 import de.htwg.seapal.aview.gui.fragment.MapDialogFragment;
 import de.htwg.seapal.aview.gui.fragment.PictureDialogFragment;
 import de.htwg.seapal.aview.gui.plugins.IMapPlugin;

@@ -10,12 +10,17 @@ import com.google.inject.Inject;
 import java.util.Collection;
 import java.util.UUID;
 
-import de.htwg.seapal.Manager.SessionManager;
 import de.htwg.seapal.R;
 import de.htwg.seapal.controller.IMainController;
+import de.htwg.seapal.events.boat.OnBoatSelected;
+import de.htwg.seapal.events.boat.OnUpdateBoatView;
+import de.htwg.seapal.events.boat.RequestBoatViewInformation;
+import de.htwg.seapal.manager.SessionManager;
 import de.htwg.seapal.model.IBoat;
 import de.htwg.seapal.model.impl.Boat;
 import de.htwg.seapal.utils.seapal.BoatUtils;
+import roboguice.event.EventManager;
+import roboguice.event.Observes;
 import roboguice.fragment.RoboFragment;
 
 
@@ -25,6 +30,7 @@ import roboguice.fragment.RoboFragment;
 public class BoatViewFragment extends RoboFragment {
     public final static String ARG_POSITION = "position";
     public final static String ARG_UUID = "uuid";
+
     private int mCurrentPosition = -1;
     private UUID mCurrentUUID;
 
@@ -33,6 +39,8 @@ public class BoatViewFragment extends RoboFragment {
 
     @Inject
     private SessionManager sessionManager;
+    @Inject
+    private EventManager eventManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,9 +69,9 @@ public class BoatViewFragment extends RoboFragment {
         super.onStart();
         Bundle args = getArguments();
         if (args != null) {
-            updateBoatView(args.getInt(ARG_POSITION), (UUID) args.get(ARG_UUID));
+            eventManager.fire(new OnBoatSelected(args.getInt(ARG_POSITION), (UUID) args.get(ARG_UUID)));
         } else {
-            updateBoatView(mCurrentPosition, mCurrentUUID);
+            eventManager.fire(new OnBoatSelected(mCurrentPosition, mCurrentUUID));
         }
 
     }
@@ -75,29 +83,28 @@ public class BoatViewFragment extends RoboFragment {
         outState.putSerializable(ARG_UUID, mCurrentUUID);
     }
 
-    public void updateBoatView(int position, UUID uuid) {
-        if (uuid != null) {
-            Collection<Boat> boats = (Collection<Boat>) mainController.getSingleDocument("boat", sessionManager.getSession(), uuid);
+    public void updateBoatView(@Observes OnUpdateBoatView selected) {
+        if (selected.getBoatUUID() != null) {
+            Collection<Boat> boats = (Collection<Boat>) mainController.getSingleDocument("boat", sessionManager.getSession(), selected.getBoatUUID());
             if (boats != null &&!boats.isEmpty() && boats.iterator().hasNext()) {
                 IBoat b = boats.iterator().next();
                 if (b != null) {
                     BoatUtils.setViewFromBoat(getActivity(), b);
 
-                    mCurrentPosition = position;
-                    mCurrentUUID = uuid;
+                    mCurrentPosition = selected.getPosition();
+                    mCurrentUUID = selected.getBoatUUID();
                 }
             }
         }
     }
 
-    public IBoat getBoatFromCurrentView() {
+    public void requestViewInformation(@Observes RequestBoatViewInformation viewInformation) {
         Collection<Boat> boats = (Collection<Boat>) mainController.getSingleDocument("boat", sessionManager.getSession(), mCurrentUUID);
         if (!boats.isEmpty() && boats.iterator().hasNext()) {
             IBoat b = boats.iterator().next();
             if (b != null) {
-                return BoatUtils.convertViewToBoat(getView(), b);
+                viewInformation.setBoat(BoatUtils.convertViewToBoat(getView(), b));
             }
         }
-        return null;
     }
 }

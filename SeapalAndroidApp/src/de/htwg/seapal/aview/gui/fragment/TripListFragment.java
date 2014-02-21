@@ -5,10 +5,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -22,25 +20,24 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-import de.htwg.seapal.Manager.SessionManager;
+import de.htwg.seapal.events.trip.OnUpdateTripListEvent;
+import de.htwg.seapal.manager.SessionManager;
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.activity.TripActivity;
 import de.htwg.seapal.aview.gui.adapter.TripListAdapter;
 import de.htwg.seapal.controller.IMainController;
 import de.htwg.seapal.model.IBoat;
 import de.htwg.seapal.model.IModel;
-import de.htwg.seapal.model.ITrip;
 import de.htwg.seapal.model.impl.Boat;
 import de.htwg.seapal.model.impl.Trip;
+import roboguice.event.EventManager;
+import roboguice.event.Observes;
 import roboguice.fragment.RoboListFragment;
-import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
-import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
 /**
  * Created by jakub on 11/28/13.
  */
-public class TripListFragment  extends RoboListFragment implements  AdapterView.OnItemLongClickListener, OnRefreshListener {
+public class TripListFragment  extends RoboListFragment implements  AdapterView.OnItemLongClickListener {
 
     private static final String ARG_POSITION = "postition";
     private static final String ARG_UUID = "uuid";
@@ -55,7 +52,8 @@ public class TripListFragment  extends RoboListFragment implements  AdapterView.
     private int mCurrentPosition;
     private UUID mCurrentUUID;
 
-    private PullToRefreshLayout mPullToRefreshLayout;
+    @Inject
+    private EventManager eventManager;
 
 
     @Override
@@ -64,14 +62,6 @@ public class TripListFragment  extends RoboListFragment implements  AdapterView.
 
          ViewGroup viewGroup = (ViewGroup) view;
 
-        // Now give the find the PullToRefreshLayout and set it up
-        mPullToRefreshLayout = new PullToRefreshLayout(viewGroup.getContext());
-
-        ActionBarPullToRefresh.from(getActivity())
-                .insertLayoutInto(viewGroup)
-                .theseChildrenArePullable(android.R.id.list, android.R.id.empty)
-                .listener(this)
-                .setup(mPullToRefreshLayout);
 
 
     }
@@ -103,9 +93,9 @@ public class TripListFragment  extends RoboListFragment implements  AdapterView.
 
         Bundle args = getArguments();
         if (args != null) {
-            updateTripView(args.getInt(ARG_POSITION), (UUID) args.get(ARG_UUID));
+            eventManager.fire(new OnUpdateTripListEvent(args.getInt(ARG_POSITION), (UUID) args.get(ARG_UUID)));
         } else {
-            updateTripView(mCurrentPosition, mCurrentUUID);
+            eventManager.fire(new OnUpdateTripListEvent(mCurrentPosition, mCurrentUUID));
         }
 
     }
@@ -117,18 +107,19 @@ public class TripListFragment  extends RoboListFragment implements  AdapterView.
         outState.putSerializable(ARG_UUID, mCurrentUUID);
     }
 
-    public void updateTripView(int position, UUID uuid) {
-        if (uuid != null) {
+    public void updateTripView(@Observes OnUpdateTripListEvent event ) {
 
-            Collection<Boat> boats = (Collection<Boat>) mainController.getSingleDocument("boat", sessionManager.getSession(), uuid);
+        if (event.getBoatUUID() != null) {
+
+            Collection<Boat> boats = (Collection<Boat>) mainController.getSingleDocument("boat", sessionManager.getSession(), event.getBoatUUID());
             if (!boats.isEmpty() && boats.iterator().hasNext()) {
                 IBoat b = boats.iterator().next();
                 if (b != null) {
                     tripList.clear();
                     tripList.addAll(mainController.getByParent("trip", "boat", sessionManager.getSession(), b.getUUID()));
                     notifyListAdapter();
-                    mCurrentPosition = position;
-                    mCurrentUUID = uuid;
+                    mCurrentPosition = event.getPosition();
+                    mCurrentUUID = event.getBoatUUID();
                 }
             }
         }
@@ -138,7 +129,6 @@ public class TripListFragment  extends RoboListFragment implements  AdapterView.
         TripListAdapter listAdapter = (TripListAdapter) getListView().getAdapter();
         Trip trip = (Trip) listAdapter.getItem(listPosition);
         mainController.deleteDocument("trip", sessionManager.getSession(), trip.getUUID());
-//        tripController.deleteTrip(uuid);
         listAdapter.remove(trip);
         notifyListAdapter();
         Toast.makeText(getActivity(), "Trip deleted",
@@ -167,49 +157,6 @@ public class TripListFragment  extends RoboListFragment implements  AdapterView.
         d.show(getFragmentManager(), "TripListFragment");
         return true;
     }
-
-
-    @Override
-    public void onRefreshStarted(View view) {
-
-        Log.i("TripListFragment", "onRefreshStarted");
-
-
-        /**
-         * Simulate Refresh with 4 seconds sleep
-         */
-        new AsyncTask<Void, Void, Void>() {
-
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
-                    Thread.sleep(SIMULATED_REFRESH_LENGTH);
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                ITrip trip = (ITrip) mainController.creatDocument("trip", new Trip(), sessionManager.getSession());
-                tripList.add(trip);
-
-                Intent intent = new Intent(getActivity(),
-                        TripActivity.class);
-                intent.putExtra("trip", trip.toString());
-                getActivity().startActivity(intent);
-                mPullToRefreshLayout.setRefreshComplete();
-                notifyListAdapter();
-
-            }
-
-        }.execute();
-
-    }
-
 
 
 

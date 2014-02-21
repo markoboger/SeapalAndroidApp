@@ -26,9 +26,6 @@ dependencies {
     compile 'org.roboguice:roboguice:2.0'
     compile 'com.android.support:appcompat-v7:+'
     compile 'com.google.android.gms:play-services:+'
-    compile 'com.github.chrisbanes.actionbarpulltorefresh:library:+'
-
-
 
     compile project(':libs:facebook')
     compile fileTree(dir: 'libs', includes: ['*.jar', '*.aar'])

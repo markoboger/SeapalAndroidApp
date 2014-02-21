@@ -1,11 +1,15 @@
 package de.htwg.seapal.aview.gui.fragment;
 
 
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 
 import com.google.inject.Inject;
@@ -17,14 +21,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import de.htwg.seapal.Manager.SessionManager;
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.adapter.CrewExpandableListAdapter;
 import de.htwg.seapal.controller.IAccountController;
 import de.htwg.seapal.controller.IMainController;
 import de.htwg.seapal.controller.IPersonController;
+import de.htwg.seapal.events.crew.OnCrewAddEvent;
+import de.htwg.seapal.manager.SessionManager;
 import de.htwg.seapal.model.IModel;
 import roboguice.RoboGuice;
+import roboguice.event.Observes;
 
 /**
  * Created by jakub on 12/10/13.
@@ -91,6 +97,30 @@ public class CrewFragment extends Fragment {
 
     }
 
-    public void onCrewAdd() {
+    public void onCrewAdd(@Observes OnCrewAddEvent event) {
+        LayoutInflater i = (LayoutInflater) event.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View view = i.inflate(R.layout.crew_add_dialog, null);
+        new AlertDialog.Builder(getActivity())
+                .setView(view)
+                .setMessage(R.string.crew_add_title_text)
+                .setPositiveButton(R.string.crew_add_text, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        EditText e = null;
+                        if (view != null) {
+                            e = (EditText) view.findViewById(R.id.text);
+                            if (e != null) {
+                                mainController.addFriend(sessionManager.getSession(), e.getText().toString());
+                            }
+                        }
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                })
+                .create().show();
     }
 }

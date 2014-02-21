@@ -1,4 +1,4 @@
-package de.htwg.seapal.Services;
+package de.htwg.seapal.services;
 
 import android.app.AlertDialog;
 import android.app.Notification;
@@ -21,7 +21,7 @@ import com.google.inject.Inject;
 
 import java.util.UUID;
 
-import de.htwg.seapal.Manager.SessionManager;
+import de.htwg.seapal.manager.SessionManager;
 import de.htwg.seapal.R;
 import de.htwg.seapal.controller.IMainController;
 import de.htwg.seapal.model.impl.Waypoint;
