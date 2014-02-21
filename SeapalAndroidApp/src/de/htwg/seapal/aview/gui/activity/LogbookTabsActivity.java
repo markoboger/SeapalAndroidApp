@@ -52,6 +52,16 @@ public class LogbookTabsActivity extends BaseDrawerActivity implements BoatListF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.logbook_fragment_tabs);
 
+        sessionManager.addListener(new SessionManager.OnLogOutListener(){
+
+            @Override
+            public void onLogout() {
+                SharedPreferences s = getSharedPreferences(LOGBOOK_PREFS, 0);
+                s.edit().clear().commit();
+
+            }
+        });
+
 
         final ActionBar ab = getActionBar();
         addTabs(ab);
@@ -159,7 +169,7 @@ public class LogbookTabsActivity extends BaseDrawerActivity implements BoatListF
                                 EditText e = null;
                                 if (view != null) {
                                     e = (EditText) view.findViewById(R.id.text);
-                                    if(e != null) {
+                                    if (e != null) {
                                         mainController.addFriend(sessionManager.getSession(), e.getText().toString());
                                     }
                                 }

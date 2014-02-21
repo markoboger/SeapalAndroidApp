@@ -78,7 +78,7 @@ public class BoatViewFragment extends RoboFragment {
     public void updateBoatView(int position, UUID uuid) {
         if (uuid != null) {
             Collection<Boat> boats = (Collection<Boat>) mainController.getSingleDocument("boat", sessionManager.getSession(), uuid);
-            if (!boats.isEmpty() && boats.iterator().hasNext()) {
+            if (boats != null &&!boats.isEmpty() && boats.iterator().hasNext()) {
                 IBoat b = boats.iterator().next();
                 if (b != null) {
                     BoatUtils.setViewFromBoat(getActivity(), b);

@@ -27,7 +27,8 @@ public class LogbookFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.logbook_main_view, container, false);
+        if (view == null)
+            view = inflater.inflate(R.layout.logbook_main_view, container, false);
         return view;
     }
 
@@ -38,9 +39,5 @@ public class LogbookFragment extends Fragment {
         Injector i = RoboGuice.getInjector(getActivity());
         i.injectMembers(this);
 
-
-        fragmentManager.beginTransaction()
-                .replace(R.id.logbook_slide_fragment, new LogbookSlideFragment())
-                .replace(R.id.boat_list_fragment, new BoatListFragment()).commit();
     }
 }
