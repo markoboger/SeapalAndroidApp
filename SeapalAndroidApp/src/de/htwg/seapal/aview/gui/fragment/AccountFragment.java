@@ -12,6 +12,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.plus.PlusClient;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
@@ -26,12 +29,13 @@ import de.htwg.seapal.model.IAccount;
 import de.htwg.seapal.model.IPerson;
 import de.htwg.seapal.model.impl.Account;
 import de.htwg.seapal.model.impl.SignupAccount;
+import de.htwg.seapal.utils.seapal.MomentUtil;
 import roboguice.RoboGuice;
 
 /**
  * Created by jakub on 12/16/13.
  */
-public class AccountFragment extends Fragment {
+public class AccountFragment extends Fragment implements PlusClient.ConnectionCallbacks, PlusClient.OnConnectionFailedListener, PlusClient.OnAccessRevokedListener{
 
     private static final String TAG = "AccountFragment";
 
@@ -50,17 +54,19 @@ public class AccountFragment extends Fragment {
     @Inject
     private SessionManager sessionManager;
 
+    private PlusClient mPlusClient;
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final ViewSwitcher viewSwitcher = (ViewSwitcher) inflater.inflate(R.layout.account_view, container, false);
         if (sessionManager.isLoggedIn()) {
             viewSwitcher.setDisplayedChild(LOGGEDIN_CHILD);
-        } else  {
+        } else {
             viewSwitcher.setDisplayedChild(LOGIN_CHILD);
         }
         return viewSwitcher;
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,7 +75,7 @@ public class AccountFragment extends Fragment {
         Injector i = RoboGuice.getInjector(getActivity());
         i.injectMembers(this);
 
-
+        mPlusClient = new PlusClient.Builder(getActivity(),this,this).setActions(MomentUtil.ACTIONS).build();
 
 
         super.onCreate(savedInstanceState);
@@ -98,12 +104,52 @@ public class AccountFragment extends Fragment {
                 signup.setOnClickListener(new AccountCreateFreshOnClickListener());
             }
 
+            SignInButton account_gplus_login = (SignInButton) view.findViewById(R.id.account_gplus_auth);
+            account_gplus_login.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+
             View account_login = view.findViewById(R.id.account_login);
             if (account_login != null) {
                 account_login.setOnClickListener(new AccountLoginOnClickListener(view));
 
             }
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mPlusClient.connect();
+    }
+
+    @Override
+    public void onStop() {
+        mPlusClient.disconnect();
+        super.onStop();
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+
+    }
+
+    @Override
+    public void onDisconnected() {
+
+    }
+
+    @Override
+    public void onAccessRevoked(ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
     }
 
 
@@ -127,14 +173,14 @@ public class AccountFragment extends Fragment {
                 if (authenticated != null) {
                     IPerson p = personController.getByAccount(authenticated.getUUID());
                     if (p != null) {
-                        sessionManager.createLoginSession(authenticated.getUUID().toString(),String.format("%s %s", p.getFirstname(), p.getLastname()), authenticated.getEmail());
+                        sessionManager.createLoginSession(authenticated.getUUID().toString(), String.format("%s %s", p.getFirstname(), p.getLastname()), authenticated.getEmail());
                         Toast.makeText(getActivity(), "successfully logged in", Toast.LENGTH_LONG).show();
                         ViewSwitcher viewSwitcher = (ViewSwitcher) view;
                         viewSwitcher.setDisplayedChild(LOGGEDIN_CHILD);
 
                     }
                 } else {
-                    Toast.makeText(getActivity(),"Username or Password wrong try again", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Username or Password wrong try again", Toast.LENGTH_LONG).show();
 
                 }
 
@@ -190,4 +236,5 @@ public class AccountFragment extends Fragment {
 
         }
     }
+
 }

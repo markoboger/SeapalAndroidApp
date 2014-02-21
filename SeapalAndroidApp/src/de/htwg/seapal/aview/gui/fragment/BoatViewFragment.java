@@ -37,7 +37,15 @@ public class BoatViewFragment extends RoboFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sessionManager.addListener(new SessionManager.OnLogOutListener() {
+            @Override
+            public void onLogout() {
+                mCurrentPosition = -1;
+                mCurrentUUID = null;
+            }
+        });
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

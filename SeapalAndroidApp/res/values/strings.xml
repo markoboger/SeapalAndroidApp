@@ -143,5 +143,7 @@
     <string name="crew_dialog_accept_friend">Accept as friend?</string>
     <string name="crew_dialog_accept_friend_yes">yes</string>
     <string name="crew_dialog_accept_friend_decline">decline</string>
+    <string name="crew_add_text">Add crew member</string>
+    <string name="crew_add_title_text">Add a crew member!!</string>
     <item name="tracking_service_started_text" type="id">Tracking Service Started</item>
 </resources>

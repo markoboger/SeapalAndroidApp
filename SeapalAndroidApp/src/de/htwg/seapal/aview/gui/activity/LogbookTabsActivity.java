@@ -1,10 +1,14 @@
 package de.htwg.seapal.aview.gui.activity;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 
 import com.google.inject.Inject;
 
@@ -144,7 +148,31 @@ public class LogbookTabsActivity extends BaseDrawerActivity implements BoatListF
                 logbookSlideFragment.onFavourBoat();
                 break;
             case R.id.crew_add:
-                mainController.addFriend(sessionManager.getSession(), "jack@g.de");
+                final View view = getLayoutInflater().inflate(R.layout.crew_add_dialog, null);
+
+                new AlertDialog.Builder(this)
+                        .setView(view)
+                        .setTitle(R.string.crew_add_title_text)
+                        .setPositiveButton(R.string.crew_add_text, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                EditText e = null;
+                                if (view != null) {
+                                    e = (EditText) view.findViewById(R.id.text);
+                                    if(e != null) {
+                                        mainController.addFriend(sessionManager.getSession(), e.getText().toString());
+                                    }
+                                }
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        })
+                        .create().show();
+
                 break;
         }
         return super.onMenuItemSelected(featureId, item);

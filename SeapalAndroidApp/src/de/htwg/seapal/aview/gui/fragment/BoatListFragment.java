@@ -90,6 +90,15 @@ public class BoatListFragment extends RoboListFragment {
         final int layout = R.layout.boat_list_view;
 
 
+        sessionManager.addListener(new SessionManager.OnLogOutListener() {
+            @Override
+            public void onLogout() {
+                mPosition = -1;
+                mSelectedView = null;
+                boatList = null;
+                onDestroy();
+            }
+        });
 
         setListAdapter(new ArrayAdapter<IBoat>(getActivity(), layout, boatList) {
             /**
@@ -110,10 +119,8 @@ public class BoatListFragment extends RoboListFragment {
                 TextView constructor = (TextView) v.findViewById(R.id.constructor);
                 ImageView favImageView = (ImageView) v.findViewById(R.id.favour_button);
 
-                SharedPreferences s = getContext().getSharedPreferences(LogbookTabsActivity.LOGBOOK_PREFS,0);
+                SharedPreferences s = getContext().getSharedPreferences(LogbookTabsActivity.LOGBOOK_PREFS, 0);
                 String favouredBoatUUIDString = s.getString(LogbookTabsActivity.LOGBOOK_BOAT_FAVOURED, "");
-
-
 
 
                 IBoat b = getItem(position);
