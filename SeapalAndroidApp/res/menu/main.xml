@@ -9,16 +9,16 @@
         android:id="@+id/action_search"
         android:actionViewClass="android.widget.SearchView"
         android:icon="@android:drawable/ic_menu_search"
-        android:showAsAction="ifRoom"
+        android:showAsAction="always"
         android:title="@string/searchForLocation"/>
     <item
         android:id="@+id/start_tracking"
-        android:showAsAction="ifRoom"
+        android:showAsAction="always"
         android:orderInCategory="200"
         android:title="@string/start_tracking_text"/>
     <item
         android:id="@+id/stop_tracking"
-        android:showAsAction="ifRoom"
+        android:showAsAction="always"
         android:orderInCategory="200"
         android:title="@string/stop_tracking_text"/>
     <item
