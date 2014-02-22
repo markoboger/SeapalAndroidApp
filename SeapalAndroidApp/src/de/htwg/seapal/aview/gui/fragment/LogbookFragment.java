@@ -12,9 +12,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 import de.htwg.seapal.R;
-import de.htwg.seapal.events.session.LogOutEvent;
 import roboguice.RoboGuice;
-import roboguice.event.Observes;
 
 /**
  * Created by jakub on 12/10/13.
@@ -40,15 +38,6 @@ public class LogbookFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Injector i = RoboGuice.getInjector(getActivity());
         i.injectMembers(this);
-
-    }
-
-    public void onLogout(@Observes LogOutEvent e) {
-        if (view != null) {
-            ViewGroup v = (ViewGroup) view.getParent();
-            v.removeView(view);
-            view = null;
-        }
 
     }
 }
