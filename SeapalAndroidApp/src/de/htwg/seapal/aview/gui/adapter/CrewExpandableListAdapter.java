@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -18,7 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import de.htwg.seapal.Manager.SessionManager;
+import de.htwg.seapal.manager.SessionManager;
 import de.htwg.seapal.R;
 import de.htwg.seapal.controller.IAccountController;
 import de.htwg.seapal.controller.IMainController;
@@ -171,12 +172,20 @@ public class CrewExpandableListAdapter extends BaseExpandableListAdapter {
             builder.setMessage(R.string.crew_dialog_accept_friend)
                     .setPositiveButton(R.string.crew_dialog_accept_friend_yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            mainController.addFriend(sessionManager.getSession(), person.getUUID());
+                            try {
+                                mainController.addFriend(sessionManager.getSession(), person.getUUID());
+                            } catch (NullPointerException e) {
+                                Toast.makeText(context, "Something Strange Happend", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     })
                     .setNeutralButton(R.string.crew_dialog_accept_friend_decline, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            mainController.abortRequest(sessionManager.getSession(), person.getUUID());
+                            try {
+                                mainController.abortRequest(sessionManager.getSession(), person.getUUID());
+                            } catch (NullPointerException e) {
+                                Toast.makeText(context, "Something Strange Happend", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     })
                     .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

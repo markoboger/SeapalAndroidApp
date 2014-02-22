@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,15 +14,4 @@
         android:scrollbarStyle="outsideInset"/>
 
 
-
-
-    <TextView
-        android:id="@android:id/empty"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        android:text="Empty"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:gravity="center" />
-
-
-</uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout>
+</LinearLayout>

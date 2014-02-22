@@ -25,10 +25,7 @@ dependencies {
     compile 'com.google.collections:google-collections:1.0'
     compile 'org.roboguice:roboguice:2.0'
     compile 'com.android.support:appcompat-v7:+'
-    compile 'com.google.android.gms:play-services:4.0.+'
-    compile 'com.github.chrisbanes.actionbarpulltorefresh:library:+'
-
-
+    compile 'com.google.android.gms:play-services:+'
 
     compile project(':libs:facebook')
     compile fileTree(dir: 'libs', includes: ['*.jar', '*.aar'])
@@ -60,8 +57,6 @@ android {
     buildToolsVersion "19.0.1"
     compileSdkVersion 19
     compileOptions.encoding = "UTF-8"
-    sourceCompatibility = org.gradle.api.JavaVersion.VERSION_1_7
-    targetCompatibility = org.gradle.api.JavaVersion.VERSION_1_7
     defaultConfig {
         versionCode 1
         versionName "1.1"

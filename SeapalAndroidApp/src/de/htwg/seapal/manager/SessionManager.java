@@ -1,4 +1,4 @@
-package de.htwg.seapal.Manager;
+package de.htwg.seapal.manager;
 
 import android.content.Context;
 import android.content.SharedPreferences;

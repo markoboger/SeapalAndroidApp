@@ -15,13 +15,17 @@ import com.google.inject.Inject;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Collection;
-import java.util.UUID;
 
-import de.htwg.seapal.Manager.SessionManager;
 import de.htwg.seapal.R;
 import de.htwg.seapal.controller.IMainController;
+import de.htwg.seapal.events.boat.OnBoatSelected;
+import de.htwg.seapal.events.boat.OnUpdateBoatView;
+import de.htwg.seapal.events.trip.OnUpdateTripListEvent;
+import de.htwg.seapal.manager.SessionManager;
 import de.htwg.seapal.model.IBoat;
 import de.htwg.seapal.model.IModel;
+import roboguice.event.EventManager;
+import roboguice.event.Observes;
 import roboguice.fragment.RoboFragment;
 
 /**
@@ -33,7 +37,10 @@ public class LogbookSlideFragment extends RoboFragment {
     public static final int TRIP_LIST_FRAGMENT = 0;
     private ViewPager mPager;
     private PagerAdapter mPagerAdapter;
+    @Inject
     private  TripListFragment mTripListFragment;
+
+    @Inject
     private  BoatViewFragment mBoatViewFragment;
 
     @Inject
@@ -41,6 +48,9 @@ public class LogbookSlideFragment extends RoboFragment {
 
     @Inject
     private SessionManager sessionManager;
+
+    @Inject
+    private EventManager eventManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,16 +62,13 @@ public class LogbookSlideFragment extends RoboFragment {
         mPager.setAdapter(mPagerAdapter);
 
 
-        mTripListFragment = new TripListFragment();
-        mBoatViewFragment = new BoatViewFragment();
-
 
         return rootView;
 
     }
 
-    public void updateBoatView(int position, UUID uuid) {
-        Collection<? extends IModel> l = mainController.getSingleDocument("boat", sessionManager.getSession(), uuid);
+    public void updateBoatView(@Observes OnBoatSelected event) {
+        Collection<? extends IModel> l = mainController.getSingleDocument("boat", sessionManager.getSession(), event.getBoatUUID());
         if (!l.isEmpty() && l.iterator().hasNext()) {
             IBoat boat = (IBoat) l.iterator().next();
             String boatName = boat.getName();
@@ -72,43 +79,13 @@ public class LogbookSlideFragment extends RoboFragment {
 
             }
             if (mBoatViewFragment != null) {
-                mBoatViewFragment.updateBoatView(position, uuid);
+                eventManager.fire(new OnUpdateBoatView(event.getPosition(),event.getBoatUUID()));
             }
             if (mTripListFragment != null) {
-                mTripListFragment.updateTripView(position, uuid);
+                eventManager.fire(new OnUpdateTripListEvent(event.getPosition(), event.getBoatUUID()));
 
 
             }
-        }
-
-    }
-
-    public void onNewBoat() {
-        BoatListFragment boatListFragment = (BoatListFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.boat_list_fragment);
-        if (boatListFragment != null) {
-            boatListFragment.onNewBoat();
-        }
-    }
-
-    public void onDeleteBoat() {
-        BoatListFragment boatListFragment = (BoatListFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.boat_list_fragment);
-        if (boatListFragment != null) {
-            boatListFragment.onDeleteBoat();
-        }
-    }
-
-    public void onSaveBoat() {
-        BoatListFragment boatListFragment = (BoatListFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.boat_list_fragment);
-        if (boatListFragment != null) {
-            boatListFragment.onSaveBoat(mBoatViewFragment);
-        }
-
-    }
-
-    public void onFavourBoat() {
-        BoatListFragment boatListFragment = (BoatListFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.boat_list_fragment);
-        if (boatListFragment != null) {
-            boatListFragment.onFavourBoat();
         }
 
     }
