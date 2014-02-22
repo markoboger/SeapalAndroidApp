@@ -23,6 +23,8 @@ import de.htwg.seapal.events.boat.DeleteBoatEvent;
 import de.htwg.seapal.events.boat.FavourBoatEvent;
 import de.htwg.seapal.events.boat.SaveBoatEvent;
 import de.htwg.seapal.events.crew.OnCrewAddEvent;
+import de.htwg.seapal.events.session.LogOutEvent;
+import de.htwg.seapal.events.session.LoginEvent;
 import de.htwg.seapal.manager.SessionManager;
 import roboguice.event.EventManager;
 import roboguice.event.Observes;
@@ -57,39 +59,22 @@ public class LogbookTabsActivity extends BaseDrawerActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.logbook_fragment_tabs);
 
-        sessionManager.addListener(new SessionManager.OnLogOutListener(){
-
-            @Override
-            public void onLogout() {
-                SharedPreferences s = getSharedPreferences(LOGBOOK_PREFS, 0);
-                s.edit().clear().commit();
-
-            }
-        });
-
-
         final ActionBar ab = getActionBar();
         addTabs(ab);
         ab.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-        sessionManager.addListener(new SessionManager.OnLoginListener() {
-            @Override
-            public void onLogin() {
-                ab.removeAllTabs();
-                addTabs(ab);
 
-            }
-        });
+    }
 
-        sessionManager.addListener(new SessionManager.OnLogOutListener() {
-            @Override
-            public void onLogout() {
-                ab.removeAllTabs();
-                addTabs(ab);
+    public void onLogin(@Observes LoginEvent e){
+        final ActionBar ab = getActionBar();
+        ab.removeAllTabs();
+        addTabs(ab);
 
-            }
-        });
+    }
 
+    public void onLogOut(@Observes LogOutEvent e) {
+        recreate();
 
     }
 

@@ -12,7 +12,6 @@ import java.util.UUID;
 
 import de.htwg.seapal.R;
 import de.htwg.seapal.controller.IMainController;
-import de.htwg.seapal.events.boat.OnBoatSelected;
 import de.htwg.seapal.events.boat.OnUpdateBoatView;
 import de.htwg.seapal.events.boat.RequestBoatViewInformation;
 import de.htwg.seapal.manager.SessionManager;
@@ -45,13 +44,6 @@ public class BoatViewFragment extends RoboFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sessionManager.addListener(new SessionManager.OnLogOutListener() {
-            @Override
-            public void onLogout() {
-                mCurrentPosition = -1;
-                mCurrentUUID = null;
-            }
-        });
     }
 
 
@@ -69,9 +61,9 @@ public class BoatViewFragment extends RoboFragment {
         super.onStart();
         Bundle args = getArguments();
         if (args != null) {
-            eventManager.fire(new OnBoatSelected(args.getInt(ARG_POSITION), (UUID) args.get(ARG_UUID)));
+            updateBoatView(new OnUpdateBoatView(args.getInt(ARG_POSITION), (UUID) args.get(ARG_UUID)));
         } else {
-            eventManager.fire(new OnBoatSelected(mCurrentPosition, mCurrentUUID));
+            updateBoatView(new OnUpdateBoatView(mCurrentPosition, mCurrentUUID));
         }
 
     }
