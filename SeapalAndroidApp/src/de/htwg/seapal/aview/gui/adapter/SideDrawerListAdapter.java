@@ -77,7 +77,6 @@ public class SideDrawerListAdapter extends BaseAdapter {
             TextView tv = (TextView) view.findViewById(R.id.drawer_list_item_textview);
             ImageView iv = (ImageView) view.findViewById(R.id.drawer_list_item_icon_right);
 
-            //tv.setCompoundDrawables(resource.getDrawable(icons[position]),null,null,null);
             iv.setImageDrawable(resource.getDrawable(icons[position]));
             tv.setText(title[position]);
         }
