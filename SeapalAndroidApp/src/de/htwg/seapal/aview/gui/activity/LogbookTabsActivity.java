@@ -47,15 +47,6 @@ public class LogbookTabsActivity extends BaseDrawerActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.logbook_fragment_tabs);
 
-        sessionManager.addListener(new SessionManager.OnLogOutListener(){
-
-            @Override
-            public void onLogout() {
-                SharedPreferences s = getSharedPreferences(LOGBOOK_PREFS, 0);
-                s.edit().clear().commit();
-
-            }
-        });
 
         final ActionBar ab = getActionBar();
         addTabs(ab);
