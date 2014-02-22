@@ -4,10 +4,9 @@
     android:layout_height="wrap_content"
     android:textAppearance="?android:attr/textAppearanceListItemSmall"
     android:gravity="center_vertical"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
     android:textColor="@color/darkGray"
-    android:drawableLeft="@drawable/discardiconmini"
+    android:drawableLeft="@drawable/book_icon"
+    android:padding="5dp"
     android:background="?android:attr/activatedBackgroundIndicator"
     android:minHeight="?android:attr/listPreferredItemHeightSmall"/>
     <!-- From: file:/home/robin/HTWG/Seapal/SeapalAndroidApp/res/layout/drawer_list_item_right.xml -->

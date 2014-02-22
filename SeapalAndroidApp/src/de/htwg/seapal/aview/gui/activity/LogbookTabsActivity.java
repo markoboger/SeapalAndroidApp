@@ -31,7 +31,6 @@ import roboguice.event.Observes;
  */
 public class LogbookTabsActivity extends BaseDrawerActivity {
 
-
     public static final String LOGBOOK_PREFS = "logbook_prefs";
     public static final String LOGBOOK_BOAT_FAVOURED = "logbook_boat_favoured";
 
@@ -48,11 +47,21 @@ public class LogbookTabsActivity extends BaseDrawerActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.logbook_fragment_tabs);
 
+        sessionManager.addListener(new SessionManager.OnLogOutListener(){
+
+            @Override
+            public void onLogout() {
+                SharedPreferences s = getSharedPreferences(LOGBOOK_PREFS, 0);
+                s.edit().clear().commit();
+
+            }
+        });
+
         final ActionBar ab = getActionBar();
         addTabs(ab);
         ab.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-
+        removeRightDrawer();
     }
 
     public void onLogin(@Observes LoginEvent e) {
@@ -67,7 +76,6 @@ public class LogbookTabsActivity extends BaseDrawerActivity {
         s.edit().clear().commit();
 
         recreate();
-
     }
 
     private void addTabs(ActionBar ab) {

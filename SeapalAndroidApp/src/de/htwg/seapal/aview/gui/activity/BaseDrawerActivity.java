@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.htwg.seapal.R;
+import de.htwg.seapal.aview.gui.adapter.SideDrawerListAdapter;
 import de.htwg.seapal.controller.IMainController;
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.InjectResource;
@@ -27,8 +28,9 @@ import roboguice.inject.InjectView;
 
 public class BaseDrawerActivity extends RoboFragmentActivity {
 
-
-
+    // Drawer field
+    @InjectView(R.id.drawer_menu_drawer_list_right)
+    private ListView drawerListViewRight;
 	@InjectView(R.id.drawer_menu_drawer_list_left)
 	private ListView drawerListViewLeft;
 	@InjectResource(R.array.drawer_list_array_left)
@@ -51,6 +53,10 @@ public class BaseDrawerActivity extends RoboFragmentActivity {
 
 	}
 
+    public void removeRightDrawer() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_menu_drawer_layout);
+        drawer.removeView(drawerListViewRight);
+    }
 
 
 	// -------------------------------------------- CREATION ------------
@@ -104,17 +110,12 @@ public class BaseDrawerActivity extends RoboFragmentActivity {
 	// -------------------------------------------- DRAWER ------------------
 	private void initializeDrawer() {
 
-        int[] drawerIconsRight = { android.R.drawable.ic_menu_mylocation,
-                android.R.drawable.ic_dialog_map,
-                android.R.drawable.ic_dialog_map,
-                android.R.drawable.ic_menu_mapmode,
-                android.R.drawable.ic_menu_mylocation,
-                android.R.drawable.ic_menu_camera,
-                android.R.drawable.ic_dialog_alert,
-                android.R.drawable.ic_menu_delete };
+        int[] drawerIconsRight = { R.drawable.earth_icon,
+                                    R.drawable.book_icon};
 
-		drawerListViewLeft.setAdapter( new ArrayAdapter(this,
-                R.layout.drawer_list_item, drawerActivityListLeft));
+		drawerListViewLeft.setAdapter( new SideDrawerListAdapter(this,
+                drawerActivityListLeft, drawerIconsRight,
+                getResources(), SideDrawerListAdapter.DrawerSide.LEFT));
 		drawerListViewLeft.setOnItemClickListener(new DrawerItemClickListener());
 
 
