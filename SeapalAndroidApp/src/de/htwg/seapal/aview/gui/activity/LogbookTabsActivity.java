@@ -16,13 +16,14 @@ import de.htwg.seapal.aview.gui.fragment.LogbookFragment;
 import de.htwg.seapal.aview.gui.fragment.LogbookSlideFragment;
 import de.htwg.seapal.aview.listener.OnCreateOptionsMenuListener;
 import de.htwg.seapal.aview.listener.TabListener;
-import de.htwg.seapal.controller.IMainController;
 import de.htwg.seapal.events.boat.BoatFavoredEvent;
 import de.htwg.seapal.events.boat.CreateBoatEvent;
 import de.htwg.seapal.events.boat.DeleteBoatEvent;
 import de.htwg.seapal.events.boat.FavourBoatEvent;
 import de.htwg.seapal.events.boat.SaveBoatEvent;
 import de.htwg.seapal.events.crew.OnCrewAddEvent;
+import de.htwg.seapal.events.session.LogOutEvent;
+import de.htwg.seapal.events.session.LoginEvent;
 import de.htwg.seapal.manager.SessionManager;
 import roboguice.event.EventManager;
 import roboguice.event.Observes;
@@ -34,19 +35,11 @@ public class LogbookTabsActivity extends BaseDrawerActivity {
 
     public static final String LOGBOOK_PREFS = "logbook_prefs";
     public static final String LOGBOOK_BOAT_FAVOURED = "logbook_boat_favoured";
-    private int mPosition;
-    @Inject
-    private LogbookFragment mLogbookFragment;
-    private boolean mLogbookFragmentCreated = false;
-    private boolean mCrewFragmentCreated = false;
-    @Inject
-    private CrewFragment mCrewFragment;
+
     private Menu mMenu;
 
     @Inject
     private SessionManager sessionManager;
-    @Inject
-    private IMainController mainController;
 
     @Inject
     private EventManager eventManager;
@@ -70,25 +63,21 @@ public class LogbookTabsActivity extends BaseDrawerActivity {
         addTabs(ab);
         ab.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-        sessionManager.addListener(new SessionManager.OnLoginListener() {
-            @Override
-            public void onLogin() {
-                ab.removeAllTabs();
-                addTabs(ab);
-
-            }
-        });
-
-        sessionManager.addListener(new SessionManager.OnLogOutListener() {
-            @Override
-            public void onLogout() {
-                ab.removeAllTabs();
-                addTabs(ab);
-
-            }
-        });
-
         removeRightDrawer();
+    }
+
+    public void onLogin(@Observes LoginEvent e){
+        final ActionBar ab = getActionBar();
+        ab.removeAllTabs();
+        addTabs(ab);
+
+    }
+
+    public void onLogOut(@Observes LogOutEvent e) {
+        SharedPreferences s = getSharedPreferences(LOGBOOK_PREFS, 0);
+        s.edit().clear().commit();
+
+        recreate();
     }
 
     private void addTabs(ActionBar ab) {

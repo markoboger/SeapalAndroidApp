@@ -23,7 +23,6 @@ import java.util.Map;
 
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.adapter.CrewExpandableListAdapter;
-import de.htwg.seapal.controller.IAccountController;
 import de.htwg.seapal.controller.IMainController;
 import de.htwg.seapal.controller.IPersonController;
 import de.htwg.seapal.events.crew.OnCrewAddEvent;
@@ -39,9 +38,6 @@ public class CrewFragment extends Fragment {
 
     @Inject
     private IMainController mainController;
-
-    @Inject
-    private IAccountController accountController;
 
     @Inject
     private IPersonController personController;
@@ -67,11 +63,13 @@ public class CrewFragment extends Fragment {
         listHeader.add(CrewExpandableListAdapter.FRIENDS_TO_ACCEPT);
 
         groupLists = new LinkedHashMap<String, Collection<? extends IModel>>();
-        Collection<? extends IModel> yourCrew = mainController.getDocuments("person", sessionManager.getSession(), "friends");
-        Collection<? extends IModel> friendsToAccept = mainController.getDocuments("person", sessionManager.getSession(), "asking");
+        if(sessionManager.isLoggedIn()) {
+            Collection<? extends IModel> yourCrew = mainController.getDocuments("person", sessionManager.getSession(), "friends");
+            Collection<? extends IModel> friendsToAccept = mainController.getDocuments("person", sessionManager.getSession(), "asking");
+            groupLists.put(CrewExpandableListAdapter.YOUR_CREW, yourCrew);
+            groupLists.put(CrewExpandableListAdapter.FRIENDS_TO_ACCEPT, friendsToAccept);
 
-        groupLists.put(CrewExpandableListAdapter.YOUR_CREW, yourCrew);
-        groupLists.put(CrewExpandableListAdapter.FRIENDS_TO_ACCEPT, friendsToAccept);
+        }
 
 
 
@@ -110,7 +108,9 @@ public class CrewFragment extends Fragment {
                         if (view != null) {
                             e = (EditText) view.findViewById(R.id.text);
                             if (e != null) {
-                                mainController.addFriend(sessionManager.getSession(), e.getText().toString());
+                                if (sessionManager.isLoggedIn()) {
+                                    mainController.addFriend(sessionManager.getSession(), e.getText().toString());
+                                }
                             }
                         }
                     }
