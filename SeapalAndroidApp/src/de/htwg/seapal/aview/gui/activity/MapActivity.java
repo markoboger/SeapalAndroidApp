@@ -70,6 +70,7 @@ import java.util.UUID;
 import de.htwg.seapal.Manager.SessionManager;
 import de.htwg.seapal.R;
 import de.htwg.seapal.Services.TrackingService;
+import de.htwg.seapal.aview.gui.adapter.SideDrawerListAdapter;
 import de.htwg.seapal.aview.gui.fragment.MapDialogFragment;
 import de.htwg.seapal.aview.gui.fragment.PictureDialogFragment;
 import de.htwg.seapal.aview.gui.plugins.IMapPlugin;
@@ -216,8 +217,19 @@ public class MapActivity extends BaseDrawerActivity
 
         setupDrawerForMapView();
 
-        drawerListViewRight.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item_right, drawerActivityListRight));
+        int icons[] = {
+                R.drawable.search_icon,
+                R.drawable.marker_icon,
+                R.drawable.arrows_h_icon,
+                R.drawable.arrows_h_icon,
+                R.drawable.arrows_h_icon,
+                R.drawable.camera_icon,
+                R.drawable.male_icon,
+                R.drawable.trash_icon
+        };
+
+        drawerListViewRight.setAdapter(new SideDrawerListAdapter(this,
+                drawerActivityListRight, icons, getResources(), SideDrawerListAdapter.DrawerSide.RIGHT));
         drawerListViewRight.setOnItemClickListener(new DrawerItemClickListener());
 
         mapPluginHashMap = new LinkedHashMap<String, IMapPlugin>();
@@ -232,6 +244,7 @@ public class MapActivity extends BaseDrawerActivity
                 .anchor(0.5f, 0.5f);
 
         waypointBroadcastReceiver = new TrackingServiceWaypointBroadcastReceiver();
+
     }
 
     @Override

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.htwg.seapal.R;
+import de.htwg.seapal.aview.gui.adapter.SideDrawerListAdapter;
 import de.htwg.seapal.controller.IMainController;
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.InjectResource;
@@ -104,17 +105,12 @@ public class BaseDrawerActivity extends RoboFragmentActivity {
 	// -------------------------------------------- DRAWER ------------------
 	private void initializeDrawer() {
 
-        int[] drawerIconsRight = { android.R.drawable.ic_menu_mylocation,
-                android.R.drawable.ic_dialog_map,
-                android.R.drawable.ic_dialog_map,
-                android.R.drawable.ic_menu_mapmode,
-                android.R.drawable.ic_menu_mylocation,
-                android.R.drawable.ic_menu_camera,
-                android.R.drawable.ic_dialog_alert,
-                android.R.drawable.ic_menu_delete };
+        int[] drawerIconsRight = { R.drawable.earth_icon,
+                                    R.drawable.book_icon};
 
-		drawerListViewLeft.setAdapter( new ArrayAdapter(this,
-                R.layout.drawer_list_item, drawerActivityListLeft));
+		drawerListViewLeft.setAdapter( new SideDrawerListAdapter(this,
+                drawerActivityListLeft, drawerIconsRight,
+                getResources(), SideDrawerListAdapter.DrawerSide.LEFT));
 		drawerListViewLeft.setOnItemClickListener(new DrawerItemClickListener());
 
 
