@@ -10,10 +10,8 @@ import com.google.inject.Inject;
 
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.fragment.AccountFragment;
-import de.htwg.seapal.aview.gui.fragment.BoatListFragment;
 import de.htwg.seapal.aview.gui.fragment.CrewFragment;
 import de.htwg.seapal.aview.gui.fragment.LogbookFragment;
-import de.htwg.seapal.aview.gui.fragment.LogbookSlideFragment;
 import de.htwg.seapal.aview.listener.OnCreateOptionsMenuListener;
 import de.htwg.seapal.aview.listener.TabListener;
 import de.htwg.seapal.events.boat.BoatFavoredEvent;
@@ -57,7 +55,7 @@ public class LogbookTabsActivity extends BaseDrawerActivity {
 
     }
 
-    public void onLogin(@Observes LoginEvent e){
+    public void onLogin(@Observes LoginEvent e) {
         final ActionBar ab = getActionBar();
         ab.removeAllTabs();
         addTabs(ab);
@@ -118,9 +116,6 @@ public class LogbookTabsActivity extends BaseDrawerActivity {
 
     @Override
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
-        LogbookSlideFragment logbookSlideFragment = (LogbookSlideFragment) getSupportFragmentManager().findFragmentById(R.id.logbook_slide_fragment);
-        BoatListFragment boatListFragment = (BoatListFragment) getSupportFragmentManager().findFragmentById(R.id.boat_list_fragment);
-
         switch (item.getItemId()) {
             case R.id.logbookmenu_new:
                 eventManager.fire(new CreateBoatEvent());
