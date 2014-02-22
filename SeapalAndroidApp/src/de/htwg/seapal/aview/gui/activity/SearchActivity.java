@@ -70,6 +70,8 @@ public class SearchActivity extends BaseDrawerActivity implements ActionBar.TabL
             public void onPageScrollStateChanged(int arg0) {
             }
         });
+
+        removeRightDrawer();
     }
 
     @Override

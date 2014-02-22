@@ -76,6 +76,8 @@ public class TripActivity extends BaseDrawerActivity implements IObserver {
         }
 		initUI();
 		fillText();
+
+        removeRightDrawer();
 	}
 
 	@Override

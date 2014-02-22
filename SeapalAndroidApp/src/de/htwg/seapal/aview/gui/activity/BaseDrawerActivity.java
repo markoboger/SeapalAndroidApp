@@ -28,8 +28,9 @@ import roboguice.inject.InjectView;
 
 public class BaseDrawerActivity extends RoboFragmentActivity {
 
-
-
+    // Drawer field
+    @InjectView(R.id.drawer_menu_drawer_list_right)
+    private ListView drawerListViewRight;
 	@InjectView(R.id.drawer_menu_drawer_list_left)
 	private ListView drawerListViewLeft;
 	@InjectResource(R.array.drawer_list_array_left)
@@ -52,6 +53,10 @@ public class BaseDrawerActivity extends RoboFragmentActivity {
 
 	}
 
+    public void removeRightDrawer() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_menu_drawer_layout);
+        drawer.removeView(drawerListViewRight);
+    }
 
 
 	// -------------------------------------------- CREATION ------------

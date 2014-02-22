@@ -32,7 +32,6 @@ import roboguice.event.Observes;
  */
 public class LogbookTabsActivity extends BaseDrawerActivity {
 
-
     public static final String LOGBOOK_PREFS = "logbook_prefs";
     public static final String LOGBOOK_BOAT_FAVOURED = "logbook_boat_favoured";
     private int mPosition;
@@ -67,7 +66,6 @@ public class LogbookTabsActivity extends BaseDrawerActivity {
             }
         });
 
-
         final ActionBar ab = getActionBar();
         addTabs(ab);
         ab.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -90,7 +88,7 @@ public class LogbookTabsActivity extends BaseDrawerActivity {
             }
         });
 
-
+        removeRightDrawer();
     }
 
     private void addTabs(ActionBar ab) {
