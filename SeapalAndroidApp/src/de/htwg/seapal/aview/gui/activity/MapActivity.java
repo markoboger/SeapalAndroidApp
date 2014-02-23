@@ -666,6 +666,8 @@ public class MapActivity extends BaseDrawerActivity
                 // Discard Target
                 aimDirectionArrow.remove();
                 aimDirectionTarget.remove();
+                aimDirectionTarget = null;
+                aimDirectionArrow = null;
                 option = SelectedOption.NONE;
                 break;
         }
