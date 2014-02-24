@@ -9,13 +9,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseExpandableListAdapter;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,11 +23,13 @@ import java.util.Map;
 
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.adapter.CrewExpandableListAdapter;
+import de.htwg.seapal.controller.IAccountController;
 import de.htwg.seapal.controller.IMainController;
 import de.htwg.seapal.controller.IPersonController;
+import de.htwg.seapal.events.crew.CrewRequestInit;
 import de.htwg.seapal.events.crew.OnCrewAddEvent;
 import de.htwg.seapal.manager.SessionManager;
-import de.htwg.seapal.model.IModel;
+import de.htwg.seapal.model.impl.Person;
 import roboguice.RoboGuice;
 import roboguice.event.Observes;
 
@@ -40,6 +42,9 @@ public class CrewFragment extends Fragment {
     private IMainController mainController;
 
     @Inject
+    private IAccountController accountController;
+
+    @Inject
     private IPersonController personController;
 
     @Inject
@@ -47,7 +52,7 @@ public class CrewFragment extends Fragment {
 
     private List<String> listHeader;
 
-    private Map<String, Collection<? extends IModel>> groupLists;
+    private Map<String, List<Person>> groupLists;
 
 
     @Override
@@ -62,14 +67,8 @@ public class CrewFragment extends Fragment {
         listHeader.add(CrewExpandableListAdapter.YOUR_CREW);
         listHeader.add(CrewExpandableListAdapter.FRIENDS_TO_ACCEPT);
 
-        groupLists = new LinkedHashMap<String, Collection<? extends IModel>>();
-        if(sessionManager.isLoggedIn()) {
-            Collection<? extends IModel> yourCrew = mainController.getDocuments("person", sessionManager.getSession(),sessionManager.getSession(),"friends");
-            Collection<? extends IModel> friendsToAccept = mainController.getDocuments("person", sessionManager.getSession(),sessionManager.getSession(), "asking");
-            groupLists.put(CrewExpandableListAdapter.YOUR_CREW, yourCrew);
-            groupLists.put(CrewExpandableListAdapter.FRIENDS_TO_ACCEPT, friendsToAccept);
-
-        }
+        groupLists = new LinkedHashMap<String, List<Person>>();
+        initializeList(null);
 
 
 
@@ -123,4 +122,24 @@ public class CrewFragment extends Fragment {
                 })
                 .create().show();
     }
+
+    public void initializeList(@Observes CrewRequestInit event) {
+        if(sessionManager.isLoggedIn()) {
+            List<Person> yourCrew = (List<Person>) mainController.getDocuments("person", sessionManager.getSession(), sessionManager.getSession(), "friends");
+            List<Person> friendsToAccept = (List<Person>) mainController.getDocuments("person", sessionManager.getSession(),sessionManager.getSession(), "asking");
+            groupLists.put(CrewExpandableListAdapter.YOUR_CREW, yourCrew);
+            groupLists.put(CrewExpandableListAdapter.FRIENDS_TO_ACCEPT, friendsToAccept);
+            View view = getView();
+            if (view != null) {
+                ExpandableListView listView = (ExpandableListView) view.findViewById(R.id.crew_expandable_list);
+                if (listView !=null) {
+                    BaseExpandableListAdapter b = (BaseExpandableListAdapter) listView.getAdapter();
+                    b.notifyDataSetChanged();
+                }
+            }
+        }
+
+
+    }
 }
+

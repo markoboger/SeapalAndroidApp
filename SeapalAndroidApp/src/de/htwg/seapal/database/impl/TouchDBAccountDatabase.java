@@ -1,6 +1,7 @@
 package de.htwg.seapal.database.impl;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.couchbase.lite.Database;
@@ -12,11 +13,16 @@ import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewResult;
 import org.ektorp.support.CouchDbRepositorySupport;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import de.htwg.seapal.database.IAccountDatabase;
+import de.htwg.seapal.database.TouchDBHelper;
 import de.htwg.seapal.database.impl.views.AllView;
 import de.htwg.seapal.database.impl.views.account.ByEmailView;
 import de.htwg.seapal.database.impl.views.account.FriendsView;
@@ -62,8 +68,10 @@ public class TouchDBAccountDatabase extends CouchDbRepositorySupport<Account> im
         View all = database.getView(String.format("%s/%s", dDocName, "all"));
         all.setMap(new AllView(), "1");
 
+        dbHelper.pullFromDatabase();
+        dbHelper.pushToDatabase();
 
-        Log.i(TAG, "Views = " + dbHelper.getTDDatabase().getAllViews());
+
     }
 
     @Override
@@ -100,26 +108,78 @@ public class TouchDBAccountDatabase extends CouchDbRepositorySupport<Account> im
     }
 
     @Override
-    public IAccount get(UUID uuid) {
-        List<? extends IAccount> accounts = queryViews("all", uuid.toString());
-        if (!accounts.isEmpty()) {
-            return accounts.get(0);
+    public IAccount get(final UUID uuid) {
+        AsyncTask<UUID,Void, IAccount> asyncTask = new AsyncTask<UUID, Void, IAccount>() {
+            @Override
+            protected IAccount doInBackground(UUID... params) {
+                UUID accountUuid = params[0];
+                return TouchDBAccountDatabase.super.get(accountUuid.toString());
+            }
+        };
+        try {
+            return asyncTask.execute(uuid).get(1, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return null;
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            return null;
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+            return null;
         }
-        return null;
-
     }
 
     @Override
     public List<IAccount> loadAll() {
-        List<IAccount> Accounts = new LinkedList<IAccount>(getAll());
-        Log.i(TAG, "Loaded entities. Count: " + Accounts.size());
-        return Accounts;
+        AsyncTask<Void,Void, List<Account>> asyncTask = new AsyncTask<Void, Void, List<Account>>() {
+            @Override
+            protected List<Account> doInBackground(Void... params) {
+                return TouchDBAccountDatabase.super.getAll();
+            }
+        };
+        try {
+             return new LinkedList<IAccount>(asyncTask.execute().get(1, TimeUnit.SECONDS));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
     }
 
     @Override
-    public void delete(UUID uuid) {
+    public void delete(final UUID uuid) {
         Log.i(TAG, "Removing entity with UUID: " + uuid.toString());
-        remove((Account) get(uuid));
+        AsyncTask<Void,Void, IAccount> getAccount = new AsyncTask<Void, Void, IAccount>() {
+            @Override
+            protected IAccount doInBackground(Void... params) {
+                return TouchDBAccountDatabase.super.get(uuid.toString());
+            }
+        };
+        try {
+            final Account account = (Account) getAccount.execute().get(1, TimeUnit.SECONDS);
+
+            AsyncTask<Void,Void, Void> removeAccount = new AsyncTask<Void, Void, Void>() {
+                @Override
+                protected Void doInBackground(Void... params) {
+                    TouchDBAccountDatabase.super.remove(account);
+                    return null;
+                }
+            };
+            removeAccount.execute();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+
 
     }
 
@@ -134,14 +194,35 @@ public class TouchDBAccountDatabase extends CouchDbRepositorySupport<Account> im
     }
 
     @Override
-    public List<? extends IAccount> queryViews(String viewName, String key) {
-        ViewResult vr = db.queryView(createQuery(viewName).key(key));
-        List<Account> accounts = dbHelper.mapViewResultTo(vr, Account.class);
-        return accounts;
+    public List<? extends IAccount> queryViews(final String viewName, final String key) {
+        AsyncTask<Void,Void, ViewResult> getAccount = new AsyncTask<Void, Void, ViewResult>() {
+            @Override
+            protected ViewResult doInBackground(Void... params) {
+                ViewResult vr = db.queryView(createQuery(viewName).key(key));
+                return vr;
+            }
+        };
+        ViewResult vr = null;
+        try {
+            vr = getAccount.execute().get(1, TimeUnit.SECONDS);
+            List<Account> accounts = dbHelper.mapViewResultTo(vr, Account.class);
+            return accounts;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
     }
 
     @Override
     public void update(ModelDocument modelDocument) {
 
     }
+
+
 }

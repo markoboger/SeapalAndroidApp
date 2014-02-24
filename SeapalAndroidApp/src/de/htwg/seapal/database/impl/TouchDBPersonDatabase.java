@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.UUID;
 
 import de.htwg.seapal.database.IPersonDatabase;
+import de.htwg.seapal.database.TouchDBHelper;
 import de.htwg.seapal.database.impl.views.AllView;
 import de.htwg.seapal.database.impl.views.OwnView;
 import de.htwg.seapal.database.impl.views.SingleDocumentView;
@@ -56,6 +57,9 @@ public class TouchDBPersonDatabase extends CouchDbRepositorySupport<Person> impl
 
         View all = database.getView(String.format("%s/%s", "Person", "all"));
         all.setMap(new AllView(), "1");
+
+        dbHelper.pullFromDatabase();
+        dbHelper.pushToDatabase();
 
     }
 

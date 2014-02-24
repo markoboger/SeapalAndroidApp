@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import de.htwg.seapal.events.crew.CrewRequestInit;
 import de.htwg.seapal.manager.SessionManager;
 import de.htwg.seapal.R;
 import de.htwg.seapal.controller.IAccountController;
@@ -28,6 +29,7 @@ import de.htwg.seapal.controller.IPersonController;
 import de.htwg.seapal.model.IModel;
 import de.htwg.seapal.model.impl.Person;
 import roboguice.RoboGuice;
+import roboguice.event.EventManager;
 
 /**
  * Created by jakub on 2/20/14.
@@ -57,10 +59,13 @@ public class CrewExpandableListAdapter extends BaseExpandableListAdapter {
 
     private List<String> _listDataHeader; // header titles
     // child data in format of header title, child title
-    private Map<String, Collection<? extends IModel>> _listDataChild;
+    private Map<String, List<Person>> _listDataChild;
+
+    @Inject
+    private EventManager eventManager;
 
     public CrewExpandableListAdapter(Context context, List<String> listDataHeader,
-                                     Map<String, Collection<? extends IModel>> listChildData) {
+                                     Map<String, List<Person>> listChildData) {
         this._context = context;
         this._listDataHeader = listDataHeader;
         this._listDataChild = listChildData;
@@ -87,9 +92,9 @@ public class CrewExpandableListAdapter extends BaseExpandableListAdapter {
         final Person child = (Person) getChild(groupPosition, childPosition);
 
         if (convertView == null) {
-            LayoutInflater infalInflater = (LayoutInflater) this._context
+            LayoutInflater inflater = (LayoutInflater) this._context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.crew_list_item, null);
+            convertView = inflater.inflate(R.layout.crew_list_item, null);
         }
 
 
@@ -166,6 +171,7 @@ public class CrewExpandableListAdapter extends BaseExpandableListAdapter {
 
 
 
+
     private class YouCrewClickListener implements View.OnClickListener {
         private Person person;
         private Context context;
@@ -184,6 +190,8 @@ public class CrewExpandableListAdapter extends BaseExpandableListAdapter {
                         public void onClick(DialogInterface dialog, int id) {
                             try {
                                 mainController.abortRequest(sessionManager.getSession(), UUID.fromString(person.getAccount()));
+                                _listDataChild.get(YOUR_CREW).remove(person);
+                                CrewExpandableListAdapter.this.notifyDataSetChanged();
                             } catch (NullPointerException e) {
                                 Toast.makeText(context, "Something Strange Happend", Toast.LENGTH_SHORT).show();
                             }
@@ -220,6 +228,9 @@ public class CrewExpandableListAdapter extends BaseExpandableListAdapter {
                         public void onClick(DialogInterface dialog, int id) {
                             try {
                                 mainController.addFriend(sessionManager.getSession(), UUID.fromString(person.getAccount()));
+                                _listDataChild.get(YOUR_CREW).add(person);
+                                _listDataChild.get(FRIENDS_TO_ACCEPT).remove(person);
+                                CrewExpandableListAdapter.this.notifyDataSetChanged();
                             } catch (NullPointerException e) {
                                 Toast.makeText(context, "Something Strange Happend", Toast.LENGTH_SHORT).show();
                             }
@@ -229,6 +240,7 @@ public class CrewExpandableListAdapter extends BaseExpandableListAdapter {
                         public void onClick(DialogInterface dialog, int id) {
                             try {
                                 mainController.abortRequest(sessionManager.getSession(), UUID.fromString(person.getAccount()));
+                                eventManager.fire(new CrewRequestInit());
                             } catch (NullPointerException e) {
                                 Toast.makeText(context, "Something Strange Happend", Toast.LENGTH_SHORT).show();
                             }
@@ -244,4 +256,6 @@ public class CrewExpandableListAdapter extends BaseExpandableListAdapter {
             builder.create().show();
         }
     }
+
+
 }

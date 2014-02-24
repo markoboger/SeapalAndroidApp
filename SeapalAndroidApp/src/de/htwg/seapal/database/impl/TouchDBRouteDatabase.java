@@ -19,12 +19,16 @@ import java.util.List;
 import java.util.UUID;
 
 import de.htwg.seapal.database.IRouteDatabase;
+import de.htwg.seapal.database.TouchDBHelper;
 import de.htwg.seapal.database.impl.views.AllView;
 import de.htwg.seapal.database.impl.views.OwnView;
 import de.htwg.seapal.database.impl.views.SingleDocumentView;
+import de.htwg.seapal.events.session.LogOutEvent;
+import de.htwg.seapal.events.session.LoginEvent;
 import de.htwg.seapal.model.IRoute;
 import de.htwg.seapal.model.ModelDocument;
 import de.htwg.seapal.model.impl.Route;
+import roboguice.event.Observes;
 import roboguice.inject.ContextSingleton;
 
 @ContextSingleton
@@ -133,5 +137,13 @@ public class TouchDBRouteDatabase extends CouchDbRepositorySupport<Route> implem
         connector.update(document);
     }
 
+
+    public void onLogin(@Observes LoginEvent event) {
+
+    }
+
+    public void onLogout(@Observes LogOutEvent event) {
+
+    }
 
 }
