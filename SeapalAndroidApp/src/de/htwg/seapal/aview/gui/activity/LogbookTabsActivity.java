@@ -47,7 +47,6 @@ public class LogbookTabsActivity extends BaseDrawerActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.logbook_fragment_tabs);
 
-
         final ActionBar ab = getActionBar();
         addTabs(ab);
         ab.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);

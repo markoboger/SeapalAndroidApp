@@ -140,10 +140,11 @@ public class MapActivity extends BaseDrawerActivity
 
 
     private Marker movingDirectionMarker;
-    private Marker aimDirectionMarker;
+    private Marker aimDirectionArrow;
     private Location oldLocation;
     private Uri fileUri;
     private Marker pictureMarker;
+    private Marker aimDirectionTarget;
 
     private enum SelectedOption {
         NONE, MARK, ROUTE, DISTANCE, GOAL, MENU_ROUTE, MENU_MARK, MENU_DISTANCE, MENU_GOAL
@@ -487,6 +488,7 @@ public class MapActivity extends BaseDrawerActivity
 
     @Override
     public void onDialogSetTargetClick(DialogFragment dialog) {
+        drawAimArrow();
         option = SelectedOption.GOAL;
     }
 
@@ -662,7 +664,10 @@ public class MapActivity extends BaseDrawerActivity
                 break;
             case 7:
                 // Discard Target
-                crosshairMarker.remove();
+                aimDirectionArrow.remove();
+                aimDirectionTarget.remove();
+                aimDirectionTarget = null;
+                aimDirectionArrow = null;
                 option = SelectedOption.NONE;
                 break;
         }
@@ -740,7 +745,7 @@ public class MapActivity extends BaseDrawerActivity
 
             @Override
             public void onLocationChanged(Location location) {
-                calualteArrowDirection(location);
+                drawDirectionAndAimArrow(location);
             }
 
             @Override
@@ -756,6 +761,37 @@ public class MapActivity extends BaseDrawerActivity
         manager.requestLocationUpdates(providers.get(1),0,0,loactionListener);
     }
 
+    private void drawDirectionAndAimArrow(Location location) {
+
+        if(aimDirectionArrow != null){
+            drawAimArrow();
+        }
+
+        if(oldLocation == null){
+            oldLocation = location;
+            return;
+        }
+
+        float angle = calualteArrowDirection(oldLocation, location);
+
+        showMovingDirection(angle);
+    }
+
+    private void drawAimArrow() {
+
+        Location targetPos = new Location("Target");
+        targetPos.setLatitude(crosshairMarker.getPosition().latitude);
+        targetPos.setLongitude(crosshairMarker.getPosition().longitude);
+
+        Location myPos = map.getMyLocation();
+
+        float angle = calualteArrowDirection(myPos, targetPos);
+        
+        showAimDirectionAndTarget(angle, targetPos);
+
+        crosshairMarker.remove();
+    }
+
     private void showMovingDirection(float direction){
 
         if(movingDirectionMarker != null){
@@ -768,39 +804,50 @@ public class MapActivity extends BaseDrawerActivity
 
             movingDirectionMarker = map.addMarker(new MarkerOptions()
                     .position(position)
-                    .rotation(direction));
-            movingDirectionMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.moving_direction));
+                    .rotation(direction)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.moving_direction))
+            );
         }
     }
 
-    private void showAimDirection(float direction){
+    private void showAimDirectionAndTarget(float direction, Location target){
 
-        if(aimDirectionMarker != null){
-            aimDirectionMarker.remove();
+        if(aimDirectionArrow != null){
+            aimDirectionArrow.remove();
+        }
+
+        if(aimDirectionTarget != null){
+            aimDirectionTarget.remove();
         }
 
         if(map.getMyLocation() != null){
 
             LatLng position = new LatLng(map.getMyLocation().getLatitude(),map.getMyLocation().getLongitude());
+            LatLng targetPos = new LatLng(target.getLatitude(), target.getLongitude());
 
-            aimDirectionMarker = map.addMarker(new MarkerOptions()
+            aimDirectionArrow = map.addMarker(new MarkerOptions()
                     .position(position)
-                    .rotation(direction));
-            aimDirectionMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.aim_direction));
+                    .rotation(direction)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.aim_direction))
+            );
+
+            aimDirectionTarget = map.addMarker(new MarkerOptions()
+                    .position(targetPos)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_distance))
+            );
         }
     }
 
-    private void calualteArrowDirection(Location location){
+    private float calualteArrowDirection(Location location, Location markerPos){
 
-        if(oldLocation == null){
-            oldLocation = location;
-            return;
-        }
+        double hypo = sqrt(pow(markerPos.getLongitude() - location.getLongitude(), 2) + pow(markerPos.getLatitude() - location.getLatitude(), 2));
+        float sin = (float) asin((markerPos.getLongitude() - location.getLongitude()) / hypo);
 
-        double hypo = sqrt(pow(location.getLatitude() - oldLocation.getLatitude(), 2) + pow(location.getLongitude() - oldLocation.getLongitude(), 2));
-        double sin = (float) asin((location.getLatitude() - oldLocation.getLatitude()) / hypo);
-        showAimDirection(0);
-        showMovingDirection((float) toDegrees(sin));
+        float angle = (float) toDegrees(sin);
+
+        angle = markerPos.getLatitude() < location.getLatitude() ? 180 - angle : angle;
+
+        return angle;
     }
 
     private void showPictureDialog(){
