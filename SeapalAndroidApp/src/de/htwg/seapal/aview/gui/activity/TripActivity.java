@@ -25,16 +25,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-import de.htwg.seapal.manager.SessionManager;
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.adapter.WaypointListAdapter;
 import de.htwg.seapal.controller.IMainController;
+import de.htwg.seapal.manager.SessionManager;
 import de.htwg.seapal.model.IWaypoint;
 import de.htwg.seapal.model.impl.Trip;
-import de.htwg.seapal.utils.observer.Event;
-import de.htwg.seapal.utils.observer.IObserver;
 
-public class TripActivity extends BaseDrawerActivity implements IObserver {
+public class TripActivity extends BaseDrawerActivity  {
 
     public static final String TRIP_PREFS = "trip_prefs";
 
@@ -125,11 +123,6 @@ public class TripActivity extends BaseDrawerActivity implements IObserver {
         }
 
 		return true;
-	}
-
-	@Override
-	public void update(Event event) {
-		fillText();
 	}
 
 	private void fillText() {

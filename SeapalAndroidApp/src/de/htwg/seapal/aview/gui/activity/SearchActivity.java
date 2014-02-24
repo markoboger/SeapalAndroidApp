@@ -17,6 +17,7 @@ import de.htwg.seapal.aview.gui.adapter.SearchTabsPagerAdapter;
  */
 public class SearchActivity extends BaseDrawerActivity implements ActionBar.TabListener{
 
+
     private ViewPager viewPager;
     private SearchTabsPagerAdapter mAdapter;
     private ActionBar actionBar;

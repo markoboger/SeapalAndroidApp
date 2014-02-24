@@ -3,14 +3,12 @@ package de.htwg.seapal.database.impl;
 import android.content.Context;
 import android.util.Log;
 
-import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Database;
 import com.couchbase.lite.View;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 import org.ektorp.CouchDbConnector;
-import org.ektorp.DocumentNotFoundException;
 import org.ektorp.ViewResult;
 import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.DesignDocument;
@@ -20,6 +18,7 @@ import java.util.List;
 import java.util.UUID;
 
 import de.htwg.seapal.database.IPersonDatabase;
+import de.htwg.seapal.database.impl.views.AllView;
 import de.htwg.seapal.database.impl.views.OwnView;
 import de.htwg.seapal.database.impl.views.SingleDocumentView;
 import de.htwg.seapal.model.IPerson;
@@ -40,6 +39,7 @@ public class TouchDBPersonDatabase extends CouchDbRepositorySupport<Person> impl
     @Inject
     public TouchDBPersonDatabase(@Named("personCouchDbConnector") TouchDBHelper helper, Context ctx) {
         super(Person.class, helper.getCouchDbConnector(), "Person");
+        initStandardDesignDocument();
         connector = helper.getCouchDbConnector();
         database = helper.getTDDatabase();
         dbHelper = helper;
@@ -52,12 +52,10 @@ public class TouchDBPersonDatabase extends CouchDbRepositorySupport<Person> impl
 
         View ownDoc = database.getView(String.format("%s/%s", "Person", "own"));
         ownDoc.setMap(new OwnView(), "1");
-        try {
-            singleDoc.updateIndex();
-            ownDoc.updateIndex();
-        } catch (CouchbaseLiteException e) {
-            e.printStackTrace();
-        }
+
+
+        View all = database.getView(String.format("%s/%s", "Person", "all"));
+        all.setMap(new AllView(), "1");
 
     }
 
@@ -89,11 +87,12 @@ public class TouchDBPersonDatabase extends CouchDbRepositorySupport<Person> impl
 
     @Override
     public IPerson get(UUID id) {
-        try {
-            return get(id.toString());
-        } catch (DocumentNotFoundException e) {
-            return null;
+        List<? extends IPerson> persons = queryViews("all", id.toString());
+        if (persons.size() == 1) {
+            return persons.get(0);
+
         }
+        return null;
     }
 
     @Override

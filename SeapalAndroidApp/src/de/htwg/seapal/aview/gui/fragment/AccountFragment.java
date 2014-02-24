@@ -209,21 +209,27 @@ public class AccountFragment extends Fragment implements PlusClient.ConnectionCa
                             EditText lastName = (EditText) view.findViewById(R.id.last_name);
                             EditText password = (EditText) view.findViewById(R.id.password);
                             EditText password_repeat = (EditText) view.findViewById(R.id.password_repeat);
-                            if (StringUtils.equals(password.getText().toString(), password_repeat.getText().toString())) {
-                                if (!accountController.accountExists(email.getText().toString())) {
-                                    SignupAccount s = new SignupAccount();
-                                    s.setEmail(email.getText().toString());
-                                    s.setFirstName(firstName.getText().toString());
-                                    s.setLastName(lastName.getText().toString());
-                                    s.setPassword(password.getText().toString());
-                                    accountController.saveAccount(s, true);
-                                    Toast.makeText(getActivity(), "Successfully Signed Up...  Now u can login with your Credentials", Toast.LENGTH_LONG).show();
-                                } else {
-                                    Toast.makeText(getActivity(), "Account already exists", Toast.LENGTH_LONG).show();
-                                }
 
+                            if (email != null && android.util.Patterns.EMAIL_ADDRESS.matcher(email.getText().toString()).matches()) {
+                                if (StringUtils.equals(password.getText().toString(), password_repeat.getText().toString())) {
+                                    if (!accountController.accountExists(email.getText().toString())) {
+                                        SignupAccount s = new SignupAccount();
+                                        s.setEmail(email.getText().toString());
+                                        s.setFirstName(firstName.getText().toString());
+                                        s.setLastName(lastName.getText().toString());
+                                        s.setPassword(password.getText().toString());
+                                        accountController.saveAccount(s, true);
+                                        Toast.makeText(getActivity(), "Successfully Signed Up...  Now u can login with your Credentials", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        Toast.makeText(getActivity(), "Account already exists", Toast.LENGTH_LONG).show();
+                                    }
+
+                                } else {
+                                    Toast.makeText(getActivity(), "password is not the same", Toast.LENGTH_LONG).show();
+
+                                }
                             } else {
-                                Toast.makeText(getActivity(), "password is not the same", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), "Not a valid email", Toast.LENGTH_LONG).show();
 
                             }
                         }

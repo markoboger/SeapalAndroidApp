@@ -145,5 +145,7 @@
     <string name="crew_dialog_accept_friend_decline">decline</string>
     <string name="crew_add_text">Add crew member</string>
     <string name="crew_add_title_text">Add a crew member!!</string>
+    <string name="crew_dialog_delete_friend">Delete Crew Member</string>
+    <string name="crew_dialog_delete_friend_button">delete crew member</string>
     <item name="tracking_service_started_text" type="id">Tracking Service Started</item>
 </resources>

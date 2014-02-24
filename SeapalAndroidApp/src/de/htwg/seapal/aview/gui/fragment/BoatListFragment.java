@@ -60,6 +60,7 @@ public class BoatListFragment extends RoboListFragment {
      */
     private List<IBoat> boatList;
 
+    private List<IBoat> boatListFriends;
     /**
      * is the selected position inside the list
      */
@@ -77,7 +78,9 @@ public class BoatListFragment extends RoboListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        boatList = (List<IBoat>) mainController.getDocuments("boat", sessionManager.getSession(), "all");
+        boatList = (List<IBoat>) mainController.getDocuments("boat", sessionManager.getSession(),sessionManager.getSession(), "all");
+        boatListFriends = (List<IBoat>) mainController.getDocuments("boat", sessionManager.getSession(),sessionManager.getSession(), "friends");
+
         final int layout = R.layout.boat_list_view;
 
 

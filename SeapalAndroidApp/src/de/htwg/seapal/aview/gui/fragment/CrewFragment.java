@@ -64,8 +64,8 @@ public class CrewFragment extends Fragment {
 
         groupLists = new LinkedHashMap<String, Collection<? extends IModel>>();
         if(sessionManager.isLoggedIn()) {
-            Collection<? extends IModel> yourCrew = mainController.getDocuments("person", sessionManager.getSession(), "friends");
-            Collection<? extends IModel> friendsToAccept = mainController.getDocuments("person", sessionManager.getSession(), "asking");
+            Collection<? extends IModel> yourCrew = mainController.getDocuments("person", sessionManager.getSession(),sessionManager.getSession(),"friends");
+            Collection<? extends IModel> friendsToAccept = mainController.getDocuments("person", sessionManager.getSession(),sessionManager.getSession(), "asking");
             groupLists.put(CrewExpandableListAdapter.YOUR_CREW, yourCrew);
             groupLists.put(CrewExpandableListAdapter.FRIENDS_TO_ACCEPT, friendsToAccept);
 
@@ -98,7 +98,7 @@ public class CrewFragment extends Fragment {
     public void onCrewAdd(@Observes OnCrewAddEvent event) {
         LayoutInflater i = (LayoutInflater) event.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View view = i.inflate(R.layout.crew_add_dialog, null);
-        new AlertDialog.Builder(getActivity())
+        new AlertDialog.Builder(event.getContext())
                 .setView(view)
                 .setMessage(R.string.crew_add_title_text)
                 .setPositiveButton(R.string.crew_add_text, new DialogInterface.OnClickListener() {

@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import de.htwg.seapal.manager.SessionManager;
 import de.htwg.seapal.R;
@@ -96,7 +97,12 @@ public class CrewExpandableListAdapter extends BaseExpandableListAdapter {
                 .findViewById(R.id.lblListItem);
 
 
-        if (this._listDataHeader.get(groupPosition) == FRIENDS_TO_ACCEPT) {
+
+        if (this._listDataHeader.get(groupPosition).equals(YOUR_CREW)) {
+            txtListChild.setOnClickListener(new YouCrewClickListener(_context,child));
+        }
+
+        if (this._listDataHeader.get(groupPosition).equals(FRIENDS_TO_ACCEPT)) {
 
             txtListChild.setOnClickListener(new FriendsToAcceptClickListener(_context,child));
 
@@ -156,6 +162,46 @@ public class CrewExpandableListAdapter extends BaseExpandableListAdapter {
     }
 
 
+
+
+
+
+    private class YouCrewClickListener implements View.OnClickListener {
+        private Person person;
+        private Context context;
+
+        public YouCrewClickListener(Context context, Person child) {
+            person = child;
+            this.context = context;
+        }
+
+        @Override
+        public void onClick(View v) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setMessage(R.string.crew_dialog_delete_friend)
+                    .setPositiveButton(R.string.crew_dialog_delete_friend_button, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            try {
+                                mainController.abortRequest(sessionManager.getSession(), UUID.fromString(person.getAccount()));
+                            } catch (NullPointerException e) {
+                                Toast.makeText(context, "Something Strange Happend", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+
+                        }
+                    });
+            // Create the AlertDialog object and show it.
+            builder.create().show();
+        }
+    }
+
+
+
     private class FriendsToAcceptClickListener implements View.OnClickListener {
         private Person person;
         private Context context;
@@ -173,7 +219,7 @@ public class CrewExpandableListAdapter extends BaseExpandableListAdapter {
                     .setPositiveButton(R.string.crew_dialog_accept_friend_yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             try {
-                                mainController.addFriend(sessionManager.getSession(), person.getUUID());
+                                mainController.addFriend(sessionManager.getSession(), UUID.fromString(person.getAccount()));
                             } catch (NullPointerException e) {
                                 Toast.makeText(context, "Something Strange Happend", Toast.LENGTH_SHORT).show();
                             }
@@ -182,7 +228,7 @@ public class CrewExpandableListAdapter extends BaseExpandableListAdapter {
                     .setNeutralButton(R.string.crew_dialog_accept_friend_decline, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             try {
-                                mainController.abortRequest(sessionManager.getSession(), person.getUUID());
+                                mainController.abortRequest(sessionManager.getSession(), UUID.fromString(person.getAccount()));
                             } catch (NullPointerException e) {
                                 Toast.makeText(context, "Something Strange Happend", Toast.LENGTH_SHORT).show();
                             }

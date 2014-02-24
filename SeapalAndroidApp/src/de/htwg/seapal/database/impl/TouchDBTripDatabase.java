@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.UUID;
 
 import de.htwg.seapal.database.ITripDatabase;
+import de.htwg.seapal.database.impl.views.AllView;
 import de.htwg.seapal.database.impl.views.BoatView;
 import de.htwg.seapal.database.impl.views.OwnView;
 import de.htwg.seapal.database.impl.views.SingleDocumentView;
@@ -39,6 +40,7 @@ public class TouchDBTripDatabase extends CouchDbRepositorySupport<Trip> implemen
     @Inject
     public TouchDBTripDatabase(@Named("tripCouchDbConnector") TouchDBHelper helper, Context ctx) {
         super(Trip.class, helper.getCouchDbConnector());
+        initStandardDesignDocument();
         dbHelper = helper;
         connector = dbHelper.getCouchDbConnector();
 
@@ -54,6 +56,12 @@ public class TouchDBTripDatabase extends CouchDbRepositorySupport<Trip> implemen
 
         View boatDoc = database.getView(String.format("%s/%s", "Trip", "boat"));
         boatDoc.setMap(new BoatView(), "1");
+
+
+        View all = database.getView(String.format("%s/%s", "Trip", "all"));
+        all.setMap(new AllView(), "1");
+
+
 
         try {
             singleDoc.updateIndex();

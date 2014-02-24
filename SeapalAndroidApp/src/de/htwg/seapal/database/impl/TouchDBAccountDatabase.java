@@ -9,7 +9,6 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 import org.ektorp.CouchDbConnector;
-import org.ektorp.DocumentNotFoundException;
 import org.ektorp.ViewResult;
 import org.ektorp.support.CouchDbRepositorySupport;
 
@@ -18,6 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 import de.htwg.seapal.database.IAccountDatabase;
+import de.htwg.seapal.database.impl.views.AllView;
 import de.htwg.seapal.database.impl.views.account.ByEmailView;
 import de.htwg.seapal.database.impl.views.account.FriendsView;
 import de.htwg.seapal.database.impl.views.account.GoogleIDView;
@@ -42,6 +42,7 @@ public class TouchDBAccountDatabase extends CouchDbRepositorySupport<Account> im
     @Inject
     public TouchDBAccountDatabase(@Named("accountCouchDbConnector") TouchDBHelper helper, Context ctx) {
         super(Account.class, helper.getCouchDbConnector());
+        initStandardDesignDocument();
         dbHelper = helper;
         couchDbConnector = dbHelper.getCouchDbConnector();
         database = dbHelper.getTDDatabase();
@@ -57,6 +58,10 @@ public class TouchDBAccountDatabase extends CouchDbRepositorySupport<Account> im
 
         View googlID = database.getView(String.format("%s/%s", dDocName, "googleID"));
         googlID.setMap(new GoogleIDView(), "1");
+
+        View all = database.getView(String.format("%s/%s", dDocName, "all"));
+        all.setMap(new AllView(), "1");
+
 
         Log.i(TAG, "Views = " + dbHelper.getTDDatabase().getAllViews());
     }
@@ -96,11 +101,12 @@ public class TouchDBAccountDatabase extends CouchDbRepositorySupport<Account> im
 
     @Override
     public IAccount get(UUID uuid) {
-        try {
-            return get(uuid.toString());
-        } catch (DocumentNotFoundException e) {
-            return null;
+        List<? extends IAccount> accounts = queryViews("all", uuid.toString());
+        if (!accounts.isEmpty()) {
+            return accounts.get(0);
         }
+        return null;
+
     }
 
     @Override

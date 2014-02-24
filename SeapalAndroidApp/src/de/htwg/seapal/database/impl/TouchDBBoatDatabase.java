@@ -1,25 +1,22 @@
 package de.htwg.seapal.database.impl;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Database;
 import com.couchbase.lite.View;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 import org.ektorp.CouchDbConnector;
-import org.ektorp.DocumentNotFoundException;
 import org.ektorp.ViewResult;
 import org.ektorp.support.CouchDbRepositorySupport;
-import org.ektorp.support.DesignDocument;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
 import de.htwg.seapal.database.IBoatDatabase;
+import de.htwg.seapal.database.impl.views.AllView;
 import de.htwg.seapal.database.impl.views.OwnView;
 import de.htwg.seapal.database.impl.views.SingleDocumentView;
 import de.htwg.seapal.model.IBoat;
@@ -44,20 +41,16 @@ public class TouchDBBoatDatabase extends CouchDbRepositorySupport<Boat> implemen
         connector = dbHelper.getCouchDbConnector();
         database = dbHelper.getTDDatabase();
 
-        DesignDocument d = super.getDesignDocumentFactory().generateFrom(this);
-        Log.i(TAG,"Views = " + d.getViews());
-
         View singleDoc = database.getView(String.format("%s/%s", "Boat", "singleDocument"));
         singleDoc.setMap(new SingleDocumentView(), "1");
 
         View ownDoc = database.getView(String.format("%s/%s", "Boat", "own"));
         ownDoc.setMap(new OwnView(), "1");
-        try {
-            singleDoc.updateIndex();
-            ownDoc.updateIndex();
-        } catch (CouchbaseLiteException e) {
-            e.printStackTrace();
-        }
+
+
+        View all = database.getView(String.format("%s/%s", "Boat", "all"));
+        all.setMap(new AllView(), "1");
+
     }
 
 
@@ -89,11 +82,12 @@ public class TouchDBBoatDatabase extends CouchDbRepositorySupport<Boat> implemen
 
     @Override
     public IBoat get(UUID id) {
-        try {
-            return get(id.toString());
-        } catch (DocumentNotFoundException e) {
-            return null;
+        List<? extends IBoat> boats = queryViews("all", id.toString());
+        if (boats.size() == 1) {
+            return boats.get(0);
+
         }
+        return null;
     }
 
     @Override

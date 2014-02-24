@@ -3,7 +3,6 @@ package de.htwg.seapal.database.impl;
 import android.content.Context;
 import android.util.Log;
 
-import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Database;
 import com.couchbase.lite.View;
 import com.google.inject.Inject;
@@ -20,6 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 import de.htwg.seapal.database.IRouteDatabase;
+import de.htwg.seapal.database.impl.views.AllView;
 import de.htwg.seapal.database.impl.views.OwnView;
 import de.htwg.seapal.database.impl.views.SingleDocumentView;
 import de.htwg.seapal.model.IRoute;
@@ -52,12 +52,10 @@ public class TouchDBRouteDatabase extends CouchDbRepositorySupport<Route> implem
 
         View ownDoc = database.getView(String.format("%s/%s", "Route", "own"));
         ownDoc.setMap(new OwnView(), "1");
-        try {
-            singleDoc.updateIndex();
-            ownDoc.updateIndex();
-        } catch (CouchbaseLiteException e) {
-            e.printStackTrace();
-        }
+
+        View all = database.getView(String.format("%s/%s", "Route", "all"));
+        all.setMap(new AllView(), "1");
+
 
     }
 

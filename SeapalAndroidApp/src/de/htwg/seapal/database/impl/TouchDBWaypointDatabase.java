@@ -3,7 +3,6 @@ package de.htwg.seapal.database.impl;
 import android.content.Context;
 import android.util.Log;
 
-import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Database;
 import com.couchbase.lite.View;
 import com.google.inject.Inject;
@@ -20,6 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 import de.htwg.seapal.database.IWaypointDatabase;
+import de.htwg.seapal.database.impl.views.AllView;
 import de.htwg.seapal.database.impl.views.BoatView;
 import de.htwg.seapal.database.impl.views.OwnView;
 import de.htwg.seapal.database.impl.views.SingleDocumentView;
@@ -41,6 +41,7 @@ public class TouchDBWaypointDatabase extends CouchDbRepositorySupport<Waypoint> 
     @Inject
     public TouchDBWaypointDatabase(@Named("waypointCouchDbConnector") TouchDBHelper helper, Context ctx) {
         super(Waypoint.class, helper.getCouchDbConnector());
+        initStandardDesignDocument();
         dbHelper = helper;
         connector = dbHelper.getCouchDbConnector();
 
@@ -64,13 +65,8 @@ public class TouchDBWaypointDatabase extends CouchDbRepositorySupport<Waypoint> 
         View tripDoc = database.getView(String.format("%s/%s", "Waypoint", "trip"));
         tripDoc.setMap(new TripView(), "1");
 
-        try {
-            singleDoc.updateIndex();
-            ownDoc.updateIndex();
-            boatDoc.updateIndex();
-        } catch (CouchbaseLiteException e) {
-            e.printStackTrace();
-        }
+        View all = database.getView(String.format("%s/%s", "Waypoint", "all"));
+        all.setMap(new AllView(), "1");
 
 
     }

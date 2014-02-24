@@ -3,7 +3,6 @@ package de.htwg.seapal.database.impl;
 import android.content.Context;
 import android.util.Log;
 
-import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Database;
 import com.couchbase.lite.View;
 import com.google.inject.Inject;
@@ -11,7 +10,6 @@ import com.google.inject.name.Named;
 
 import org.ektorp.AttachmentInputStream;
 import org.ektorp.CouchDbConnector;
-import org.ektorp.DocumentNotFoundException;
 import org.ektorp.ViewResult;
 import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.DesignDocument;
@@ -25,6 +23,7 @@ import java.util.List;
 import java.util.UUID;
 
 import de.htwg.seapal.database.IMarkDatabase;
+import de.htwg.seapal.database.impl.views.AllView;
 import de.htwg.seapal.database.impl.views.OwnView;
 import de.htwg.seapal.database.impl.views.SingleDocumentView;
 import de.htwg.seapal.model.IMark;
@@ -45,6 +44,7 @@ public class TouchDBMarkDatabase extends CouchDbRepositorySupport<Mark> implemen
     @Inject
     public TouchDBMarkDatabase(@Named("markCouchDbConnector") TouchDBHelper helper, Context ctx) {
         super(Mark.class, helper.getCouchDbConnector());
+        initStandardDesignDocument();
         dbHelper = helper;
         connector = dbHelper.getCouchDbConnector();
         database = dbHelper.getTDDatabase();
@@ -56,12 +56,10 @@ public class TouchDBMarkDatabase extends CouchDbRepositorySupport<Mark> implemen
 
         View ownDoc = database.getView(String.format("%s/%s", "Mark", "own"));
         ownDoc.setMap(new OwnView(), "1");
-        try {
-            singleDoc.updateIndex();
-            ownDoc.updateIndex();
-        } catch (CouchbaseLiteException e) {
-            e.printStackTrace();
-        }
+
+        View all = database.getView(String.format("%s/%s", "Mark", "all"));
+        all.setMap(new AllView(), "1");
+
     }
 
     @Override
@@ -92,11 +90,12 @@ public class TouchDBMarkDatabase extends CouchDbRepositorySupport<Mark> implemen
 
     @Override
     public IMark get(UUID id) {
-        try {
-            return get(id.toString());
-        } catch (DocumentNotFoundException e) {
-            return null;
+        List<? extends IMark> marks = queryViews("all", id.toString());
+        if (marks.size() == 1) {
+            return marks.get(0);
+
         }
+        return null;
     }
 
     @Override
