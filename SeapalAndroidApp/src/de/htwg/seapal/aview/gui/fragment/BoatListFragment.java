@@ -138,7 +138,7 @@ public class BoatListFragment extends RoboFragment {
         if  (boat != null) {
             Toast.makeText(getActivity(), "New Boat Created",
                     Toast.LENGTH_SHORT).show();
-            eventManager.fire(new BoatCreatedEvent());
+            eventManager.fire(new BoatCreatedEvent(boat));
         }
     }
 
@@ -153,12 +153,23 @@ public class BoatListFragment extends RoboFragment {
             if (caret != null)
                 caret.setVisibility(View.INVISIBLE);
         }
-        int group = ExpandableListView.getPackedPositionGroup(mCurrentPosition);
-        int child = ExpandableListView.getPackedPositionChild(mCurrentPosition);
-        Boat b = (Boat) boatView.getExpandableListAdapter().getChild(group, child);
-        if (b != null) {
-            mainController.deleteDocument("boat", sessionManager.getSession(), b.getUUID());
-            eventManager.fire(new BoatDeletedEvent());
+        if (mCurrentPosition != -1) {
+            int group = ExpandableListView.getPackedPositionGroup(mCurrentPosition);
+            int child = ExpandableListView.getPackedPositionChild(mCurrentPosition);
+            String  groupString = (String) boatView.getExpandableListAdapter().getGroup(group);
+            if (BoatExpandableListAdapter.YOUR_BOATS.equals(groupString)) {
+                Boat b = (Boat) boatView.getExpandableListAdapter().getChild(group, child);
+                if (b != null) {
+                    mainController.deleteDocument("boat", sessionManager.getSession(), b.getUUID());
+                    eventManager.fire(new BoatDeletedEvent(mCurrentPosition));
+                    mCurrentPosition = -1;
+                }
+            } else {
+                Toast.makeText(getActivity(), "You are not able to delete boats of you crew", Toast.LENGTH_LONG).show();
+
+            }
+        }else {
+            Toast.makeText(getActivity(), "No boat selected", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -173,12 +184,19 @@ public class BoatListFragment extends RoboFragment {
         eventManager.fire(r);
         Boat b = (Boat) r.getBoat();
         if (b != null) {
-            mainController.creatDocument("boat", b, sessionManager.getSession());
-            Toast.makeText(getActivity(), "Boat Saved", Toast.LENGTH_LONG).show();
-            eventManager.fire(new BoatSavedEvent());
-
+            int group = ExpandableListView.getPackedPositionGroup(mCurrentPosition);
+            int child = ExpandableListView.getPackedPositionChild(mCurrentPosition);
+            String  groupString = (String) boatView.getExpandableListAdapter().getGroup(group);
+            if (BoatExpandableListAdapter.YOUR_BOATS.equals(groupString)) {
+                mainController.creatDocument("boat", b, sessionManager.getSession());
+                Toast.makeText(getActivity(), "Boat Saved", Toast.LENGTH_LONG).show();
+                eventManager.fire(new BoatSavedEvent());
+            } else {
+                Toast.makeText(getActivity(), R.string.save_only_own_boats, Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Toast.makeText(getActivity(), R.string.save_only_own_boats, Toast.LENGTH_LONG).show();
         }
-
 
     }
 
@@ -194,13 +212,16 @@ public class BoatListFragment extends RoboFragment {
         if (mCurrentPosition != -1) {
             int group = ExpandableListView.getPackedPositionGroup(mCurrentPosition);
             int child = ExpandableListView.getPackedPositionChild(mCurrentPosition);
-            Boat b = (Boat) boatView.getExpandableListAdapter().getChild(group,child);
-            if (b != null ) {
-                eventManager.fire(new BoatFavoredEvent(b.getUUID()));
-                Toast.makeText(getActivity(), "Boat Favoured", Toast.LENGTH_LONG).show();
+            String  groupString = (String) boatView.getExpandableListAdapter().getGroup(group);
+            if (BoatExpandableListAdapter.YOUR_BOATS.equals(groupString)) {
+                Boat b = (Boat) boatView.getExpandableListAdapter().getChild(group,child);
+                if (b != null ) {
+                    eventManager.fire(new BoatFavoredEvent(b.getUUID()));
+                    Toast.makeText(getActivity(), "Boat Favoured", Toast.LENGTH_LONG).show();
+                }
+            } else {
+                Toast.makeText(getActivity(), R.string.favour_only_own_boats, Toast.LENGTH_LONG).show();
             }
-
-
         }
     }
 

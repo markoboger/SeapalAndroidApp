@@ -50,6 +50,7 @@
         <activity
             android:name="de.htwg.seapal.aview.gui.activity.MapActivity"
             android:theme="@style/OverlayActionBar"
+            android:launchMode="singleInstance"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

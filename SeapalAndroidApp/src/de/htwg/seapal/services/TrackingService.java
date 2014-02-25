@@ -3,9 +3,11 @@ package de.htwg.seapal.services;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -14,6 +16,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -21,9 +24,11 @@ import com.google.inject.Inject;
 
 import java.util.UUID;
 
-import de.htwg.seapal.manager.SessionManager;
 import de.htwg.seapal.R;
+import de.htwg.seapal.aview.gui.activity.MapActivity;
 import de.htwg.seapal.controller.IMainController;
+import de.htwg.seapal.manager.SessionManager;
+import de.htwg.seapal.model.impl.Trip;
 import de.htwg.seapal.model.impl.Waypoint;
 import roboguice.service.RoboService;
 
@@ -41,6 +46,7 @@ public class TrackingService extends RoboService implements LocationListener {
     public static final String WAYPOINT_BROADCAST_RECEIVER = "broadcast_receiver";
     public static final String LAT_LNG = "trip_lat_lng";
     public static final String BOAT_UUID = "boat_uuid";
+    public static final String TRIP = "trip_object";
     // Declaring a Location Manager
     protected LocationManager locationManager;
     private Context mContext;
@@ -64,6 +70,7 @@ public class TrackingService extends RoboService implements LocationListener {
     private NotificationManager mNotificationManager;
     private int NOTIFICATION = R.string.tracking_service_started_text;
     private IBinder mBinder = new TrackingServiceBinder();
+    private Trip mTripObject;
 
 
     private void startGps() {
@@ -231,7 +238,12 @@ public class TrackingService extends RoboService implements LocationListener {
     public void onStart(Intent intent, int startId) {
         String tripString = intent.getStringExtra(TRIP_UUID);
         String boatString = intent.getStringExtra(BOAT_UUID);
+        Bundle b = intent.getExtras();
+        Trip trip = (Trip) b.get(TRIP);
+
+
         mTrip = UUID.fromString(tripString);
+        mTripObject = trip;
         mBoat = UUID.fromString(boatString);
         mContext = getApplicationContext();
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -265,8 +277,23 @@ public class TrackingService extends RoboService implements LocationListener {
     private void showNotification() {
         // In this sample, we'll use the same text for the ticker and the expanded notification
         CharSequence text = getText(NOTIFICATION);
+        Intent resultIntent = new Intent(this, MapActivity.class);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        // Adds the back stack
+        stackBuilder.addParentStack(MapActivity.class);
+        // Adds the Intent to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        // Gets a PendingIntent containing the entire back stack
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Notification notification = new NotificationCompat.Builder(mContext).setContentTitle(text).setSmallIcon(R.drawable.seapal_launcher).build();
+        Notification notification = new NotificationCompat.Builder(mContext)
+                .setContentTitle(String.format("%s for Trip %s",text, mTripObject.getName()))
+                .setContentText(String.format("From %s to %s",mTripObject.getFrom(), mTripObject.getTo()))
+                .setSmallIcon(R.drawable.seapal_launcher)
+                .setAutoCancel(false)
+                .setContentIntent(resultPendingIntent)
+                .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.seapal_launcher))
+                .build();
 
         // Send the notification.
         mNotificationManager.notify(NOTIFICATION, notification);

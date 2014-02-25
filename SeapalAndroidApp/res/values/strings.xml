@@ -147,5 +147,12 @@
     <string name="crew_add_title_text">Add a crew member!!</string>
     <string name="crew_dialog_delete_friend">Delete Crew Member</string>
     <string name="crew_dialog_delete_friend_button">delete crew member</string>
+    <string name="save_only_own_boats">You are not able to save a boat of a crew member</string>
+    <string name="favour_only_own_boats">You are not able to favour boats of you crew</string>
+    <string name="tracking_trip_name">name your trip</string>
+    <string name="tracking_trip_from">where do you start your trip</string>
+    <string name="tracking_trip_to">where are you going to sail</string>
+    <string name="enter_some_trip_info">Enter some Trip Info for the tracking</string>
+    <string name="tracking_start">start tracking</string>
     <item name="tracking_service_started_text" type="id">Tracking Service Started</item>
 </resources>

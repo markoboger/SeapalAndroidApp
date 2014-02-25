@@ -34,6 +34,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -52,7 +53,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.inject.Inject;
 
-import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
@@ -66,10 +66,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import de.htwg.seapal.manager.SessionManager;
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.adapter.SideDrawerListAdapter;
-import de.htwg.seapal.services.TrackingService;
 import de.htwg.seapal.aview.gui.fragment.MapDialogFragment;
 import de.htwg.seapal.aview.gui.fragment.PictureDialogFragment;
 import de.htwg.seapal.aview.gui.plugins.IMapPlugin;
@@ -78,8 +76,11 @@ import de.htwg.seapal.aview.gui.plugins.impl.CalcDistanceMapPlugin;
 import de.htwg.seapal.aview.gui.plugins.impl.RouteDrawingMapPlugin;
 import de.htwg.seapal.aview.gui.plugins.impl.WaypointDrawingMapPlugin;
 import de.htwg.seapal.controller.IMainController;
+import de.htwg.seapal.manager.SessionManager;
+import de.htwg.seapal.model.IModel;
 import de.htwg.seapal.model.IWaypoint;
 import de.htwg.seapal.model.impl.Trip;
+import de.htwg.seapal.services.TrackingService;
 import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
@@ -101,44 +102,31 @@ public class MapActivity extends BaseDrawerActivity
     private static final String MAP_SELECTED_OPTION_STATE = "map_selected_option_state";
     private static final String REGISTERED_PLUGINS_LIST = "map_registered_plugins";
     private static final int REQUEST_IMAGE_CAPTURE = 1;
-
+    public static Marker crosshairMarker;
+    String mCurrentPhotoPath;
     // Tracking Service
     private Intent trackingService;
     private TrackingServiceWaypointBroadcastReceiver waypointBroadcastReceiver;
-
-
     /**
-     *  used to register plugins for the map.
+     * used to register plugins for the map.
      */
     private HashMap<String, IMapPlugin> mapPluginHashMap;
-
-
     private MarkerOptions crosshairMarkerOptions;
-
     @Inject
     private IMainController mainController;
-
     @Inject
     private SessionManager sessionManager;
-
     // Drawer fields
     @InjectView(R.id.drawer_menu_drawer_list_right)
     private ListView drawerListViewRight;
     @InjectResource(R.array.drawer_list_array_right)
     private String[] drawerActivityListRight;
     private DrawerLayout drawer;
-
-    public static Marker crosshairMarker;
-
-
     private GoogleMap map;
-
     /**
      * State of the Activity
      */
     private SelectedOption option = SelectedOption.NONE;
-
-
     private Marker movingDirectionMarker;
     private Marker aimDirectionArrow;
     private Location oldLocation;
@@ -146,42 +134,24 @@ public class MapActivity extends BaseDrawerActivity
     private Marker pictureMarker;
     private Marker aimDirectionTarget;
 
-    private enum SelectedOption {
-        NONE, MARK, ROUTE, DISTANCE, GOAL, MENU_ROUTE, MENU_MARK, MENU_DISTANCE, MENU_GOAL
-    }
-
-
-    public class TrackingServiceWaypointBroadcastReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            LatLng latLng = intent.getParcelableExtra(TrackingService.LAT_LNG);
-            WaypointDrawingMapPlugin plugin = (WaypointDrawingMapPlugin) getMapPlugin("waypoint_tracking_map_plugin");
-            if (plugin != null) {
-                plugin.doAction(map, latLng);
-                plugin.redraw(map);
-            }
-
-        }
-    }
-
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            if (parent.getId() == R.id.drawer_menu_drawer_list_right) {
-                selectChoosenMeunPoint(position);
-                drawer.closeDrawer(Gravity.END);
-            }
-        }
-    }
-
-
     private static boolean isIntentAvailable(Context context) {
         final PackageManager packageManager = context.getPackageManager();
         final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         List<ResolveInfo> list =
                 packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
         return list.size() > 0;
+    }
+
+    public static void zoomToWaypointRoute(GoogleMap map, List<LatLng> waypointList) {
+        if (waypointList != null && !waypointList.isEmpty()) {
+            LatLngBounds.Builder boundsBuilder = LatLngBounds.builder();
+            for (LatLng latLng : waypointList) {
+                boundsBuilder.include(latLng);
+            }
+            LatLngBounds latLngBounds = boundsBuilder.build();
+            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngBounds(latLngBounds, 50);
+            map.animateCamera(yourLocation);
+        }
     }
 
     @Override
@@ -258,13 +228,12 @@ public class MapActivity extends BaseDrawerActivity
     }
 
     @Override
-    public void  unregisterMapPlugin(String name) {
+    public void unregisterMapPlugin(String name) {
         if (mapPluginHashMap.containsKey(name)) {
             mapPluginHashMap.remove(name);
         }
 
     }
-
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -323,13 +292,13 @@ public class MapActivity extends BaseDrawerActivity
         super.onRestoreInstanceState(savedInstanceState);
         Bundle pauseState = getIntent().getBundleExtra("pause_state");
         if (pauseState != null) {
-        // Restoring registered plugins.
+            // Restoring registered plugins.
             mapPluginHashMap = (HashMap<String, IMapPlugin>) pauseState.get(REGISTERED_PLUGINS_LIST);
             // Restoring Map State
             option = (SelectedOption) pauseState.getSerializable(MAP_SELECTED_OPTION_STATE);
 
             // Redrawing Plugins
-            for (Map.Entry<String, IMapPlugin> m: mapPluginHashMap.entrySet()) {
+            for (Map.Entry<String, IMapPlugin> m : mapPluginHashMap.entrySet()) {
                 m.getValue().redraw(map);
             }
 
@@ -363,7 +332,7 @@ public class MapActivity extends BaseDrawerActivity
             canvas1.drawBitmap(imageBitmap, 5, 5, color);
 
             //add marker to Map
-            if(pictureMarker != null)
+            if (pictureMarker != null)
                 pictureMarker.remove();
             pictureMarker = map.addMarker(new MarkerOptions().position(coor).icon(BitmapDescriptorFactory.fromBitmap(bmp)));
 
@@ -387,7 +356,7 @@ public class MapActivity extends BaseDrawerActivity
 
     @Override
     public boolean onSearchRequested() {
-        Toast.makeText(this,"Coooool",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Coooool", Toast.LENGTH_SHORT).show();
         return super.onSearchRequested();
     }
 
@@ -421,11 +390,11 @@ public class MapActivity extends BaseDrawerActivity
                 break;
             case ROUTE:
                 RouteDrawingMapPlugin routeDrawingMapPlugin = (RouteDrawingMapPlugin) getMapPlugin("route_drawing_map_plugin");
-                routeDrawingMapPlugin.doAction(map,latlng);
+                routeDrawingMapPlugin.doAction(map, latlng);
                 break;
             case DISTANCE:
                 CalcDistanceMapPlugin c = (CalcDistanceMapPlugin) getMapPlugin("calc_distance_map_plugin");
-                double calcDistance =  c.doAction(map, latlng);
+                double calcDistance = c.doAction(map, latlng);
                 Toast.makeText(getApplicationContext(),
                         String.format("%.2f", calcDistance) + "KM",
                         Toast.LENGTH_SHORT).show();
@@ -482,7 +451,7 @@ public class MapActivity extends BaseDrawerActivity
     @Override
     public void onDialogcalcDistanceClick(DialogFragment dialog) {
         option = SelectedOption.DISTANCE;
-        registerMapPlugin("calc_distance_map_plugin",new CalcDistanceMapPlugin(map, crosshairMarker.getPosition()));
+        registerMapPlugin("calc_distance_map_plugin", new CalcDistanceMapPlugin(map, crosshairMarker.getPosition()));
         crosshairMarker.remove();
     }
 
@@ -502,24 +471,12 @@ public class MapActivity extends BaseDrawerActivity
         Intent i = getIntent();
         List<IWaypoint> waypoints = (List<IWaypoint>) i.getSerializableExtra("waypoints");
         if (waypoints != null) {
-            registerMapPlugin("map_way_point_trough_trip_plugin", new WaypointDrawingMapPlugin(map,"#333333"));
+            registerMapPlugin("map_way_point_trough_trip_plugin", new WaypointDrawingMapPlugin(map, "#333333"));
             WaypointDrawingMapPlugin waypointDrawingMapPlugin = (WaypointDrawingMapPlugin) getMapPlugin("map_way_point_trough_trip_plugin");
             for (IWaypoint w : waypoints) {
-                 waypointDrawingMapPlugin.doAction(map, new LatLng(w.getLatitude(), w.getLongitude()));
+                waypointDrawingMapPlugin.doAction(map, new LatLng(w.getLatitude(), w.getLongitude()));
             }
             waypointDrawingMapPlugin.zoomTo(map);
-        }
-    }
-
-    public static void zoomToWaypointRoute(GoogleMap map, List<LatLng> waypointList) {
-        if (waypointList != null && !waypointList.isEmpty()) {
-            LatLngBounds.Builder boundsBuilder = LatLngBounds.builder();
-            for (LatLng latLng : waypointList) {
-                boundsBuilder.include(latLng);
-            }
-            LatLngBounds latLngBounds = boundsBuilder.build();
-            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngBounds(latLngBounds, 50);
-            map.animateCamera(yourLocation);
         }
     }
 
@@ -566,6 +523,8 @@ public class MapActivity extends BaseDrawerActivity
                 unregisterMapPlugin("waypoint_tracking_map_plugin");
                 stopService(trackingService);
                 trackingService = null;
+            } else {
+                Toast.makeText(getApplicationContext(), "Somehow the trip tracking did not create a trip, maybe you started tracking for a crew ship.", Toast.LENGTH_SHORT).show();
             }
         } else {
             Toast.makeText(getApplicationContext(), "Tracking not Started", Toast.LENGTH_SHORT).show();
@@ -576,23 +535,62 @@ public class MapActivity extends BaseDrawerActivity
     private void startTracking() {
         SharedPreferences s = getSharedPreferences(LogbookTabsActivity.LOGBOOK_PREFS, 0);
         final String boatString = s.getString(LogbookTabsActivity.LOGBOOK_BOAT_FAVOURED, "");
+
         if (!StringUtils.isEmpty(boatString) && trackingService == null) {
 
-            Trip t = new Trip();
-            t.setStartDate(System.currentTimeMillis());
-            t.setName(RandomStringUtils.random(12));
-            t.setBoat(boatString);
-            t = (Trip) mainController.creatDocument("trip", t, sessionManager.getSession());
+            Collection<? extends IModel> boat = mainController.getSingleDocument("boat", sessionManager.getSession(), UUID.fromString(boatString));
+            if (!boat.isEmpty()) {
 
-            trackingService = new Intent(this, TrackingService.class);
-            UUID tripUuid = t.getUUID();
-            trackingService.putExtra(TrackingService.TRIP_UUID, tripUuid.toString());
-            trackingService.putExtra(TrackingService.BOAT_UUID, boatString);
 
-            registerReceiver(waypointBroadcastReceiver, new IntentFilter(TrackingService.WAYPOINT_BROADCAST_RECEIVER));
-            registerMapPlugin("waypoint_tracking_map_plugin", new WaypointDrawingMapPlugin(map,"#345212"));
+                LayoutInflater inflater = getLayoutInflater();
+                final View view = inflater.inflate(R.layout.start_tracking_dialog, null);
 
-            startService(trackingService);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(R.string.enter_some_trip_info)
+                        .setView(view)
+                        .setPositiveButton(R.string.tracking_start, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                EditText name = (EditText) view.findViewById(R.id.tracking_trip_name);
+                                EditText from = (EditText) view.findViewById(R.id.tracking_trip_from);
+                                EditText to = (EditText) view.findViewById(R.id.tracking_trip_to);
+
+
+                                Trip t = new Trip();
+                                t.setStartDate(System.currentTimeMillis());
+                                t.setName(name.getText().toString());
+                                t.setTo(to.getText().toString());
+                                t.setFrom(from.getText().toString());
+                                t.setBoat(boatString);
+                                t = (Trip) mainController.creatDocument("trip", t, sessionManager.getSession());
+
+                                trackingService = new Intent(MapActivity.this, TrackingService.class);
+                                UUID tripUuid = t.getUUID();
+                                trackingService.putExtra(TrackingService.TRIP, t);
+                                trackingService.putExtra(TrackingService.TRIP_UUID, tripUuid.toString());
+                                trackingService.putExtra(TrackingService.BOAT_UUID, boatString);
+
+                                registerReceiver(waypointBroadcastReceiver, new IntentFilter(TrackingService.WAYPOINT_BROADCAST_RECEIVER));
+                                registerMapPlugin("waypoint_tracking_map_plugin", new WaypointDrawingMapPlugin(map, "#345212"));
+
+                                Toast.makeText(getApplicationContext(), "Tracking Started", Toast.LENGTH_SHORT).show();
+
+                                startService(trackingService);
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+
+                            }
+                        });
+                // Create the AlertDialog object and show it.
+                builder.create().show();
+
+
+            } else {
+                Toast.makeText(getApplicationContext(), "You probably favoured a boat of your crew", Toast.LENGTH_SHORT).show();
+            }
 
         } else {
             Toast.makeText(getApplicationContext(), "No favoured boat or tracking already started", Toast.LENGTH_SHORT).show();
@@ -682,7 +680,6 @@ public class MapActivity extends BaseDrawerActivity
         }
     }
 
-    String mCurrentPhotoPath;
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -702,13 +699,14 @@ public class MapActivity extends BaseDrawerActivity
 
     /**
      * goToLastKnownLocation
+     *
      * @param ZoomLevel value 0 keeps the current zoom level
      */
     private void goToLastKnownLocation(float ZoomLevel) {
         // get current position
         LatLng coordinate = getLastKnownLocation();
 
-        if(ZoomLevel == 0){
+        if (ZoomLevel == 0) {
             ZoomLevel = map.getCameraPosition().zoom;
         }
 
@@ -749,25 +747,28 @@ public class MapActivity extends BaseDrawerActivity
             }
 
             @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {}
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+            }
 
             @Override
-            public void onProviderEnabled(String provider) {}
+            public void onProviderEnabled(String provider) {
+            }
 
             @Override
-            public void onProviderDisabled(String provider) {}
+            public void onProviderDisabled(String provider) {
+            }
         };
 
-        manager.requestLocationUpdates(providers.get(1),0,0,loactionListener);
+        manager.requestLocationUpdates(providers.get(1), 0, 0, loactionListener);
     }
 
     private void drawDirectionAndAimArrow(Location location) {
 
-        if(aimDirectionArrow != null){
+        if (aimDirectionArrow != null) {
             drawAimArrow();
         }
 
-        if(oldLocation == null){
+        if (oldLocation == null) {
             oldLocation = location;
             return;
         }
@@ -786,21 +787,21 @@ public class MapActivity extends BaseDrawerActivity
         Location myPos = map.getMyLocation();
 
         float angle = calualteArrowDirection(myPos, targetPos);
-        
+
         showAimDirectionAndTarget(angle, targetPos);
 
         crosshairMarker.remove();
     }
 
-    private void showMovingDirection(float direction){
+    private void showMovingDirection(float direction) {
 
-        if(movingDirectionMarker != null){
+        if (movingDirectionMarker != null) {
             movingDirectionMarker.remove();
         }
 
-        if(map.getMyLocation() != null){
+        if (map.getMyLocation() != null) {
 
-            LatLng position = new LatLng(map.getMyLocation().getLatitude(),map.getMyLocation().getLongitude());
+            LatLng position = new LatLng(map.getMyLocation().getLatitude(), map.getMyLocation().getLongitude());
 
             movingDirectionMarker = map.addMarker(new MarkerOptions()
                     .position(position)
@@ -810,19 +811,19 @@ public class MapActivity extends BaseDrawerActivity
         }
     }
 
-    private void showAimDirectionAndTarget(float direction, Location target){
+    private void showAimDirectionAndTarget(float direction, Location target) {
 
-        if(aimDirectionArrow != null){
+        if (aimDirectionArrow != null) {
             aimDirectionArrow.remove();
         }
 
-        if(aimDirectionTarget != null){
+        if (aimDirectionTarget != null) {
             aimDirectionTarget.remove();
         }
 
-        if(map.getMyLocation() != null){
+        if (map.getMyLocation() != null) {
 
-            LatLng position = new LatLng(map.getMyLocation().getLatitude(),map.getMyLocation().getLongitude());
+            LatLng position = new LatLng(map.getMyLocation().getLatitude(), map.getMyLocation().getLongitude());
             LatLng targetPos = new LatLng(target.getLatitude(), target.getLongitude());
 
             aimDirectionArrow = map.addMarker(new MarkerOptions()
@@ -838,7 +839,7 @@ public class MapActivity extends BaseDrawerActivity
         }
     }
 
-    private float calualteArrowDirection(Location location, Location markerPos){
+    private float calualteArrowDirection(Location location, Location markerPos) {
 
         double hypo = sqrt(pow(markerPos.getLongitude() - location.getLongitude(), 2) + pow(markerPos.getLatitude() - location.getLatitude(), 2));
         float sin = (float) asin((markerPos.getLongitude() - location.getLongitude()) / hypo);
@@ -850,7 +851,7 @@ public class MapActivity extends BaseDrawerActivity
         return angle;
     }
 
-    private void showPictureDialog(){
+    private void showPictureDialog() {
 
         // Get the layout inflater
         LayoutInflater inflater = LayoutInflater.from(this);
@@ -877,4 +878,34 @@ public class MapActivity extends BaseDrawerActivity
     public void onFinishEditDialog(String inputText) {
         Toast.makeText(this, "Hi, " + inputText, Toast.LENGTH_SHORT).show();
     }
+
+    private enum SelectedOption {
+        NONE, MARK, ROUTE, DISTANCE, GOAL, MENU_ROUTE, MENU_MARK, MENU_DISTANCE, MENU_GOAL
+    }
+
+    public class TrackingServiceWaypointBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            LatLng latLng = intent.getParcelableExtra(TrackingService.LAT_LNG);
+            WaypointDrawingMapPlugin plugin = (WaypointDrawingMapPlugin) getMapPlugin("waypoint_tracking_map_plugin");
+            if (plugin != null) {
+                plugin.doAction(map, latLng);
+                plugin.redraw(map);
+            }
+
+        }
+    }
+
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            if (parent.getId() == R.id.drawer_menu_drawer_list_right) {
+                selectChoosenMeunPoint(position);
+                drawer.closeDrawer(Gravity.END);
+            }
+        }
+    }
+
+
 }

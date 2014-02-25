@@ -27,9 +27,10 @@ import de.htwg.seapal.aview.gui.activity.LogbookTabsActivity;
 import de.htwg.seapal.controller.IAccountController;
 import de.htwg.seapal.controller.IMainController;
 import de.htwg.seapal.controller.IPersonController;
+import de.htwg.seapal.events.boat.BoatCreatedEvent;
+import de.htwg.seapal.events.boat.BoatDeletedEvent;
 import de.htwg.seapal.events.boat.BoatFavoredEvent;
 import de.htwg.seapal.events.boat.BoatSavedEvent;
-import de.htwg.seapal.events.boat.DeleteBoatEvent;
 import de.htwg.seapal.events.boat.RequestBoatViewInformation;
 import de.htwg.seapal.events.boat.RequestSelectedPackedPosition;
 import de.htwg.seapal.manager.SessionManager;
@@ -198,18 +199,23 @@ public class BoatExpandableListAdapter extends BaseExpandableListAdapter {
 
 
 
-    public void deleteBoat(@Observes DeleteBoatEvent event) {
-        RequestSelectedPackedPosition r = new RequestSelectedPackedPosition();
-        eventManager.fire(r);
-        if (r.getPackedPosition() != null) {
-            int child  = ExpandableListView.getPackedPositionChild(r.getPackedPosition());
-            int group  = ExpandableListView.getPackedPositionGroup(r.getPackedPosition());
+    public void deleteBoat(@Observes BoatDeletedEvent event) {
+        if (event.getCurrentPosition() != -1) {
+            int child  = ExpandableListView.getPackedPositionChild(event.getCurrentPosition());
+            int group  = ExpandableListView.getPackedPositionGroup(event.getCurrentPosition());
             String groupHeader  = _listDataHeader.get(group);
             _listDataChild.get(groupHeader).remove(child);
             notifyDataSetInvalidated();
             notifyDataSetChanged();
         }
 
+    }
+
+
+    public void onBoatCreated(@Observes BoatCreatedEvent event) {
+        _listDataChild.get(YOUR_BOATS).add(event.getBoat());
+        notifyDataSetInvalidated();
+        notifyDataSetChanged();
     }
 
     public void onBoatFavoured(@Observes BoatFavoredEvent event) {
