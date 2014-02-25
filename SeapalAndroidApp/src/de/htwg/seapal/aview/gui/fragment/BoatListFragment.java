@@ -1,26 +1,23 @@
 package de.htwg.seapal.aview.gui.fragment;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.Toast;
 
 import com.google.inject.Inject;
 
-import org.apache.commons.lang.StringUtils;
-
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import de.htwg.seapal.R;
-import de.htwg.seapal.aview.gui.activity.LogbookTabsActivity;
+import de.htwg.seapal.aview.gui.adapter.BoatExpandableListAdapter;
 import de.htwg.seapal.controller.IMainController;
 import de.htwg.seapal.events.boat.BoatCreatedEvent;
 import de.htwg.seapal.events.boat.BoatDeletedEvent;
@@ -31,19 +28,21 @@ import de.htwg.seapal.events.boat.DeleteBoatEvent;
 import de.htwg.seapal.events.boat.FavourBoatEvent;
 import de.htwg.seapal.events.boat.OnBoatSelected;
 import de.htwg.seapal.events.boat.RequestBoatViewInformation;
+import de.htwg.seapal.events.boat.RequestSelectedPackedPosition;
 import de.htwg.seapal.events.boat.SaveBoatEvent;
+import de.htwg.seapal.events.crew.CrewAcceptedEvent;
+import de.htwg.seapal.events.crew.CrewRemovedEvent;
 import de.htwg.seapal.manager.SessionManager;
 import de.htwg.seapal.model.IBoat;
 import de.htwg.seapal.model.impl.Boat;
 import roboguice.event.EventManager;
 import roboguice.event.Observes;
-import roboguice.fragment.RoboListFragment;
+import roboguice.fragment.RoboFragment;
 
 /**
  * Created by jakub on 11/16/13.
  */
-public class BoatListFragment extends RoboListFragment {
-
+public class BoatListFragment extends RoboFragment {
 
 
     @Inject
@@ -60,110 +59,73 @@ public class BoatListFragment extends RoboListFragment {
      */
     private List<IBoat> boatList;
 
+    private ExpandableListView boatView;
+
     private List<IBoat> boatListFriends;
+
+
+
+
     /**
      * is the selected position inside the list
+     * in packed form form ExpandableListView
      */
-    private int mPosition = -1;
-    private View mSelectedView;
+    private long mCurrentPosition = -1;
 
 
 
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if (boatView == null)
+            boatView = new ExpandableListView(getActivity());
+
+        return boatView;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        List<String> boatHeadings = new LinkedList<String>();
+        boatHeadings.add(BoatExpandableListAdapter.YOUR_BOATS);
+        boatHeadings.add(BoatExpandableListAdapter.BOATS_OF_CREW);
+
+        Map<String, List<IBoat>> boatMap = new LinkedHashMap<String, List<IBoat>>();
 
         boatList = (List<IBoat>) mainController.getDocuments("boat", sessionManager.getSession(),sessionManager.getSession(), "own");
         boatListFriends = (List<IBoat>) mainController.getDocuments("boat", sessionManager.getSession(),sessionManager.getSession(), "friends");
 
-        final int layout = R.layout.boat_list_view;
+        boatMap.put(BoatExpandableListAdapter.YOUR_BOATS, boatList);
+        boatMap.put(BoatExpandableListAdapter.BOATS_OF_CREW, boatListFriends);
 
 
-        setListAdapter(new ArrayAdapter<IBoat>(getActivity(), layout, boatList) {
-            /**
-             * {@inheritDoc}
-             */
+        boatView.setAdapter(new BoatExpandableListAdapter(getActivity(), boatHeadings, boatMap));
+        boatView.setChoiceMode(ExpandableListView.CHOICE_MODE_SINGLE);
+
+
+
+        boatView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                View v = convertView;
-                TextView text;
-                if (v == null) {
-                    LayoutInflater l = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    v = l.inflate(layout, parent, false);
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                ExpandableListAdapter adapter = parent.getExpandableListAdapter();
+                Boat boat = (Boat) adapter.getChild(groupPosition, childPosition);
+                UUID boatUuid = boat.getUUID();
+                for (View a: parent.getTouchables()) {
+                    View caret =  a.findViewById(R.id.caret);
+                    if (caret != null)
+                        caret.setVisibility(View.INVISIBLE);
                 }
+                v.findViewById(R.id.caret).setVisibility(View.VISIBLE);
+                mCurrentPosition = ExpandableListView.getPackedPositionForChild(groupPosition, childPosition);
 
-                TextView boatName = (TextView) v.findViewById(R.id.boat_name);
-                TextView boatType = (TextView) v.findViewById(R.id.boat_type);
-                TextView productionYear = (TextView) v.findViewById(R.id.production_year);
-                TextView constructor = (TextView) v.findViewById(R.id.constructor);
-                ImageView favImageView = (ImageView) v.findViewById(R.id.favour_button);
+                eventManager.fire(new OnBoatSelected(boat));
 
-                SharedPreferences s = getContext().getSharedPreferences(LogbookTabsActivity.LOGBOOK_PREFS, 0);
-                String favouredBoatUUIDString = s.getString(LogbookTabsActivity.LOGBOOK_BOAT_FAVOURED, "");
-
-
-                IBoat b = getItem(position);
-                if (boatName != null && boatType != null && productionYear != null && constructor != null) {
-                    boatName.setText(b.getName());
-                    boatType.setText(b.getType());
-                    if (b.getYearOfConstruction() != 0) {
-                        productionYear.setText(b.getYearOfConstruction().toString());
-                    } else {
-                        productionYear.setText("");
-                    }
-                    constructor.setText(b.getBoatConstructor());
-
-                    UUID uuid = b.getUUID();
-
-                    if (!StringUtils.isEmpty(favouredBoatUUIDString)) {
-                        UUID uuidFavoured = UUID.fromString(favouredBoatUUIDString);
-                        if (uuidFavoured.equals(uuid))
-                            favImageView.setBackgroundResource(android.R.drawable.star_big_on);
-
-                    }
-                }
-
-
-                return v;
+                return true;
             }
-
         });
 
 
-    }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void onStart() {
-        super.onStart();
-        setSelection(0);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        // Notify the parent activity of selected item
-        IBoat boat = (IBoat) l.getAdapter().getItem(position);
-        UUID boatUuid = boat.getUUID();
-        eventManager.fire(new OnBoatSelected(position, boatUuid));
-        mPosition = position;
-        mSelectedView = v;
-        v.setSelected(true);
-        for (View a: l.getTouchables()) {
-            a.findViewById(R.id.caret).setVisibility(View.INVISIBLE);
-        }
-        v.findViewById(R.id.caret).setVisibility(View.VISIBLE);
-
+        super.onActivityCreated(savedInstanceState);
     }
 
     /**
@@ -173,12 +135,11 @@ public class BoatListFragment extends RoboListFragment {
      */
     public void onNewBoat(@Observes CreateBoatEvent createBoatEvent) {
         IBoat boat = (IBoat) mainController.creatDocument("boat", new Boat(), sessionManager.getSession());
-        boatList.add(boat);
-        notifyListAdapter();
-        getListView().setSelection(boatList.size());
-        Toast.makeText(getActivity(), "New Boat Created",
-                Toast.LENGTH_SHORT).show();
-        eventManager.fire(new BoatCreatedEvent());
+        if  (boat != null) {
+            Toast.makeText(getActivity(), "New Boat Created",
+                    Toast.LENGTH_SHORT).show();
+            eventManager.fire(new BoatCreatedEvent());
+        }
     }
 
     /**
@@ -187,18 +148,17 @@ public class BoatListFragment extends RoboListFragment {
      * which is used in the list-adapter
      */
     public void onDeleteBoat(@Observes DeleteBoatEvent deleteBoatEvent) {
-        if (mPosition >= 0) {
-            IBoat boat = (IBoat) getListAdapter().getItem(mPosition);
-            boatList.remove(mPosition);
-            mainController.deleteDocument("boat", sessionManager.getSession(), boat.getUUID());
-            notifyListAdapter();
-            getListView().setSelection(mPosition);
-            Toast.makeText(getActivity(), "Boat Deleted",
-                    Toast.LENGTH_SHORT).show();
+        for (View a: boatView.getTouchables()) {
+            View caret =  a.findViewById(R.id.caret);
+            if (caret != null)
+                caret.setVisibility(View.INVISIBLE);
+        }
+        int group = ExpandableListView.getPackedPositionGroup(mCurrentPosition);
+        int child = ExpandableListView.getPackedPositionChild(mCurrentPosition);
+        Boat b = (Boat) boatView.getExpandableListAdapter().getChild(group, child);
+        if (b != null) {
+            mainController.deleteDocument("boat", sessionManager.getSession(), b.getUUID());
             eventManager.fire(new BoatDeletedEvent());
-        } else {
-            Toast.makeText(getActivity(), "Please select a Boat",
-                    Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -209,25 +169,16 @@ public class BoatListFragment extends RoboListFragment {
      * which is used in the list-adapter
      */
     public void onSaveBoat(@Observes SaveBoatEvent saveBoatEvent) {
-        RequestBoatViewInformation b = new RequestBoatViewInformation();
-        eventManager.fire(b);
-        IBoat iboat = b.getBoat();
+        RequestBoatViewInformation r = new RequestBoatViewInformation();
+        eventManager.fire(r);
+        Boat b = (Boat) r.getBoat();
+        if (b != null) {
+            mainController.creatDocument("boat", b, sessionManager.getSession());
+            Toast.makeText(getActivity(), "Boat Saved", Toast.LENGTH_LONG).show();
+            eventManager.fire(new BoatSavedEvent());
 
-        if(iboat != null) {
-            Boat boat = (Boat) iboat;
-            if (mPosition >= 0) {
-                boatList.set(mPosition, boat);
-                mainController.creatDocument("boat", boat, sessionManager.getSession());
-                notifyListAdapter();
-                Toast.makeText(getActivity(), "Boat Saved",
-                        Toast.LENGTH_SHORT).show();
-                eventManager.fire(new BoatSavedEvent());
-            } else {
-                Toast.makeText(getActivity(), "Please select a Boat",
-                        Toast.LENGTH_SHORT).show();
-
-            }
         }
+
 
     }
 
@@ -240,28 +191,29 @@ public class BoatListFragment extends RoboListFragment {
      * the uuid in SharedPreferences.
      */
     public void onFavourBoat(@Observes FavourBoatEvent c) {
-        if (mPosition >= 0 && mSelectedView != null){
-            ListView l = getListView();
-            for (View a: l.getTouchables()) {
-                ImageView switchStarOffView = (ImageView) a.findViewById(R.id.favour_button);
-                switchStarOffView.setBackgroundResource(android.R.drawable.star_big_off);
-
+        if (mCurrentPosition != -1) {
+            int group = ExpandableListView.getPackedPositionGroup(mCurrentPosition);
+            int child = ExpandableListView.getPackedPositionChild(mCurrentPosition);
+            Boat b = (Boat) boatView.getExpandableListAdapter().getChild(group,child);
+            if (b != null ) {
+                eventManager.fire(new BoatFavoredEvent(b.getUUID()));
+                Toast.makeText(getActivity(), "Boat Favoured", Toast.LENGTH_LONG).show();
             }
-            ImageView view = (ImageView) mSelectedView.findViewById(R.id.favour_button);
-            view.setBackgroundResource(android.R.drawable.star_big_on);
-            IBoat boat = (IBoat) getListAdapter().getItem(mPosition);
-            eventManager.fire(new BoatFavoredEvent(boat.getUUID()));
+
+
         }
-
     }
 
-    /**
-     * notifies the listView's list-adapter that the data-set has changed.
-     */
-    private void notifyListAdapter() {
-        ArrayAdapter<IBoat> listAdapter = (ArrayAdapter<IBoat>) getListAdapter();
-        listAdapter.notifyDataSetChanged();
+    public void requestPackedPosition(@Observes RequestSelectedPackedPosition c) {
+        if (mCurrentPosition != -1) {
+            c.setPackedPosition(mCurrentPosition);
+        }
     }
-
+    public void crewRemoved(@Observes CrewAcceptedEvent c) {
+        onActivityCreated(new Bundle());
+    }
+    public void crewAccepted(@Observes CrewRemovedEvent c) {
+        onActivityCreated(new Bundle());
+    }
 
 }

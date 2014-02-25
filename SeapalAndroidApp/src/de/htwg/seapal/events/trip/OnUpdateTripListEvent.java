@@ -1,26 +1,19 @@
 package de.htwg.seapal.events.trip;
 
-import java.util.UUID;
+import de.htwg.seapal.model.impl.Boat;
 
 /**
  * Created by jakub on 2/21/14.
  */
 public class OnUpdateTripListEvent {
 
-    private int position;
+    private Boat boat;
 
-    private UUID boatUUID;
-
-    public OnUpdateTripListEvent(int position, UUID boatUUID) {
-        this.position = position;
-        this.boatUUID = boatUUID;
+    public OnUpdateTripListEvent(Boat boat) {
+        this.boat = boat;
     }
 
-    public int getPosition() {
-        return position;
-    }
-
-    public UUID getBoatUUID() {
-        return boatUUID;
+    public Boat getBoat() {
+        return boat;
     }
 }

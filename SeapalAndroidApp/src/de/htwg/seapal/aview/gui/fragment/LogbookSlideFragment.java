@@ -68,7 +68,7 @@ public class LogbookSlideFragment extends RoboFragment {
     }
 
     public void updateBoatView(@Observes OnBoatSelected event) {
-        Collection<? extends IModel> l = mainController.getSingleDocument("boat", sessionManager.getSession(), event.getBoatUUID());
+        Collection<? extends IModel> l = mainController.getSingleDocument("boat", event.getBoat().getAccount(), event.getBoat().getUUID());
         if (!l.isEmpty() && l.iterator().hasNext()) {
             IBoat boat = (IBoat) l.iterator().next();
             String boatName = boat.getName();
@@ -78,15 +78,9 @@ public class LogbookSlideFragment extends RoboFragment {
                 mPager.setCurrentItem(TRIP_LIST_FRAGMENT);
 
             }
-            if (mBoatViewFragment != null) {
-                eventManager.fire(new OnUpdateBoatView(event.getPosition(),event.getBoatUUID()));
-            }
-            if (mTripListFragment != null) {
-                eventManager.fire(new OnUpdateTripListEvent(event.getPosition(), event.getBoatUUID()));
-
-
-            }
         }
+        eventManager.fire(new OnUpdateBoatView(event.getBoat()));
+        eventManager.fire(new OnUpdateTripListEvent(event.getBoat()));
 
     }
 

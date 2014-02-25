@@ -49,7 +49,6 @@ public class TripListFragment  extends RoboListFragment implements  AdapterView.
     @Inject
     private SessionManager sessionManager;
 
-    private int mCurrentPosition;
     private UUID mCurrentUUID;
 
     @Inject
@@ -70,7 +69,6 @@ public class TripListFragment  extends RoboListFragment implements  AdapterView.
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
-            mCurrentPosition = savedInstanceState.getInt(ARG_POSITION);
             mCurrentUUID = (UUID) savedInstanceState.get(ARG_UUID);
         }
 
@@ -90,36 +88,26 @@ public class TripListFragment  extends RoboListFragment implements  AdapterView.
         this.getListView().setOnItemLongClickListener(this);
 
 
-
-        Bundle args = getArguments();
-        if (args != null) {
-            eventManager.fire(new OnUpdateTripListEvent(args.getInt(ARG_POSITION), (UUID) args.get(ARG_UUID)));
-        } else {
-            eventManager.fire(new OnUpdateTripListEvent(mCurrentPosition, mCurrentUUID));
-        }
-
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(ARG_POSITION, mCurrentPosition);
         outState.putSerializable(ARG_UUID, mCurrentUUID);
     }
 
     public void updateTripView(@Observes OnUpdateTripListEvent event ) {
 
-        if (event.getBoatUUID() != null) {
+        if (event.getBoat().getUUID() != null) {
 
-            Collection<Boat> boats = (Collection<Boat>) mainController.getSingleDocument("boat", sessionManager.getSession(), event.getBoatUUID());
+            Collection<Boat> boats = (Collection<Boat>) mainController.getSingleDocument("boat", event.getBoat().getAccount(), event.getBoat().getUUID());
             if (!boats.isEmpty() && boats.iterator().hasNext()) {
                 IBoat b = boats.iterator().next();
                 if (b != null) {
                     tripList.clear();
                     tripList.addAll(mainController.getByParent("trip", "boat", sessionManager.getSession(), b.getUUID()));
                     notifyListAdapter();
-                    mCurrentPosition = event.getPosition();
-                    mCurrentUUID = event.getBoatUUID();
+                    mCurrentUUID = event.getBoat().getUUID();
                 }
             }
         }

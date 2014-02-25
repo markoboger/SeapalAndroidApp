@@ -20,12 +20,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import de.htwg.seapal.events.crew.CrewRequestInit;
-import de.htwg.seapal.manager.SessionManager;
 import de.htwg.seapal.R;
 import de.htwg.seapal.controller.IAccountController;
 import de.htwg.seapal.controller.IMainController;
 import de.htwg.seapal.controller.IPersonController;
+import de.htwg.seapal.events.crew.CrewAcceptedEvent;
+import de.htwg.seapal.events.crew.CrewRemovedEvent;
+import de.htwg.seapal.events.crew.CrewRequestInit;
+import de.htwg.seapal.manager.SessionManager;
 import de.htwg.seapal.model.IModel;
 import de.htwg.seapal.model.impl.Person;
 import roboguice.RoboGuice;
@@ -84,6 +86,7 @@ public class CrewExpandableListAdapter extends BaseExpandableListAdapter {
     public long getChildId(int groupPosition, int childPosition) {
         return childPosition;
     }
+
 
     @Override
     public View getChildView(int groupPosition, final int childPosition,
@@ -148,6 +151,7 @@ public class CrewExpandableListAdapter extends BaseExpandableListAdapter {
             convertView = infalInflater.inflate(R.layout.crew_list_group, null);
         }
 
+
         TextView lblListHeader = (TextView) convertView
                 .findViewById(R.id.lblListHeader);
         lblListHeader.setTypeface(null, Typeface.BOLD);
@@ -192,6 +196,7 @@ public class CrewExpandableListAdapter extends BaseExpandableListAdapter {
                                 mainController.abortRequest(sessionManager.getSession(), UUID.fromString(person.getAccount()));
                                 _listDataChild.get(YOUR_CREW).remove(person);
                                 CrewExpandableListAdapter.this.notifyDataSetChanged();
+                                eventManager.fire(new CrewRemovedEvent());
                             } catch (NullPointerException e) {
                                 Toast.makeText(context, "Something Strange Happend", Toast.LENGTH_SHORT).show();
                             }
@@ -231,6 +236,7 @@ public class CrewExpandableListAdapter extends BaseExpandableListAdapter {
                                 _listDataChild.get(YOUR_CREW).add(person);
                                 _listDataChild.get(FRIENDS_TO_ACCEPT).remove(person);
                                 CrewExpandableListAdapter.this.notifyDataSetChanged();
+                                eventManager.fire(new CrewAcceptedEvent());
                             } catch (NullPointerException e) {
                                 Toast.makeText(context, "Something Strange Happend", Toast.LENGTH_SHORT).show();
                             }

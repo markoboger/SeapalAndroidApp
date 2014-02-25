@@ -14,6 +14,7 @@ import de.htwg.seapal.aview.gui.fragment.CrewFragment;
 import de.htwg.seapal.aview.gui.fragment.LogbookFragment;
 import de.htwg.seapal.aview.listener.OnCreateOptionsMenuListener;
 import de.htwg.seapal.aview.listener.TabListener;
+import de.htwg.seapal.controller.IMainController;
 import de.htwg.seapal.events.boat.BoatFavoredEvent;
 import de.htwg.seapal.events.boat.CreateBoatEvent;
 import de.htwg.seapal.events.boat.DeleteBoatEvent;
@@ -35,6 +36,9 @@ public class LogbookTabsActivity extends BaseDrawerActivity {
     public static final String LOGBOOK_BOAT_FAVOURED = "logbook_boat_favoured";
 
     private Menu mMenu;
+
+    @Inject
+    private IMainController mainController;
 
     @Inject
     private SessionManager sessionManager;

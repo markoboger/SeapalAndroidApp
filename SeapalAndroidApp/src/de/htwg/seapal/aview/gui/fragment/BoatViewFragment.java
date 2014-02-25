@@ -27,10 +27,9 @@ import roboguice.fragment.RoboFragment;
  * Created by jakub on 11/16/13.
  */
 public class BoatViewFragment extends RoboFragment {
-    public final static String ARG_POSITION = "position";
+
     public final static String ARG_UUID = "uuid";
 
-    private int mCurrentPosition = -1;
     private UUID mCurrentUUID;
 
     @Inject
@@ -50,41 +49,26 @@ public class BoatViewFragment extends RoboFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            mCurrentPosition = savedInstanceState.getInt(ARG_POSITION);
             mCurrentUUID = (UUID) savedInstanceState.get(ARG_UUID);
         }
         return inflater.inflate(R.layout.boat_view, container, false);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        Bundle args = getArguments();
-        if (args != null) {
-            updateBoatView(new OnUpdateBoatView(args.getInt(ARG_POSITION), (UUID) args.get(ARG_UUID)));
-        } else {
-            updateBoatView(new OnUpdateBoatView(mCurrentPosition, mCurrentUUID));
-        }
-
-    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(ARG_POSITION, mCurrentPosition);
         outState.putSerializable(ARG_UUID, mCurrentUUID);
     }
 
     public void updateBoatView(@Observes OnUpdateBoatView selected) {
-        if (selected.getBoatUUID() != null) {
-            Collection<Boat> boats = (Collection<Boat>) mainController.getSingleDocument("boat", sessionManager.getSession(), selected.getBoatUUID());
+        if (selected.getBoat().getUUID() != null) {
+            Collection<Boat> boats = (Collection<Boat>) mainController.getSingleDocument("boat", selected.getBoat().getAccount(), selected.getBoat().getUUID());
             if (boats != null &&!boats.isEmpty() && boats.iterator().hasNext()) {
                 IBoat b = boats.iterator().next();
                 if (b != null) {
                     BoatUtils.setViewFromBoat(getActivity(), b);
-
-                    mCurrentPosition = selected.getPosition();
-                    mCurrentUUID = selected.getBoatUUID();
+                    mCurrentUUID = selected.getBoat().getUUID();
                 }
             }
         }
@@ -99,4 +83,9 @@ public class BoatViewFragment extends RoboFragment {
             }
         }
     }
+
+
+
+
 }
+

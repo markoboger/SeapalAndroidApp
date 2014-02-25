@@ -109,6 +109,7 @@ public class CrewFragment extends Fragment {
                             if (e != null) {
                                 if (sessionManager.isLoggedIn()) {
                                     mainController.addFriend(sessionManager.getSession(), e.getText().toString());
+
                                 }
                             }
                         }
