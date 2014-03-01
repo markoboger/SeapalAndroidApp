@@ -3,6 +3,8 @@ package de.htwg.seapal.events.map;
 import android.content.Context;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 /**
  * Created by jakub on 2/28/14.
@@ -11,16 +13,14 @@ public class AddWaypointPolyline {
 
     private Context context;
     private GoogleMap map;
+    private MarkerOptions markerOptions;
+    private PolylineOptions polylineOptions;
 
-    /**
-     * lineColor is used for key in a Map so it should be handled by the event Caller
-     */
-    private String lineColor;
-
-    public AddWaypointPolyline(Context context, GoogleMap map, String lineColor) {
+    public AddWaypointPolyline(Context context, GoogleMap map, MarkerOptions markerOptions, PolylineOptions polylineOptions) {
         this.context = context;
         this.map = map;
-        this.lineColor = lineColor;
+        this.markerOptions = markerOptions;
+        this.polylineOptions = polylineOptions;
     }
 
     public Context getContext() {
@@ -31,7 +31,11 @@ public class AddWaypointPolyline {
         return map;
     }
 
-    public String getLineColor() {
-        return lineColor;
+    public MarkerOptions getMarkerOptions() {
+        return markerOptions;
+    }
+
+    public PolylineOptions getPolylineOptions() {
+        return polylineOptions;
     }
 }
