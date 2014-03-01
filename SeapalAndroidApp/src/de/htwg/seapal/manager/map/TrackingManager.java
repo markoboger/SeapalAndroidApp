@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +15,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.inject.Inject;
 
 import org.apache.commons.lang.StringUtils;
@@ -66,16 +70,24 @@ public class TrackingManager {
 
     private GoogleMap map;
 
+    public static final MarkerOptions TRACKING_MARKER_OPTIONS = new MarkerOptions()
+            .anchor(0.25f, 1.0f - 0.08333f)
+            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_mark));
+
+    public static final PolylineOptions TRACKING_POLYLINE_OPTIONS = new PolylineOptions()
+            .width(5)
+            .color(Color.parseColor("#333333"));
+
+
     @Inject
     private WaypointManager waypointManager;
 
-    public static final String TRACKING_LINECOLOR = "#333333";
 
     public class TrackingServiceWaypointBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             LatLng latLng = intent.getParcelableExtra(TrackingService.LAT_LNG);
-            eventManager.fire(new AddWayointEvent(context, map, latLng, TRACKING_LINECOLOR));
+            eventManager.fire(new AddWayointEvent(context, map, TRACKING_MARKER_OPTIONS, TRACKING_POLYLINE_OPTIONS, latLng));
 
         }
     }
@@ -124,7 +136,7 @@ public class TrackingManager {
             Collection<? extends IModel> boat = mainController.getSingleDocument("boat", sessionManager.getSession(), UUID.fromString(boatString));
             if (!boat.isEmpty()) {
 
-                eventManager.fire(new AddWaypointPolyline(context, map, TRACKING_LINECOLOR));
+                eventManager.fire(new AddWaypointPolyline(context, map, TRACKING_MARKER_OPTIONS, TRACKING_POLYLINE_OPTIONS));
 
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View view = inflater.inflate(R.layout.start_tracking_dialog, null);
@@ -198,7 +210,7 @@ public class TrackingManager {
         trackingService = (Intent) savedInstance.get("tracking_manager_service");
         LinkedList list = (LinkedList) savedInstance.get("tracking_manager_waypoint");
         waypointManager = (WaypointManager) list.getFirst();
-        eventManager.fire(new RedrawWaypointsEvent(context, map, TRACKING_LINECOLOR));
+        eventManager.fire(new RedrawWaypointsEvent(context, map, TRACKING_MARKER_OPTIONS, TRACKING_POLYLINE_OPTIONS));
 
         if (trackingService != null) {
             waypointBroadcastReceiver = new TrackingServiceWaypointBroadcastReceiver();
