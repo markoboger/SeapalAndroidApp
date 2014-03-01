@@ -33,7 +33,7 @@ import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.activity.LogbookTabsActivity;
 import de.htwg.seapal.controller.IMainController;
 import de.htwg.seapal.events.map.AddWayointEvent;
-import de.htwg.seapal.events.map.AddWaypointPolyline;
+import de.htwg.seapal.events.map.AddWaypointPolylineEvent;
 import de.htwg.seapal.events.map.OnMapRestoreInstanceEvent;
 import de.htwg.seapal.events.map.OnMapSaveInstanceEvent;
 import de.htwg.seapal.events.map.RedrawWaypointsEvent;
@@ -136,7 +136,7 @@ public class TrackingManager {
             Collection<? extends IModel> boat = mainController.getSingleDocument("boat", sessionManager.getSession(), UUID.fromString(boatString));
             if (!boat.isEmpty()) {
 
-                eventManager.fire(new AddWaypointPolyline(context, map, TRACKING_MARKER_OPTIONS, TRACKING_POLYLINE_OPTIONS));
+                eventManager.fire(new AddWaypointPolylineEvent(context, map, TRACKING_MARKER_OPTIONS, TRACKING_POLYLINE_OPTIONS));
 
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View view = inflater.inflate(R.layout.start_tracking_dialog, null);

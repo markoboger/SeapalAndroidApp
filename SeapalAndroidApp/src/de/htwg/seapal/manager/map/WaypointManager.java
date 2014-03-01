@@ -1,6 +1,8 @@
 package de.htwg.seapal.manager.map;
 
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -17,20 +19,22 @@ import java.util.List;
 import java.util.Map;
 
 import de.htwg.seapal.events.map.AddWayointEvent;
-import de.htwg.seapal.events.map.AddWaypointPolyline;
+import de.htwg.seapal.events.map.AddWaypointPolylineEvent;
 import de.htwg.seapal.events.map.OnMapRestoreInstanceEvent;
 import de.htwg.seapal.events.map.OnMapSaveInstanceEvent;
 import de.htwg.seapal.events.map.RedrawWaypointsEvent;
 import roboguice.event.EventManager;
 import roboguice.event.Observes;
+import roboguice.inject.ContextSingleton;
 
 /**
  * Created by jakub on 2/28/14.
  */
-public class WaypointManager {
+@ContextSingleton
+public class WaypointManager implements Parcelable {
 
-    private Map<PolylineOptions, Polyline> waypointsPolyline;
-    private Map<MarkerOptions, List<Marker>> markers;
+    private Map<PolylineOptions, List<LatLng>> waypointsPolyline;
+    private Map<MarkerOptions, List<LatLng>> markers;
 
     public static final PolylineOptions DEFAULT_POLYLINE_OPTIONS = new PolylineOptions()
             .width(5);
@@ -43,18 +47,18 @@ public class WaypointManager {
     private EventManager eventManager;
 
     public WaypointManager() {
-        markers = new HashMap<MarkerOptions, List<Marker>>();
-        waypointsPolyline = new HashMap<PolylineOptions, Polyline>();
+        markers = new HashMap<MarkerOptions, List<LatLng>>();
+        waypointsPolyline = new HashMap<PolylineOptions, List<LatLng>>();
     }
 
-    public void addNewPolyLine(@Observes AddWaypointPolyline event) {
+    public void addNewPolyLine(@Observes AddWaypointPolylineEvent event) {
         GoogleMap map = event.getMap();
         PolylineOptions polylineOptions = event.getPolylineOptions();
         MarkerOptions markerOptions = event.getMarkerOptions();
 
         if (!waypointsPolyline.containsKey(polylineOptions) && !markers.containsKey(markerOptions)) {
-            waypointsPolyline.put(polylineOptions, map.addPolyline(polylineOptions));
-            markers.put(markerOptions, new LinkedList<Marker>());
+            waypointsPolyline.put(polylineOptions, map.addPolyline(polylineOptions).getPoints());
+            markers.put(markerOptions, new LinkedList<LatLng>());
 
         }
 
@@ -70,38 +74,37 @@ public class WaypointManager {
 
         if (waypointsPolyline.containsKey(polylineOptions) && markers.containsKey(markerOptions)) {
 
-            markers.get(markerOptions).add(map.addMarker(markerOptions.position(o)));
+            Marker m = map.addMarker(markerOptions.position(o));
+            markers.get(markerOptions).add(m.getPosition());
 
-            List<LatLng> waypointsLatLngList = waypointsPolyline.get(polylineOptions).getPoints();
+
+            List<LatLng> waypointsLatLngList = waypointsPolyline.get(polylineOptions);
             waypointsLatLngList.add(o);
-            waypointsPolyline.get(polylineOptions).setPoints(waypointsLatLngList);
+            map.addPolyline(polylineOptions).setPoints(waypointsLatLngList);
+            waypointsPolyline.put(polylineOptions, waypointsLatLngList);
         }
     }
 
 
     public void redrawWaypoints(@Observes RedrawWaypointsEvent event) {
         GoogleMap map = event.getMap();
-        PolylineOptions polylineOptions = event.getPolylineOptions();
-        MarkerOptions markerOptions = event.getMarkerOptions();
 
 
-        for (Map.Entry<PolylineOptions, Polyline> polylineEntry : waypointsPolyline.entrySet()) {
-            Polyline polyline = polylineEntry.getValue();
-            List<LatLng> latLng = polyline.getPoints();
-            if (polyline != null && !latLng.isEmpty()) {
+        for (Map.Entry<PolylineOptions, List<LatLng>> polylineEntry : waypointsPolyline.entrySet()) {
+            List<LatLng> latLng = polylineEntry.getValue();
+            if (latLng != null && !latLng.isEmpty()) {
                 Polyline p = map.addPolyline(polylineEntry.getKey());
                 p.setPoints(latLng);
-                waypointsPolyline.put(polylineOptions, p);
+                waypointsPolyline.put(polylineEntry.getKey(), p.getPoints());
             }
 
         }
 
-        for (Map.Entry<MarkerOptions, List<Marker>> markerOptionsListEntry : this.markers.entrySet()) {
-            List<Marker> markers = markerOptionsListEntry.getValue();
+        for (Map.Entry<MarkerOptions, List<LatLng>> markerOptionsListEntry : this.markers.entrySet()) {
+            List<LatLng> markers = markerOptionsListEntry.getValue();
             if (markers != null && !markers.isEmpty()) {
-
-                for (Marker m : markers) {
-                    map.addMarker(markerOptions.position(m.getPosition()));
+                for (LatLng m : markers) {
+                    map.addMarker(markerOptionsListEntry.getKey().position(m));
                 }
             }
 
@@ -123,10 +126,21 @@ public class WaypointManager {
     public void restoreInstance(@Observes OnMapRestoreInstanceEvent event) {
         Bundle saved = event.getSavedInstance();
         GoogleMap map = event.getMap();
-        waypointsPolyline = (Map<PolylineOptions, Polyline>) saved.getSerializable("waypoint_polyline");
-        markers = (Map<MarkerOptions, List<Marker>>) saved.getSerializable("waypoint_markers");
+        waypointsPolyline = (Map<PolylineOptions, List<LatLng>>) saved.getSerializable("waypoint_polyline");
+        markers = (Map<MarkerOptions, List<LatLng>>) saved.getSerializable("waypoint_markers");
 
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        Bundle b = new Bundle();
+        b.putSerializable("waypoints", (Serializable) waypointsPolyline);
+        b.putSerializable("markers", (Serializable) markers);
+        dest.writeBundle(b);
+    }
 }
