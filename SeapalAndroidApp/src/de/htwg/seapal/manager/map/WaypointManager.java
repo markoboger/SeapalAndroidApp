@@ -1,10 +1,8 @@
 package de.htwg.seapal.manager.map;
 
-import android.graphics.Color;
 import android.os.Bundle;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -18,7 +16,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import de.htwg.seapal.R;
 import de.htwg.seapal.events.map.AddWayointEvent;
 import de.htwg.seapal.events.map.AddWaypointPolyline;
 import de.htwg.seapal.events.map.OnMapRestoreInstanceEvent;
@@ -32,34 +29,32 @@ import roboguice.event.Observes;
  */
 public class WaypointManager {
 
-    private Map<String, Polyline> waypointsPolyline;
-    private MarkerOptions waypointsMarkerOptions;
-    private Map<String, List<Marker>> markers;
-    private PolylineOptions waypointPolylineOption;
+    private Map<PolylineOptions, Polyline> waypointsPolyline;
+    private Map<MarkerOptions, List<Marker>> markers;
+
+    public static final PolylineOptions DEFAULT_POLYLINE_OPTIONS = new PolylineOptions()
+            .width(5);
+
+    public static final MarkerOptions DEFAULT_MARKER_OPTIONS = new MarkerOptions()
+            .anchor(0.25f, 1.0f - 0.08333f);
 
 
     @Inject
     private EventManager eventManager;
 
     public WaypointManager() {
-        waypointsMarkerOptions = new MarkerOptions()
-                .anchor(0.25f, 1.0f - 0.08333f);
-
-        waypointPolylineOption = new PolylineOptions()
-                .width(5);
-        markers = new HashMap<String, List<Marker>>();
-        waypointsPolyline = new HashMap<String, Polyline>();
+        markers = new HashMap<MarkerOptions, List<Marker>>();
+        waypointsPolyline = new HashMap<PolylineOptions, Polyline>();
     }
 
     public void addNewPolyLine(@Observes AddWaypointPolyline event) {
-        String lineColor = event.getLineColor();
         GoogleMap map = event.getMap();
+        PolylineOptions polylineOptions = event.getPolylineOptions();
+        MarkerOptions markerOptions = event.getMarkerOptions();
 
-        waypointsMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_mark));
-        waypointPolylineOption.color(Color.parseColor(lineColor));
-        if (!waypointsPolyline.containsKey(lineColor) && !markers.containsKey(lineColor)) {
-            waypointsPolyline.put(lineColor, map.addPolyline(waypointPolylineOption));
-            markers.put(lineColor, new LinkedList<Marker>());
+        if (!waypointsPolyline.containsKey(polylineOptions) && !markers.containsKey(markerOptions)) {
+            waypointsPolyline.put(polylineOptions, map.addPolyline(polylineOptions));
+            markers.put(markerOptions, new LinkedList<Marker>());
 
         }
 
@@ -69,38 +64,50 @@ public class WaypointManager {
 
     public void addWaypoint(@Observes AddWayointEvent event) {
         GoogleMap map = event.getMap();
+        PolylineOptions polylineOptions = event.getPolylineOptions();
+        MarkerOptions markerOptions = event.getMarkerOptions();
         LatLng o = event.getLatLng();
-        String lineColor = event.getLineColor();
-        if (waypointsPolyline.containsKey(lineColor) && markers.containsKey(lineColor)) {
-            List<LatLng> waypointsLatLngList = waypointsPolyline.get(lineColor).getPoints();
-            markers.get(lineColor).add(map.addMarker(waypointsMarkerOptions.position(o)));
+
+        if (waypointsPolyline.containsKey(polylineOptions) && markers.containsKey(markerOptions)) {
+
+            markers.get(markerOptions).add(map.addMarker(markerOptions.position(o)));
+
+            List<LatLng> waypointsLatLngList = waypointsPolyline.get(polylineOptions).getPoints();
             waypointsLatLngList.add(o);
-            waypointsPolyline.get(lineColor).setPoints(waypointsLatLngList);
+            waypointsPolyline.get(polylineOptions).setPoints(waypointsLatLngList);
         }
     }
 
 
     public void redrawWaypoints(@Observes RedrawWaypointsEvent event) {
         GoogleMap map = event.getMap();
-        String lineColor = event.getLineColor();
+        PolylineOptions polylineOptions = event.getPolylineOptions();
+        MarkerOptions markerOptions = event.getMarkerOptions();
 
-        if (waypointsPolyline.containsKey(lineColor) && markers.containsKey(lineColor)) {
 
-            List<Marker> markers = this.markers.get(lineColor);
-            Polyline polyline = waypointsPolyline.get(lineColor);
+        for (Map.Entry<PolylineOptions, Polyline> polylineEntry : waypointsPolyline.entrySet()) {
+            Polyline polyline = polylineEntry.getValue();
             List<LatLng> latLng = polyline.getPoints();
+            if (polyline != null && !latLng.isEmpty()) {
+                Polyline p = map.addPolyline(polylineEntry.getKey());
+                p.setPoints(latLng);
+                waypointsPolyline.put(polylineOptions, p);
+            }
 
-            if (markers != null && !markers.isEmpty() && polyline != null && !latLng.isEmpty()) {
+        }
+
+        for (Map.Entry<MarkerOptions, List<Marker>> markerOptionsListEntry : this.markers.entrySet()) {
+            List<Marker> markers = markerOptionsListEntry.getValue();
+            if (markers != null && !markers.isEmpty()) {
 
                 for (Marker m : markers) {
-                    waypointsMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_mark));
-                    map.addMarker(waypointsMarkerOptions.position(m.getPosition()));
+                    map.addMarker(markerOptions.position(m.getPosition()));
                 }
-                Polyline p = map.addPolyline(waypointPolylineOption.color(Color.parseColor(lineColor)));
-                p.setPoints(latLng);
-                waypointsPolyline.put(lineColor, p);
             }
+
         }
+
+
     }
 
 
@@ -116,15 +123,8 @@ public class WaypointManager {
     public void restoreInstance(@Observes OnMapRestoreInstanceEvent event) {
         Bundle saved = event.getSavedInstance();
         GoogleMap map = event.getMap();
-        waypointsPolyline = (Map<String, Polyline>) saved.getSerializable("waypoint_polyline");
-        markers = (Map<String, List<Marker>>) saved.getSerializable("waypoint_markers");
-
-        for (Map.Entry<String, List<Marker>> entry : markers.entrySet()) {
-            if (waypointsPolyline.containsKey(entry.getKey())) {
-                redrawWaypoints(new RedrawWaypointsEvent(null, map, entry.getKey()));
-            }
-        }
-
+        waypointsPolyline = (Map<PolylineOptions, Polyline>) saved.getSerializable("waypoint_polyline");
+        markers = (Map<MarkerOptions, List<Marker>>) saved.getSerializable("waypoint_markers");
 
     }
 
