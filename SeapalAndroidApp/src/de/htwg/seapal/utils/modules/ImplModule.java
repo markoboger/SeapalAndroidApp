@@ -33,6 +33,8 @@ import de.htwg.seapal.database.impl.TouchDBRaceDatabase;
 import de.htwg.seapal.database.impl.TouchDBRouteDatabase;
 import de.htwg.seapal.database.impl.TouchDBTripDatabase;
 import de.htwg.seapal.database.impl.TouchDBWaypointDatabase;
+import de.htwg.seapal.manager.mapstate.Statelike;
+import de.htwg.seapal.manager.mapstate.impl.DefaultState;
 import de.htwg.seapal.utils.logging.ILogger;
 import de.htwg.seapal.utils.logging.Logger;
 
@@ -71,6 +73,9 @@ public class ImplModule implements Module {
         binder.bind(String.class).annotatedWith(Names.named("databaseOfRoute")).toInstance("seapal_route_db");
         binder.bind(String.class).annotatedWith(Names.named("databaseOfMark")).toInstance("seapal_mark_db");
         binder.bind(String.class).annotatedWith(Names.named("databaseOfRace")).toInstance("seapal_race_db");
+
+
+        binder.bind(Statelike.class).to(DefaultState.class);
 
 
     }
