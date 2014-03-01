@@ -71,7 +71,7 @@ public class DistanceState implements Statelike {
         }
         distance += calcDistance(lastPos, latlng);
         eventManager.fire(new AddWayointEvent(context, map, MARKER_OPTIONS, POLYLINE_OPTIONS, latlng));
-        Toast.makeText(context, String.format("Calculated Distance = %.2f KM", distance), Toast.LENGTH_LONG).show();
+        Toast.makeText(context, String.format("Calculated Distance = %.2f KM", distance), Toast.LENGTH_SHORT).show();
     }
 
     @Override
