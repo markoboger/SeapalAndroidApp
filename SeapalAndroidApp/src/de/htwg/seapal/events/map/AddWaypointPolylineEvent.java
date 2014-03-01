@@ -9,14 +9,14 @@ import com.google.android.gms.maps.model.PolylineOptions;
 /**
  * Created by jakub on 2/28/14.
  */
-public class AddWaypointPolyline {
+public class AddWaypointPolylineEvent {
 
     private Context context;
     private GoogleMap map;
     private MarkerOptions markerOptions;
     private PolylineOptions polylineOptions;
 
-    public AddWaypointPolyline(Context context, GoogleMap map, MarkerOptions markerOptions, PolylineOptions polylineOptions) {
+    public AddWaypointPolylineEvent(Context context, GoogleMap map, MarkerOptions markerOptions, PolylineOptions polylineOptions) {
         this.context = context;
         this.map = map;
         this.markerOptions = markerOptions;
