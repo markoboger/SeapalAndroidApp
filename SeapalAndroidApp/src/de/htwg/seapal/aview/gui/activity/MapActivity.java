@@ -1,6 +1,7 @@
 package de.htwg.seapal.aview.gui.activity;
 
 
+import android.app.DialogFragment;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -27,7 +28,6 @@ import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.inject.Inject;
 
 import java.io.Serializable;
@@ -36,9 +36,14 @@ import java.util.List;
 
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.adapter.SideDrawerListAdapter;
+import de.htwg.seapal.aview.gui.fragment.MapDialogFragment;
 import de.htwg.seapal.controller.IMainController;
 import de.htwg.seapal.events.map.OnMapRestoreInstanceEvent;
 import de.htwg.seapal.events.map.OnMapSaveInstanceEvent;
+import de.htwg.seapal.events.map.RemoveCrosshairEvent;
+import de.htwg.seapal.events.map.TransitionToMarker;
+import de.htwg.seapal.events.map.TransitionToTarget;
+import de.htwg.seapal.events.map.aimdirectionmanager.DiscardTargetEvent;
 import de.htwg.seapal.events.map.aimdirectionmanager.InitializeAimDirectionEvent;
 import de.htwg.seapal.events.map.picturemanager.PlacePictureOnMapEvent;
 import de.htwg.seapal.events.map.picturemanager.RequestTakePictureEvent;
@@ -51,6 +56,7 @@ import de.htwg.seapal.manager.map.PolylineManager;
 import de.htwg.seapal.manager.map.TakePictureManager;
 import de.htwg.seapal.manager.map.TrackingManager;
 import de.htwg.seapal.manager.mapstate.Statelike;
+import de.htwg.seapal.manager.mapstate.impl.DefaultState;
 import de.htwg.seapal.manager.mapstate.impl.DistanceState;
 import de.htwg.seapal.manager.mapstate.impl.MarkState;
 import de.htwg.seapal.manager.mapstate.impl.RouteDrawingState;
@@ -59,7 +65,7 @@ import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
 
-public class MapActivity extends BaseDrawerActivity implements OnMapLongClickListener, OnMapClickListener, GoogleMap.OnMarkerClickListener {
+public class MapActivity extends BaseDrawerActivity implements OnMapLongClickListener, OnMapClickListener, MapDialogFragment.MapDialogListener {
 
     private static final String TAG = "MapActivity";
 
@@ -100,7 +106,7 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
     private AimDirectionManager aimDirectionManager;
 
     private static enum SelectedOption {
-        SEARCH, MARK, ROUTE, DISTANCE, GOTO_CURRENT, TAKE_PICTURE, PERSON_OVER_BOARD, MENU_ROUTE, MENU_MARK, MENU_DISTANCE, MENU_GOAL
+        SEARCH, MARK, ROUTE, DISTANCE, GOTO_CURRENT, TAKE_PICTURE, PERSON_OVER_BOARD, DISCARD_TARGET, MENU_ROUTE, MENU_MARK, MENU_DISTANCE, MENU_GOAL
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -135,6 +141,9 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
                     case PERSON_OVER_BOARD:
                         Log.i(TAG, "PERSON_OVER_BOARD");
                         break;
+                    case DISCARD_TARGET:
+                        eventManager.fire(new DiscardTargetEvent());
+                        break;
                 }
 
                 drawer.closeDrawer(Gravity.END);
@@ -162,8 +171,6 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
 
             map.setOnMapClickListener(this);
             map.setOnMapLongClickListener(this);
-            map.setOnMarkerClickListener(this);
-
         }
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_menu_drawer_layout);
@@ -302,13 +309,9 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
 
     @Override
     public void onMapLongClick(LatLng latLng) {
+        DefaultState state = RoboGuice.getInjector(this).getInstance(DefaultState.class);
         state.onLongPress(this, map, latLng);
 
-    }
-
-    @Override
-    public boolean onMarkerClick(Marker marker) {
-        return false;
     }
 
 
@@ -322,6 +325,49 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
         }
 
     }
+
+    @Override
+    public void onDialogSetMarkClick(DialogFragment dialog) {
+        eventManager.fire(new TransitionToMarker());
+
+    }
+
+    @Override
+    public void onDialogSetRouteClick(DialogFragment dialog) {
+        RemoveCrosshairEvent e = new RemoveCrosshairEvent();
+        eventManager.fire(e);
+        LatLng position = e.getPosition();
+        if (position != null) {
+            state = RoboGuice.getInjector(this).getInstance(RouteDrawingState.class);
+            state.onSortPress(this, map, position);
+        }
+
+    }
+
+    @Override
+    public void onDialogcalcDistanceClick(DialogFragment dialog) {
+        RemoveCrosshairEvent e = new RemoveCrosshairEvent();
+        eventManager.fire(e);
+        LatLng position = e.getPosition();
+        if (position != null) {
+            state = RoboGuice.getInjector(this).getInstance(DistanceState.class);
+            state.onSortPress(this, map, position);
+        }
+
+    }
+
+    @Override
+    public void onDialogSetTargetClick(DialogFragment dialog) {
+        eventManager.fire(new TransitionToTarget());
+
+    }
+
+    @Override
+    public void onDialogDeleteClick(DialogFragment dialog) {
+        eventManager.fire(new RemoveCrosshairEvent());
+
+    }
+
 
     /**
      * goToLastKnownLocation

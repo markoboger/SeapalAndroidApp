@@ -8,7 +8,7 @@ import java.io.Serializable;
  * Created by jakub on 12/27/13.
  * A serializable interface for IMapPlugin
  *
- * It is a generic interface using the class T and R  see {doAction} for T and R representation
+ * It is a generic interface using the class T and R  see {onSortPress} for T and R representation
  *
  */
 @Deprecated

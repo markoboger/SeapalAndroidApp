@@ -17,6 +17,7 @@ import java.util.List;
 
 import de.htwg.seapal.R;
 import de.htwg.seapal.events.map.CrosshairChangedEvent;
+import de.htwg.seapal.events.map.aimdirectionmanager.DiscardTargetEvent;
 import de.htwg.seapal.events.map.aimdirectionmanager.InitializeAimDirectionEvent;
 import roboguice.event.Observes;
 
@@ -30,7 +31,6 @@ import static java.lang.Math.toDegrees;
  */
 public class AimDirectionManager {
 
-    private Marker aimDirectionTarget;
     private Marker movingDirectionMarker;
     private Marker aimDirectionArrow;
     private GoogleMap map;
@@ -41,12 +41,12 @@ public class AimDirectionManager {
     @Inject
     private Context context;
 
-    public void discardTarget() {
+    public void discardTarget(@Observes DiscardTargetEvent event) {
         // Discard Target
-        aimDirectionArrow.remove();
-        aimDirectionTarget.remove();
-        aimDirectionTarget = null;
-        aimDirectionArrow = null;
+        if (aimDirectionArrow != null) {
+            aimDirectionArrow.remove();
+            aimDirectionArrow = null;
+        }
 
     }
 
@@ -59,7 +59,11 @@ public class AimDirectionManager {
 
             @Override
             public void onLocationChanged(Location location) {
-                drawDirectionAndAimArrow(location);
+                if (oldLocation != null) {
+                    float angle = calualteArrowDirection(oldLocation, location);
+                    showMovingDirection(angle);
+                }
+                oldLocation = location;
             }
 
             @Override
@@ -79,22 +83,6 @@ public class AimDirectionManager {
     }
 
 
-    private void drawDirectionAndAimArrow(Location location) {
-
-        if (aimDirectionArrow != null) {
-            drawAimArrow();
-        }
-
-        if (oldLocation == null) {
-            oldLocation = location;
-            return;
-        }
-
-        float angle = calualteArrowDirection(oldLocation, location);
-
-        showMovingDirection(angle);
-    }
-
     public void crosshairChangeListener(@Observes CrosshairChangedEvent event) {
         map = event.getMap();
         context = event.getContext();
@@ -113,7 +101,7 @@ public class AimDirectionManager {
 
         float angle = calualteArrowDirection(myPos, targetPos);
 
-        showAimDirectionAndTarget(angle, targetPos);
+        showTargetDirection(angle, targetPos);
 
     }
 
@@ -135,7 +123,7 @@ public class AimDirectionManager {
         }
     }
 
-    private void showAimDirectionAndTarget(float direction, Location target) {
+    private void showTargetDirection(float direction, Location target) {
 
         if (aimDirectionArrow != null) {
             aimDirectionArrow.remove();
