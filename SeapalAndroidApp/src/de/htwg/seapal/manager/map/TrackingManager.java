@@ -46,10 +46,12 @@ import de.htwg.seapal.model.impl.Trip;
 import de.htwg.seapal.services.TrackingService;
 import roboguice.event.EventManager;
 import roboguice.event.Observes;
+import roboguice.inject.ContextSingleton;
 
 /**
  * Created by jakub on 2/28/14.
  */
+@ContextSingleton
 public class TrackingManager {
 
 
