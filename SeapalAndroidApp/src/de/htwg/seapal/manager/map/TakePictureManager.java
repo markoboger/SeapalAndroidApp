@@ -38,7 +38,7 @@ import roboguice.inject.ContextSingleton;
 public class TakePictureManager {
 
     private Marker pictureMarker;
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    public static final int REQUEST_IMAGE_CAPTURE = 1;
 
 
     public void drawPicture(@Observes PlacePictureOnMapEvent event) {
@@ -103,7 +103,7 @@ public class TakePictureManager {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
             if (takePictureIntent.resolveActivity(context.getPackageManager()) != null) {
-                context.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                context.startActivityFromChild(context, takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
         }
     }
