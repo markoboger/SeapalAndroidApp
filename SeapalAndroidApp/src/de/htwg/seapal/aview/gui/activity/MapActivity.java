@@ -326,7 +326,7 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
 
     @Override
     public void onDialogSetMarkClick(DialogFragment dialog, Marker marker) {
-        eventManager.fire(new TransitionToMarker(marker));
+        eventManager.fire(new TransitionToMarker(map, marker));
 
     }
 
@@ -354,7 +354,7 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
 
     @Override
     public void onDialogSetTargetClick(DialogFragment dialog, Marker marker) {
-        eventManager.fire(new TransitionToTarget(marker));
+        eventManager.fire(new TransitionToTarget(map ,marker));
 
     }
 

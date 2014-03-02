@@ -25,9 +25,16 @@ import roboguice.event.Observes;
  */
 public class DefaultState implements Statelike {
 
-    public static final MarkerOptions MARKER_OPTIONS = new MarkerOptions()
+    public static final MarkerOptions CROSSHAIR_MARKER_OPTIONS = new MarkerOptions()
             .icon(BitmapDescriptorFactory.fromResource(R.drawable.haircross))
             .anchor(0.5f, 0.5f);
+
+
+    public static final MarkerOptions TARGET_MARKER_OPTIONS = new MarkerOptions()
+            .icon(BitmapDescriptorFactory.fromResource(R.drawable.target))
+            .anchor(0.5f, 0.5f);
+
+    public static final MarkerOptions  MARKER_OPTIONS= new MarkerOptions();
 
     private Marker crosshairMarker;
 
@@ -52,7 +59,6 @@ public class DefaultState implements Statelike {
         setCrosshairMarker(latlng);
         crosshairMarker.showInfoWindow();
 
-        eventManager.fire(new SetTargetEvent(context, map, crosshairMarker));
 
     }
 
@@ -62,7 +68,7 @@ public class DefaultState implements Statelike {
             crosshairMarker.remove();
         }
 
-        crosshairMarker = map.addMarker(MARKER_OPTIONS.position(latLng).snippet(latLng.toString()));
+        crosshairMarker = map.addMarker(CROSSHAIR_MARKER_OPTIONS.position(latLng).snippet(latLng.toString()));
 
         Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         v.vibrate(100);
@@ -70,9 +76,22 @@ public class DefaultState implements Statelike {
 
 
     public void transitionToMarker(@Observes TransitionToMarker event) {
+        Marker m = event.getMarker();
+        if (m != null && crosshairMarker != null && crosshairMarker.equals(m)) {
+            crosshairMarker.remove();
+            crosshairMarker = null;
+            map.addMarker(MARKER_OPTIONS.position(m.getPosition()));
+        }
+
     }
 
     public void transitionToTarget(@Observes TransitionToTarget event) {
+        Marker m = event.getMarker();
+        if (m != null && crosshairMarker != null && crosshairMarker.equals(m)) {
+            crosshairMarker.remove();
+            crosshairMarker = null;
+            eventManager.fire(new SetTargetEvent(context, map, map.addMarker(TARGET_MARKER_OPTIONS.position(m.getPosition()))));
+        }
     }
 
     public void removeCrosshair(@Observes RemoveCrosshairEvent event) {
