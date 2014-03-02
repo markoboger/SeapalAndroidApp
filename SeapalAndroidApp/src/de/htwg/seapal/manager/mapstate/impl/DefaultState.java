@@ -5,6 +5,7 @@ import android.os.Parcel;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import de.htwg.seapal.manager.mapstate.Statelike;
 
@@ -12,6 +13,11 @@ import de.htwg.seapal.manager.mapstate.Statelike;
  * Created by jakub on 2/28/14.
  */
 public class DefaultState implements Statelike {
+
+    private static LatLng crosshairMarker;
+    private MarkerOptions crosshairMarkerOptions;
+
+
     @Override
     public void doAction(Context context, GoogleMap map, LatLng latlng) {
 

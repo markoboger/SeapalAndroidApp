@@ -17,11 +17,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import de.htwg.seapal.R;
-import de.htwg.seapal.events.map.AddWayointEvent;
-import de.htwg.seapal.events.map.AddWaypointPolylineEvent;
 import de.htwg.seapal.events.map.OnMapRestoreInstanceEvent;
 import de.htwg.seapal.events.map.OnMapSaveInstanceEvent;
-import de.htwg.seapal.events.map.RedrawWaypointsEvent;
+import de.htwg.seapal.events.map.waypointmanager.AddWayointEvent;
+import de.htwg.seapal.events.map.waypointmanager.AddWaypointPolylineEvent;
+import de.htwg.seapal.events.map.waypointmanager.RedrawWaypointsEvent;
 import de.htwg.seapal.manager.map.WaypointManager;
 import de.htwg.seapal.manager.mapstate.Statelike;
 import roboguice.event.EventManager;
