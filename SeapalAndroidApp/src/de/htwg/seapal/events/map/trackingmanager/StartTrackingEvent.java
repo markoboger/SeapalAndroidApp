@@ -1,4 +1,4 @@
-package de.htwg.seapal.events.map;
+package de.htwg.seapal.events.map.trackingmanager;
 
 import android.content.Context;
 

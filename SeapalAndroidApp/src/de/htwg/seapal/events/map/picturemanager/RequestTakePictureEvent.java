@@ -1,15 +1,14 @@
-package de.htwg.seapal.events.map;
+package de.htwg.seapal.events.map.picturemanager;
 
 import android.content.Context;
 
 /**
- * Created by jakub on 2/28/14.
+ * Created by jakub on 3/2/14.
  */
-public class StopTrackingEvent {
-
+public class RequestTakePictureEvent {
     private Context context;
 
-    public StopTrackingEvent(Context context) {
+    public RequestTakePictureEvent(Context context) {
         this.context = context;
     }
 

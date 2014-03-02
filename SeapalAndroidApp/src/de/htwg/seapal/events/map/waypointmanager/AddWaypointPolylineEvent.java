@@ -1,4 +1,4 @@
-package de.htwg.seapal.events.map;
+package de.htwg.seapal.events.map.waypointmanager;
 
 import android.content.Context;
 
@@ -9,27 +9,26 @@ import com.google.android.gms.maps.model.PolylineOptions;
 /**
  * Created by jakub on 2/28/14.
  */
-public class RedrawWaypointsEvent {
+public class AddWaypointPolylineEvent {
+
     private Context context;
     private GoogleMap map;
-
     private MarkerOptions markerOptions;
     private PolylineOptions polylineOptions;
 
-
-    public RedrawWaypointsEvent(Context context, GoogleMap map, MarkerOptions markerOptions, PolylineOptions polylineOptions) {
+    public AddWaypointPolylineEvent(Context context, GoogleMap map, MarkerOptions markerOptions, PolylineOptions polylineOptions) {
         this.context = context;
         this.map = map;
         this.markerOptions = markerOptions;
         this.polylineOptions = polylineOptions;
     }
 
-    public GoogleMap getMap() {
-        return map;
-    }
-
     public Context getContext() {
         return context;
+    }
+
+    public GoogleMap getMap() {
+        return map;
     }
 
     public MarkerOptions getMarkerOptions() {
@@ -40,4 +39,3 @@ public class RedrawWaypointsEvent {
         return polylineOptions;
     }
 }
-
