@@ -4,8 +4,11 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -23,6 +26,7 @@ import de.htwg.seapal.events.map.AddWaypointPolylineEvent;
 import de.htwg.seapal.events.map.OnMapRestoreInstanceEvent;
 import de.htwg.seapal.events.map.OnMapSaveInstanceEvent;
 import de.htwg.seapal.events.map.RedrawWaypointsEvent;
+import de.htwg.seapal.events.map.RequestWaypointsZoom;
 import roboguice.event.EventManager;
 import roboguice.event.Observes;
 import roboguice.inject.ContextSingleton;
@@ -116,6 +120,27 @@ public class WaypointManager implements Parcelable {
         }
 
 
+    }
+
+    public void zoomToWaypointRoute(@Observes RequestWaypointsZoom event) {
+
+        MarkerOptions markerOptions = event.getMarkerOptions();
+        PolylineOptions polylineOptions = event.getPolylineOptions();
+        GoogleMap map = event.getMap();
+
+        if (waypointsPolyline.containsKey(polylineOptions) && markers.containsKey(markerOptions)) {
+
+            List<LatLng> waypointList = waypointsPolyline.get(polylineOptions);
+            if (waypointList != null && !waypointList.isEmpty()) {
+                LatLngBounds.Builder boundsBuilder = LatLngBounds.builder();
+                for (LatLng latLng : waypointList) {
+                    boundsBuilder.include(latLng);
+                }
+                LatLngBounds latLngBounds = boundsBuilder.build();
+                CameraUpdate yourLocation = CameraUpdateFactory.newLatLngBounds(latLngBounds, 50);
+                map.animateCamera(yourLocation);
+            }
+        }
     }
 
 

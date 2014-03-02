@@ -1,5 +1,9 @@
 package de.htwg.seapal.manager.map;
 
+import android.net.Uri;
+
+import com.google.android.gms.maps.model.LatLng;
+
 import roboguice.inject.ContextSingleton;
 
 /**
@@ -7,4 +11,9 @@ import roboguice.inject.ContextSingleton;
  */
 @ContextSingleton
 public class TakePictureManager {
+
+    private LatLng pictureMarker;
+    private Uri fileUri;
+    private String mCurrentPhotoPath;
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
 }

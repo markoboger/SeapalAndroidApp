@@ -37,6 +37,7 @@ import de.htwg.seapal.events.map.AddWaypointPolylineEvent;
 import de.htwg.seapal.events.map.OnMapRestoreInstanceEvent;
 import de.htwg.seapal.events.map.OnMapSaveInstanceEvent;
 import de.htwg.seapal.events.map.RedrawWaypointsEvent;
+import de.htwg.seapal.events.map.RequestWaypointsZoom;
 import de.htwg.seapal.events.map.StartTrackingEvent;
 import de.htwg.seapal.events.map.StopTrackingEvent;
 import de.htwg.seapal.manager.SessionManager;
@@ -112,6 +113,8 @@ public class TrackingManager {
                 }
 
                 context.stopService(trackingService);
+                eventManager.fire(new RequestWaypointsZoom(context, map, TRACKING_MARKER_OPTIONS, TRACKING_POLYLINE_OPTIONS));
+
                 trackingService = null;
                 Toast.makeText(context, "Tracking Stopped", Toast.LENGTH_SHORT).show();
             } else {
