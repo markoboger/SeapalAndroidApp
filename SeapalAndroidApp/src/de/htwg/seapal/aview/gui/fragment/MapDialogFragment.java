@@ -1,11 +1,5 @@
 package de.htwg.seapal.aview.gui.fragment;
 
-import java.text.DecimalFormat;
-
-import com.google.android.gms.maps.model.LatLng;
-
-import de.htwg.seapal.R;
-import de.htwg.seapal.aview.gui.activity.MapActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -15,6 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import java.text.DecimalFormat;
+
+import de.htwg.seapal.R;
 
 public class MapDialogFragment extends DialogFragment {
 
@@ -46,6 +44,7 @@ public class MapDialogFragment extends DialogFragment {
     @Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 
+
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 		View dialogView = inflater.inflate(R.layout.map_menu, null);
@@ -60,10 +59,10 @@ public class MapDialogFragment extends DialogFragment {
 
 		TextView t = (TextView) titleView.findViewById(R.id.menuTitleLabel);
 
-		LatLng pos = MapActivity.crosshairMarker.getPosition();
-		String lat = formatLatitude(pos.latitude);
-		String lng = formatLongitude(pos.longitude);
-		t.setText(lat + "       " +  lng);
+//		LatLng pos = MapActivity.crosshairMarker.getPosition();
+//		String lat = formatLatitude(pos.latitude);
+//		String lng = formatLongitude(pos.longitude);
+//		t.setText(lat + "       " +  lng);
 		builder.setCustomTitle(titleView).setView(dialogView);
 
 		setMark.setOnClickListener(new View.OnClickListener() {
