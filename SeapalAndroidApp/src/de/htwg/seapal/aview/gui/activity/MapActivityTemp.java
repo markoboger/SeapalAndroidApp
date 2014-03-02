@@ -90,6 +90,7 @@ import static java.lang.Math.sqrt;
 import static java.lang.Math.toDegrees;
 
 
+@Deprecated
 public class MapActivityTemp extends BaseDrawerActivity
         implements OnMapLongClickListener, OnMapClickListener, OnMarkerClickListener,
         MapDialogFragment.MapDialogListener, IMapPluginable, PictureDialogFragment.PictureDialogFragmentListener {
