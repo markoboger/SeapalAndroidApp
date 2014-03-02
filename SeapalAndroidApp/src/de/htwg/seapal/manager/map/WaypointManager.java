@@ -57,8 +57,16 @@ public class WaypointManager implements Parcelable {
         MarkerOptions markerOptions = event.getMarkerOptions();
 
 
+        if (waypointsPolyline.containsKey(polylineOptions) && markers.containsKey(markerOptions)) {
+            waypointsPolyline.get(polylineOptions);
+            markers.remove(markerOptions);
+
+        }
+
         waypointsPolyline.put(polylineOptions, map.addPolyline(polylineOptions).getPoints());
         markers.put(markerOptions, new LinkedList<LatLng>());
+
+        eventManager.fire(new RedrawWaypointsEvent(event.getContext(), map, markerOptions, polylineOptions));
     }
 
 
