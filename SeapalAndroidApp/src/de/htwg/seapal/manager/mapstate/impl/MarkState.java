@@ -13,7 +13,12 @@ import de.htwg.seapal.manager.mapstate.Statelike;
  */
 public class MarkState implements Statelike {
     @Override
-    public void doAction(Context context, GoogleMap map, LatLng latlng) {
+    public void onSortPress(Context context, GoogleMap map, LatLng latlng) {
+
+    }
+
+    @Override
+    public void onLongPress(Context context, GoogleMap map, LatLng latlng) {
 
     }
 

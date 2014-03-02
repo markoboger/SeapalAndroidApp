@@ -59,7 +59,7 @@ public class RouteDrawingState implements Statelike {
     }
 
     @Override
-    public void doAction(Context context, GoogleMap map, LatLng latlng) {
+    public void onSortPress(Context context, GoogleMap map, LatLng latlng) {
         if (!initialized) {
             eventManager.fire(new AddWaypointPolylineEvent(context, map, MARKER_OPTIONS, POLYLINE_OPTIONS));
             initialized = true;
@@ -67,6 +67,11 @@ public class RouteDrawingState implements Statelike {
 
         eventManager.fire(new AddWayointEvent(context, map, MARKER_OPTIONS, POLYLINE_OPTIONS, latlng));
 
+
+    }
+
+    @Override
+    public void onLongPress(Context context, GoogleMap map, LatLng latlng) {
 
     }
 

@@ -12,6 +12,8 @@ import com.google.android.gms.maps.model.LatLng;
 public interface Statelike extends Parcelable {
 
 
-    void doAction(Context context, GoogleMap map, LatLng latlng);
+    void onSortPress(Context context, GoogleMap map, LatLng latlng);
+
+    void onLongPress(Context context, GoogleMap map, LatLng latlng);
 
 }

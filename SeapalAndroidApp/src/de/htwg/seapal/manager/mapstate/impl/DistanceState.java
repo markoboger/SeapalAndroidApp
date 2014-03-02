@@ -61,7 +61,7 @@ public class DistanceState implements Statelike {
     private LatLng lastPos;
 
     @Override
-    public void doAction(Context context, GoogleMap map, LatLng latlng) {
+    public void onSortPress(Context context, GoogleMap map, LatLng latlng) {
         if (!initialized) {
             eventManager.fire(new AddWaypointPolylineEvent(context, map, MARKER_OPTIONS, POLYLINE_OPTIONS));
             lastPos = latlng;
@@ -71,6 +71,11 @@ public class DistanceState implements Statelike {
         distance += calcDistance(lastPos, latlng);
         eventManager.fire(new AddWayointEvent(context, map, MARKER_OPTIONS, POLYLINE_OPTIONS, latlng));
         Toast.makeText(context, String.format("Calculated Distance = %.2f KM", distance), 0).show();
+    }
+
+    @Override
+    public void onLongPress(Context context, GoogleMap map, LatLng latlng) {
+
     }
 
     @Override
