@@ -402,18 +402,18 @@ public class MapActivityTemp extends BaseDrawerActivity
                 break;
             case MENU_ROUTE:
                 setCrosshairMarker(latlng);
-                onDialogSetRouteClick(new DialogFragment());
+                onDialogSetRouteClick(new DialogFragment(), crosshairMarker);
                 option = SelectedOption.ROUTE;
                 onMapClick(latlng);
                 break;
             case MENU_MARK:
                 setCrosshairMarker(latlng);
-                onDialogSetMarkClick(new DialogFragment());
+                onDialogSetMarkClick(new DialogFragment(), crosshairMarker);
                 option = SelectedOption.NONE;
                 break;
             case MENU_DISTANCE:
                 setCrosshairMarker(latlng);
-                onDialogcalcDistanceClick(new DialogFragment());
+                onDialogcalcDistanceClick(new DialogFragment(), crosshairMarker);
                 option = SelectedOption.DISTANCE;
                 break;
             default:
@@ -430,40 +430,40 @@ public class MapActivityTemp extends BaseDrawerActivity
 
     @Override
     public boolean onMarkerClick(Marker arg0) {
-        MapDialogFragment f = new MapDialogFragment();
+        MapDialogFragment f = new MapDialogFragment(arg0);
         f.show(getFragmentManager(), "dialog");
         return false;
     }
 
     @Override
-    public void onDialogSetMarkClick(DialogFragment dialog) {
+    public void onDialogSetMarkClick(DialogFragment dialog, Marker marker) {
         option = SelectedOption.MARK;
         map.addMarker(new MarkerOptions().position(crosshairMarker.getPosition()));
         crosshairMarker.remove();
     }
 
     @Override
-    public void onDialogSetRouteClick(DialogFragment dialog) {
+    public void onDialogSetRouteClick(DialogFragment dialog, Marker marker) {
         option = SelectedOption.ROUTE;
         registerMapPlugin("route_drawing_map_plugin", new RouteDrawingMapPlugin(map, crosshairMarker.getPosition()));
         crosshairMarker.remove();
     }
 
     @Override
-    public void onDialogcalcDistanceClick(DialogFragment dialog) {
+    public void onDialogcalcDistanceClick(DialogFragment dialog, Marker marker) {
         option = SelectedOption.DISTANCE;
         registerMapPlugin("calc_distance_map_plugin", new CalcDistanceMapPlugin(map, crosshairMarker.getPosition()));
         crosshairMarker.remove();
     }
 
     @Override
-    public void onDialogSetTargetClick(DialogFragment dialog) {
+    public void onDialogSetTargetClick(DialogFragment dialog, Marker marker) {
         drawAimArrow();
         option = SelectedOption.GOAL;
     }
 
     @Override
-    public void onDialogDeleteClick(DialogFragment dialog) {
+    public void onDialogDeleteClick(DialogFragment dialog, Marker marker) {
         crosshairMarker.remove();
         option = SelectedOption.NONE;
     }

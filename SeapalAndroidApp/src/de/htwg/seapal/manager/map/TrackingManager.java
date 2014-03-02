@@ -215,7 +215,7 @@ public class TrackingManager {
         trackingService = (Intent) savedInstance.get("tracking_manager_service");
         LinkedList list = (LinkedList) savedInstance.get("tracking_manager_waypoint");
         polylineManager = (PolylineManager) list.getFirst();
-        eventManager.fire(new RedrawWaypointsEvent(context, map, TRACKING_MARKER_OPTIONS, TRACKING_POLYLINE_OPTIONS));
+        eventManager.fire(new RedrawWaypointsEvent(context, map));
 
         if (trackingService != null) {
             waypointBroadcastReceiver = new TrackingServiceWaypointBroadcastReceiver();

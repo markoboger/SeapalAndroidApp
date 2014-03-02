@@ -28,16 +28,16 @@ import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.inject.Inject;
 
-import java.io.Serializable;
-import java.util.LinkedList;
 import java.util.List;
 
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.adapter.SideDrawerListAdapter;
 import de.htwg.seapal.aview.gui.fragment.MapDialogFragment;
 import de.htwg.seapal.controller.IMainController;
+import de.htwg.seapal.events.map.MarkerDeleteEvent;
 import de.htwg.seapal.events.map.OnMapRestoreInstanceEvent;
 import de.htwg.seapal.events.map.OnMapSaveInstanceEvent;
 import de.htwg.seapal.events.map.RemoveCrosshairEvent;
@@ -50,6 +50,7 @@ import de.htwg.seapal.events.map.picturemanager.RequestTakePictureEvent;
 import de.htwg.seapal.events.map.picturemanager.ShowPictureDialogEvent;
 import de.htwg.seapal.events.map.trackingmanager.StartTrackingEvent;
 import de.htwg.seapal.events.map.trackingmanager.StopTrackingEvent;
+import de.htwg.seapal.events.map.waypointmanager.RedrawWaypointsEvent;
 import de.htwg.seapal.manager.SessionManager;
 import de.htwg.seapal.manager.map.AimDirectionManager;
 import de.htwg.seapal.manager.map.PolylineManager;
@@ -65,7 +66,7 @@ import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
 
-public class MapActivity extends BaseDrawerActivity implements OnMapLongClickListener, OnMapClickListener, MapDialogFragment.MapDialogListener {
+public class MapActivity extends BaseDrawerActivity implements OnMapLongClickListener, OnMapClickListener, MapDialogFragment.MapDialogListener, GoogleMap.OnMarkerClickListener {
 
     private static final String TAG = "MapActivity";
 
@@ -170,6 +171,7 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
             map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
             map.setOnMapClickListener(this);
+            map.setOnMarkerClickListener(this);
             map.setOnMapLongClickListener(this);
         }
 
@@ -216,9 +218,7 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        List<Statelike> l = new LinkedList<Statelike>();
-        l.add(state);
-        outState.putSerializable("map_state", (Serializable) l);
+        outState.putParcelable("map_state", state);
         eventManager.fire(new OnMapSaveInstanceEvent(outState));
         super.onSaveInstanceState(outState);
     }
@@ -226,13 +226,11 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        List<Statelike> s = (List<Statelike>) savedInstanceState.getSerializable("map_state");
-        if (s !=null && !s.isEmpty()) {
-            Statelike state = s.get(0);
-            // needs to get injected because for listeners and observers
+        Statelike state = savedInstanceState.getParcelable("map_state");
+        // needs to get injected because for listeners and observers
+        if (state != null)
             this.state = RoboGuice.getInjector(this).getInstance(state.getClass());
 
-        }
         eventManager.fire(new OnMapRestoreInstanceEvent(map, savedInstanceState));
     }
 
@@ -327,45 +325,51 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
     }
 
     @Override
-    public void onDialogSetMarkClick(DialogFragment dialog) {
-        eventManager.fire(new TransitionToMarker());
+    public void onDialogSetMarkClick(DialogFragment dialog, Marker marker) {
+        eventManager.fire(new TransitionToMarker(marker));
 
     }
 
     @Override
-    public void onDialogSetRouteClick(DialogFragment dialog) {
-        RemoveCrosshairEvent e = new RemoveCrosshairEvent();
-        eventManager.fire(e);
-        LatLng position = e.getPosition();
-        if (position != null) {
+    public void onDialogSetRouteClick(DialogFragment dialog, Marker marker) {
+        if (marker != null) {
+            LatLng position = marker.getPosition();
             state = RoboGuice.getInjector(this).getInstance(RouteDrawingState.class);
             state.onSortPress(this, map, position);
+            eventManager.fire(new RemoveCrosshairEvent());
         }
 
     }
 
     @Override
-    public void onDialogcalcDistanceClick(DialogFragment dialog) {
-        RemoveCrosshairEvent e = new RemoveCrosshairEvent();
-        eventManager.fire(e);
-        LatLng position = e.getPosition();
-        if (position != null) {
+    public void onDialogcalcDistanceClick(DialogFragment dialog, Marker marker) {
+        if (marker != null) {
+            LatLng position = marker.getPosition();
             state = RoboGuice.getInjector(this).getInstance(DistanceState.class);
             state.onSortPress(this, map, position);
+            eventManager.fire(new RemoveCrosshairEvent());
         }
 
     }
 
     @Override
-    public void onDialogSetTargetClick(DialogFragment dialog) {
-        eventManager.fire(new TransitionToTarget());
+    public void onDialogSetTargetClick(DialogFragment dialog, Marker marker) {
+        eventManager.fire(new TransitionToTarget(marker));
 
     }
 
     @Override
-    public void onDialogDeleteClick(DialogFragment dialog) {
-        eventManager.fire(new RemoveCrosshairEvent());
+    public void onDialogDeleteClick(DialogFragment dialog, Marker marker) {
+        eventManager.fire(new MarkerDeleteEvent(marker));
+        eventManager.fire(new RedrawWaypointsEvent(this, map));
 
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        MapDialogFragment f = new MapDialogFragment(marker);
+        f.show(getFragmentManager(), "dialog");
+        return false;
     }
 
 
@@ -391,7 +395,7 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
         }
     }
 
-    private LatLng getLastKnownLocation() {
+    public LatLng getLastKnownLocation() {
 
         LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location location = null;

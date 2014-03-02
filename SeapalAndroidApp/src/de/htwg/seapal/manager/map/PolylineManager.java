@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import de.htwg.seapal.events.map.MarkerDeleteEvent;
 import de.htwg.seapal.events.map.OnMapRestoreInstanceEvent;
 import de.htwg.seapal.events.map.OnMapSaveInstanceEvent;
 import de.htwg.seapal.events.map.waypointmanager.AddWayointEvent;
@@ -70,7 +71,7 @@ public class PolylineManager implements Parcelable {
         waypointsPolyline.put(polylineOptions, map.addPolyline(polylineOptions).getPoints());
         markers.put(markerOptions, new LinkedList<LatLng>());
 
-        eventManager.fire(new RedrawWaypointsEvent(event.getContext(), map, markerOptions, polylineOptions));
+        eventManager.fire(new RedrawWaypointsEvent(event.getContext(), map));
     }
 
 
@@ -175,6 +176,25 @@ public class PolylineManager implements Parcelable {
             return new PolylineManager[size];
         }
     };
+
+    public void deletePolylineFromMarker(@Observes MarkerDeleteEvent event) {
+        LatLng position = event.getMarker().getPosition();
+        PolylineOptions foundPolylineOptions = null;
+        MarkerOptions foundMarkerOptions = null;
+        for (Map.Entry<PolylineOptions, List<LatLng>> entry : waypointsPolyline.entrySet()) {
+            if (entry.getValue().contains(position))
+                foundPolylineOptions = entry.getKey();
+        }
+        for (Map.Entry<MarkerOptions, List<LatLng>> entry : markers.entrySet()) {
+            if (entry.getValue().contains(position))
+                foundMarkerOptions = entry.getKey();
+        }
+        if (foundMarkerOptions != null && foundPolylineOptions != null) {
+            waypointsPolyline.remove(foundPolylineOptions);
+            markers.remove(foundMarkerOptions);
+
+        }
+    }
 
 
     @Override

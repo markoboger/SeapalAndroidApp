@@ -90,7 +90,7 @@ public class RouteDrawingState implements Statelike {
         LinkedList list = (LinkedList) savedInstance.get("route_manager_waypoint");
         polylineManager = (PolylineManager) list.getFirst();
 
-        eventManager.fire(new RedrawWaypointsEvent(context, map, MARKER_OPTIONS, POLYLINE_OPTIONS));
+        eventManager.fire(new RedrawWaypointsEvent(context, map));
 
 
     }

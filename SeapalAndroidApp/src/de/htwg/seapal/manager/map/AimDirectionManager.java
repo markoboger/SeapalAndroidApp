@@ -16,10 +16,11 @@ import com.google.inject.Inject;
 import java.util.List;
 
 import de.htwg.seapal.R;
-import de.htwg.seapal.events.map.CrosshairChangedEvent;
+import de.htwg.seapal.events.map.SetTargetEvent;
 import de.htwg.seapal.events.map.aimdirectionmanager.DiscardTargetEvent;
 import de.htwg.seapal.events.map.aimdirectionmanager.InitializeAimDirectionEvent;
 import roboguice.event.Observes;
+import roboguice.inject.ContextSingleton;
 
 import static java.lang.Math.asin;
 import static java.lang.Math.pow;
@@ -29,6 +30,7 @@ import static java.lang.Math.toDegrees;
 /**
  * Created by jakub on 3/2/14.
  */
+@ContextSingleton
 public class AimDirectionManager {
 
     private Marker movingDirectionMarker;
@@ -83,7 +85,7 @@ public class AimDirectionManager {
     }
 
 
-    public void crosshairChangeListener(@Observes CrosshairChangedEvent event) {
+    public void crosshairChangeListener(@Observes SetTargetEvent event) {
         map = event.getMap();
         context = event.getContext();
         crosshairMarker = event.getCrosshairMarker();

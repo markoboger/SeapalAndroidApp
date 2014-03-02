@@ -110,7 +110,7 @@ public class DistanceState implements Statelike {
         distance = savedInstance.getDouble("distance");
         lastPos = savedInstance.getParcelable("lastPos");
 
-        eventManager.fire(new RedrawWaypointsEvent(context, map, MARKER_OPTIONS, POLYLINE_OPTIONS));
+        eventManager.fire(new RedrawWaypointsEvent(context, map));
 
 
     }
