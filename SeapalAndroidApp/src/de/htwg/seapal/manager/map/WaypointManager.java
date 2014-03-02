@@ -56,13 +56,9 @@ public class WaypointManager implements Parcelable {
         PolylineOptions polylineOptions = event.getPolylineOptions();
         MarkerOptions markerOptions = event.getMarkerOptions();
 
-        if (!waypointsPolyline.containsKey(polylineOptions) && !markers.containsKey(markerOptions)) {
-            waypointsPolyline.put(polylineOptions, map.addPolyline(polylineOptions).getPoints());
-            markers.put(markerOptions, new LinkedList<LatLng>());
 
-        }
-
-
+        waypointsPolyline.put(polylineOptions, map.addPolyline(polylineOptions).getPoints());
+        markers.put(markerOptions, new LinkedList<LatLng>());
     }
 
 
@@ -89,6 +85,7 @@ public class WaypointManager implements Parcelable {
     public void redrawWaypoints(@Observes RedrawWaypointsEvent event) {
         GoogleMap map = event.getMap();
 
+        map.clear();
 
         for (Map.Entry<PolylineOptions, List<LatLng>> polylineEntry : waypointsPolyline.entrySet()) {
             List<LatLng> latLng = polylineEntry.getValue();
@@ -130,6 +127,22 @@ public class WaypointManager implements Parcelable {
         markers = (Map<MarkerOptions, List<LatLng>>) saved.getSerializable("waypoint_markers");
 
     }
+
+
+    public final Parcelable.Creator<WaypointManager> CREATOR
+            = new Parcelable.Creator<WaypointManager>() {
+        public WaypointManager createFromParcel(Parcel in) {
+            Bundle b = in.readBundle();
+            WaypointManager.this.waypointsPolyline = (Map<PolylineOptions, List<LatLng>>) b.getParcelable("waypoints");
+            WaypointManager.this.markers = (Map<MarkerOptions, List<LatLng>>) b.getParcelable("markers");
+            return WaypointManager.this;
+        }
+
+        public WaypointManager[] newArray(int size) {
+            return new WaypointManager[size];
+        }
+    };
+
 
     @Override
     public int describeContents() {

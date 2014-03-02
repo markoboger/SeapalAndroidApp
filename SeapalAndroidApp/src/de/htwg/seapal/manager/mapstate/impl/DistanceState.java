@@ -13,7 +13,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.inject.Inject;
 
-import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -91,17 +90,20 @@ public class DistanceState implements Statelike {
     public void saveInstance(@Observes OnMapSaveInstanceEvent event) {
         Bundle outState = event.getOutBundle();
         List l = new LinkedList<Object>();
-        l.add(waypointManager);
-        outState.putSerializable("distance_manager_waypoint", (Serializable) l);
+
+        outState.putBoolean("initialized", initialized);
+        outState.putDouble("distance", distance);
+        outState.putParcelable("lastPos", lastPos);
+
 
     }
 
     public void restoreInstance(@Observes OnMapRestoreInstanceEvent event) {
         Bundle savedInstance = event.getSavedInstance();
         GoogleMap map = event.getMap();
-
-        LinkedList list = (LinkedList) savedInstance.get("distance_manager_waypoint");
-        waypointManager = (WaypointManager) list.getFirst();
+        initialized = savedInstance.getBoolean("initialized");
+        distance = savedInstance.getDouble("distance");
+        lastPos = savedInstance.getParcelable("lastPos");
 
         eventManager.fire(new RedrawWaypointsEvent(context, map, MARKER_OPTIONS, POLYLINE_OPTIONS));
 
