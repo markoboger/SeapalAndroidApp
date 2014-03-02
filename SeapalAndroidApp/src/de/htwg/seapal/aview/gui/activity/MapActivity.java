@@ -39,6 +39,7 @@ import de.htwg.seapal.aview.gui.adapter.SideDrawerListAdapter;
 import de.htwg.seapal.controller.IMainController;
 import de.htwg.seapal.events.map.OnMapRestoreInstanceEvent;
 import de.htwg.seapal.events.map.OnMapSaveInstanceEvent;
+import de.htwg.seapal.events.map.aimdirectionmanager.InitializeAimDirectionEvent;
 import de.htwg.seapal.events.map.picturemanager.PlacePictureOnMapEvent;
 import de.htwg.seapal.events.map.picturemanager.RequestTakePictureEvent;
 import de.htwg.seapal.events.map.picturemanager.ShowPictureDialogEvent;
@@ -189,6 +190,7 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
             onRestoreInstanceState(savedInstanceState);
 
         }
+        eventManager.fire(new InitializeAimDirectionEvent(this, map));
     }
 
     @Override
@@ -287,18 +289,20 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
                 toggleRightDrawer();
                 break;
             case android.R.id.home:
+                closeRightDreawer();
                 break;
         }
         return super.onMenuItemSelected(featureId, item);
     }
 
     @Override
-    public void onMapClick(LatLng latlng) {
-        state.doAction(this, map, latlng);
+    public void onMapClick(LatLng latLng) {
+        state.onSortPress(this, map, latLng);
     }
 
     @Override
     public void onMapLongClick(LatLng latLng) {
+        state.onLongPress(this, map, latLng);
 
     }
 
