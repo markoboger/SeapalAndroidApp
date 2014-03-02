@@ -22,7 +22,7 @@ import de.htwg.seapal.events.map.OnMapSaveInstanceEvent;
 import de.htwg.seapal.events.map.waypointmanager.AddWayointEvent;
 import de.htwg.seapal.events.map.waypointmanager.AddWaypointPolylineEvent;
 import de.htwg.seapal.events.map.waypointmanager.RedrawWaypointsEvent;
-import de.htwg.seapal.manager.map.WaypointManager;
+import de.htwg.seapal.manager.map.PolylineManager;
 import de.htwg.seapal.manager.mapstate.Statelike;
 import roboguice.event.EventManager;
 import roboguice.event.Observes;
@@ -46,7 +46,7 @@ public class DistanceState implements Statelike {
     private Context context;
 
     @Inject
-    private WaypointManager waypointManager;
+    private PolylineManager polylineManager;
 
     @Inject
     private EventManager eventManager;

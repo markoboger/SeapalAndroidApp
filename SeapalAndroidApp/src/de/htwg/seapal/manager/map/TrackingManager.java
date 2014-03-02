@@ -81,7 +81,7 @@ public class TrackingManager {
 
 
     @Inject
-    private WaypointManager waypointManager;
+    private PolylineManager polylineManager;
 
 
     public class TrackingServiceWaypointBroadcastReceiver extends BroadcastReceiver {
@@ -202,7 +202,7 @@ public class TrackingManager {
         Bundle outState = event.getOutBundle();
         outState.putParcelable("tracking_manager_service", trackingService);
         List l = new LinkedList<Object>();
-        l.add(waypointManager);
+        l.add(polylineManager);
         outState.putSerializable("tracking_manager_waypoint", (Serializable) l);
 
     }
@@ -212,7 +212,7 @@ public class TrackingManager {
         map = event.getMap();
         trackingService = (Intent) savedInstance.get("tracking_manager_service");
         LinkedList list = (LinkedList) savedInstance.get("tracking_manager_waypoint");
-        waypointManager = (WaypointManager) list.getFirst();
+        polylineManager = (PolylineManager) list.getFirst();
         eventManager.fire(new RedrawWaypointsEvent(context, map, TRACKING_MARKER_OPTIONS, TRACKING_POLYLINE_OPTIONS));
 
         if (trackingService != null) {

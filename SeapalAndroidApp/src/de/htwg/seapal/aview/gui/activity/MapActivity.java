@@ -46,9 +46,9 @@ import de.htwg.seapal.events.map.trackingmanager.StartTrackingEvent;
 import de.htwg.seapal.events.map.trackingmanager.StopTrackingEvent;
 import de.htwg.seapal.manager.SessionManager;
 import de.htwg.seapal.manager.map.AimDirectionManager;
+import de.htwg.seapal.manager.map.PolylineManager;
 import de.htwg.seapal.manager.map.TakePictureManager;
 import de.htwg.seapal.manager.map.TrackingManager;
-import de.htwg.seapal.manager.map.WaypointManager;
 import de.htwg.seapal.manager.mapstate.Statelike;
 import de.htwg.seapal.manager.mapstate.impl.DistanceState;
 import de.htwg.seapal.manager.mapstate.impl.MarkState;
@@ -60,29 +60,25 @@ import roboguice.inject.InjectView;
 
 public class MapActivity extends BaseDrawerActivity implements OnMapLongClickListener, OnMapClickListener, GoogleMap.OnMarkerClickListener {
 
-
     private static final String TAG = "MapActivity";
-
 
     @InjectView(R.id.drawer_menu_drawer_list_right)
     private ListView drawerListViewRight;
+
     @InjectResource(R.array.drawer_list_array_right)
     private String[] drawerActivityListRight;
-    private DrawerLayout drawer;
 
+    private DrawerLayout drawer;
 
     @Inject
     private IMainController mainController;
     @Inject
     private SessionManager sessionManager;
 
-
-
     /**
      * MapActivity State
      */
     private GoogleMap map;
-
 
     @Inject
     private Statelike state;
@@ -94,7 +90,7 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
     private TrackingManager trackingManager;
 
     @Inject
-    private WaypointManager waypointManager;
+    private PolylineManager polylineManager;
 
     @Inject
     private TakePictureManager pictureManager;
@@ -151,17 +147,11 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.map);
 
-
-
         FragmentManager myFragmentManager = getSupportFragmentManager();
         SupportMapFragment mapFragment = (SupportMapFragment) myFragmentManager.findFragmentById(R.id.map);
         map = mapFragment.getMap();
 
-
-
-
         if (map != null) {
-
 
             map.setMyLocationEnabled(true);
             map.getUiSettings().setMyLocationButtonEnabled(false);
@@ -175,9 +165,7 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
 
         }
 
-
         drawer = (DrawerLayout) findViewById(R.id.drawer_menu_drawer_layout);
-
 
         int icons[] = {
                 R.drawable.search_icon,
@@ -201,7 +189,6 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
             onRestoreInstanceState(savedInstanceState);
 
         }
-
     }
 
     @Override
@@ -323,7 +310,6 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
 
         if (requestCode == TakePictureManager.REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             eventManager.fire(new PlacePictureOnMapEvent(this, map, data));

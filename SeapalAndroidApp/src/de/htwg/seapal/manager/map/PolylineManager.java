@@ -35,7 +35,7 @@ import roboguice.inject.ContextSingleton;
  * Created by jakub on 2/28/14.
  */
 @ContextSingleton
-public class WaypointManager implements Parcelable {
+public class PolylineManager implements Parcelable {
 
     private Map<PolylineOptions, List<LatLng>> waypointsPolyline;
     private Map<MarkerOptions, List<LatLng>> markers;
@@ -50,7 +50,7 @@ public class WaypointManager implements Parcelable {
     @Inject
     private EventManager eventManager;
 
-    public WaypointManager() {
+    public PolylineManager() {
         markers = new HashMap<MarkerOptions, List<LatLng>>();
         waypointsPolyline = new HashMap<PolylineOptions, List<LatLng>>();
     }
@@ -162,17 +162,17 @@ public class WaypointManager implements Parcelable {
     }
 
 
-    public final Parcelable.Creator<WaypointManager> CREATOR
-            = new Parcelable.Creator<WaypointManager>() {
-        public WaypointManager createFromParcel(Parcel in) {
+    public final Parcelable.Creator<PolylineManager> CREATOR
+            = new Parcelable.Creator<PolylineManager>() {
+        public PolylineManager createFromParcel(Parcel in) {
             Bundle b = in.readBundle();
-            WaypointManager.this.waypointsPolyline = (Map<PolylineOptions, List<LatLng>>) b.getParcelable("waypoints");
-            WaypointManager.this.markers = (Map<MarkerOptions, List<LatLng>>) b.getParcelable("markers");
-            return WaypointManager.this;
+            PolylineManager.this.waypointsPolyline = (Map<PolylineOptions, List<LatLng>>) b.getParcelable("waypoints");
+            PolylineManager.this.markers = (Map<MarkerOptions, List<LatLng>>) b.getParcelable("markers");
+            return PolylineManager.this;
         }
 
-        public WaypointManager[] newArray(int size) {
-            return new WaypointManager[size];
+        public PolylineManager[] newArray(int size) {
+            return new PolylineManager[size];
         }
     };
 
