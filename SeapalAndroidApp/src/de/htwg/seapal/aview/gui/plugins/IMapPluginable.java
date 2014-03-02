@@ -9,6 +9,7 @@ package de.htwg.seapal.aview.gui.plugins;
  *
  *
  */
+@Deprecated
 public interface IMapPluginable {
 
     /**

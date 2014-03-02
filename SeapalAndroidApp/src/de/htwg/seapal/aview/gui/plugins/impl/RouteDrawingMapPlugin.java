@@ -14,12 +14,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 import de.htwg.seapal.R;
-import de.htwg.seapal.aview.gui.activity.MapActivity;
 import de.htwg.seapal.aview.gui.plugins.IMapPlugin;
 
 /**
  * Created by jakub on 12/27/13.
  */
+@Deprecated
 public class RouteDrawingMapPlugin  implements IMapPlugin<LatLng, Void> {
 
     private MarkerOptions routeMarkerOptions;
@@ -85,7 +85,6 @@ public class RouteDrawingMapPlugin  implements IMapPlugin<LatLng, Void> {
      */
     @Override
     public void zoomTo(GoogleMap map) {
-        MapActivity.zoomToWaypointRoute(map, route.getPoints());
 
     }
 }

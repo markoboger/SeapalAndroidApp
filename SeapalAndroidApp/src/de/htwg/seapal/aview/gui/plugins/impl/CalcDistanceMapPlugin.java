@@ -14,12 +14,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 import de.htwg.seapal.R;
-import de.htwg.seapal.aview.gui.activity.MapActivity;
 import de.htwg.seapal.aview.gui.plugins.IMapPlugin;
 
 /**
  * Created by jakub on 12/27/13.
  */
+@Deprecated
 public class CalcDistanceMapPlugin implements IMapPlugin<LatLng, Double> {
 
     private static final String ORANGE = "#FFBB03";
@@ -95,7 +95,6 @@ public class CalcDistanceMapPlugin implements IMapPlugin<LatLng, Double> {
      */
     @Override
     public void zoomTo(GoogleMap map) {
-        MapActivity.zoomToWaypointRoute(map, calcDistanceRoute.getPoints());
 
     }
 

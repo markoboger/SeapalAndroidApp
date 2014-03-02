@@ -11,6 +11,7 @@ import java.io.Serializable;
  * It is a generic interface using the class T and R  see {doAction} for T and R representation
  *
  */
+@Deprecated
 public interface IMapPlugin<T, R> extends Serializable {
     /**
      * Does a action on the map and using the {@link com.google.android.gms.maps.GoogleMap}
