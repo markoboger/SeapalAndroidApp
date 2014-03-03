@@ -31,7 +31,7 @@ public class DefaultState implements Statelike {
 
 
     public static final MarkerOptions TARGET_MARKER_OPTIONS = new MarkerOptions()
-            .icon(BitmapDescriptorFactory.fromResource(R.drawable.target))
+            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_distance))
             .anchor(0.5f, 0.5f);
 
     public static final MarkerOptions  MARKER_OPTIONS= new MarkerOptions();

@@ -35,12 +35,13 @@
     <string name="ownerHeader">Owner</string>
 
     <!-- Main -->
-    <string name="searchForLocation">Search for location</string>
-    <string name="addMarkOnMap">Add mark on map</string>
-    <string name="addRouteOnMap">Add route on map</string>
-    <string name="distance">Distance</string>
+    <string name="searchForLocation">Search for Position</string>
+    <string name="startLogging">@string/start_tracking_text</string>
+    <string name="addMarkOnMap">Set Mark</string>
+    <string name="addRouteOnMap">Set Route</string>
+    <string name="distance">Get Distance</string>
     <string name="goToCurrentLocation">Goto current location</string>
-    <string name="takePicture">Take picture</string>
+    <string name="takePicture">Take Photo</string>
     <string name="personOverBoard">Person over Board</string>
     <string name="discardTarget">Discard target</string>
 
@@ -51,11 +52,12 @@
 
     <string-array name="drawer_list_array_right">
         <item>@string/searchForLocation</item>
+        <item>@string/start_tracking_text</item>
+        <item>@string/takePicture</item>
         <item>@string/addMarkOnMap</item>
         <item>@string/addRouteOnMap</item>
         <item>@string/distance</item>
         <item>@string/goToCurrentLocation</item>
-        <item>@string/takePicture</item>
         <item>@string/personOverBoard</item>
         <item>@string/discardTarget</item>
     </string-array>
