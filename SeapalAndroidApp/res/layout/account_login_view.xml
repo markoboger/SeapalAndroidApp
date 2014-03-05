@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:id="@+id/account_login_id"
     android:layout_height="match_parent">
 
@@ -11,14 +12,13 @@
         android:background="@color/lightGray"
         android:textSize="20dp"
         android:textStyle="bold"
-        android:text="@string/account_info_header"
-        />
+        android:text="@string/account_info_header" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="20dp"
-        android:text="@string/account_info_text"
-        />
+        android:text="@string/account_info_text" />
 
     <TextView
         android:layout_width="match_parent"
@@ -26,18 +26,11 @@
         android:background="@color/lightGray"
         android:textSize="20dp"
         android:textStyle="bold"
-        android:text="@string/account_management"
-        />
+        android:text="@string/account_management" />
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/account_gplus_auth"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <com.facebook.widget.LoginButton
-        android:id="@+id/account_facebook_auth"
-        android:layout_width="match_parent"
-        android:layout_margin="4dp"
         android:layout_height="wrap_content" />
 
     <Button
@@ -53,8 +46,7 @@
         android:background="@color/lightGray"
         android:textSize="20dp"
         android:textStyle="bold"
-        android:text="@string/account_login_text"
-        />
+        android:text="@string/account_login_text" />
 
     <EditText
         android:id="@+id/account_username"
@@ -77,7 +69,7 @@
         android:layout_marginRight="4dp"
         android:layout_marginBottom="16dp"
         android:fontFamily="sans-serif"
-        android:hint="@string/password"/>
+        android:hint="@string/password" />
 
     <Button
         android:layout_width="match_parent"
