@@ -19,11 +19,14 @@ import de.htwg.seapal.events.map.TransitionToTarget;
 import de.htwg.seapal.manager.mapstate.Statelike;
 import roboguice.event.EventManager;
 import roboguice.event.Observes;
+import roboguice.inject.ContextSingleton;
 
 /**
  * Created by jakub on 2/28/14.
  */
+@ContextSingleton
 public class DefaultState implements Statelike {
+
 
     public static final MarkerOptions CROSSHAIR_MARKER_OPTIONS = new MarkerOptions()
             .icon(BitmapDescriptorFactory.fromResource(R.drawable.haircross))
@@ -37,6 +40,8 @@ public class DefaultState implements Statelike {
     public static final MarkerOptions  MARKER_OPTIONS= new MarkerOptions();
 
     private Marker crosshairMarker;
+
+    private Marker target;
 
     private GoogleMap map;
 
@@ -90,7 +95,11 @@ public class DefaultState implements Statelike {
         if (m != null && crosshairMarker != null && crosshairMarker.equals(m)) {
             crosshairMarker.remove();
             crosshairMarker = null;
-            eventManager.fire(new SetTargetEvent(context, map, map.addMarker(TARGET_MARKER_OPTIONS.position(m.getPosition()))));
+            if (target != null) {
+                target.remove();
+            }
+            target = map.addMarker(TARGET_MARKER_OPTIONS.position(m.getPosition()));
+            eventManager.fire(new SetTargetEvent(context, map, target));
         }
     }
 
