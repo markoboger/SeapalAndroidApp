@@ -291,7 +291,6 @@ public class TrackingService extends RoboService implements LocationListener {
                 .setContentText(String.format("From %s to %s",mTripObject.getFrom(), mTripObject.getTo()))
                 .setSmallIcon(R.drawable.seapal_launcher)
                 .setAutoCancel(false)
-                .setContentIntent(resultPendingIntent)
                 .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.seapal_launcher))
                 .build();
 

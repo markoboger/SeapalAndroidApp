@@ -13,6 +13,7 @@ import com.google.inject.Inject;
 
 import de.htwg.seapal.R;
 import de.htwg.seapal.events.map.RemoveCrosshairEvent;
+import de.htwg.seapal.events.map.SetMarkerEvent;
 import de.htwg.seapal.events.map.SetTargetEvent;
 import de.htwg.seapal.events.map.TransitionToMarker;
 import de.htwg.seapal.events.map.TransitionToTarget;
@@ -37,11 +38,15 @@ public class DefaultState implements Statelike {
             .icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_distance))
             .anchor(0.5f, 0.5f);
 
-    public static final MarkerOptions  MARKER_OPTIONS= new MarkerOptions();
+    public static final MarkerOptions  MARKER_OPTIONS= new MarkerOptions()
+            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_mark))
+            .anchor(0.5f, 0.5f);
 
     private Marker crosshairMarker;
 
     private Marker target;
+
+    private Marker mark;
 
     private GoogleMap map;
 
@@ -52,7 +57,9 @@ public class DefaultState implements Statelike {
 
     @Override
     public void onSortPress(Context context, GoogleMap map, LatLng latlng) {
-
+        this.context = context;
+        this.map  = map;
+        setMarker(new SetMarkerEvent(latlng));
 
     }
 
@@ -85,7 +92,8 @@ public class DefaultState implements Statelike {
         if (m != null && crosshairMarker != null && crosshairMarker.equals(m)) {
             crosshairMarker.remove();
             crosshairMarker = null;
-            map.addMarker(MARKER_OPTIONS.position(m.getPosition()));
+            if (mark != null) mark.remove();
+            mark =  map.addMarker(MARKER_OPTIONS.position(m.getPosition()));
         }
 
     }
@@ -108,6 +116,16 @@ public class DefaultState implements Statelike {
             crosshairMarker.remove();
         }
     }
+
+    public void setMarker(@Observes SetMarkerEvent event) {
+        LatLng latLng = event.getPosition();
+        if (mark !=null) {
+            mark.remove();
+        }
+        mark =  map.addMarker(MARKER_OPTIONS.position(latLng));
+    }
+
+
 
     @Override
     public int describeContents() {

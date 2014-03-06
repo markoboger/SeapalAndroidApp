@@ -59,7 +59,6 @@ import de.htwg.seapal.manager.map.TrackingManager;
 import de.htwg.seapal.manager.mapstate.Statelike;
 import de.htwg.seapal.manager.mapstate.impl.DefaultState;
 import de.htwg.seapal.manager.mapstate.impl.DistanceState;
-import de.htwg.seapal.manager.mapstate.impl.MarkState;
 import de.htwg.seapal.manager.mapstate.impl.RouteDrawingState;
 import roboguice.RoboGuice;
 import roboguice.inject.InjectResource;
@@ -121,10 +120,10 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
                         break;
                     case MARK:
                         Log.i(TAG, "MARK");
-                        state = RoboGuice.getInjector(MapActivity.this).getInstance(MarkState.class);
+                        state = RoboGuice.getInjector(MapActivity.this).getInstance(DefaultState.class);
                         break;
                     case LOGGING:
-                       eventManager.fire(new StartTrackingEvent(getApplicationContext(), map));
+                       eventManager.fire(new StartTrackingEvent(MapActivity.this, map));
                        break;
                     case ROUTE:
                         Log.i(TAG, "ROUTE");
