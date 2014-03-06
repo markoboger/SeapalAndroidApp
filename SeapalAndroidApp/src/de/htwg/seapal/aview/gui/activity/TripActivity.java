@@ -1,10 +1,7 @@
 package de.htwg.seapal.aview.gui.activity;
 
-import java.util.List;
-import java.util.UUID;
-
 import android.content.Context;
-import android.content.res.Configuration;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.format.DateFormat;
@@ -16,25 +13,34 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.inject.Inject;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
+
 import de.htwg.seapal.R;
 import de.htwg.seapal.aview.gui.adapter.WaypointListAdapter;
-import de.htwg.seapal.controller.impl.TripController;
-import de.htwg.seapal.controller.impl.WaypointController;
-import de.htwg.seapal.utils.observer.Event;
-import de.htwg.seapal.utils.observer.IObserver;
+import de.htwg.seapal.controller.IMainController;
+import de.htwg.seapal.manager.SessionManager;
+import de.htwg.seapal.model.IWaypoint;
+import de.htwg.seapal.model.impl.Trip;
 
-public class TripActivity extends BaseDrawerActivity implements IObserver {
+public class TripActivity extends BaseDrawerActivity  {
 
-	@Inject
-	private TripController controller;
+    public static final String TRIP_PREFS = "trip_prefs";
 
-	@Inject
-	private WaypointController waypointController;
+    @Inject
+    private IMainController mainController;
+
+    @Inject
+    private SessionManager sessionManager;
 
 	private UUID trip;
 
@@ -49,8 +55,10 @@ public class TripActivity extends BaseDrawerActivity implements IObserver {
 	private EditText notes;
 	private EditText engine;
 	private EditText tank;
+    private ImageView map;
 
 	private List<UUID> waypointList;
+    private List<IWaypoint> waypoints;
 
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,10 +67,15 @@ public class TripActivity extends BaseDrawerActivity implements IObserver {
 		setContentView(R.layout.trip);
 		Bundle extras = getIntent().getExtras();
 		trip = UUID.fromString(extras.getString("trip"));
-		waypointList = waypointController.getWaypoints(trip);
-
+        waypointList = new ArrayList<UUID>();
+        waypoints = (List<IWaypoint>) mainController.getByParent("waypoint", "trip",sessionManager.getSession(), trip);
+        for (IWaypoint waypoint : waypoints) {
+            waypointList.add(waypoint.getUUID());
+        }
 		initUI();
 		fillText();
+
+        removeRightDrawer();
 	}
 
 	@Override
@@ -83,89 +96,88 @@ public class TripActivity extends BaseDrawerActivity implements IObserver {
 		// if (item.getItemId() == android.R.id.home)
 		// NavUtils.navigateUpFromSameTask(this);
 
-		if (item.getItemId() == R.id.tripmenu_save) {
+        Collection<Trip> trips = (Collection<Trip>) mainController.getSingleDocument("trip", sessionManager.getSession(), trip);
+        if (trips.iterator().hasNext()) {
+            Trip iTrip = trips.iterator().next();
 
-			if (!controller.getName(trip)
-					.equals(triptitle.getText().toString()))
-				controller.setName(trip, triptitle.getText().toString());
-			if (!controller.getStartLocation(trip).equals(
-					from.getText().toString()))
-				controller.setStartLocation(trip, from.getText().toString());
-			if (!controller.getEndLocation(trip)
-					.equals(to.getText().toString()))
-				controller.setEndLocation(trip, to.getText().toString());
-			if (controller.getMotor(trip) != Integer.valueOf(engine.getText()
-					.toString()))
-				controller.setMotor(trip,
-						Integer.valueOf(engine.getText().toString()));
-			if (controller.getFuel(trip) != Double.valueOf(tank.getText()
-					.toString()))
-				controller.setFuel(trip,
-						Double.valueOf(tank.getText().toString()));
+            if (item.getItemId() == R.id.tripmenu_save) {
 
-			if (!controller.getCrewMembers(trip).equals(
-					crew.getText().toString()))
-				controller.setCrewMember(trip, crew.getText().toString());
+                if (!iTrip.getName() .equals(triptitle.getText().toString()))
+                    iTrip.setName(triptitle.getText().toString());
+                if (!iTrip.getFrom().equals(
+                        from.getText().toString()))
+                    iTrip.setFrom(from.getText().toString());
+                if (!iTrip.getTo()
+                        .equals(to.getText().toString()))
+                    iTrip.setTo(to.getText().toString());
+                if (!iTrip.getCrew().equals(crew.getText().toString()))
+                    iTrip.setCrew(crew.getText().toString());
 
-			if (!controller.getNotes(trip).equals(notes.getText().toString()))
-				controller.setNotes(trip, notes.getText().toString());
+                if (!iTrip.getNotes().equals(notes.getText().toString()))
+                    iTrip.setNotes(notes.getText().toString());
 
-			// skipper
+                // skipper
 
-			Toast.makeText(this, "Saved Changes", Toast.LENGTH_SHORT).show();
-		}
+                Toast.makeText(this, "Saved Changes", Toast.LENGTH_SHORT).show();
+            }
+        }
 
 		return true;
 	}
 
-	@Override
-	public void update(Event event) {
-		fillText();
-	}
-
 	private void fillText() {
 
-		triptitle.setText(controller.getName(trip));
-		from.setText(controller.getStartLocation(trip));
-		to.setText(controller.getEndLocation(trip));
-		start.setText(DateFormat.format("yyyy/MM/dd hh:mm",
-				controller.getStartTime(trip)));
-		end.setText(DateFormat.format("yyyy/MM/dd hh:mm",
-				controller.getEndTime(trip)));
+        Collection<Trip> trips = (Collection<Trip>) mainController.getSingleDocument("trip", sessionManager.getSession(), trip);
+        if (trips.iterator().hasNext()) {
+            Trip iTrip = trips.iterator().next();
 
-		if (controller.getSkipper(trip) == null)
-			skipper.setText("-");
-		else
-			skipper.setText(controller.getSkipper(trip).toString());
+            triptitle.setText(iTrip.getName());
+            from.setText(iTrip.getFrom());
+            to.setText(iTrip.getTo());
+            start.setText(DateFormat.format("yyyy/MM/dd hh:mm",
+                    iTrip.getStartDate()));
+            end.setText(DateFormat.format("yyyy/MM/dd hh:mm",
+                    iTrip.getEndDate()));
 
-		duration.setText(calcDuration());
-		notes.setText(controller.getNotes(trip));
-		crew.setText(controller.getCrewMembers(trip));
-		engine.setText(Integer.toString(controller.getMotor(trip)));
-		tank.setText(Double.toString(controller.getFuel(trip)));
+            if (iTrip.getSkipper() == null)
+                skipper.setText("-");
+            else
+                skipper.setText(iTrip.getSkipper().toString());
+
+            duration.setText(calcDuration());
+            notes.setText(iTrip.getNotes());
+            crew.setText(iTrip.getCrew());
+        }
 
 	}
 
 	private String calcDuration() {
-		long l1 = controller.getStartTime(trip);
-		long l2 = controller.getEndTime(trip);
-		long diff = l2 - l1;
 
-		long secondInMillis = 1000;
-		long minuteInMillis = secondInMillis * 60;
-		long hourInMillis = minuteInMillis * 60;
-		long dayInMillis = hourInMillis * 24;
+        Collection<Trip> trips = (Collection<Trip>) mainController.getSingleDocument("trip", sessionManager.getSession(), trip);
+        if (trips.iterator().hasNext()) {
+            Trip iTrip = trips.iterator().next();
 
-		long elapsedDays = diff / dayInMillis;
-		diff = diff % dayInMillis;
-		long elapsedHours = diff / hourInMillis;
-		diff = diff % hourInMillis;
-		long elapsedMinutes = diff / minuteInMillis;
-		diff = diff % minuteInMillis;
-		long elapsedSeconds = diff / secondInMillis;
+            long l1 = iTrip.getStartDate();
+            long l2 = iTrip.getEndDate();
+            long diff = l2 - l1;
 
-		return elapsedDays + "d   " + elapsedHours + "h   " + elapsedMinutes
-				+ "m   " + elapsedSeconds + "s";
+            long secondInMillis = 1000;
+            long minuteInMillis = secondInMillis * 60;
+            long hourInMillis = minuteInMillis * 60;
+            long dayInMillis = hourInMillis * 24;
+
+            long elapsedDays = diff / dayInMillis;
+            diff = diff % dayInMillis;
+            long elapsedHours = diff / hourInMillis;
+            diff = diff % hourInMillis;
+            long elapsedMinutes = diff / minuteInMillis;
+            diff = diff % minuteInMillis;
+            long elapsedSeconds = diff / secondInMillis;
+
+            return elapsedDays + "d   " + elapsedHours + "h   " + elapsedMinutes
+                    + "m   " + elapsedSeconds + "s";
+        }
+        return "";
 	}
 
 	private void initUI() {
@@ -186,7 +198,22 @@ public class TripActivity extends BaseDrawerActivity implements IObserver {
 		tank = (EditText) findViewById(R.id.trip_editTank);
 		tank.setInputType(InputType.TYPE_CLASS_NUMBER
 				| InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        map = (ImageView) findViewById(R.id.trip_editMap);
+        map.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(TripActivity.this,MapActivity.class);
+                i.putExtra("waypoints", (Serializable) waypoints);
+                TripActivity.this.startActivity(i);
+
+
+
+
+            }
+        });
+
 	}
+
 
 	private void addListView() {
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -195,8 +222,7 @@ public class TripActivity extends BaseDrawerActivity implements IObserver {
 		mainView.addView(header, 0);
 		ListView waypointListView = (ListView) findViewById(R.id.trip_WaypointList);
 		WaypointListAdapter adapter = new WaypointListAdapter(this,
-                waypointList,
-				waypointController);
+                waypointList);
 
 
 		waypointListView.setAdapter(adapter);

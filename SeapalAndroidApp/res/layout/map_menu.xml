@@ -3,8 +3,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
         
-
-    
     <ImageButton
         android:id="@+id/setMark"
         android:layout_width="fill_parent"
@@ -15,7 +13,6 @@
         android:src="@drawable/dropdownbutton"
         android:visibility="visible" />
 
-    
     <ImageView 
         android:id="@+id/markImage"
         android:layout_width="30dp"

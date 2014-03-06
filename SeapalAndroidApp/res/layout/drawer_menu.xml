@@ -12,12 +12,22 @@
 
     <!-- navigation drawer -->
     <ListView
-        android:id="@+id/drawer_menu_drawer_list"
+        android:id="@+id/drawer_menu_drawer_list_left"
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:choiceMode="singleChoice"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:background="#111"/>
+        android:divider="@color/black"
+        android:dividerHeight="0.5dp"
+        android:background="@color/white"/>
+
+    <ListView
+        android:id="@+id/drawer_menu_drawer_list_right"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:choiceMode="singleChoice"
+        android:divider="@color/black"
+        android:dividerHeight="0.5dp"
+        android:background="@color/white"/>
 </android.support.v4.widget.DrawerLayout>

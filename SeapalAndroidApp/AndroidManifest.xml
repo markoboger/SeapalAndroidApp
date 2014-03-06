@@ -1,20 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="de.htwg.seapal"
-    android:versionCode="1"
-    android:versionName="1.0" >
+    xmlns:tools="http://schemas.android.com/tools"
+    package="de.htwg.seapal">
 
     <uses-sdk
         android:minSdkVersion="14"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="19"
+        tools:ignore="GradleOverrides" />
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -26,26 +32,25 @@
         android:icon="@drawable/seapal_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <activity android:name="de.htwg.seapal.aview.tui.activity.MenuActivity" >
-        </activity>
-        <activity android:name="de.htwg.seapal.aview.tui.activity.BoatActivity" >
-        </activity>
-        <activity android:name="de.htwg.seapal.aview.tui.activity.TripActivity" >
-        </activity>
-        <activity android:name="de.htwg.seapal.aview.tui.activity.WaypointActivity" >
-        </activity>
-        <activity android:name="de.htwg.seapal.aview.tui.activity.TripRecordActivity" >
-        </activity>
-        <activity android:name="de.htwg.seapal.aview.tui.activity.MarkActivity" >
-        </activity>
-        <activity android:name="de.htwg.seapal.aview.tui.activity.RouteActivity" >
+
+        <activity android:name="de.htwg.seapal.aview.gui.activity.TripActivity" >
         </activity>
         <activity
-            android:name="de.htwg.seapal.aview.gui.activity.BoatActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden" >
+            android:name="de.htwg.seapal.aview.gui.activity.LogbookTabsActivity"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity android:name="de.htwg.seapal.aview.gui.activity.SearchActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
         </activity>
         <activity
             android:name="de.htwg.seapal.aview.gui.activity.MapActivity"
+            android:theme="@style/OverlayActionBar"
+            android:launchMode="singleTop"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -53,22 +58,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="de.htwg.seapal.aview.gui.activity.TripListActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            android:parentActivityName="de.htwg.seapal.aview.gui.activity.BoatActivity" >
+        <service android:name="de.htwg.seapal.services.TrackingService"/>
 
-            <!-- Parent activity meta-data to support 4.0 and lower -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.htwg.seapal.aview.gui.activity.BoatActivity" />
-        </activity>
-        <activity
-            android:name="de.htwg.seapal.aview.gui.activity.TripActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden" 
-            android:parentActivityName="de.htwg.seapal.aview.gui.activity.TripListActivity" >
-        </activity>
+        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
 
+        <meta-data android:name="android.app.default_searchable"
+            android:value=".SearchActivity" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyDc_IohvmVafo5npe1OP1ebtErB7k2Of6Q" />

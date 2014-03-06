@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ViewSwitcher xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:id="@+id/account_view_switcher"
+    android:inAnimation="@android:anim/fade_in"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/account_login_view" />
+
+    <include layout="@layout/account_loggedin_view" />
+
+</ViewSwitcher>

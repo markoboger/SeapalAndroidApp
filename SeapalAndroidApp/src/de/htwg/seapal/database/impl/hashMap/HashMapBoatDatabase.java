@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import de.htwg.seapal.database.IBoatDatabase;
 import de.htwg.seapal.model.IBoat;
+import de.htwg.seapal.model.ModelDocument;
 import de.htwg.seapal.model.impl.Boat;
 
 public class HashMapBoatDatabase implements IBoatDatabase {
@@ -60,7 +61,22 @@ public class HashMapBoatDatabase implements IBoatDatabase {
 		return true;
 	}
 
-	@Override
+    @Override
+    public void create(ModelDocument modelDocument) {
+
+    }
+
+    @Override
+    public List<? extends IBoat> queryViews(String s, String s2) {
+        return null;
+    }
+
+    @Override
+    public void update(ModelDocument modelDocument) {
+
+    }
+
+    @Override
 	public boolean open() {
 		return false;
 	}
