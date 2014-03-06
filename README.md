@@ -43,8 +43,8 @@ the different Databases.
 The new internal achritektur of the app uses an event driven actitecture. So it resolves the coupling of classes and
 keeps the code small. 
 
-There are Managers and States. Mostly the states define the state in which the map is in.
-Managers help the states to do there work. 
+There are Managers and States. 
+The states define the state in which the map is in and the managers help the states/app to do there work.
 
 
 There are a bunch of event defined
