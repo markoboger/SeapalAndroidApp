@@ -378,6 +378,7 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
     @Override
     public void onDialogDeleteClick(DialogFragment dialog, Marker marker) {
         eventManager.fire(new MarkerDeleteEvent(marker));
+        map.clear();
         eventManager.fire(new RequestRedrawEvent(this,map));
     }
 
