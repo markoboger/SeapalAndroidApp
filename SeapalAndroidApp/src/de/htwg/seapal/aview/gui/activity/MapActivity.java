@@ -107,7 +107,7 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
     private AimDirectionManager aimDirectionManager;
 
     private static enum SelectedOption {
-        SEARCH, MARK, ROUTE, DISTANCE, GOTO_CURRENT, TAKE_PICTURE, PERSON_OVER_BOARD, DISCARD_TARGET, MENU_ROUTE, MENU_MARK, MENU_DISTANCE, MENU_GOAL
+        SEARCH, LOGGING, TAKE_PICTURE, MARK, ROUTE, DISTANCE, GOTO_CURRENT, PERSON_OVER_BOARD, DISCARD_TARGET, MENU_ROUTE, MENU_MARK, MENU_DISTANCE, MENU_GOAL
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -123,6 +123,9 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
                         Log.i(TAG, "MARK");
                         state = RoboGuice.getInjector(MapActivity.this).getInstance(MarkState.class);
                         break;
+                    case LOGGING:
+                       eventManager.fire(new StartTrackingEvent(getApplicationContext(), map));
+                       break;
                     case ROUTE:
                         Log.i(TAG, "ROUTE");
                         state = RoboGuice.getInjector(MapActivity.this).getInstance(RouteDrawingState.class);
@@ -179,11 +182,12 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
 
         int icons[] = {
                 R.drawable.search_icon,
+                R.drawable.play_icon_black,
+                R.drawable.camera_icon,
                 R.drawable.marker_icon,
                 R.drawable.arrows_h_icon,
                 R.drawable.arrows_h_icon,
-                R.drawable.arrows_h_icon,
-                R.drawable.camera_icon,
+                R.drawable.crosshairs_icon_black,
                 R.drawable.male_icon,
                 R.drawable.trash_icon
         };
@@ -282,7 +286,7 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_goTo:
-                goToLastKnownLocation(12);
+                goToLastKnownLocation(0);
                 break;
             case R.id.start_tracking:
                 eventManager.fire(new StartTrackingEvent(this, map));
