@@ -80,6 +80,7 @@ public class RouteDrawingState implements Statelike {
         List l = new LinkedList<Object>();
         l.add(polylineManager);
         outState.putSerializable("route_manager_waypoint", (Serializable) l);
+        outState.putBoolean("route_manager_initialized", initialized);
 
     }
 
@@ -88,6 +89,7 @@ public class RouteDrawingState implements Statelike {
         GoogleMap map = event.getMap();
 
         LinkedList list = (LinkedList) savedInstance.get("route_manager_waypoint");
+        initialized = savedInstance.getBoolean("route_manager_initialized");
         polylineManager = (PolylineManager) list.getFirst();
 
         eventManager.fire(new RedrawWaypointsEvent(context, map));

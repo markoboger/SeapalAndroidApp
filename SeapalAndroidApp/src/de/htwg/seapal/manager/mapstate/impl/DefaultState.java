@@ -41,7 +41,7 @@ public class DefaultState implements Statelike {
             .icon(BitmapDescriptorFactory.fromResource(R.drawable.target))
             .anchor(0.5f, 0.5f);
 
-    public static final MarkerOptions  MARKER_OPTIONS= new MarkerOptions()
+    public static final MarkerOptions MARKER_OPTIONS = new MarkerOptions()
             .icon(BitmapDescriptorFactory.fromResource(R.drawable.ann_mark))
             .anchor(0.5f, 0.5f);
 
@@ -61,7 +61,7 @@ public class DefaultState implements Statelike {
     @Override
     public void onSortPress(Context context, GoogleMap map, LatLng latlng) {
         this.context = context;
-        this.map  = map;
+        this.map = map;
         setMarker(new SetMarkerEvent(latlng));
 
     }
@@ -96,16 +96,22 @@ public class DefaultState implements Statelike {
             crosshairMarker.remove();
             crosshairMarker = null;
             if (mark != null) mark.remove();
-            mark =  map.addMarker(MARKER_OPTIONS.position(m.getPosition()));
+            mark = map.addMarker(MARKER_OPTIONS.position(m.getPosition()));
         }
 
     }
 
     public void transitionToTarget(@Observes TransitionToTarget event) {
         Marker m = event.getMarker();
-        if (m != null && crosshairMarker != null && crosshairMarker.equals(m)) {
-            crosshairMarker.remove();
-            crosshairMarker = null;
+        if ((m != null && crosshairMarker != null && crosshairMarker.equals(m)) ||
+                (m != null && mark != null && mark.equals(m)) ) {
+            m.remove();
+            if (m.equals(mark)) {
+                mark = null;
+            }
+            if (m.equals(crosshairMarker)) {
+                crosshairMarker = null;
+            }
             if (target != null) {
                 target.remove();
             }
@@ -122,48 +128,47 @@ public class DefaultState implements Statelike {
 
     public void setMarker(@Observes SetMarkerEvent event) {
         LatLng latLng = event.getPosition();
-        if (mark !=null) {
+        if (mark != null) {
             mark.remove();
         }
-        mark =  map.addMarker(MARKER_OPTIONS.position(latLng));
+        mark = map.addMarker(MARKER_OPTIONS.position(latLng));
     }
 
     public void redrawMarkers(@Observes RedrawMarkerEvent event) {
         map = event.getMap();
         if (mark != null) {
             LatLng markPosition = mark.getPosition();
-            mark =  map.addMarker(MARKER_OPTIONS.position(markPosition));
+            mark = map.addMarker(MARKER_OPTIONS.position(markPosition));
         }
 
         if (crosshairMarker != null) {
             LatLng crosshairMarkerPosition = crosshairMarker.getPosition();
-            crosshairMarker =  map.addMarker(CROSSHAIR_MARKER_OPTIONS.position(crosshairMarkerPosition));
+            crosshairMarker = map.addMarker(CROSSHAIR_MARKER_OPTIONS.position(crosshairMarkerPosition));
         }
-        if( target != null) {
+        if (target != null) {
             LatLng targetPosition = target.getPosition();
-            target =  map.addMarker(TARGET_MARKER_OPTIONS.position(targetPosition));
+            target = map.addMarker(TARGET_MARKER_OPTIONS.position(targetPosition));
 
         }
     }
 
     public void markerDelete(@Observes MarkerDeleteEvent event) {
         Marker m = event.getMarker();
-        if(m != null && m.equals(crosshairMarker)) {
+        if (m != null && m.equals(crosshairMarker)) {
             crosshairMarker.remove();
             crosshairMarker = null;
         }
-        if(m != null && m.equals(target)) {
+        if (m != null && m.equals(target)) {
             target.remove();
             target = null;
             eventManager.fire(new DiscardTargetEvent());
         }
-        if(m != null && m.equals(mark)) {
+        if (m != null && m.equals(mark)) {
             mark.remove();
             mark = null;
         }
 
     }
-
 
 
     @Override
