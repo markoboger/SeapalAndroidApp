@@ -203,14 +203,13 @@ public class DefaultState implements Statelike {
 
     public void redrawMarkers(@Observes RequestRedrawEvent event) {
         map = event.getMap();
-        // target will be redrawn
         if (target != null)
             this.target = map.addMarker(TARGET_MARKER_OPTIONS.position(target.getPosition()));
 
-        // mark should be redrawn before crosshir
         if (mark != null)
             this.mark = map.addMarker(MARKER_OPTIONS.position(mark.getPosition()));
-        else if (crosshairMarker != null)
+
+        if (crosshairMarker != null)
             crosshairMarker = map.addMarker(CROSSHAIR_MARKER_OPTIONS.position(crosshairMarker.getPosition()));
 
     }
