@@ -16,6 +16,8 @@ import com.google.inject.Inject;
 import java.util.List;
 
 import de.htwg.seapal.R;
+import de.htwg.seapal.events.map.OnMapRestoreInstanceEvent;
+import de.htwg.seapal.events.map.OnMapSaveInstanceEvent;
 import de.htwg.seapal.events.map.RequestRedrawEvent;
 import de.htwg.seapal.events.map.SetTargetEvent;
 import de.htwg.seapal.events.map.aimdirectionmanager.DiscardTargetEvent;
@@ -55,6 +57,7 @@ public class AimDirectionManager {
     }
 
     public void initializeAimDirection(@Observes InitializeAimDirectionEvent event) {
+        context = event.getContext();
         LocationManager manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         List<String> providers = manager.getProviders(false);
         map = event.getMap();
@@ -100,6 +103,9 @@ public class AimDirectionManager {
     private void redrawRequested(@Observes RequestRedrawEvent event) {
         map = event.getMap();
         showMovingDirection(currentAngle);
+        if(crosshairMarker != null){
+            drawAimArrow();
+        }
     }
 
     private void drawAimArrow() {
@@ -109,10 +115,11 @@ public class AimDirectionManager {
         targetPos.setLongitude(crosshairMarker.getPosition().longitude);
 
         Location myPos = map.getMyLocation();
+        if (myPos != null) {
+            float angle = calualteArrowDirection(myPos, targetPos);
 
-        float angle = calualteArrowDirection(myPos, targetPos);
-
-        showTargetDirection(angle, targetPos);
+            showTargetDirection(angle, targetPos);
+        }
 
     }
 
@@ -153,6 +160,8 @@ public class AimDirectionManager {
         }
     }
 
+
+
     private float calualteArrowDirection(Location location, Location markerPos) {
 
         double hypo = sqrt(pow(markerPos.getLongitude() - location.getLongitude(), 2) + pow(markerPos.getLatitude() - location.getLatitude(), 2));
@@ -163,5 +172,22 @@ public class AimDirectionManager {
         angle = markerPos.getLatitude() < location.getLatitude() ? 180 - angle : angle;
 
         return angle;
+    }
+
+
+    public void saveInstance(@Observes OnMapSaveInstanceEvent event) {
+        Bundle outState = event.getOutBundle();
+        outState.putParcelable("aimdir_location", oldLocation);
+        outState.putFloat("aimdir_angle", currentAngle);
+
+    }
+
+    public void restoreInstance(@Observes OnMapRestoreInstanceEvent event) {
+        Bundle savedInstance = event.getSavedInstance();
+        map = event.getMap();
+        oldLocation = savedInstance.getParcelable("aimdir_location");
+        currentAngle = savedInstance.getFloat("aimdir_angle");
+
+
     }
 }

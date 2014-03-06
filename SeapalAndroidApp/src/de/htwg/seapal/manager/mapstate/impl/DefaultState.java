@@ -203,8 +203,10 @@ public class DefaultState implements Statelike {
 
     public void redrawMarkers(@Observes RequestRedrawEvent event) {
         map = event.getMap();
-        if (target != null)
+        if (target != null) {
             this.target = map.addMarker(TARGET_MARKER_OPTIONS.position(target.getPosition()));
+            eventManager.fire(new SetTargetEvent(context,map,target));
+        }
 
         if (mark != null)
             this.mark = map.addMarker(MARKER_OPTIONS.position(mark.getPosition()));

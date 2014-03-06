@@ -236,7 +236,13 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
 
         eventManager.fire(new OnMapRestoreInstanceEvent(map, savedInstanceState));
         map.clear();
-        eventManager.fire(new RequestRedrawEvent(this, map));
+
+        map.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                eventManager.fire(new RequestRedrawEvent(MapActivity.this, map));
+            }
+        });
 
     }
 
@@ -318,7 +324,7 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
         state = RoboGuice.getInjector(this).getInstance(DefaultState.class);
         state.onLongPress(this, map, latLng);
         map.clear();
-        eventManager.fire(new RequestRedrawEvent(this,map));
+        eventManager.fire(new RequestRedrawEvent(this, map));
 
     }
 
