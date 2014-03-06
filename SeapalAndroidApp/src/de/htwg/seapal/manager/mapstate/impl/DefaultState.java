@@ -12,11 +12,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.inject.Inject;
 
 import de.htwg.seapal.R;
+import de.htwg.seapal.events.map.MarkerDeleteEvent;
+import de.htwg.seapal.events.map.RedrawMarkerEvent;
 import de.htwg.seapal.events.map.RemoveCrosshairEvent;
 import de.htwg.seapal.events.map.SetMarkerEvent;
 import de.htwg.seapal.events.map.SetTargetEvent;
 import de.htwg.seapal.events.map.TransitionToMarker;
 import de.htwg.seapal.events.map.TransitionToTarget;
+import de.htwg.seapal.events.map.aimdirectionmanager.DiscardTargetEvent;
 import de.htwg.seapal.manager.mapstate.Statelike;
 import roboguice.event.EventManager;
 import roboguice.event.Observes;
@@ -123,6 +126,42 @@ public class DefaultState implements Statelike {
             mark.remove();
         }
         mark =  map.addMarker(MARKER_OPTIONS.position(latLng));
+    }
+
+    public void redrawMarkers(@Observes RedrawMarkerEvent event) {
+        map = event.getMap();
+        if (mark != null) {
+            LatLng markPosition = mark.getPosition();
+            mark =  map.addMarker(MARKER_OPTIONS.position(markPosition));
+        }
+
+        if (crosshairMarker != null) {
+            LatLng crosshairMarkerPosition = crosshairMarker.getPosition();
+            crosshairMarker =  map.addMarker(CROSSHAIR_MARKER_OPTIONS.position(crosshairMarkerPosition));
+        }
+        if( target != null) {
+            LatLng targetPosition = target.getPosition();
+            target =  map.addMarker(TARGET_MARKER_OPTIONS.position(targetPosition));
+
+        }
+    }
+
+    public void markerDelete(@Observes MarkerDeleteEvent event) {
+        Marker m = event.getMarker();
+        if(m != null && m.equals(crosshairMarker)) {
+            crosshairMarker.remove();
+            crosshairMarker = null;
+        }
+        if(m != null && m.equals(target)) {
+            target.remove();
+            target = null;
+            eventManager.fire(new DiscardTargetEvent());
+        }
+        if(m != null && m.equals(mark)) {
+            mark.remove();
+            mark = null;
+        }
+
     }
 
 

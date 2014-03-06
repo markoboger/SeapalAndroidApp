@@ -40,6 +40,7 @@ import de.htwg.seapal.controller.IMainController;
 import de.htwg.seapal.events.map.MarkerDeleteEvent;
 import de.htwg.seapal.events.map.OnMapRestoreInstanceEvent;
 import de.htwg.seapal.events.map.OnMapSaveInstanceEvent;
+import de.htwg.seapal.events.map.RedrawMarkerEvent;
 import de.htwg.seapal.events.map.RemoveCrosshairEvent;
 import de.htwg.seapal.events.map.TransitionToMarker;
 import de.htwg.seapal.events.map.TransitionToTarget;
@@ -357,6 +358,7 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
 
     @Override
     public void onDialogSetTargetClick(DialogFragment dialog, Marker marker) {
+        state = RoboGuice.getInjector(this).getInstance(DefaultState.class);
         eventManager.fire(new TransitionToTarget(map ,marker));
 
     }
@@ -365,6 +367,8 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
     public void onDialogDeleteClick(DialogFragment dialog, Marker marker) {
         eventManager.fire(new MarkerDeleteEvent(marker));
         eventManager.fire(new RedrawWaypointsEvent(this, map));
+        eventManager.fire(new RedrawMarkerEvent(this, map));
+
 
     }
 
