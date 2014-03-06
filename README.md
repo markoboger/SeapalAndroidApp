@@ -3,16 +3,12 @@ Contents
 
  1. __SeapalAndroidApp__
 
- 2. __Activities__
+ 2. __Architecture__
 
- 3. __Database__
+ 3. __Activities__
+
+ 4. __Database__
  
- 4. __Architecture__
-
- 4. __Text User Interface__
- 
-
-
 
 SeapalAndroidApp
 ================
@@ -38,11 +34,31 @@ the apk directly to the device.
 
 
 
+Architecture
+============
 
-Testing
-----------
+Using the core library is one part of the Architekture. Which offers the Models and Controllers that are used to access
+the different Databases.
 
-tests are not updated yet to the new version.
+The new internal achritektur of the app uses an event driven actitecture. So it resolves the coupling of classes and
+keeps the code small. 
+
+There are Managers and States. Mostly the states define the state in which the map is in.
+Managers help the states to do there work. 
+
+
+There are a bunch of event defined
+
+ > + map events
+ > ++ manager events
+
+ > + Logbook events
+ > ++  boat events
+ > ++  crew events
+ > ++  session events
+ > ++  trip events
+
+
 
 
 Activities
@@ -186,15 +202,3 @@ This example creates a View for Trips, which are sorted by the BoatID to which t
 		}, null, "1.0");
 
 
-Architecture
-============
-
-Using the core library is one part of the Architekture. Which offers the Models and Controllers that are used to access
-the different Databases.
-
-For the new Application Achitecture 
-
-Text User Interface
-===================
-
--- removed in this version --
