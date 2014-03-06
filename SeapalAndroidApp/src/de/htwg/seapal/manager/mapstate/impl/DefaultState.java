@@ -1,6 +1,7 @@
 package de.htwg.seapal.manager.mapstate.impl;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Vibrator;
 
@@ -13,8 +14,11 @@ import com.google.inject.Inject;
 
 import de.htwg.seapal.R;
 import de.htwg.seapal.events.map.MarkerDeleteEvent;
+import de.htwg.seapal.events.map.OnMapRestoreInstanceEvent;
+import de.htwg.seapal.events.map.OnMapSaveInstanceEvent;
 import de.htwg.seapal.events.map.RedrawMarkerEvent;
 import de.htwg.seapal.events.map.RemoveCrosshairEvent;
+import de.htwg.seapal.events.map.RequestRedrawEvent;
 import de.htwg.seapal.events.map.SetMarkerEvent;
 import de.htwg.seapal.events.map.SetTargetEvent;
 import de.htwg.seapal.events.map.TransitionToMarker;
@@ -169,6 +173,48 @@ public class DefaultState implements Statelike {
         }
 
     }
+
+    public void saveInstance(@Observes OnMapSaveInstanceEvent event) {
+        Bundle outState = event.getOutBundle();
+        if (crosshairMarker != null)
+            outState.putParcelable("default_crosshair", crosshairMarker.getPosition());
+        if (target != null)
+            outState.putParcelable("default_target", target.getPosition());
+        if (mark != null)
+            outState.putParcelable("default_mark", mark.getPosition());
+
+    }
+
+    public void restoreInstance(@Observes OnMapRestoreInstanceEvent event) {
+        Bundle savedInstance = event.getSavedInstance();
+        map = event.getMap();
+        LatLng crosshair =  savedInstance.getParcelable("default_crosshair");
+        LatLng mark =  savedInstance.getParcelable("default_mark");
+        LatLng target =  savedInstance.getParcelable("default_target");
+        if (crosshair != null)
+            crosshairMarker = map.addMarker(CROSSHAIR_MARKER_OPTIONS.position(crosshair));
+        if (target != null)
+            this.target = map.addMarker(TARGET_MARKER_OPTIONS.position(target));
+        if (mark != null)
+            this.mark = map.addMarker(MARKER_OPTIONS.position(mark));
+
+
+    }
+
+    public void redrawMarkers(@Observes RequestRedrawEvent event) {
+        map = event.getMap();
+        // target will be redrawn
+        if (target != null)
+            this.target = map.addMarker(TARGET_MARKER_OPTIONS.position(target.getPosition()));
+
+        // mark should be redrawn before crosshir
+        if (mark != null)
+            this.mark = map.addMarker(MARKER_OPTIONS.position(mark.getPosition()));
+        else if (crosshairMarker != null)
+            crosshairMarker = map.addMarker(CROSSHAIR_MARKER_OPTIONS.position(crosshairMarker.getPosition()));
+
+    }
+
 
 
     @Override

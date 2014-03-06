@@ -24,6 +24,7 @@ import java.util.Map;
 import de.htwg.seapal.events.map.MarkerDeleteEvent;
 import de.htwg.seapal.events.map.OnMapRestoreInstanceEvent;
 import de.htwg.seapal.events.map.OnMapSaveInstanceEvent;
+import de.htwg.seapal.events.map.RequestRedrawEvent;
 import de.htwg.seapal.events.map.waypointmanager.AddWayointEvent;
 import de.htwg.seapal.events.map.waypointmanager.AddWaypointPolylineEvent;
 import de.htwg.seapal.events.map.waypointmanager.RedrawWaypointsEvent;
@@ -95,10 +96,8 @@ public class PolylineManager implements Parcelable {
     }
 
 
-    public void redrawWaypoints(@Observes RedrawWaypointsEvent event) {
+    public void redrawWaypoints(@Observes RequestRedrawEvent event) {
         GoogleMap map = event.getMap();
-
-        map.clear();
 
         for (Map.Entry<PolylineOptions, List<LatLng>> polylineEntry : waypointsPolyline.entrySet()) {
             List<LatLng> latLng = polylineEntry.getValue();

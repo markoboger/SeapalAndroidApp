@@ -21,7 +21,6 @@ import de.htwg.seapal.events.map.OnMapRestoreInstanceEvent;
 import de.htwg.seapal.events.map.OnMapSaveInstanceEvent;
 import de.htwg.seapal.events.map.waypointmanager.AddWayointEvent;
 import de.htwg.seapal.events.map.waypointmanager.AddWaypointPolylineEvent;
-import de.htwg.seapal.events.map.waypointmanager.RedrawWaypointsEvent;
 import de.htwg.seapal.manager.map.PolylineManager;
 import de.htwg.seapal.manager.mapstate.Statelike;
 import roboguice.event.EventManager;
@@ -109,9 +108,6 @@ public class DistanceState implements Statelike {
         initialized = savedInstance.getBoolean("initialized");
         distance = savedInstance.getDouble("distance");
         lastPos = savedInstance.getParcelable("lastPos");
-
-        eventManager.fire(new RedrawWaypointsEvent(context, map));
-
 
     }
 

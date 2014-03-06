@@ -16,6 +16,7 @@ import com.google.inject.Inject;
 import java.util.List;
 
 import de.htwg.seapal.R;
+import de.htwg.seapal.events.map.RequestRedrawEvent;
 import de.htwg.seapal.events.map.SetTargetEvent;
 import de.htwg.seapal.events.map.aimdirectionmanager.DiscardTargetEvent;
 import de.htwg.seapal.events.map.aimdirectionmanager.InitializeAimDirectionEvent;
@@ -37,6 +38,7 @@ public class AimDirectionManager {
     private Marker aimDirectionArrow;
     private GoogleMap map;
     private Location oldLocation;
+    private float currentAngle;
 
     private Marker crosshairMarker;
 
@@ -62,8 +64,8 @@ public class AimDirectionManager {
             @Override
             public void onLocationChanged(Location location) {
                 if (oldLocation != null) {
-                    float angle = calualteArrowDirection(oldLocation, location);
-                    showMovingDirection(angle);
+                    currentAngle = calualteArrowDirection(oldLocation, location);
+                    showMovingDirection(currentAngle);
                 }
                 oldLocation = location;
             }
@@ -85,12 +87,19 @@ public class AimDirectionManager {
     }
 
 
+
+
     public void crosshairChangeListener(@Observes SetTargetEvent event) {
         map = event.getMap();
         context = event.getContext();
         crosshairMarker = event.getCrosshairMarker();
         drawAimArrow();
 
+    }
+
+    private void redrawRequested(@Observes RequestRedrawEvent event) {
+        map = event.getMap();
+        showMovingDirection(currentAngle);
     }
 
     private void drawAimArrow() {

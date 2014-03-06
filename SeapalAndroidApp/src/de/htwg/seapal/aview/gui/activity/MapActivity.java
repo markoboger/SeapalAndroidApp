@@ -40,8 +40,8 @@ import de.htwg.seapal.controller.IMainController;
 import de.htwg.seapal.events.map.MarkerDeleteEvent;
 import de.htwg.seapal.events.map.OnMapRestoreInstanceEvent;
 import de.htwg.seapal.events.map.OnMapSaveInstanceEvent;
-import de.htwg.seapal.events.map.RedrawMarkerEvent;
 import de.htwg.seapal.events.map.RemoveCrosshairEvent;
+import de.htwg.seapal.events.map.RequestRedrawEvent;
 import de.htwg.seapal.events.map.TransitionToMarker;
 import de.htwg.seapal.events.map.TransitionToTarget;
 import de.htwg.seapal.events.map.aimdirectionmanager.DiscardTargetEvent;
@@ -51,7 +51,6 @@ import de.htwg.seapal.events.map.picturemanager.RequestTakePictureEvent;
 import de.htwg.seapal.events.map.picturemanager.ShowPictureDialogEvent;
 import de.htwg.seapal.events.map.trackingmanager.StartTrackingEvent;
 import de.htwg.seapal.events.map.trackingmanager.StopTrackingEvent;
-import de.htwg.seapal.events.map.waypointmanager.RedrawWaypointsEvent;
 import de.htwg.seapal.manager.SessionManager;
 import de.htwg.seapal.manager.map.AimDirectionManager;
 import de.htwg.seapal.manager.map.PolylineManager;
@@ -236,6 +235,9 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
             this.state = RoboGuice.getInjector(this).getInstance(state.getClass());
 
         eventManager.fire(new OnMapRestoreInstanceEvent(map, savedInstanceState));
+        map.clear();
+        eventManager.fire(new RequestRedrawEvent(this, map));
+
     }
 
 
@@ -307,12 +309,16 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
     @Override
     public void onMapClick(LatLng latLng) {
         state.onSortPress(this, map, latLng);
+        map.clear();
+        eventManager.fire(new RequestRedrawEvent(this,map));
     }
 
     @Override
     public void onMapLongClick(LatLng latLng) {
-        DefaultState state = RoboGuice.getInjector(this).getInstance(DefaultState.class);
+        state = RoboGuice.getInjector(this).getInstance(DefaultState.class);
         state.onLongPress(this, map, latLng);
+        map.clear();
+        eventManager.fire(new RequestRedrawEvent(this,map));
 
     }
 
@@ -366,10 +372,7 @@ public class MapActivity extends BaseDrawerActivity implements OnMapLongClickLis
     @Override
     public void onDialogDeleteClick(DialogFragment dialog, Marker marker) {
         eventManager.fire(new MarkerDeleteEvent(marker));
-        eventManager.fire(new RedrawWaypointsEvent(this, map));
-        eventManager.fire(new RedrawMarkerEvent(this, map));
-
-
+        eventManager.fire(new RequestRedrawEvent(this,map));
     }
 
     @Override

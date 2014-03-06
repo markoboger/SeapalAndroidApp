@@ -21,7 +21,6 @@ import de.htwg.seapal.events.map.OnMapRestoreInstanceEvent;
 import de.htwg.seapal.events.map.OnMapSaveInstanceEvent;
 import de.htwg.seapal.events.map.waypointmanager.AddWayointEvent;
 import de.htwg.seapal.events.map.waypointmanager.AddWaypointPolylineEvent;
-import de.htwg.seapal.events.map.waypointmanager.RedrawWaypointsEvent;
 import de.htwg.seapal.manager.map.PolylineManager;
 import de.htwg.seapal.manager.mapstate.Statelike;
 import roboguice.event.EventManager;
@@ -63,6 +62,7 @@ public class RouteDrawingState implements Statelike {
         if (!initialized) {
             eventManager.fire(new AddWaypointPolylineEvent(context, map, MARKER_OPTIONS, POLYLINE_OPTIONS));
             initialized = true;
+
         }
 
         eventManager.fire(new AddWayointEvent(context, map, MARKER_OPTIONS, POLYLINE_OPTIONS, latlng));
@@ -91,9 +91,6 @@ public class RouteDrawingState implements Statelike {
         LinkedList list = (LinkedList) savedInstance.get("route_manager_waypoint");
         initialized = savedInstance.getBoolean("route_manager_initialized");
         polylineManager = (PolylineManager) list.getFirst();
-
-        eventManager.fire(new RedrawWaypointsEvent(context, map));
-
 
     }
 
