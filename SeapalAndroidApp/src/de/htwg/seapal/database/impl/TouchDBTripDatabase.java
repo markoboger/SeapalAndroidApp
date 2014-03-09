@@ -1,174 +1,156 @@
 package de.htwg.seapal.database.impl;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import android.content.Context;
+
+import com.couchbase.lite.CouchbaseLiteException;
+import com.couchbase.lite.Database;
+import com.couchbase.lite.View;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 import org.ektorp.CouchDbConnector;
 import org.ektorp.DocumentNotFoundException;
-import org.ektorp.UpdateConflictException;
-import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
-import org.ektorp.ViewResult.Row;
+import org.ektorp.support.CouchDbRepositorySupport;
 
-import roboguice.inject.ContextSingleton;
-import android.content.Context;
-import android.util.Log;
-
-import com.couchbase.touchdb.TDDatabase;
-import com.couchbase.touchdb.TDView;
-import com.couchbase.touchdb.TDViewMapBlock;
-import com.couchbase.touchdb.TDViewMapEmitBlock;
-import com.google.inject.Inject;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
 
 import de.htwg.seapal.database.ITripDatabase;
+import de.htwg.seapal.database.TouchDBHelper;
+import de.htwg.seapal.database.impl.views.AllView;
+import de.htwg.seapal.database.impl.views.BoatView;
+import de.htwg.seapal.database.impl.views.OwnView;
+import de.htwg.seapal.database.impl.views.SingleDocumentView;
+import de.htwg.seapal.events.session.LogOutEvent;
+import de.htwg.seapal.events.session.LoginEvent;
 import de.htwg.seapal.model.ITrip;
+import de.htwg.seapal.model.ModelDocument;
 import de.htwg.seapal.model.impl.Trip;
+import roboguice.event.Observes;
+import roboguice.inject.ContextSingleton;
 
 @ContextSingleton
-public class TouchDBTripDatabase implements ITripDatabase {
+public class TouchDBTripDatabase extends CouchDbRepositorySupport<Trip> implements ITripDatabase {
 
-	private static final String TAG = "Trip-TouchDB";
-	private static final String DDOCNAME = "Trip";
-	private static final String VIEWNAME = "by_boat";
-	private static final String DATABASE_NAME = "seapal_trips_db";
+    private static final String TAG = "Trip-TouchDB";
 
-	private static TouchDBTripDatabase touchDBTripDatabase;
-	private CouchDbConnector couchDbConnector;
-	private TouchDBHelper dbHelper;
 
-	@Inject
-	public TouchDBTripDatabase(Context ctx) {
-		dbHelper = new TouchDBHelper(DATABASE_NAME);
-		dbHelper.createDatabase(ctx);
-		dbHelper.pullFromDatabase();
-		couchDbConnector = dbHelper.getCouchDbConnector();
+    private final CouchDbConnector connector;
+    private final TouchDBHelper dbHelper;
+    private final Database database;
 
-		TDDatabase tdDB = dbHelper.getTDDatabase();
+    @Inject
+    public TouchDBTripDatabase(@Named("tripCouchDbConnector") TouchDBHelper helper, Context ctx) {
+        super(Trip.class, helper.getCouchDbConnector());
+        initStandardDesignDocument();
+        dbHelper = helper;
+        connector = dbHelper.getCouchDbConnector();
 
-		TDView view = tdDB.getViewNamed(String.format("%s/%s", DDOCNAME,
-				VIEWNAME));
+        database = dbHelper.getTDDatabase();
 
-		view.setMapReduceBlocks(new TDViewMapBlock() {
-			@Override
-			public void map(Map<String, Object> document,
-					TDViewMapEmitBlock emitter) {
-				Object Boat = document.get("boat");
-				if (Boat != null) {
-					emitter.emit(document.get("boat"), document.get("_id"));
-				}
 
-			}
-		}, null, "1.0");
+        View singleDoc = database.getView(String.format("%s/%s", "Trip", "singleDocument"));
+        singleDoc.setMap(new SingleDocumentView(), "1");
 
-	}
+        View ownDoc = database.getView(String.format("%s/%s", "Trip", "own"));
+        ownDoc.setMap(new OwnView(), "1");
 
-	public static TouchDBTripDatabase getInstance(Context ctx) {
-		if (touchDBTripDatabase == null)
-			touchDBTripDatabase = new TouchDBTripDatabase(ctx);
-		return touchDBTripDatabase;
-	}
 
-	@Override
-	public UUID create() {
-		ITrip trip = new Trip();
-		try {
-			couchDbConnector.create(trip.getId(), trip);
-		} catch (UpdateConflictException e) {
-			Log.e(TAG, e.toString());
-		}
-		UUID id = UUID.fromString(trip.getId());
-		Log.d(TAG, "Trip created: " + trip.getId());
-		dbHelper.pushToDatabase();
-		return id;
-	}
+        View boatDoc = database.getView(String.format("%s/%s", "Trip", "boat"));
+        boatDoc.setMap(new BoatView(), "1");
 
-	@Override
-	public boolean save(ITrip trip) {
-		try {
-			couchDbConnector.update(trip);
-			dbHelper.pushToDatabase();
-		} catch (DocumentNotFoundException e) {
-			Log.d(TAG, "Document not Found");
-			Log.d(TAG, e.toString());
-			return false;
-		}
-		Log.d(TAG, "Trip saved: " + trip.getId());
-		return true;
-	}
 
-	@Override
-	public void delete(UUID id) {
-		try {
-			couchDbConnector.delete(get(id));
-			dbHelper.pushToDatabase();
-		} catch (Exception e) {
-			Log.e(TAG, e.toString());
-			return;
-		}
-		Log.d(TAG, "Trip deleted");
-	}
+        View all = database.getView(String.format("%s/%s", "Trip", "all"));
+        all.setMap(new AllView(), "1");
 
-	@Override
-	public ITrip get(UUID id) {
-		ITrip trip;
-		try {
-			trip = couchDbConnector.get(Trip.class, id.toString());
-		} catch (DocumentNotFoundException e) {
-			Log.e(TAG, "Trip not found" + id.toString());
-			return null;
-		}
-		return trip;
-	}
 
-	@Override
-	public List<ITrip> loadAll() {
-		List<ITrip> lst = new LinkedList<ITrip>();
-		List<String> log = new LinkedList<String>();
-		ViewQuery query = new ViewQuery().allDocs();
-		ViewResult vr = couchDbConnector.queryView(query);
 
-		for (Row r : vr.getRows()) {
-			lst.add(get(UUID.fromString(r.getId())));
-			log.add(r.getId());
-		}
-		Log.d(TAG, "All Trips: " + log.toString());
-		return lst;
-	}
+        try {
+            singleDoc.updateIndex();
+            ownDoc.updateIndex();
+            boatDoc.updateIndex();
+        } catch (CouchbaseLiteException e) {
+            e.printStackTrace();
+        }
 
-	@Override
-	public boolean close() {
-		return false;
-	}
+    }
 
-	@Override
-	public boolean open() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public boolean open() {
+        return true;
+    }
 
-	@Override
-	public List<ITrip> findByBoat(UUID boatId) {
-		List<ITrip> lst = new LinkedList<ITrip>();
-		List<ITrip> log = new LinkedList<ITrip>();
+    @Override
+    public UUID create() {
+        return null;
+    }
 
-		ViewQuery viewQuery = new ViewQuery()
-				.designDocId("_design/" + DDOCNAME).viewName(VIEWNAME);
+    @Override
+    public boolean save(ITrip data) {
+        Trip entity = (Trip) data;
 
-		ViewResult vr = couchDbConnector.queryView(viewQuery);
-		for (Row r : vr.getRows()) {
+        if (entity.isNew()) {
+            // ensure that the id is generated and revision is null for saving a new entity
+            entity.setId(UUID.randomUUID().toString());
+            entity.setRevision(null);
+            add(entity);
+            return true;
+        }
 
-			if (r.getKey() != null && !r.getKey().isEmpty()) {
-				if (boatId.equals(UUID.fromString(r.getKey()))) {
-					lst.add(get(UUID.fromString(r.getValue())));
-					log.add(get(UUID.fromString(r.getValue())));
-				}
-			}
+        update(entity);
+        return false;
+    }
 
-		}
-		Log.d(TAG, "All Trips: " + log.toString());
-		return lst;
-	}
+    @Override
+    public ITrip get(UUID id) {
+        try {
+            return get(id.toString());
+        } catch (DocumentNotFoundException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public List<ITrip> loadAll() {
+        List<ITrip> trips = new LinkedList<ITrip>(getAll());
+        return trips;
+    }
+
+    @Override
+    public void delete(UUID id) {
+        remove((Trip) get(id));
+    }
+
+    @Override
+    public boolean close() {
+        return true;
+    }
+
+    @Override
+    public List<? extends ITrip> queryViews(final String viewName, final String key) {
+        ViewResult vr = db.queryView(createQuery(viewName).key(key));
+        List<Trip> trips = dbHelper.mapViewResultTo(vr, Trip.class);
+        return trips;
+    }
+
+    @Override
+    public void create(ModelDocument doc) {
+        connector.create(doc);
+    }
+
+    @Override
+    public void update(ModelDocument document) {
+        connector.update(document);
+    }
+
+    public void onLogin(@Observes LoginEvent event) {
+
+    }
+
+    public void onLogout(@Observes LogOutEvent event) {
+
+    }
 
 }

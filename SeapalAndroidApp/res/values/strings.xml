@@ -34,18 +34,52 @@
     <string name="lengthHeader">Length</string>
     <string name="ownerHeader">Owner</string>
 
-    <string-array name="drawer_list_array">
+    <!-- Main -->
+    <string name="searchForLocation">Search for Position</string>
+    <string name="startLogging">@string/start_tracking_text</string>
+    <string name="addMarkOnMap">Set Mark</string>
+    <string name="addRouteOnMap">Set Route</string>
+    <string name="distance">Get Distance</string>
+    <string name="goToCurrentLocation">Goto current location</string>
+    <string name="takePicture">Take Photo</string>
+    <string name="personOverBoard">Person over Board</string>
+    <string name="discardTarget">Discard target</string>
+
+    <string-array name="drawer_list_array_left">
         <item>Map</item>
         <item>Logbook</item>
-        <item>TUI</item>
-        <item>-Marks-</item>
-        <item>-Routes-</item>
     </string-array>
+
+    <string-array name="drawer_list_array_right">
+        <item>@string/searchForLocation</item>
+        <item>@string/start_tracking_text</item>
+        <item>@string/takePicture</item>
+        <item>@string/addMarkOnMap</item>
+        <item>@string/addRouteOnMap</item>
+        <item>@string/distance</item>
+        <item>@string/goToCurrentLocation</item>
+        <item>@string/personOverBoard</item>
+        <item>@string/discardTarget</item>
+    </string-array>
+
+    <array name="drawer_list_icons_right">
+        <item>@android:drawable/ic_menu_mylocation</item>
+        <item>@android:drawable/ic_dialog_map</item>
+        <item>@android:drawable/ic_dialog_map</item>
+        <item>@android:drawable/ic_menu_mapmode</item>
+        <item>@android:drawable/ic_menu_mylocation</item>
+        <item>@android:drawable/ic_menu_camera</item>
+        <item>@android:drawable/ic_dialog_alert</item>
+        <item>@android:drawable/ic_menu_delete</item>
+    </array>
+
+    <string name="desc_list_item_icon">list Icon</string>
+
     <string name="drawer_open">open drawer</string>
     <string name="drawer_close">close drawer</string>
     <string name="menuButton">Menu Button</string>
     <string name="menuTitle">Menu Title</string>
-    <string name="menuTitleText"></string> 
+    <string name="menuTitleText"/>
     <string name="setMark">Set Mark</string>
     <string name="setRoute">Set Route</string>
     <string name="calcDistance">Distance from here</string>
@@ -58,4 +92,69 @@
     <string name="tripEndTimeHeader">End</string>
     <string name="tripSkipperHeader">Skipper</string>
 
+    <string name="arrow">></string>
+    <string name="save">SAVE</string>
+    <string name="delete">DELETE</string>
+    <string name="newtext">NEW</string>
+    <string name="show_right_drawer">Show map menu</string>
+    <string name="noLocationSignal">No location signal</string>
+    <string name="delete_trip">Do you want to delete the trip?</string>
+    <string name="delete_trip_yes">yes</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">Ok</string>
+    <string name="noCameraAvailable">No Camera/Camera App Available</string>
+    <string name="save_boat_text">Save Boat</string>
+    <string name="delete_boat_text">Delete Boat</string>
+    <string name="new_boat_text">New Boat</string>
+    <string name="search_hint">Search Points of interest</string>
+    <string name="location">Location</string>
+    <string name="logbook_crew_add">ADD CREW MEMBER</string>
+    <string name="add_mark_text">Add Mark</string>
+    <string name="delete_mark_text">delete Mark</string>
+    <string name="trip_title">Trip Title</string>
+    <string name="taken_picture_content_description">Take a picture</string>
+    <string name="start_tracking_text">Start Track</string>
+    <string name="caret_contet_description">caret white</string>
+    <string name="favour_boat_text">FAVOUR BOAT</string>
+    <string name="stop_tracking_text">Stop Track</string>
+    <string name="tracking_service_started_text">Tracking Service Started</string>
+    <string name="picture_headder">Picture</string>
+    <string name="account_info_text" >
+        The Seapal Logbook Feature can store your logbook data in the cloud.
+        This enables you to access your logbooks form other devices or on the web.
+        You just need to create an account.
+        The first 10 Trips are free of charge.
+    </string>
+    <string name="account_info_header">About SeaPal Accounts</string>
+    <string name="create_new_account">Create a fresh Account</string>
+    <string name="account_management">Handle your Account</string>
+    <string name="crew_about">About SeaPal Crew</string>
+    <string name="crew_your_crew">Your Crew</string>
+    <string name="crew_about_text" >You can invite others with an Account on SeaPal to read or contribute to your Logbook. Likewise you can be invited to join someone elses logbook</string>
+    <string name="crew_member_of">You are Crew Member of</string>
+    <string name="username">type in you email</string>
+    <string name="password">and your password</string>
+    <string name="signup">Sign Up</string>
+    <string name="password_repeat">and you password again</string>
+    <string name="first_name">your first name</string>
+    <string name="last_name">your last name</string>
+    <string name="account_login_text">Or Login With Credentials</string>
+    <string name="account_login">Login</string>
+    <string name="loggin_in_text">You are now logged in as</string>
+    <string name="account_logout">Logout</string>
+    <string name="crew_dialog_accept_friend">Accept as friend?</string>
+    <string name="crew_dialog_accept_friend_yes">yes</string>
+    <string name="crew_dialog_accept_friend_decline">decline</string>
+    <string name="crew_add_text">Add crew member</string>
+    <string name="crew_add_title_text">Add a crew member!!</string>
+    <string name="crew_dialog_delete_friend">Delete Crew Member</string>
+    <string name="crew_dialog_delete_friend_button">delete crew member</string>
+    <string name="save_only_own_boats">You are not able to save a boat of a crew member</string>
+    <string name="favour_only_own_boats">You are not able to favour boats of you crew</string>
+    <string name="tracking_trip_name">name your trip</string>
+    <string name="tracking_trip_from">where do you start your trip</string>
+    <string name="tracking_trip_to">where are you going to sail</string>
+    <string name="enter_some_trip_info">Enter some Trip Info for the tracking</string>
+    <string name="tracking_start">start tracking</string>
+    <item name="tracking_service_started_text" type="id">Tracking Service Started</item>
 </resources>

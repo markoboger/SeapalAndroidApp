@@ -1,129 +1,149 @@
 package de.htwg.seapal.database.impl;
 
+import android.content.Context;
+import android.util.Log;
+
+import com.couchbase.lite.Database;
+import com.couchbase.lite.View;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+
+import org.ektorp.CouchDbConnector;
+import org.ektorp.DocumentNotFoundException;
+import org.ektorp.ViewResult;
+import org.ektorp.support.CouchDbRepositorySupport;
+import org.ektorp.support.DesignDocument;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-import org.ektorp.CouchDbConnector;
-import org.ektorp.DocumentNotFoundException;
-import org.ektorp.UpdateConflictException;
-import org.ektorp.ViewQuery;
-import org.ektorp.ViewResult;
-import org.ektorp.ViewResult.Row;
-
-import roboguice.inject.ContextSingleton;
-import android.content.Context;
-import android.util.Log;
-
-import com.google.inject.Inject;
-
 import de.htwg.seapal.database.IRouteDatabase;
+import de.htwg.seapal.database.TouchDBHelper;
+import de.htwg.seapal.database.impl.views.AllView;
+import de.htwg.seapal.database.impl.views.OwnView;
+import de.htwg.seapal.database.impl.views.SingleDocumentView;
+import de.htwg.seapal.events.session.LogOutEvent;
+import de.htwg.seapal.events.session.LoginEvent;
 import de.htwg.seapal.model.IRoute;
+import de.htwg.seapal.model.ModelDocument;
 import de.htwg.seapal.model.impl.Route;
+import roboguice.event.Observes;
+import roboguice.inject.ContextSingleton;
 
 @ContextSingleton
-public class TouchDBRouteDatabase implements IRouteDatabase {
+public class TouchDBRouteDatabase extends CouchDbRepositorySupport<Route> implements IRouteDatabase {
 
-	private static final String TAG = "Route-TouchDB";
-	private static final String DATABASE_NAME = "seapal_route_db";
+    private static final String TAG = "Route-TouchDB";
 
-	private static TouchDBRouteDatabase touchDBRouteDatabase;
-	private CouchDbConnector couchDbConnector;
-	private TouchDBHelper dbHelper;
+    private static TouchDBRouteDatabase touchDBRouteDatabase;
+    private final CouchDbConnector connector;
+    private final TouchDBHelper dbHelper;
+    private final Database database;
 
-	@Inject
-	public TouchDBRouteDatabase(Context ctx) {
-		dbHelper = new TouchDBHelper(DATABASE_NAME);
-		dbHelper.createDatabase(ctx);
-		dbHelper.pullFromDatabase();
-		couchDbConnector = dbHelper.getCouchDbConnector();
+    @Inject
+    public TouchDBRouteDatabase(@Named("routeCouchDbConnector") TouchDBHelper helper, Context ctx) {
+        super(Route.class, helper.getCouchDbConnector());
+        dbHelper = helper;
+        database = helper.getTDDatabase();
+        connector = dbHelper.getCouchDbConnector();
+        DesignDocument d = super.getDesignDocumentFactory().generateFrom(this);
+        Log.i(TAG, "Views = " + d.getViews());
 
-	}
 
-	public static TouchDBRouteDatabase getInstance(Context ctx) {
-		if (touchDBRouteDatabase == null)
-			touchDBRouteDatabase = new TouchDBRouteDatabase(ctx);
-		return touchDBRouteDatabase;
-	}
+        View singleDoc = database.getView(String.format("%s/%s", "Route", "singleDocument"));
+        singleDoc.setMap(new SingleDocumentView(), "1");
 
-	@Override
-	public boolean open() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+        View ownDoc = database.getView(String.format("%s/%s", "Route", "own"));
+        ownDoc.setMap(new OwnView(), "1");
 
-	@Override
-	public UUID create() {
-		IRoute route = new Route();
-		try {
-			couchDbConnector.create(route.getId(), route);
-		} catch (UpdateConflictException e) {
-			Log.e(TAG, e.toString());
-		}
-		UUID id = UUID.fromString(route.getId());
-		Log.d(TAG, "Route created: " + route.getId());
-		dbHelper.pushToDatabase();
-		return id;
-	}
+        View all = database.getView(String.format("%s/%s", "Route", "all"));
+        all.setMap(new AllView(), "1");
 
-	@Override
-	public boolean save(IRoute data) {
-		try {
-			couchDbConnector.update(data);
-			dbHelper.pushToDatabase();
-		} catch (DocumentNotFoundException e) {
-			Log.d(TAG, "Document not Found");
-			Log.d(TAG, e.toString());
-			return false;
-		}
-		Log.d(TAG, "Route saved: " + data.getId());
-		return true;
-	}
 
-	@Override
-	public IRoute get(UUID id) {
-		IRoute route;
-		try {
-			route = couchDbConnector.get(Route.class, id.toString());
-		} catch (DocumentNotFoundException e) {
-			Log.e(TAG, "Boat not found" + id.toString());
-			return null;
-		}
-		return route;
-	}
+    }
 
-	@Override
-	public List<IRoute> loadAll() {
-		List<IRoute> lst = new LinkedList<IRoute>();
-		List<String> log = new LinkedList<String>();
-		ViewQuery query = new ViewQuery().allDocs();
-		ViewResult vr = couchDbConnector.queryView(query);
 
-		for (Row r : vr.getRows()) {
-			lst.add(get(UUID.fromString(r.getId())));
-			log.add(r.getId());
-		}
-		Log.d(TAG, "All Routes: " + log.toString());
-		return lst;
-	}
+    @Override
+    public boolean open() {
+        return true;
+    }
 
-	@Override
-	public void delete(UUID id) {
-		try {
-			couchDbConnector.delete(get(id));
-			dbHelper.pushToDatabase();
-		} catch (Exception e) {
-			Log.e(TAG, e.toString());
-			return;
-		}
-		Log.d(TAG, "Route deleted");
+    @Override
+    public UUID create() {
+        return null;
+    }
 
-	}
+    @Override
+    public boolean save(IRoute data) {
+        Route entity = (Route) data;
 
-	@Override
-	public boolean close() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+        if (entity.isNew()) {
+            // ensure that the id is generated and revision is null for saving a new entity
+            entity.setId(UUID.randomUUID().toString());
+            entity.setRevision(null);
+            add(entity);
+            return true;
+        }
+
+        update(entity);
+        return false;
+    }
+
+    @Override
+    public IRoute get(UUID id) {
+        try {
+            return get(id.toString());
+        } catch (DocumentNotFoundException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public List<IRoute> loadAll() {
+        List<IRoute> routes = new LinkedList<IRoute>(getAll());
+        return routes;
+    }
+
+    @Override
+    public void delete(UUID id) {
+        remove((Route) get(id));
+    }
+
+    @Override
+    public boolean close() {
+        return true;
+    }
+
+    @Override
+    public List<? extends IRoute> queryViews(final String viewName, final String key) {
+        return super.queryView(viewName, key);
+    }
+
+    @Override
+    public List<Route> queryView(final String viewName, final String key) {
+        ViewResult vr = db.queryView(createQuery(viewName).key(key));
+        List<Route> routes = dbHelper.mapViewResultTo(vr, Route.class);
+        return routes;
+    }
+
+    @Override
+    public void create(ModelDocument doc) {
+        connector.create(doc);
+    }
+
+    @Override
+    public void update(ModelDocument document) {
+        connector.update(document);
+    }
+
+
+    public void onLogin(@Observes LoginEvent event) {
+
+    }
+
+    public void onLogout(@Observes LogOutEvent event) {
+
+    }
 
 }

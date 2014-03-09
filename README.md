@@ -3,75 +3,68 @@ Contents
 
  1. __SeapalAndroidApp__
 
- 2. __Activities__
+ 2. __Architecture__
 
- 3. __Database__
+ 3. __Activities__
+
+ 4. __Database__
  
- 4. __Architecture__
-
- 4. __Text User Interface__
- 
-
-
-The `Documentation.pptx` and `Documentation.pdf` provide documentation for the functionality of the current version.
-
-_______________________________________
 
 SeapalAndroidApp
 ================
 
 Tooling and Dependencies
 ------------------------
-
-#### 1.  TouchDB and Ektorp
-
-  + https://github.com/couchbaselabs/TouchDB-Android
-  + TouchDB is used as Database.
-  + TouchDB-Android and TouchDB-Android-Ektorp have to be included as android library projects. 
-
-#### 2. Roboguice
-
-  + https://github.com/roboguice/roboguice
-  + Rubuguice is used as Dependency Injection Framework
-  + These jars are needed in the libs folder of the Project:
-	`guice-3.0-no_aop.jar, javax.inject-1.jar, roboguice-2.0.jar` 
-	
-	
-#### 3. Google Play Services Lib
-  + http://developer.android.com/google/play-services/setup.html
-  + The Google Play Services Lib has to be included as an android library project.
-
-	
-#### 4. Seapal Core Project
-  + https://github.com/bsautermeister/de.htwg.seapal.core.git
-  + This Project contains the Model and Controller Layer for Seapal. It is used both for
-  the server and the android version. See the ReadMe of the SeapalCore for further details.
-  + The (with java 6) compiled jar has to be in the libs folder.
-
-
-
+ 
+The Dependancies are managed by gradle the there is now real setup of libraries needed.
 
 Building Project
 ----------------
 
-To build the Project just import the Repository to Eclipse, then first clean and then build it as an android Project.
+To build the project you just have to typ in one command
 
-If there are Problems during the buildprocess you can try the following:
+  > + ./gradlew build
+  > + ./gradlew.bat build
 
->	+ Create missing `gen` sourcefolders
->	+ Run `project --> Android Tools --> Fix Project Properties`
->	+ First remove and then add android library Projects again
+gradlew is a gradle wrapper which will download the needed gradle version for you and offers you the ability to install
+the apk directly to the device.
+
+  > + ./gradlew installDebug
+  > + ./gradlew.bat installDebug
 
 
-Testing
-----------
 
-In the SeapalAndriodApp project is an android test project integrated. The project is in the `/test` folder.
-It the Repository is imported to Eclipse there will be a separate test project. To execute the tests you just have
-to run the project as an android jUnit test on either an emulator or a real device.
+Architecture
+============
+
+Using the core library is one part of the Architekture. Which offers the Models and Controllers that are used to access
+the different Databases.
+
+The new internal achritektur of the app uses an event driven actitecture. So it resolves the coupling of classes and
+keeps the code small. 
+
+There are Managers and States. 
+The states define the state in which the map is in and the managers help the states/app to do there work.
+
+
+There are a bunch of event defined
+
+ > + map events
+ > ++ manager events
+
+ > + Logbook events
+ > ++  boat events
+ > ++  crew events
+ > ++  session events
+ > ++  trip events
+
+
+
 
 Activities
 ==========
+
+--- needs to be updated
 
 BaseDrawerActivity
 ------------------
@@ -144,52 +137,13 @@ When only the DetailFragment is displayed then only the *save* and the *delete* 
 In the BoatListFragment you have to declare the ListSelectedCallback interface with the selected-function.
  
 
-#### BoatDetailFragment
-
-This fragment:  
-
->* extends Fragment
-
-Here the user can input informations of the selected boat. The EditText input field are so initialized that
-the user only can type numbers, doubles or strings in the specific fields. 
-For example:
-
->length.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-
-When the user deletes the displayed boat, there are two scenarios:
-
-	1. only BoatFragment is shown (smartphone) -> return to ListFragment and update it.
-	2. both fragments are shown (tablet) ->  delete the boat from list and clear the EditText fields.
-
----
-
 ### Trip
 
-For this component there are two activities. **TripListActivity** where you get a ListView of all Trips of
-the selected Boat. **TripActivity** where you get all information about the selected Trip. You also have to 
-implement an Adapter for the ListView. 
-
-The TripListActivity only listen which Trip is selected. It has no options, because a Trip only can be 
-created in the MapActivity (tracking). 
-
-In TripActivity you have to format the date fields, with the Android function *DateFormat*. The date is 
-stored as a Unix timestamp (long) in the model. The duration of a trip is not stored, so you have to 
-calculate this in the activity. Until now the elapsed days, hours, minutes and second are displayed.
 
 
 Mapactivity
 ----------------
 
-The **Mapactivity** contains the GUI for the Map. The map has an DialogFragment which is implemented in
-**MapDialogFragment**. Both classes currently provide the known mapfunctions like setMark, setRoute, setDistance, 
-which can be selected in the dialog. Right now Marks and Routes are only created on the map and not stored in the DB.
-
-**Problems with emulating Map**
-
-Google does not deliver a working emulator at the moment. There for following additional APKs have to installed and
-google play services.(https://www.dropbox.com/sh/0t128z94941s5i2/R59PpMLOPZ)
-Furthermore every developer has to use the same debug.keystore, otherwise google will not accept the Maps API key
-when building the project. 
 
 
 
@@ -200,8 +154,8 @@ The database contains of one class for each Model where all CRUD-operations are 
 is creates Databases and contains methods for synchronisation with the CouchDB-Server.
 
 Database uses too libraries:
--TouchDB-Android
--TouchDB-Ektorp
+-Couchbase-lite-android
+-Couchbase-lite-ektorp
 
 TouchDB will create a local CouchDB on the smartphone. Data will be stored there and synchronized with the Server.
 The DB-structure on the server and on the device must be the same. Otherwise synchronization will not work and 
@@ -248,22 +202,3 @@ This example creates a View for Trips, which are sorted by the BoatID to which t
 		}, null, "1.0");
 
 
-Architecture
-============
-
-The architecture used in this project is the model view controller (MVC) architecture pattern. The most important 
-goal of this architecture is the separation of the user interaction with the app and the business logic. Also the 
-persistent data storage of the model is separated from the view and the controller.
-
-The model and the controller layer are extracted to a separate project, the seapal.core project. Especially the model 
-has to be independent from the app, because it is used together with the seapal.server project. Changes on the model 
-have to be discussed with the server team, because the common used database has to be adapted to the new model.
-
-Text User Interface
-===================
-
-This app has a text user interface (TUI). The TUI is accessible over the drawer navigation from every Activity.
-It provides all functionalities available through the controllers. It's possible to create, read, edit and delete 
-everything in the model. This is achieved through the controller in the MVC.
-
-The TUI itself is implemented with the State pattern, so its easily maintainable and extendible.

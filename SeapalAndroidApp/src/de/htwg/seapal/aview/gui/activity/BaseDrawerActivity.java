@@ -1,52 +1,63 @@
 package de.htwg.seapal.aview.gui.activity;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import roboguice.activity.RoboActivity;
-import roboguice.inject.InjectResource;
-import roboguice.inject.InjectView;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
+
+import com.google.inject.Inject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import de.htwg.seapal.R;
+import de.htwg.seapal.aview.gui.adapter.SideDrawerListAdapter;
+import de.htwg.seapal.controller.IMainController;
+import roboguice.activity.RoboFragmentActivity;
+import roboguice.inject.InjectResource;
+import roboguice.inject.InjectView;
 
-public class BaseDrawerActivity extends RoboActivity {
+public class BaseDrawerActivity extends RoboFragmentActivity {
 
-	@InjectView(R.id.drawer_menu_drawer_list)
-	private ListView drawerListView;
-
-	@InjectResource(R.array.drawer_list_array)
-	private String[] drawerActivityList;
+    // Drawer field
+    @InjectView(R.id.drawer_menu_drawer_list_right)
+    private ListView drawerListViewRight;
+	@InjectView(R.id.drawer_menu_drawer_list_left)
+	private ListView drawerListViewLeft;
+	@InjectResource(R.array.drawer_list_array_left)
+	private String[] drawerActivityListLeft;
 
 	private DrawerLayout drawerLayout;
-
-	@InjectView(R.id.drawer_menu_content_frame)
-	private FrameLayout frameLayout;
-
-	private ActionBarDrawerToggle drawerToggle;
-
+    private ActionBarDrawerToggle drawerToggle;
 	private int changeToActivity;
+	private static final List<Class<? extends Activity>> classes;
 
-	private static List<Class<? extends Activity>> classes;
+    @Inject
+    private IMainController mainController;
+
 
 	// Add here all Activities in the drawerList (same order)
 	static {
 		classes = new ArrayList<Class<? extends Activity>>();
 		classes.add(de.htwg.seapal.aview.gui.activity.MapActivity.class);
-		classes.add(de.htwg.seapal.aview.gui.activity.BoatActivity.class);
-		classes.add(de.htwg.seapal.aview.tui.activity.MenuActivity.class);
+		classes.add(LogbookTabsActivity.class);
+
 	}
+
+    public void removeRightDrawer() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_menu_drawer_layout);
+        drawer.removeView(drawerListViewRight);
+    }
+
 
 	// -------------------------------------------- CREATION ------------
 
@@ -67,10 +78,11 @@ public class BaseDrawerActivity extends RoboActivity {
 	@Override
 	public void setContentView(final int layoutResID) {
 		// base layout
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 		drawerLayout = (DrawerLayout) getLayoutInflater().inflate(
 				R.layout.drawer_menu, null);
-		frameLayout = (FrameLayout) drawerLayout
-				.findViewById(R.id.drawer_menu_content_frame);
+        FrameLayout frameLayout = (FrameLayout) drawerLayout
+                .findViewById(R.id.drawer_menu_content_frame);
 
 		// Setting the content of layout your provided to the act_content frame
 		getLayoutInflater().inflate(layoutResID, frameLayout, true);
@@ -85,34 +97,29 @@ public class BaseDrawerActivity extends RoboActivity {
 		int index = classes.indexOf(this.getClass());
 		// if the activity is in the drawer set the title
 		if (index != -1)
-			drawerListView.setItemChecked(index, true);
+			drawerListViewLeft.setItemChecked(index, true);
 	}
 
 	// -------------------------------------------- ACTION - BAR ------------
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		// getMenuInflater().inflate(R.menu.actionbar, menu);
-		return true;
-	}
-
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// The action bar home/up action should open or close the drawer.
-		if (drawerToggle.onOptionsItemSelected(item)) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
+        return drawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+    }
 
 	// -------------------------------------------- DRAWER ------------------
 	private void initializeDrawer() {
-		drawerListView.setAdapter(new ArrayAdapter<String>(this,
-				R.layout.drawer_list_item, drawerActivityList));
 
-		drawerListView.setOnItemClickListener(new DrawerItemClickListener());
+        int[] drawerIconsRight = { R.drawable.earth_icon,
+                                    R.drawable.book_icon};
 
+		drawerListViewLeft.setAdapter( new SideDrawerListAdapter(this,
+                drawerActivityListLeft, drawerIconsRight,
+                getResources(), SideDrawerListAdapter.DrawerSide.LEFT));
+		drawerListViewLeft.setOnItemClickListener(new DrawerItemClickListener());
+
+
+        //getActionBar().hide();
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
 
@@ -135,26 +142,25 @@ public class BaseDrawerActivity extends RoboActivity {
 		int index = classes.indexOf(this.getClass());
 		// if the activity is in the drawer set the title
 		if (index != -1) {
-			drawerListView.setItemChecked(index, true);
-			setTitle(drawerActivityList[index]);
+			drawerListViewLeft.setItemChecked(index, true);
+			setTitle(drawerActivityListLeft[index]);
 		} else
 			setTitle("Seapal");
-
 	}
 
 	private class DrawerItemClickListener implements
 			ListView.OnItemClickListener {
 		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
-			changeToActivity = position;
-			drawerListView.setItemChecked(classes.indexOf(this.getClass()),
-					true);
-			drawerLayout.closeDrawer(drawerListView);
+		public void onItemClick(AdapterView<?> parent, View view, int position,	long id) {
+            if(parent.getId() == R.id.drawer_menu_drawer_list_left){
+                changeToActivity = position;
+                drawerListViewLeft.setItemChecked(classes.indexOf(this.getClass()), true);
+                drawerLayout.closeDrawer(drawerListViewLeft);
+            }
 		}
 	}
 
-	public void switchActivity() {
+	void switchActivity() {
 		if (changeToActivity != -1) // no item selected
 			startActivity(new Intent(this, classes.get(changeToActivity))
 					.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(

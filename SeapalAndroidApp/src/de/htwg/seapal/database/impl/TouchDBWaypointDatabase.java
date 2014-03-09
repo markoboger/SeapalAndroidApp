@@ -1,190 +1,153 @@
 package de.htwg.seapal.database.impl;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import org.ektorp.CouchDbConnector;
-import org.ektorp.DocumentNotFoundException;
-import org.ektorp.UpdateConflictException;
-import org.ektorp.ViewQuery;
-import org.ektorp.ViewResult;
-import org.ektorp.ViewResult.Row;
-
-import roboguice.inject.ContextSingleton;
 import android.content.Context;
 import android.util.Log;
 
-import com.couchbase.touchdb.TDDatabase;
-import com.couchbase.touchdb.TDView;
-import com.couchbase.touchdb.TDViewMapBlock;
-import com.couchbase.touchdb.TDViewMapEmitBlock;
+import com.couchbase.lite.Database;
+import com.couchbase.lite.View;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
+
+import org.ektorp.CouchDbConnector;
+import org.ektorp.DocumentNotFoundException;
+import org.ektorp.ViewResult;
+import org.ektorp.support.CouchDbRepositorySupport;
+import org.ektorp.support.DesignDocument;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
 
 import de.htwg.seapal.database.IWaypointDatabase;
+import de.htwg.seapal.database.TouchDBHelper;
+import de.htwg.seapal.database.impl.views.AllView;
+import de.htwg.seapal.database.impl.views.BoatView;
+import de.htwg.seapal.database.impl.views.OwnView;
+import de.htwg.seapal.database.impl.views.SingleDocumentView;
+import de.htwg.seapal.database.impl.views.TripView;
+import de.htwg.seapal.events.session.LogOutEvent;
+import de.htwg.seapal.events.session.LoginEvent;
 import de.htwg.seapal.model.IWaypoint;
-import de.htwg.seapal.model.IWaypoint.ForeSail;
-import de.htwg.seapal.model.IWaypoint.MainSail;
-import de.htwg.seapal.model.IWaypoint.Maneuver;
+import de.htwg.seapal.model.ModelDocument;
 import de.htwg.seapal.model.impl.Waypoint;
+import roboguice.event.Observes;
+import roboguice.inject.ContextSingleton;
+
 
 @ContextSingleton
-public class TouchDBWaypointDatabase implements IWaypointDatabase {
+public class TouchDBWaypointDatabase extends CouchDbRepositorySupport<Waypoint> implements IWaypointDatabase {
 
-	private static final String TAG = "Waypoint-TouchDB";
-	private static final String DDOCNAME = "Waypoint";
-	private static final String VIEWNAME = "by_trip";
-	private static final String DATABASE_NAME = "seapal_waypoint_db";
+    private static final String TAG = "Waypoint-TouchDB";
+    private final CouchDbConnector connector;
+    private final TouchDBHelper dbHelper;
+    private final Database database;
 
-	private static TouchDBWaypointDatabase touchDBWaypointDatabase;
-	private CouchDbConnector couchDbConnector;
-	private TouchDBHelper dbHelper;
+    @Inject
+    public TouchDBWaypointDatabase(@Named("waypointCouchDbConnector") TouchDBHelper helper, Context ctx) {
+        super(Waypoint.class, helper.getCouchDbConnector());
+        initStandardDesignDocument();
+        dbHelper = helper;
+        connector = dbHelper.getCouchDbConnector();
 
-	@Inject
-	public TouchDBWaypointDatabase(Context ctx) {
-		dbHelper = new TouchDBHelper(DATABASE_NAME);
-		dbHelper.createDatabase(ctx);
-		dbHelper.pullFromDatabase();
-		couchDbConnector = dbHelper.getCouchDbConnector();
+        database = dbHelper.getTDDatabase();
 
-		TDDatabase tdDB = dbHelper.getTDDatabase();
+        Log.i(TAG, "Doc Ids " + super.getDesignDocumentFactory().generateFrom(this).getViews());
+        DesignDocument d = super.getDesignDocumentFactory().generateFrom(this);
+        Log.i(TAG, "Views = " + d.getViews());
 
-		TDView view = tdDB.getViewNamed(String.format("%s/%s", DDOCNAME,
-				VIEWNAME));
 
-		view.setMapReduceBlocks(new TDViewMapBlock() {
-			@Override
-			public void map(Map<String, Object> document,
-					TDViewMapEmitBlock emitter) {
-				Object Trip = document.get("trip");
-				Map<Object, Object> m = new HashMap<Object, Object>();
-				if (Trip != null) {
-					m.put(document.get("trip"), document.get("date"));
-					emitter.emit(m, document.get("_id"));
-				}
+        View singleDoc = database.getView(String.format("%s/%s", "Waypoint", "singleDocument"));
+        singleDoc.setMap(new SingleDocumentView(), "1");
 
-			}
-		}, null, "1.0");
+        View ownDoc = database.getView(String.format("%s/%s", "Waypoint", "own"));
+        ownDoc.setMap(new OwnView(), "1");
 
-	}
 
-	public static TouchDBWaypointDatabase getInstance(Context ctx) {
-		if (touchDBWaypointDatabase == null)
-			touchDBWaypointDatabase = new TouchDBWaypointDatabase(ctx);
-		return touchDBWaypointDatabase;
-	}
+        View boatDoc = database.getView(String.format("%s/%s", "Waypoint", "boat"));
+        boatDoc.setMap(new BoatView(), "1");
 
-	@Override
-	public UUID create() {
-		IWaypoint waypoint = new Waypoint(Maneuver.NONE, ForeSail.NONE,
-				MainSail.NONE);
-		try {
-			couchDbConnector.create(waypoint.getId(), waypoint);
-		} catch (UpdateConflictException e) {
-			Log.e(TAG, e.toString());
-		}
-		UUID id = UUID.fromString(waypoint.getId());
-		Log.d(TAG, "Waypoint created: " + waypoint.getId());
-		dbHelper.pushToDatabase();
-		return id;
-	}
+        View tripDoc = database.getView(String.format("%s/%s", "Waypoint", "trip"));
+        tripDoc.setMap(new TripView(), "1");
 
-	@Override
-	public boolean save(IWaypoint waypoint) {
-		try {
-			couchDbConnector.update(waypoint);
-			dbHelper.pushToDatabase();
-		} catch (DocumentNotFoundException e) {
-			Log.d(TAG, "Document not Found");
-			Log.d(TAG, e.toString());
-			return false;
-		}
-		Log.d(TAG, "Waypoint saved: " + waypoint.getId());
-		return true;
-	}
+        View all = database.getView(String.format("%s/%s", "Waypoint", "all"));
+        all.setMap(new AllView(), "1");
 
-	@Override
-	public void delete(UUID id) {
-		try {
-			couchDbConnector.delete(get(id));
-			dbHelper.pushToDatabase();
-		} catch (Exception e) {
-			Log.e(TAG, e.toString());
-			return;
-		}
-		Log.d(TAG, "Waypoint deleted");
-	}
 
-	@Override
-	public IWaypoint get(UUID id) {
-		IWaypoint waypoint;
-		try {
-			waypoint = couchDbConnector.get(Waypoint.class, id.toString());
-		} catch (DocumentNotFoundException e) {
-			Log.e(TAG, "Waypoint not found" + id.toString());
-			return null;
-		}
-		return waypoint;
-	}
+    }
 
-	@Override
-	public List<IWaypoint> loadAll() {
-		List<IWaypoint> lst = new LinkedList<IWaypoint>();
-		List<String> log = new LinkedList<String>();
-		ViewQuery query = new ViewQuery().allDocs();
-		ViewResult vr = couchDbConnector.queryView(query);
+    @Override
+    public boolean open() {
+        return true;
+    }
 
-		for (Row r : vr.getRows()) {
-			if (r.getId().contains("_design")) {
-				continue;
-			}
-			lst.add(get(UUID.fromString(r.getId())));
-			log.add(get(UUID.fromString(r.getId())).toString());
-		}
-		Log.d(TAG, "All Waypoints: " + lst.size());
-		Log.d(TAG, "All Waypoints: " + log.toString());
+    @Override
+    public UUID create() {
+        return null;
+    }
 
-		return lst;
-	}
+    @Override
+    public boolean save(IWaypoint data) {
+        Waypoint entity = (Waypoint) data;
 
-	@Override
-	public boolean close() {
-		return false;
-	}
+        if (entity.isNew()) {
+            // ensure that the id is generated and revision is null for saving a new entity
+            entity.setId(UUID.randomUUID().toString());
+            entity.setRevision(null);
+            add(entity);
+            return true;
+        }
 
-	@Override
-	public boolean open() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+        update(entity);
+        return false;
+    }
 
-	@Override
-	public List<IWaypoint> findByTrip(UUID tripId) {
-		List<IWaypoint> lst = new LinkedList<IWaypoint>();
-		List<IWaypoint> log = new LinkedList<IWaypoint>();
+    @Override
+    public Waypoint get(UUID id) {
+        try {
+            return get(id.toString());
+        } catch (DocumentNotFoundException e) {
+            return null;
+        }
+    }
 
-		ViewQuery viewQuery = new ViewQuery()
-				.designDocId("_design/" + DDOCNAME).viewName(VIEWNAME);
+    @Override
+    public List<IWaypoint> loadAll() {
+        List<IWaypoint> waypoints = new LinkedList<IWaypoint>(getAll());
+        return waypoints;
+    }
 
-		ViewResult vr = couchDbConnector.queryView(viewQuery);
-		for (Row r : vr.getRows()) {
+    @Override
+    public void delete(UUID id) {
+        remove(get(id));
+    }
 
-			String[] s = r.getKey().split(":");
-			s[0] = s[0].replace("\"", "");
-			s[0] = s[0].replace("{", "");
+    @Override
+    public boolean close() {
+        return true;
+    }
 
-			if (r.getKey() != null && !r.getKey().isEmpty()) {
-				if (tripId.equals(UUID.fromString(s[0]))) {
-					lst.add(get(UUID.fromString(r.getValue())));
-					log.add(get(UUID.fromString(r.getValue())));
-				}
-			}
+    @Override
+    public List<? extends IWaypoint> queryViews(final String viewName, final String key) {
+        ViewResult vr = db.queryView(createQuery(viewName).key(key));
+        List<Waypoint> waypoints = dbHelper.mapViewResultTo(vr, Waypoint.class);
+        return waypoints;
+    }
 
-		}
-		Log.d(TAG, "All Trips: " + log.toString());
-		return lst;
-	}
+    @Override
+    public void create(ModelDocument doc) {
+        connector.create(doc);
+    }
 
+    @Override
+    public void update(ModelDocument document) {
+        connector.update(document);
+    }
+
+    public void onLogin(@Observes LoginEvent event) {
+
+    }
+
+    public void onLogout(@Observes LogOutEvent event) {
+
+    }
 }

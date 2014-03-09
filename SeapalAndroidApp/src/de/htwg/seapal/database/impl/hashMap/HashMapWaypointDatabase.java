@@ -9,14 +9,12 @@ import java.util.UUID;
 
 import de.htwg.seapal.database.IWaypointDatabase;
 import de.htwg.seapal.model.IWaypoint;
-import de.htwg.seapal.model.IWaypoint.ForeSail;
-import de.htwg.seapal.model.IWaypoint.MainSail;
-import de.htwg.seapal.model.IWaypoint.Maneuver;
+import de.htwg.seapal.model.ModelDocument;
 import de.htwg.seapal.model.impl.Waypoint;
 
 public class HashMapWaypointDatabase implements IWaypointDatabase {
 
-	Map<UUID, IWaypoint> db;
+	private final Map<UUID, IWaypoint> db;
 	private static HashMapWaypointDatabase hashMapWaypointDatabase;
 
 	private HashMapWaypointDatabase() {
@@ -31,8 +29,7 @@ public class HashMapWaypointDatabase implements IWaypointDatabase {
 
 	@Override
 	public UUID create() {
-		IWaypoint waypoint = new Waypoint(Maneuver.NONE, ForeSail.NONE,
-				MainSail.NONE);
+		IWaypoint waypoint = new Waypoint();
 		UUID id = UUID.fromString(waypoint.getId());
 		db.put(id, waypoint);
 		return id;
@@ -56,8 +53,7 @@ public class HashMapWaypointDatabase implements IWaypointDatabase {
 	@Override
 	public List<IWaypoint> loadAll() {
 		Collection<IWaypoint> collection = db.values();
-		List<IWaypoint> values = new ArrayList<IWaypoint>(collection);
-		return values;
+		return new ArrayList<IWaypoint>(collection);
 	}
 
 	@Override
@@ -65,13 +61,27 @@ public class HashMapWaypointDatabase implements IWaypointDatabase {
 		return true;
 	}
 
-	@Override
+    @Override
+    public void create(ModelDocument modelDocument) {
+
+    }
+
+    @Override
+    public List<? extends IWaypoint> queryViews(String s, String s2) {
+        return null;
+    }
+
+    @Override
+    public void update(ModelDocument modelDocument) {
+
+    }
+
+    @Override
 	public boolean open() {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
 	public List<IWaypoint> findByTrip(UUID tripId) {
 		// TODO Auto-generated method stub
 		return null;

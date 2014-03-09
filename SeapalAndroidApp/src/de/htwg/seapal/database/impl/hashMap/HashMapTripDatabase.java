@@ -9,12 +9,13 @@ import java.util.UUID;
 
 import de.htwg.seapal.database.ITripDatabase;
 import de.htwg.seapal.model.ITrip;
+import de.htwg.seapal.model.ModelDocument;
 import de.htwg.seapal.model.impl.Trip;
 
 public class HashMapTripDatabase implements ITripDatabase {
 
-	private Map<UUID, ITrip> db;;
-	private static HashMapTripDatabase hashMapTripDatabase;
+	private final Map<UUID, ITrip> db;
+    private static HashMapTripDatabase hashMapTripDatabase;
 
 	private HashMapTripDatabase() {
 		db = new HashMap<UUID, ITrip>();
@@ -52,8 +53,7 @@ public class HashMapTripDatabase implements ITripDatabase {
 	@Override
 	public List<ITrip> loadAll() {
 		Collection<ITrip> collection = db.values();
-		List<ITrip> values = new ArrayList<ITrip>(collection);
-		return values;
+		return new ArrayList<ITrip>(collection);
 	}
 
 	@Override
@@ -61,13 +61,27 @@ public class HashMapTripDatabase implements ITripDatabase {
 		return true;
 	}
 
-	@Override
+    @Override
+    public void create(ModelDocument modelDocument) {
+
+    }
+
+    @Override
+    public List<? extends ITrip> queryViews(String s, String s2) {
+        return null;
+    }
+
+    @Override
+    public void update(ModelDocument modelDocument) {
+
+    }
+
+    @Override
 	public boolean open() {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
 	public List<ITrip> findByBoat(UUID boatId) {
 		return null;
 	}

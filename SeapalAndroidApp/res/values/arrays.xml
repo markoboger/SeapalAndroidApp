@@ -9,4 +9,11 @@
         <item>@string/map_menu_delete</item>
     </array>
 
+
+    <array name="crew_dialog_accept_friend">
+        <item>@string/crew_dialog_accept_friend_yes</item>
+        <item>@string/crew_dialog_accept_friend_decline</item>
+        <item>@string/cancel</item>
+    </array>
+
 </resources>

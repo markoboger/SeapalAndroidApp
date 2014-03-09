@@ -1,2 +1,9 @@
-/gen
-/bin
+gen
+bin
+build
+.idea
+.gradle
+*.iml
+*.ipr
+*.iws
+local.properties

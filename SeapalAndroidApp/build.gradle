@@ -1,0 +1,81 @@
+buildscript {
+    repositories {
+      mavenCentral()
+    }
+    dependencies {
+      classpath 'com.android.tools.build:gradle:0.8.+'
+    }
+}
+
+apply plugin: 'android'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+
+version = '1.1'
+
+repositories {
+    mavenCentral()
+    maven { 
+      url "http://files.couchbase.com/maven2/"
+    }
+}
+
+dependencies {
+    compile 'com.google.collections:google-collections:1.0'
+    compile 'org.roboguice:roboguice:2.0'
+    compile 'com.android.support:appcompat-v7:+'
+    compile 'com.google.android.gms:play-services:+'
+
+    compile project(':libs:facebook')
+    compile fileTree(dir: 'libs', includes: ['*.jar', '*.aar'])
+    compile ('com.couchbase.cblite:CBLiteEktorp:1.0.0-beta2') {
+        exclude group: 'org.slf4j'
+    }
+
+    compile ('org.slf4j:slf4j-android:1.6.1-RC1') {
+        force =  true
+    }
+
+}
+
+android {
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/ASL2.0.txt'
+    }
+
+    lintOptions {
+      abortOnError false
+    }
+
+
+    buildToolsVersion "19.0.1"
+    compileSdkVersion 19
+    compileOptions.encoding = "UTF-8"
+    defaultConfig {
+        versionCode 1
+        versionName "1.1"
+        minSdkVersion 14
+        targetSdkVersion 19
+    }
+
+    sourceSets {
+        main {
+              manifest.srcFile 'AndroidManifest.xml'
+            //noinspection GroovyAssignabilityCheck
+            java.srcDirs = ['src']
+            //noinspection GroovyAssignabilityCheck
+            resources.srcDirs = ['src']
+              aidl.srcDirs = ['src']
+              renderscript.srcDirs = ['src']
+              res.srcDirs = ['res']
+              assets.srcDirs = ['assets']
+        }
+        instrumentTest.setRoot('tests')
+    }
+}

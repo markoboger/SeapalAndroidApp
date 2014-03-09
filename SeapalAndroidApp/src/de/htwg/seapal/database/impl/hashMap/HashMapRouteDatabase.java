@@ -9,11 +9,12 @@ import java.util.UUID;
 
 import de.htwg.seapal.database.IRouteDatabase;
 import de.htwg.seapal.model.IRoute;
+import de.htwg.seapal.model.ModelDocument;
 import de.htwg.seapal.model.impl.Route;
 
 public class HashMapRouteDatabase implements IRouteDatabase {
 
-	private Map<UUID, IRoute> db;
+	private final Map<UUID, IRoute> db;
 	private static HashMapRouteDatabase hashMapRouteDatabase;
 
 	private HashMapRouteDatabase() {
@@ -52,8 +53,7 @@ public class HashMapRouteDatabase implements IRouteDatabase {
 	@Override
 	public List<IRoute> loadAll() {
 		Collection<IRoute> collection = db.values();
-		List<IRoute> values = new ArrayList<IRoute>(collection);
-		return values;
+		return new ArrayList<IRoute>(collection);
 	}
 
 	@Override
@@ -61,7 +61,22 @@ public class HashMapRouteDatabase implements IRouteDatabase {
 		return true;
 	}
 
-	@Override
+    @Override
+    public void create(ModelDocument modelDocument) {
+
+    }
+
+    @Override
+    public List<? extends IRoute> queryViews(String s, String s2) {
+        return null;
+    }
+
+    @Override
+    public void update(ModelDocument modelDocument) {
+
+    }
+
+    @Override
 	public boolean open() {
 		// TODO Auto-generated method stub
 		return false;

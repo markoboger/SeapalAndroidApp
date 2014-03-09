@@ -1,5 +1,8 @@
 package de.htwg.seapal.database.impl.hashMap;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -9,11 +12,12 @@ import java.util.UUID;
 
 import de.htwg.seapal.database.IMarkDatabase;
 import de.htwg.seapal.model.IMark;
+import de.htwg.seapal.model.ModelDocument;
 import de.htwg.seapal.model.impl.Mark;
 
 public class HashMapMarkDatabase implements IMarkDatabase {
 
-	private Map<UUID, IMark> db;
+	private final Map<UUID, IMark> db;
 	private static HashMapMarkDatabase hashMapMarkDatabase;
 
 	private HashMapMarkDatabase() {
@@ -52,8 +56,7 @@ public class HashMapMarkDatabase implements IMarkDatabase {
 	@Override
 	public List<IMark> loadAll() {
 		Collection<IMark> collection = db.values();
-		List<IMark> values = new ArrayList<IMark>(collection);
-		return values;
+		return new ArrayList<IMark>(collection);
 	}
 
 	@Override
@@ -61,9 +64,34 @@ public class HashMapMarkDatabase implements IMarkDatabase {
 		return true;
 	}
 
-	@Override
+    @Override
+    public void create(ModelDocument modelDocument) {
+
+    }
+
+    @Override
+    public List<? extends IMark> queryViews(String s, String s2) {
+        return null;
+    }
+
+    @Override
+    public void update(ModelDocument modelDocument) {
+
+    }
+
+    @Override
 	public boolean open() {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+    @Override
+    public boolean addPhoto(IMark iMark, String s, File file) throws FileNotFoundException {
+        return false;
+    }
+
+    @Override
+    public InputStream getPhoto(UUID uuid) {
+        return null;
+    }
 }

@@ -9,11 +9,12 @@ import java.util.UUID;
 
 import de.htwg.seapal.database.IBoatDatabase;
 import de.htwg.seapal.model.IBoat;
+import de.htwg.seapal.model.ModelDocument;
 import de.htwg.seapal.model.impl.Boat;
 
 public class HashMapBoatDatabase implements IBoatDatabase {
 
-	private Map<UUID, IBoat> db;
+	private final Map<UUID, IBoat> db;
 	private static HashMapBoatDatabase hashMapBoatDatabase;
 
 	private HashMapBoatDatabase() {
@@ -52,8 +53,7 @@ public class HashMapBoatDatabase implements IBoatDatabase {
 	@Override
 	public List<IBoat> loadAll() {
 		Collection<IBoat> collection = db.values();
-		List<IBoat> values = new ArrayList<IBoat>(collection);
-		return values;
+		return new ArrayList<IBoat>(collection);
 	}
 
 	@Override
@@ -61,7 +61,22 @@ public class HashMapBoatDatabase implements IBoatDatabase {
 		return true;
 	}
 
-	@Override
+    @Override
+    public void create(ModelDocument modelDocument) {
+
+    }
+
+    @Override
+    public List<? extends IBoat> queryViews(String s, String s2) {
+        return null;
+    }
+
+    @Override
+    public void update(ModelDocument modelDocument) {
+
+    }
+
+    @Override
 	public boolean open() {
 		return false;
 	}

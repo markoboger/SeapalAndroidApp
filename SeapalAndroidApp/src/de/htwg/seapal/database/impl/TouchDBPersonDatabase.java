@@ -1,127 +1,134 @@
 package de.htwg.seapal.database.impl;
 
+import android.content.Context;
+import android.util.Log;
+
+import com.couchbase.lite.Database;
+import com.couchbase.lite.View;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+
+import org.ektorp.CouchDbConnector;
+import org.ektorp.ViewResult;
+import org.ektorp.support.CouchDbRepositorySupport;
+import org.ektorp.support.DesignDocument;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-import org.ektorp.CouchDbConnector;
-import org.ektorp.DocumentNotFoundException;
-import org.ektorp.UpdateConflictException;
-import org.ektorp.ViewQuery;
-import org.ektorp.ViewResult;
-import org.ektorp.ViewResult.Row;
-
-import roboguice.inject.ContextSingleton;
-import android.content.Context;
-import android.util.Log;
-
-import com.google.inject.Inject;
-
 import de.htwg.seapal.database.IPersonDatabase;
+import de.htwg.seapal.database.TouchDBHelper;
+import de.htwg.seapal.database.impl.views.AllView;
+import de.htwg.seapal.database.impl.views.OwnView;
+import de.htwg.seapal.database.impl.views.SingleDocumentView;
 import de.htwg.seapal.model.IPerson;
+import de.htwg.seapal.model.ModelDocument;
 import de.htwg.seapal.model.impl.Person;
+import roboguice.inject.ContextSingleton;
 
 @ContextSingleton
-public class TouchDBPersonDatabase implements IPersonDatabase {
-	private static final String TAG = "person-TouchDB";
-	private static final String DATABASE_NAME = "seapal_person_db";
+public class TouchDBPersonDatabase extends CouchDbRepositorySupport<Person> implements IPersonDatabase {
 
-	private static TouchDBPersonDatabase TouchDBPersonDatabase;
-	private CouchDbConnector couchDbConnector;
-	private TouchDBHelper dbHelper;
+    private static final String TAG = "person-TouchDB";
+    private final Database database;
+    private final TouchDBHelper dbHelper;
 
-	@Inject
-	public TouchDBPersonDatabase(Context ctx) {
-		dbHelper = new TouchDBHelper(DATABASE_NAME);
-		dbHelper.createDatabase(ctx);
-		dbHelper.pullFromDatabase();
-		couchDbConnector = dbHelper.getCouchDbConnector();
-	}
+    private CouchDbConnector connector;
 
-	public static TouchDBPersonDatabase getInstance(Context ctx) {
-		if (TouchDBPersonDatabase == null)
-			TouchDBPersonDatabase = new TouchDBPersonDatabase(ctx);
-		return TouchDBPersonDatabase;
-	}
 
-	@Override
-	public boolean open() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Inject
+    public TouchDBPersonDatabase(@Named("personCouchDbConnector") TouchDBHelper helper, Context ctx) {
+        super(Person.class, helper.getCouchDbConnector(), "Person");
+        initStandardDesignDocument();
+        connector = helper.getCouchDbConnector();
+        database = helper.getTDDatabase();
+        dbHelper = helper;
 
-	@Override
-	public UUID create() {
-		IPerson person = new Person();
-		try {
-			couchDbConnector.create(person.getId(), person);
-		} catch (UpdateConflictException e) {
-			Log.e(TAG, e.toString());
-		}
-		UUID id = UUID.fromString(person.getId());
-		Log.d(TAG, "person created: " + person.getId());
-		dbHelper.pushToDatabase();
-		return id;
-	}
+        DesignDocument d = super.getDesignDocumentFactory().generateFrom(this);
+        Log.i(TAG, "Views = " + d.getViews());
 
-	@Override
-	public boolean save(IPerson data) {
-		try {
-			couchDbConnector.update(data);
-			dbHelper.pushToDatabase();
-		} catch (DocumentNotFoundException e) {
-			Log.d(TAG, "Document not Found");
-			Log.d(TAG, e.toString());
-			return false;
-		}
-		Log.d(TAG, "Person saved: " + data.getId());
-		return true;
-	}
+        View singleDoc = database.getView(String.format("%s/%s", "Person", "singleDocument"));
+        singleDoc.setMap(new SingleDocumentView(), "1");
 
-	@Override
-	public IPerson get(UUID id) {
-		IPerson person;
-		try {
-			person = couchDbConnector.get(Person.class, id.toString());
-		} catch (DocumentNotFoundException e) {
-			Log.e(TAG, "person not found" + id.toString());
-			return null;
-		}
-		return person;
-	}
+        View ownDoc = database.getView(String.format("%s/%s", "Person", "own"));
+        ownDoc.setMap(new OwnView(), "1");
 
-	@Override
-	public List<IPerson> loadAll() {
-		List<IPerson> lst = new LinkedList<IPerson>();
-		List<String> log = new LinkedList<String>();
-		ViewQuery query = new ViewQuery().allDocs();
-		ViewResult vr = couchDbConnector.queryView(query);
 
-		for (Row r : vr.getRows()) {
-			Log.d(TAG, "All Persons: " + r.getId().toString());
-			lst.add(get(UUID.fromString(r.getId())));
-			log.add(r.getId());
-		}
-		Log.d(TAG, "All Persons: " + log.toString());
-		return lst;
-	}
+        View all = database.getView(String.format("%s/%s", "Person", "all"));
+        all.setMap(new AllView(), "1");
 
-	@Override
-	public void delete(UUID id) {
-		try {
-			couchDbConnector.delete(get(id));
-			dbHelper.pushToDatabase();
-		} catch (Exception e) {
-			Log.e(TAG, e.toString());
-			return;
-		}
-		Log.d(TAG, "Person deleted");
-	}
+        dbHelper.pullFromDatabase();
+        dbHelper.pushToDatabase();
 
-	@Override
-	public boolean close() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    }
 
+    @Override
+    public boolean open() {
+        return true;
+    }
+
+    @Override
+    public UUID create() {
+        return null;
+    }
+
+    @Override
+    public boolean save(IPerson data) {
+        Person entity = (Person) data;
+
+        if (entity.isNew()) {
+            // ensure that the id is generated and revision is null for saving a new entity
+            entity.setId(UUID.randomUUID().toString());
+            entity.setRevision(null);
+            add(entity);
+            return true;
+        }
+
+        update(entity);
+        return false;
+    }
+
+    @Override
+    public IPerson get(UUID id) {
+        List<? extends IPerson> persons = queryViews("all", id.toString());
+        if (persons.size() == 1) {
+            return persons.get(0);
+
+        }
+        return null;
+    }
+
+    @Override
+    public List<IPerson> loadAll() {
+        List<IPerson> persons = new LinkedList<IPerson>(getAll());
+        return persons;
+    }
+
+    @Override
+    public void delete(UUID id) {
+        remove((Person) get(id));
+    }
+
+    @Override
+    public boolean close() {
+        return true;
+    }
+
+    @Override
+    public List<? extends IPerson> queryViews(final String viewName, final String key) {
+        ViewResult vr = db.queryView(createQuery(viewName).key(key));
+        List<Person> persons = dbHelper.mapViewResultTo(vr, Person.class);
+        return persons;
+    }
+
+    @Override
+    public void create(ModelDocument doc) {
+        connector.create(doc);
+    }
+
+    @Override
+    public void update(ModelDocument document) {
+        connector.update(document);
+    }
 }

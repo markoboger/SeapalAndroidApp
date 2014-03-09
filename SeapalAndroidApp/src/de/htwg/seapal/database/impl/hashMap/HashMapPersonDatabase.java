@@ -9,11 +9,12 @@ import java.util.UUID;
 
 import de.htwg.seapal.database.IPersonDatabase;
 import de.htwg.seapal.model.IPerson;
+import de.htwg.seapal.model.ModelDocument;
 import de.htwg.seapal.model.impl.Person;
 
 public class HashMapPersonDatabase implements IPersonDatabase {
 
-	private Map<UUID, IPerson> db;
+	private final Map<UUID, IPerson> db;
 	private static HashMapPersonDatabase hashMapPersonDatabase;
 
 	private HashMapPersonDatabase() {
@@ -52,8 +53,7 @@ public class HashMapPersonDatabase implements IPersonDatabase {
 	@Override
 	public List<IPerson> loadAll() {
 		Collection<IPerson> collection = db.values();
-		List<IPerson> values = new ArrayList<IPerson>(collection);
-		return values;
+		return new ArrayList<IPerson>(collection);
 	}
 
 	@Override
@@ -61,7 +61,22 @@ public class HashMapPersonDatabase implements IPersonDatabase {
 		return true;
 	}
 
-	@Override
+    @Override
+    public void create(ModelDocument modelDocument) {
+
+    }
+
+    @Override
+    public List<? extends IPerson> queryViews(String s, String s2) {
+        return null;
+    }
+
+    @Override
+    public void update(ModelDocument modelDocument) {
+
+    }
+
+    @Override
 	public boolean open() {
 		// TODO Auto-generated method stub
 		return false;

@@ -1,127 +1,140 @@
 package de.htwg.seapal.database.impl;
 
+import android.content.Context;
+
+import com.couchbase.lite.Database;
+import com.couchbase.lite.View;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+
+import org.ektorp.CouchDbConnector;
+import org.ektorp.ViewResult;
+import org.ektorp.support.CouchDbRepositorySupport;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-import org.ektorp.CouchDbConnector;
-import org.ektorp.DocumentNotFoundException;
-import org.ektorp.UpdateConflictException;
-import org.ektorp.ViewQuery;
-import org.ektorp.ViewResult;
-import org.ektorp.ViewResult.Row;
-
-import roboguice.inject.ContextSingleton;
-import android.content.Context;
-import android.util.Log;
-
-import com.google.inject.Inject;
-
 import de.htwg.seapal.database.IBoatDatabase;
+import de.htwg.seapal.database.TouchDBHelper;
+import de.htwg.seapal.database.impl.views.AllView;
+import de.htwg.seapal.database.impl.views.OwnView;
+import de.htwg.seapal.database.impl.views.SingleDocumentView;
+import de.htwg.seapal.events.session.LogOutEvent;
+import de.htwg.seapal.events.session.LoginEvent;
 import de.htwg.seapal.model.IBoat;
+import de.htwg.seapal.model.ModelDocument;
 import de.htwg.seapal.model.impl.Boat;
+import roboguice.event.Observes;
+import roboguice.inject.ContextSingleton;
 
 @ContextSingleton
-public class TouchDBBoatDatabase implements IBoatDatabase {
+public class TouchDBBoatDatabase extends CouchDbRepositorySupport<Boat> implements IBoatDatabase {
 
-	private static final String TAG = "Boat-TouchDB";
-	private static final String DATABASE_NAME = "seapal_boats_db";
+    private static final String TAG = "Boat-TouchDB";
 
-	private static TouchDBBoatDatabase touchDBBoatDatabase;
-	private CouchDbConnector couchDbConnector;
-	private TouchDBHelper dbHelper;
+    private final CouchDbConnector connector;
+    private final TouchDBHelper dbHelper;
+    private final Database database;
 
-	@Inject
-	public TouchDBBoatDatabase(Context ctx) {
-		dbHelper = new TouchDBHelper(DATABASE_NAME);
-		dbHelper.createDatabase(ctx);
-		dbHelper.pullFromDatabase();
-		couchDbConnector = dbHelper.getCouchDbConnector();
+    @Inject
+    public TouchDBBoatDatabase(@Named("boatCouchDbConnector") TouchDBHelper helper, Context ctx) {
+        super(Boat.class, helper.getCouchDbConnector());
+        super.initStandardDesignDocument();
+        dbHelper = helper;
+        connector = dbHelper.getCouchDbConnector();
+        database = dbHelper.getTDDatabase();
 
-	}
+        View singleDoc = database.getView(String.format("%s/%s", "Boat", "singleDocument"));
+        singleDoc.setMap(new SingleDocumentView(), "1");
 
-	public static TouchDBBoatDatabase getInstance(Context ctx) {
-		if (touchDBBoatDatabase == null)
-			touchDBBoatDatabase = new TouchDBBoatDatabase(ctx);
-		return touchDBBoatDatabase;
-	}
+        View ownDoc = database.getView(String.format("%s/%s", "Boat", "own"));
+        ownDoc.setMap(new OwnView(), "1");
 
-	@Override
-	public UUID create() {
-		IBoat boat = new Boat();
-		try {
-			couchDbConnector.create(boat.getId(), boat);
-		} catch (UpdateConflictException e) {
-			Log.e(TAG, e.toString());
-		}
-		UUID id = UUID.fromString(boat.getId());
-		Log.d(TAG, "Boat created: " + boat.getId());
-		dbHelper.pushToDatabase();
-		return id;
-	}
 
-	@Override
-	public boolean save(IBoat boat) {
-		try {
-			couchDbConnector.update(boat);
-			dbHelper.pushToDatabase();
-		} catch (DocumentNotFoundException e) {
-			Log.d(TAG, "Document not Found");
-			Log.d(TAG, e.toString());
-			return false;
-		}
-		Log.d(TAG, "Boat saved: " + boat.getId());
-		return true;
-	}
+        View all = database.getView(String.format("%s/%s", "Boat", "all"));
+        all.setMap(new AllView(), "1");
 
-	@Override
-	public void delete(UUID id) {
-		try {
-			couchDbConnector.delete(get(id));
-			dbHelper.pushToDatabase();
-		} catch (Exception e) {
-			Log.e(TAG, e.toString());
-			return;
-		}
-		Log.d(TAG, "Boat deleted");
-	}
+    }
 
-	@Override
-	public IBoat get(UUID id) {
-		IBoat boat;
-		try {
-			boat = couchDbConnector.get(Boat.class, id.toString());
-		} catch (DocumentNotFoundException e) {
-			Log.e(TAG, "Boat not found" + id.toString());
-			return null;
-		}
-		return boat;
-	}
 
-	@Override
-	public List<IBoat> loadAll() {
-		List<IBoat> lst = new LinkedList<IBoat>();
-		List<String> log = new LinkedList<String>();
-		ViewQuery query = new ViewQuery().allDocs();
-		ViewResult vr = couchDbConnector.queryView(query);
+    @Override
+    public boolean open() {
+        return true;
+    }
 
-		for (Row r : vr.getRows()) {
-			lst.add(get(UUID.fromString(r.getId())));
-			log.add(r.getId());
-		}
-		Log.d(TAG, "All Boats: " + log.toString());
-		return lst;
-	}
+    @Override
+    public UUID create() {
+        return null;
+    }
 
-	@Override
-	public boolean close() {
-		return false;
-	}
+    @Override
+    public boolean save(IBoat data) {
+        Boat entity = (Boat) data;
 
-	@Override
-	public boolean open() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+        if (entity.isNew()) {
+            // ensure that the id is generated and revision is null for saving a new entity
+            entity.setId(UUID.randomUUID().toString());
+            entity.setRevision(null);
+            add(entity);
+            return true;
+        }
+
+        update(entity);
+        return false;
+    }
+
+    @Override
+    public IBoat get(UUID id) {
+        List<? extends IBoat> boats = queryViews("all", id.toString());
+        if (boats.size() == 1) {
+            return boats.get(0);
+
+        }
+        return null;
+    }
+
+    @Override
+    public List<IBoat> loadAll() {
+        List<IBoat> boats = new LinkedList<IBoat>(getAll());
+        return boats;
+    }
+
+    @Override
+    public void delete(UUID id) {
+        remove((Boat) get(id));
+    }
+
+    @Override
+    public boolean close() {
+        return true;
+    }
+
+    @Override
+    public List<? extends IBoat> queryViews(final String viewName, final String key) {
+        ViewResult vr = db.queryView(createQuery(viewName).key(key));
+        List<Boat> boats = dbHelper.mapViewResultTo(vr, Boat.class);
+        return boats;
+    }
+
+    @Override
+    public void create(ModelDocument doc) {
+        connector.create(doc);
+    }
+
+    @Override
+    public void update(ModelDocument document) {
+        connector.update(document);
+    }
+
+
+    public void onLogin(@Observes LoginEvent event) {
+
+    }
+
+    public void onLogout(@Observes LogOutEvent event) {
+
+    }
+
 
 }
